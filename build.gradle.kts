@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("me.clip:placeholderapi:2.11.3")
+    compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.Zrips:jobs:v4.17.2")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
@@ -83,14 +83,14 @@ tasks {
         dependsOn(shadowJar)
     }
 
-    register("legacyToMM") {
+    /*register("legacyToMM") {
         println("HERE:")
         var newString = legacyToMMConverter()
         if (newString.contains("<b>")) {
             newString = "<b>" + newString.replace("<b>", "") + "</b>"
         }
         println(newString)
-    }
+    }*/
 
 }
 
