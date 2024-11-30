@@ -149,7 +149,7 @@ class SummertideShellItem : CustomItem {
     }
 
     private fun nourishAbilityLand(player: Player, entity: LivingEntity) {
-        entity.health = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 1.0
+        entity.health = entity.getAttribute(Attribute.MAX_HEALTH)?.value ?: 1.0
         if (entity is Player) {
             entity.foodLevel = 20
             entity.saturation = 20.0F

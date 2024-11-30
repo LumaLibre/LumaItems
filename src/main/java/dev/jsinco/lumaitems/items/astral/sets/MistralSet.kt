@@ -51,16 +51,16 @@ class MistralSet : AstralSet {
                 when (genericMCToolType) {
                     GenericMCToolType.SWORD -> {
                         DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
-                            Attribute.GENERIC_MOVEMENT_SPEED, AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER)
+                            Attribute.MOVEMENT_SPEED, AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER)
                         )
                     }
                     GenericMCToolType.PICKAXE -> {
                         DefaultAttributes.NETHERITE_PICKAXE.appendThenGetAttributes(
-                            Attribute.GENERIC_MOVEMENT_SPEED, AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER)
+                            Attribute.MOVEMENT_SPEED, AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER)
                         )
                     }
                     GenericMCToolType.FISHING_ROD -> {
-                        mutableMapOf(Attribute.GENERIC_MOVEMENT_SPEED to AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER))
+                        mutableMapOf(Attribute.MOVEMENT_SPEED to AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER))
                     }
                     else -> null
                 }

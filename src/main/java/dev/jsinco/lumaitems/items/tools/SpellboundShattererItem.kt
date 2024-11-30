@@ -6,6 +6,8 @@ import dev.jsinco.lumaitems.enums.Action
 import dev.jsinco.lumaitems.manager.CustomItem
 import dev.jsinco.lumaitems.shapes.Cuboid
 import dev.jsinco.lumaitems.util.AbilityUtil
+import dev.jsinco.lumaitems.util.disabling.Disable
+import dev.jsinco.lumaitems.util.disabling.WorldName
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -19,6 +21,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import java.util.Random
 
+@Disable(WorldName.EVENT_NEW)
 class SpellboundShattererItem : CustomItem {
 
     companion object {

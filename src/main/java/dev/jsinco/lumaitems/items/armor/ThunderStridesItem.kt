@@ -7,6 +7,7 @@ import dev.jsinco.lumaitems.manager.CustomItem
 import dev.jsinco.lumaitems.util.AbilityUtil.isOnGround
 import org.bukkit.Bukkit
 import org.bukkit.Color
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
@@ -28,6 +29,10 @@ class ThunderStridesItem : CustomItem {
 
         val activeFastLane: MutableList<UUID> = mutableListOf()
         val cooldown: MutableList<UUID> = mutableListOf()
+    }
+
+    override fun isDisabled(inLocation: Location): Boolean {
+        return false
     }
 
     override fun createItem(): Pair<String, ItemStack> {

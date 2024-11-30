@@ -4,12 +4,15 @@ import dev.jsinco.lumaitems.items.ItemFactory
 import dev.jsinco.lumaitems.enums.Action
 import dev.jsinco.lumaitems.manager.CustomItem
 import dev.jsinco.lumaitems.util.AbilityUtil
+import dev.jsinco.lumaitems.util.disabling.Disable
+import dev.jsinco.lumaitems.util.disabling.WorldName
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
+@Disable(WorldName.EVENT_NEW)
 class StellarisSpadeItem : CustomItem {
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(

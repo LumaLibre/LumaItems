@@ -4,13 +4,13 @@ plugins {
     kotlin("jvm")
     id("java")
     id("maven-publish")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.papermc.paperweight.userdev") version "1.7.1" // PaperWeight
+    id("com.gradleup.shadow") version("8.3.5")
+    id("io.papermc.paperweight.userdev") version("1.7.5") // PaperWeight
 }
 
 
 group = "dev.jsinco.lumaitems"
-version = "ver/1.21.1"
+version = "ver/1.21"
 
 
 repositories {
@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("me.clip:placeholderapi:2.11.3")
+    compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.Zrips:jobs:v4.17.2")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
@@ -35,23 +35,23 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
 }
 
 tasks {
 
+    // PaperWeight
     assemble {
         dependsOn(reobfJar)
     }
 
     processResources {
         outputs.upToDateWhen { false }
-        println(project.version.toString())
         filter<ReplaceTokens>(mapOf(
-            "tokens" to mapOf("version" to project.version.toString().replace("/", "")),
+            "tokens" to mapOf("version" to project.version),
             "beginToken" to "\${",
             "endToken" to "}"
-        ))
+        )).filteringCharset = "UTF-8"
     }
 
     shadowJar {
@@ -83,14 +83,14 @@ tasks {
         dependsOn(shadowJar)
     }
 
-    register("legacyToMM") {
-        println("HERE:")
-        var newString = legacyToMMConverter()
-        if (newString.contains("<b>")) {
-            newString = "<b>" + newString.replace("<b>", "") + "</b>"
-        }
-        println(newString)
-    }
+//    register("legacyToMM") {
+//        println("HERE:")
+//        var newString = legacyToMMConverter()
+//        if (newString.contains("<b>")) {
+//            newString = "<b>" + newString.replace("<b>", "") + "</b>"
+//        }
+//        println(newString)
+//    }
 
 }
 

@@ -28,7 +28,7 @@ class ReforgedSet : AstralSet {
             mutableMapOf(Enchantment.RESPIRATION to 3),
             mutableListOf("Increases max amount", "of health while worn"),
             true,
-            DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.GENERIC_MAX_HEALTH,
+            DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH,
                 AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD))
         )
 
@@ -37,7 +37,7 @@ class ReforgedSet : AstralSet {
             mutableMapOf(),
             mutableListOf("Increases max amount", "of health while worn"),
             true,
-            DefaultAttributes.NETHERITE_CHESTPLATE.appendThenGetAttributes(Attribute.GENERIC_MAX_HEALTH,
+            DefaultAttributes.NETHERITE_CHESTPLATE.appendThenGetAttributes(Attribute.MAX_HEALTH,
                 AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST))
         )
 
@@ -46,7 +46,7 @@ class ReforgedSet : AstralSet {
             mutableMapOf(),
             mutableListOf("Increases max amount", "of health while worn"),
             true,
-            DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(Attribute.GENERIC_MAX_HEALTH,
+            DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(Attribute.MAX_HEALTH,
                 AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS))
         )
 
@@ -55,7 +55,7 @@ class ReforgedSet : AstralSet {
             mutableMapOf(Enchantment.FEATHER_FALLING to 4, Enchantment.DEPTH_STRIDER to 3),
             mutableListOf("Increases max amount", "of health while worn"),
             true,
-            DefaultAttributes.NETHERITE_BOOTS.appendThenGetAttributes(Attribute.GENERIC_MAX_HEALTH,
+            DefaultAttributes.NETHERITE_BOOTS.appendThenGetAttributes(Attribute.MAX_HEALTH,
                 AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET))
         )
 

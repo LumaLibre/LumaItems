@@ -7,6 +7,8 @@ import dev.jsinco.lumaitems.enums.Action
 import dev.jsinco.lumaitems.util.AbilityUtil
 import dev.jsinco.lumaitems.enums.GenericMCToolType
 import dev.jsinco.lumaitems.util.Util
+import dev.jsinco.lumaitems.util.disabling.Disable
+import dev.jsinco.lumaitems.util.disabling.WorldName
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -22,6 +24,7 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
+@Disable(WorldName.EVENT_NEW)
 class MagmaticSet : AstralSet {
 
     companion object {

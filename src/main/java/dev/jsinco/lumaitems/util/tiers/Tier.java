@@ -1,4 +1,4 @@
-package dev.jsinco.lumaitems.enums;
+package dev.jsinco.lumaitems.util.tiers;
 
 import dev.jsinco.lumaitems.util.MiniMessageUtil;
 import net.kyori.adventure.text.Component;
@@ -13,7 +13,7 @@ public class Tier {
 
     private final String mmTierString;
 
-    private Tier(String s) {
+    protected Tier(String s) {
         this.mmTierString = s;
     }
 

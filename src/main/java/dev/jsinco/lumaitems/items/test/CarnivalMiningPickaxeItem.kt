@@ -1,6 +1,6 @@
 package dev.jsinco.lumaitems.items.test
 
-import dev.jsinco.lumaitems.enums.Tier
+import dev.jsinco.lumaitems.util.tiers.Tier
 import dev.jsinco.lumaitems.items.ItemFactory
 import dev.jsinco.lumaitems.manager.CustomItemFunctions
 import org.bukkit.Material

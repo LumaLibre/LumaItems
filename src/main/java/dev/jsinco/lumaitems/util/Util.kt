@@ -164,7 +164,8 @@ object Util {
         return null
     }
 
-    fun formatMaterialName(material: Material) = formatMaterialName(material.toString())
+    fun formatEnchantKey(key: String): String = formatMaterialName(key.replace("minecraft:", ""))
+
 
     fun formatMaterialName(s: String): String {
         var name = s.lowercase().replace("_", " ")

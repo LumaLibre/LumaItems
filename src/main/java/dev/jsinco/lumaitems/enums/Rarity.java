@@ -1,4 +1,4 @@
-package dev.jsinco.lumaitems.relics;
+package dev.jsinco.lumaitems.enums;
 
 import dev.jsinco.lumaitems.util.Util;
 

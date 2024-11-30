@@ -4,7 +4,7 @@ import dev.jsinco.lumaitems.LumaItems
 import dev.jsinco.lumaitems.enums.Action
 import dev.jsinco.lumaitems.manager.CustomItem
 import dev.jsinco.lumaitems.manager.FileManager
-import dev.jsinco.lumaitems.relics.Rarity
+import dev.jsinco.lumaitems.enums.Rarity
 import dev.jsinco.lumaitems.relics.RelicCrafting
 import dev.jsinco.lumaitems.relics.RelicCreator
 import dev.jsinco.lumaitems.util.Util

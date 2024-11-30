@@ -6,6 +6,8 @@ import dev.jsinco.lumaitems.enums.Action
 import dev.jsinco.lumaitems.manager.CustomItem
 import dev.jsinco.lumaitems.shapes.Cuboid
 import dev.jsinco.lumaitems.util.AbilityUtil.breakRelativeBlock
+import dev.jsinco.lumaitems.util.disabling.Disable
+import dev.jsinco.lumaitems.util.disabling.WorldName
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -15,6 +17,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 
+@Disable(WorldName.EVENT_NEW)
 class CrescentMoonHatchetItem : CustomItem {
 
     companion object {

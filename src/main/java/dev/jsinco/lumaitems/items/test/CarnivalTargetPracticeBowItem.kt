@@ -1,14 +1,13 @@
 package dev.jsinco.lumaitems.items.test
 
 import dev.jsinco.lumaitems.LumaItems
-import dev.jsinco.lumaitems.enums.Tier
+import dev.jsinco.lumaitems.util.tiers.Tier
 import dev.jsinco.lumaitems.items.ItemFactory
 import dev.jsinco.lumaitems.manager.CustomItemFunctions
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.ProjectileLaunchEvent
-import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 

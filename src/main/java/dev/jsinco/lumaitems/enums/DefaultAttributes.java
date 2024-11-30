@@ -14,32 +14,32 @@ import java.util.UUID;
 public enum DefaultAttributes {
 
     NETHERITE_HELMET(List.of(
-            new AttributeContainer(Attribute.GENERIC_ARMOR, 3.0, EquipmentSlot.HEAD),
-            new AttributeContainer(Attribute.GENERIC_ARMOR_TOUGHNESS, 3.0, EquipmentSlot.HEAD),
-            new AttributeContainer(Attribute.GENERIC_KNOCKBACK_RESISTANCE, 1.0, EquipmentSlot.HEAD))
+            new AttributeContainer(Attribute.ARMOR, 3.0, EquipmentSlot.HEAD),
+            new AttributeContainer(Attribute.ARMOR_TOUGHNESS, 3.0, EquipmentSlot.HEAD),
+            new AttributeContainer(Attribute.KNOCKBACK_RESISTANCE, 1.0, EquipmentSlot.HEAD))
     ),
     NETHERITE_CHESTPLATE(List.of(
-            new AttributeContainer(Attribute.GENERIC_ARMOR, 8.0, EquipmentSlot.CHEST),
-            new AttributeContainer(Attribute.GENERIC_ARMOR_TOUGHNESS, 3.0, EquipmentSlot.CHEST),
-            new AttributeContainer(Attribute.GENERIC_KNOCKBACK_RESISTANCE, 1.0, EquipmentSlot.CHEST))
+            new AttributeContainer(Attribute.ARMOR, 8.0, EquipmentSlot.CHEST),
+            new AttributeContainer(Attribute.ARMOR_TOUGHNESS, 3.0, EquipmentSlot.CHEST),
+            new AttributeContainer(Attribute.KNOCKBACK_RESISTANCE, 1.0, EquipmentSlot.CHEST))
     ),
     NETHERITE_LEGGINGS(List.of(
-            new AttributeContainer(Attribute.GENERIC_ARMOR, 6.0, EquipmentSlot.LEGS),
-            new AttributeContainer(Attribute.GENERIC_ARMOR_TOUGHNESS, 2.0, EquipmentSlot.LEGS),
-            new AttributeContainer(Attribute.GENERIC_KNOCKBACK_RESISTANCE, 1.0, EquipmentSlot.LEGS))
+            new AttributeContainer(Attribute.ARMOR, 6.0, EquipmentSlot.LEGS),
+            new AttributeContainer(Attribute.ARMOR_TOUGHNESS, 2.0, EquipmentSlot.LEGS),
+            new AttributeContainer(Attribute.KNOCKBACK_RESISTANCE, 1.0, EquipmentSlot.LEGS))
     ),
     NETHERITE_BOOTS(List.of(
-            new AttributeContainer(Attribute.GENERIC_ARMOR, 3.0, EquipmentSlot.FEET),
-            new AttributeContainer(Attribute.GENERIC_ARMOR_TOUGHNESS, 3.0, EquipmentSlot.FEET),
-            new AttributeContainer(Attribute.GENERIC_KNOCKBACK_RESISTANCE, 1.0, EquipmentSlot.FEET))
+            new AttributeContainer(Attribute.ARMOR, 3.0, EquipmentSlot.FEET),
+            new AttributeContainer(Attribute.ARMOR_TOUGHNESS, 3.0, EquipmentSlot.FEET),
+            new AttributeContainer(Attribute.KNOCKBACK_RESISTANCE, 1.0, EquipmentSlot.FEET))
     ),
     NETHERITE_SWORD(List.of(
-            new AttributeContainer(Attribute.GENERIC_ATTACK_DAMAGE, 8.0, EquipmentSlot.HAND),
-            new AttributeContainer(Attribute.GENERIC_ATTACK_SPEED, 1.6, EquipmentSlot.HAND))
+            new AttributeContainer(Attribute.ATTACK_DAMAGE, 8.0, EquipmentSlot.HAND),
+            new AttributeContainer(Attribute.ATTACK_SPEED, 1.6, EquipmentSlot.HAND))
     ),
     NETHERITE_PICKAXE(List.of(
-            new AttributeContainer(Attribute.GENERIC_ATTACK_DAMAGE, 6.0, EquipmentSlot.HAND),
-            new AttributeContainer(Attribute.GENERIC_ATTACK_SPEED, 1.2, EquipmentSlot.HAND))
+            new AttributeContainer(Attribute.ATTACK_DAMAGE, 6.0, EquipmentSlot.HAND),
+            new AttributeContainer(Attribute.ATTACK_SPEED, 1.2, EquipmentSlot.HAND))
     );
 
 

@@ -3,6 +3,8 @@ package dev.jsinco.lumaitems.items.tools
 import dev.jsinco.lumaitems.items.ItemFactory
 import dev.jsinco.lumaitems.enums.Action
 import dev.jsinco.lumaitems.manager.CustomItem
+import dev.jsinco.lumaitems.util.disabling.Disable
+import dev.jsinco.lumaitems.util.disabling.WorldName
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
@@ -12,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 import java.util.function.Consumer
 
+@Disable(WorldName.EVENT_NEW)
 class MagmaticPickaxeItem : CustomItem {
 
     companion object {

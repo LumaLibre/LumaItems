@@ -1,7 +1,7 @@
 package dev.jsinco.lumaitems.items.armor
 
 import dev.jsinco.lumaitems.enums.DefaultAttributes
-import dev.jsinco.lumaitems.enums.Tier
+import dev.jsinco.lumaitems.util.tiers.Tier
 import dev.jsinco.lumaitems.items.ItemFactory
 import dev.jsinco.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.lumaitems.manager.FileManager
@@ -34,7 +34,7 @@ class ClownMaskItem : CustomItemFunctions() {
             .tier(Tier.CARNIVAL_2024)
             .b64PHead(headTextures.random())
             .persistentData(KEY)
-            .attributeModifiers(DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.GENERIC_MAX_HEALTH, AttributeModifier(NamespacedKey(INSTANCE, KEY), 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)))
+            .attributeModifiers(DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(INSTANCE, KEY), 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)))
             .vanillaEnchants(mutableMapOf(Enchantment.PROTECTION to 7, Enchantment.RESPIRATION to 4, Enchantment.AQUA_AFFINITY to 2))
             .lore("Disguise yourself in this", "neat mask!", "", "Wearing this mask grants", "an extra <#FA909D>3</#FA909D> hearts.", "", "<red>Same stats as Netherite</red>")
             .buildPair()

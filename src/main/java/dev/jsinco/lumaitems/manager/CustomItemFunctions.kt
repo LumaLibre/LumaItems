@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
+import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
@@ -86,6 +87,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.PLAYER_QUIT -> onPlayerQuit(player, event as PlayerQuitEvent)
             Action.PLAYER_PICKUP_EXP -> onPlayerPickupExp(player, event as PlayerPickupExperienceEvent)
             Action.MACE_SMASH_ATTACK -> onMaceSmashAttack(player, event as EntityDamageByEntityEvent)
+            Action.ENTITY_PICKUP_ITEM -> onEntityPickupItem(event as EntityPickupItemEvent)
         }
         return true
     }
@@ -136,4 +138,5 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPlayerQuit(player: Player, event: PlayerQuitEvent) {}
     open fun onPlayerPickupExp(player: Player, event: PlayerPickupExperienceEvent) {}
     open fun onMaceSmashAttack(player: Player, event: EntityDamageByEntityEvent) {}
+    open fun onEntityPickupItem(event: EntityPickupItemEvent) {}
 }

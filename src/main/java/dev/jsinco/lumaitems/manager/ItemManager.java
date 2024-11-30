@@ -84,7 +84,7 @@ public final class ItemManager {
      * @return an immutable list of all physical items
      */
     public static List<ItemStack> getAllItems() {
-        List<ItemStack> list = new ArrayList<ItemStack>();
+        List<ItemStack> list = new ArrayList<>();
         for (CustomItem item : customItems.values()) {
             try {
                 list.add(item.createItem().component2());

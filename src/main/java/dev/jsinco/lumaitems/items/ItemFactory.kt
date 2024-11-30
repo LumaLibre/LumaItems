@@ -2,7 +2,8 @@ package dev.jsinco.lumaitems.items
 
 import com.iridium.iridiumcolorapi.IridiumColorAPI
 import dev.jsinco.lumaitems.LumaItems
-import dev.jsinco.lumaitems.enums.Tier
+import dev.jsinco.lumaitems.enums.RomanNumeral
+import dev.jsinco.lumaitems.util.tiers.Tier
 import dev.jsinco.lumaitems.util.MiniMessageUtil
 import dev.jsinco.lumaitems.util.Util
 import net.kyori.adventure.text.format.NamedTextColor
@@ -39,7 +40,8 @@ class ItemFactory(
     var attributeModifiers: MutableMap<Attribute, AttributeModifier> = mutableMapOf(),
     val stringPersistentDatas: MutableMap<NamespacedKey, String> = mutableMapOf(),
     var quotes: MutableList<String> = mutableListOf(),
-    var b64PHead: String? = null
+    var b64PHead: String? = null,
+    var spoofEnchants: Boolean = false
 ) {
 
     companion object {
@@ -94,6 +96,16 @@ class ItemFactory(
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE)
 
         val combinedLore: MutableList<String> = mutableListOf()
+
+        if (spoofEnchants) {
+            val preAppend = if (!miniMessage) "&7" else "<gray>"
+            for (enchant in vanillaEnchants) {
+                val postAppend = if (enchant.value > 1) " ${RomanNumeral.fromInt(enchant.value)}" else ""
+                combinedLore.add("$preAppend${Util.formatEnchantKey(enchant.key.key.toString())}$postAppend")
+            }
+            hideEnchants = true
+        }
+
         combinedLore.addAll(customEnchants)
 
 
@@ -159,6 +171,7 @@ class ItemFactory(
         private var stringPersistentDatas: MutableMap<NamespacedKey, String> = mutableMapOf()
         private var quotes: MutableList<String> = mutableListOf()
         private var b64PHead: String? = null
+        private var spoofEnchants: Boolean = false
 
         fun name(name: String) = apply { this.name = name }
         fun customEnchants(customEnchants: MutableList<String>) = apply { this.customEnchants = customEnchants }
@@ -170,6 +183,7 @@ class ItemFactory(
         fun persistentData(persistentData: MutableList<String>) = apply { this.persistentData = persistentData }
         fun persistentData(vararg persistentData: String) = apply { this.persistentData = persistentData.toMutableList() }
         fun vanillaEnchants(vanillaEnchants: MutableMap<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
+        fun vanillaEnchants(vararg vanillaEnchants: Pair<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants.toMap().toMutableMap() }
         fun tier(tier: String) = apply { this.tier = tier }
         fun tier (tier: Tier) = apply { this.tier = tier.tierString }
         fun unbreakable(unbreakable: Boolean) = apply { this.unbreakable = unbreakable }
@@ -181,15 +195,18 @@ class ItemFactory(
         fun quotes(quotes: MutableList<String>) = apply { this.quotes = quotes }
         fun quotes(vararg quotes: String) = apply { this.quotes = quotes.toMutableList() }
         fun b64PHead(b64PHead: String) = apply { this.b64PHead = b64PHead }
+        fun spoofEnchants(spoofEnchants: Boolean) = apply { this.spoofEnchants = spoofEnchants }
 
         fun build() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
-            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, stringPersistentDatas, quotes, b64PHead
+            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, stringPersistentDatas, quotes, b64PHead,
+            spoofEnchants
         ).apply { miniMessage() }
 
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
-            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, stringPersistentDatas, quotes, b64PHead
+            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, stringPersistentDatas, quotes, b64PHead,
+            spoofEnchants
         )
 
         fun buildPair(): Pair<String, ItemStack> {

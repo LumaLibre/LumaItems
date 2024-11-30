@@ -6,9 +6,8 @@ import dev.jsinco.lumaitems.manager.CustomItem
 import dev.jsinco.lumaitems.particles.ParticleDisplay
 import dev.jsinco.lumaitems.particles.Particles
 import dev.jsinco.lumaitems.util.AbilityUtil
-import dev.jsinco.lumaitems.enums.Tier
+import dev.jsinco.lumaitems.util.tiers.Tier
 import dev.jsinco.lumaitems.enums.ToolType
-import dev.jsinco.lumaitems.util.NeedsEdits
 import dev.jsinco.lumaitems.util.Util
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor

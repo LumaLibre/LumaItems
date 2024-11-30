@@ -1,7 +1,7 @@
 package dev.jsinco.lumaitems.items.magical
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
-import dev.jsinco.lumaitems.enums.Tier
+import dev.jsinco.lumaitems.util.tiers.Tier
 import dev.jsinco.lumaitems.items.ItemFactory
 import dev.jsinco.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.lumaitems.obj.MagicItemCooldown

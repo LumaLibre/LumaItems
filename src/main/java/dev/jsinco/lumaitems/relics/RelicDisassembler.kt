@@ -1,6 +1,7 @@
 package dev.jsinco.lumaitems.relics
 
 import dev.jsinco.lumaitems.LumaItems
+import dev.jsinco.lumaitems.enums.Rarity
 import dev.jsinco.lumaitems.manager.FileManager
 import dev.jsinco.lumaitems.util.Util
 import org.bukkit.Bukkit

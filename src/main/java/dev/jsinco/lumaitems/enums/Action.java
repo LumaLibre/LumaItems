@@ -56,4 +56,5 @@ public enum Action {
     PLAYER_QUIT, // When a player quits the server
     PLAYER_PICKUP_EXP, // When a player picks up experience
     MACE_SMASH_ATTACK, // When a player performs a smash attack with a mace
+    ENTITY_PICKUP_ITEM, // When a living entity data picks up an item with specific persistent data
 }

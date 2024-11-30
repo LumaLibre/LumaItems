@@ -43,7 +43,7 @@ class PrideCrownItem : CustomItem {
         item.autoHat = true
         item.tier = "&#731385&lP&#4332B9&lr&#1351ED&li&#0C6A87&ld&#058221&le &#7FB715&l2&#F9EB08&l0&#EF7A05&l2&#E40902&l4"
         item.attributeModifiers = DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
-            Attribute.GENERIC_MAX_HEALTH, AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
+            Attribute.MAX_HEALTH, AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
         )
         return Pair("pridecrown", item.createItem())
     }

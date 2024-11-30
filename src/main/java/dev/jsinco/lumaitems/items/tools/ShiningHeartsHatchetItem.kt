@@ -5,6 +5,8 @@ import dev.jsinco.lumaitems.enums.Action
 import dev.jsinco.lumaitems.manager.CustomItem
 import dev.jsinco.lumaitems.util.AbilityUtil
 import dev.jsinco.lumaitems.util.Util
+import dev.jsinco.lumaitems.util.disabling.Disable
+import dev.jsinco.lumaitems.util.disabling.WorldName
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -18,6 +20,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.UUID
 import kotlin.random.Random
 
+@Disable(WorldName.EVENT_NEW)
 class ShiningHeartsHatchetItem : CustomItem {
 
     companion object {

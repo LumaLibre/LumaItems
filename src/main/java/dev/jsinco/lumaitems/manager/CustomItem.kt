@@ -2,13 +2,18 @@ package dev.jsinco.lumaitems.manager
 
 import dev.jsinco.lumaitems.LumaItems
 import dev.jsinco.lumaitems.enums.Action
+import dev.jsinco.lumaitems.util.disabling.Disable
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import kotlin.random.Random
 
 interface CustomItem {
 
     val INSTANCE: LumaItems
         get() = LumaItems.getInstance()
+    val RANDOM: Random
+        get() = Random
 
     /**
      * Called at startup to initialize and create each custom item
@@ -25,4 +30,14 @@ interface CustomItem {
      * @return A boolean for return info
      */
     fun executeActions(type: Action, player: Player, event: Any): Boolean
+
+    fun isDisabled(inLocation: Location): Boolean {
+        val disableAnnotation: Disable? = this::class.java.getAnnotation(Disable::class.java)
+        disableAnnotation?.value?.forEach {
+            if (it.isInWorld(inLocation)) {
+                return true
+            }
+        }
+        return false
+    }
 }

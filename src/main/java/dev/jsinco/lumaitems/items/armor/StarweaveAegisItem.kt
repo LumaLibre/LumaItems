@@ -22,9 +22,9 @@ class StarweaveAegisItem : CustomItem {
             mutableListOf("starweaveaegis"),
             mutableMapOf(Enchantment.PROTECTION to 7, Enchantment.FIRE_PROTECTION to 5, Enchantment.PROJECTILE_PROTECTION to 5, Enchantment.BLAST_PROTECTION to 5, Enchantment.UNBREAKING to 10, Enchantment.MENDING to 1)
         )
-        item.attributeModifiers[Attribute.GENERIC_ARMOR] = AttributeModifier(UUID.randomUUID(), "generic.armor", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
-        item.attributeModifiers[Attribute.GENERIC_KNOCKBACK_RESISTANCE] = AttributeModifier(UUID.randomUUID(), "generic.knockbackResistance", 1000.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
-        item.attributeModifiers[Attribute.GENERIC_ARMOR_TOUGHNESS] = AttributeModifier(UUID.randomUUID(), "generic.armorToughness", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
+        item.attributeModifiers[Attribute.ARMOR] = AttributeModifier(UUID.randomUUID(), "generic.armor", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
+        item.attributeModifiers[Attribute.KNOCKBACK_RESISTANCE] = AttributeModifier(UUID.randomUUID(), "generic.knockbackResistance", 1000.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
+        item.attributeModifiers[Attribute.ARMOR_TOUGHNESS] = AttributeModifier(UUID.randomUUID(), "generic.armorToughness", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
         return Pair("starweaveaegis", item.createItem())
     }
 

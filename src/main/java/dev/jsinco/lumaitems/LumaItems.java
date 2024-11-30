@@ -138,7 +138,7 @@ public final class LumaItems extends JavaPlugin {
     }
 
     public static void log(String m) {
-        Bukkit.getConsoleSender().sendMessage(Util.colorcode("&#f498f6[LumaItems] " + m));
+        Bukkit.getConsoleSender().sendMessage(Util.colorcode("&2[LumaItems] " + m)); // &#f498f6
     }
 
     public static void log(String m, Throwable throwable) {

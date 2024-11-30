@@ -5,7 +5,7 @@ import dev.jsinco.lumaitems.guis.AbstractGui
 import dev.jsinco.lumaitems.guis.DisassemblerGui
 import dev.jsinco.lumaitems.manager.FileManager
 import dev.jsinco.lumaitems.manager.ItemManager
-import dev.jsinco.lumaitems.relics.Rarity
+import dev.jsinco.lumaitems.enums.Rarity
 import dev.jsinco.lumaitems.relics.RelicCreator
 import dev.jsinco.lumaitems.relics.RelicDisassembler
 import dev.jsinco.lumaitems.enums.EntityArmor

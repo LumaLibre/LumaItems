@@ -39,6 +39,9 @@ class HellStridersItem : CustomItem {
         private val plugin: LumaItems = LumaItems.getInstance()
     }
 
+    override fun isDisabled(inLocation: Location): Boolean {
+        return false
+    }
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(

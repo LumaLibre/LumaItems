@@ -22,9 +22,9 @@ class MoonshineFallowItem : CustomItem {
             mutableListOf("moonshinefallow"),
             mutableMapOf(Enchantment.EFFICIENCY to 7, Enchantment.FORTUNE to 5, Enchantment.UNBREAKING to 8, Enchantment.MENDING to 1)
         )
-        item.attributeModifiers[Attribute.GENERIC_MOVEMENT_SPEED] = AttributeModifier(UUID.randomUUID(), "generic.movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
-        item.attributeModifiers[Attribute.GENERIC_ATTACK_SPEED] = AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
-        item.attributeModifiers[Attribute.GENERIC_ATTACK_DAMAGE] = AttributeModifier(UUID.randomUUID(), "generic.attackDamage", 0.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
+        item.attributeModifiers[Attribute.MOVEMENT_SPEED] = AttributeModifier(UUID.randomUUID(), "generic.movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
+        item.attributeModifiers[Attribute.ATTACK_SPEED] = AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
+        item.attributeModifiers[Attribute.ATTACK_DAMAGE] = AttributeModifier(UUID.randomUUID(), "generic.attackDamage", 0.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
         return Pair("moonshinefallow", item.createItem())
     }
 

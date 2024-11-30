@@ -3,7 +3,7 @@ package dev.jsinco.lumaitems.events
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import dev.jsinco.lumaitems.LumaItems
 import dev.jsinco.lumaitems.events.GeneralListeners.Companion.relicFile
-import dev.jsinco.lumaitems.relics.Rarity
+import dev.jsinco.lumaitems.enums.Rarity
 import dev.jsinco.lumaitems.relics.RelicCreator
 import dev.jsinco.lumaitems.util.Util
 import org.bukkit.Bukkit

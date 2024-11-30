@@ -43,10 +43,10 @@ class WonderBeanieItem : CustomItem {
             mutableListOf("wonderbeanie"),
             mutableMapOf(Enchantment.UNBREAKING to 10, Enchantment.PROTECTION to 7, Enchantment.RESPIRATION to 5, Enchantment.AQUA_AFFINITY to 1, Enchantment.BLAST_PROTECTION to 7, Enchantment.MENDING to 1)
         )
-        item.attributeModifiers[Attribute.GENERIC_ARMOR] = AttributeModifier(UUID.randomUUID(), "generic.armor", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
-        item.attributeModifiers[Attribute.GENERIC_ARMOR_TOUGHNESS] = AttributeModifier(UUID.randomUUID(), "generic.armorToughness", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
-        item.attributeModifiers[Attribute.GENERIC_KNOCKBACK_RESISTANCE] = AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 1.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
-        item.attributeModifiers[Attribute.GENERIC_MAX_HEALTH] = AttributeModifier(UUID.randomUUID(), "generic.maxHealth", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
+        item.attributeModifiers[Attribute.ARMOR] = AttributeModifier(UUID.randomUUID(), "generic.armor", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
+        item.attributeModifiers[Attribute.ARMOR_TOUGHNESS] = AttributeModifier(UUID.randomUUID(), "generic.armorToughness", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
+        item.attributeModifiers[Attribute.KNOCKBACK_RESISTANCE] = AttributeModifier(UUID.randomUUID(), "generic.knockback_resistance", 1.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
+        item.attributeModifiers[Attribute.MAX_HEALTH] = AttributeModifier(UUID.randomUUID(), "generic.maxHealth", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
 
         item.tier = "&#c46bfb&lH&#c86eee&la&#cd71e2&ll&#d174d5&ll&#d677c8&lo&#da7abc&lm&#de7daf&la&#e380a2&lr&#e78395&le&#eb8689&ls &#f0897c&l2&#f48c6f&l0&#f98f63&l2&#fd9256&l3"
         return Pair("wonderbeanie", item.createItem())

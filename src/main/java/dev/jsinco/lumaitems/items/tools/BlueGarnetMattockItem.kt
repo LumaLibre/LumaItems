@@ -5,6 +5,8 @@ import dev.jsinco.lumaitems.items.ItemFactory
 import dev.jsinco.lumaitems.manager.CustomItem
 import dev.jsinco.lumaitems.shapes.ShapeUtil
 import dev.jsinco.lumaitems.util.AbilityUtil
+import dev.jsinco.lumaitems.util.disabling.Disable
+import dev.jsinco.lumaitems.util.disabling.WorldName
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
@@ -12,6 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
+@Disable(WorldName.EVENT_NEW)
 class BlueGarnetMattockItem : CustomItem {
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -32,10 +35,6 @@ class BlueGarnetMattockItem : CustomItem {
             Action.BREAK_BLOCK -> {
                 event as BlockBreakEvent
                 val b = event.block
-
-                if (player.world.name.contains("event")) { // temp fix
-                    return false
-                }
 
                 val blocklist = ShapeUtil.getCuboidBlocks(b.location.add(1.0, 1.0, 1.0), b.location.add(-1.0, -1.0, -1.0)).filter {
                     !AbilityUtil.blockTypeBlacklist.contains(it.type) && it.isSolid
