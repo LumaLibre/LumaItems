@@ -48,7 +48,7 @@ tasks {
     processResources {
         outputs.upToDateWhen { false }
         filter<ReplaceTokens>(mapOf(
-            "tokens" to mapOf("version" to project.version),
+            "tokens" to mapOf("version" to project.version.toString().replace("/", "")),
             "beginToken" to "\${",
             "endToken" to "}"
         )).filteringCharset = "UTF-8"
@@ -83,15 +83,6 @@ tasks {
         dependsOn(shadowJar)
     }
 
-//    register("legacyToMM") {
-//        println("HERE:")
-//        var newString = legacyToMMConverter()
-//        if (newString.contains("<b>")) {
-//            newString = "<b>" + newString.replace("<b>", "") + "</b>"
-//        }
-//        println(newString)
-//    }
-
 }
 
 java {
@@ -99,15 +90,29 @@ java {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "jsinco-reposilite"
+            url = uri("https://repo.jsinco.dev/releases")
+            credentials(PasswordCredentials::class) {
+                // get from environment
+                username = System.getenv("repo_username")
+                password = System.getenv("repo_secret")
+            }
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
     publications {
         create<MavenPublication>("maven") {
+            groupId = "dev.jsinco.lumaitems"
+            artifactId = "lumaitems"
+            version = "1.21-SNAPSHOT"
             from(components["java"])
         }
     }
 }
-
-
-//val legacyString = "&#f498f6&lI&#c990f9&ln&#9d88fc&lf&#7280ff&lo &r&8»&#E2E2E2"
 
 
 fun legacyToMMConverter(): String {
