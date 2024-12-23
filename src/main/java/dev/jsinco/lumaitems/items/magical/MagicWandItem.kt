@@ -179,7 +179,8 @@ class MagicWandItem : CustomItem {
         cooldowns.add(MagicItemCooldown(player.uniqueId, Spell.EXPLOSION_SPHERE, System.currentTimeMillis()))
         val sphere = Sphere(loc, 4.0, 5.0)
         for (block in sphere.sphere) {
-            block.breakNaturally(false, true)
+            player.breakBlock(block)
+            //block.breakNaturally(false, true)
         }
         loc.world.spawnParticle(Particle.EXPLOSION, loc, 1, 0.0, 0.0, 0.0, 0.0)
         loc.world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f)

@@ -1,8 +1,9 @@
 name: LumaItems
-version: '${version}'
+version: 'paper-1.21.3'
 main: dev.jsinco.lumaitems.LumaItems
 api-version: '1.21'
 author: 'Jsinco'
+libraries: ['org.jetbrains.kotlin:kotlin-stdlib:2.0.21']
 softdepend:
 - PlaceHolderAPI
 - EvenMoreFish # Softdepending EMF to register listeners after it

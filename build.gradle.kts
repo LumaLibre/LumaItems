@@ -1,17 +1,19 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    kotlin("jvm")
     id("java")
     id("maven-publish")
+    kotlin("jvm") version "2.0.21"
     id("com.gradleup.shadow") version("8.3.5")
     id("io.papermc.paperweight.userdev") version("1.7.5") // PaperWeight
 }
 
 
 group = "dev.jsinco.lumaitems"
-version = "ver/1.21"
+version = "paper-1.21.3"
 
+val jdkVersion = 21
+val charset = "UTF-8"
 
 repositories {
     mavenCentral()
@@ -32,7 +34,6 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
-    implementation(kotlin("stdlib-jdk8"))
 
     // PaperWeight
     paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
@@ -48,32 +49,29 @@ tasks {
     processResources {
         outputs.upToDateWhen { false }
         filter<ReplaceTokens>(mapOf(
-            "tokens" to mapOf("version" to project.version.toString().replace("/", "")),
+            "tokens" to mapOf("version" to project.version.toString()),
             "beginToken" to "\${",
             "endToken" to "}"
-        )).filteringCharset = "UTF-8"
+        )).filteringCharset = charset
     }
 
     shadowJar {
         dependencies {
             include(dependency("com.iridium:IridiumColorAPI"))
-            include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         }
         archiveClassifier.set("")
     }
 
     jar {
         version = ""
-        enabled = false
+        //enabled = false
     }
 
     withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
+        options.encoding = charset
     }
 
-    kotlin {
-        jvmToolchain(21)
-    }
+
 
     reobfJar {
         outputJar.set(layout.buildDirectory.file("${projectDir}${File.separator}build${File.separator}libs${File.separator}${project.name}.jar"))
@@ -86,13 +84,17 @@ tasks {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(jdkVersion)
+}
+
+kotlin {
+    jvmToolchain(jdkVersion)
 }
 
 publishing {
     repositories {
         maven {
-            name = "jsinco-reposilite"
+            name = "jsinco-repo"
             url = uri("https://repo.jsinco.dev/releases")
             credentials(PasswordCredentials::class) {
                 // get from environment
@@ -106,66 +108,12 @@ publishing {
     }
     publications {
         create<MavenPublication>("maven") {
-            groupId = "dev.jsinco.lumaitems"
-            artifactId = "lumaitems"
-            version = "1.21-SNAPSHOT"
-            from(components["java"])
-        }
-    }
-}
-
-
-fun legacyToMMConverter(): String {
-    val legacyString = File("convert_me.txt").readText()
-
-    if (legacyString.isEmpty()) {
-        return legacyString
-    }
-    val texts = legacyString.split(String.format("((?<=%1\$s)|(?=%1\$s))", "&").toRegex()).dropLastWhile { it.isEmpty() }
-        .toTypedArray()
-    val finalText = StringBuilder()
-    var i = 0
-    while (i < texts.size) {
-        if (texts[i].equals("&", ignoreCase = true)) {
-            //get the next string
-            i++
-            if (texts[i][0] == '#') {
-                finalText.append('<').append(texts[i].substring(0, 7)).append(texts[i].substring(7)).append('>')
-            } else {
-                finalText.append(getMiniMessageNamedColor("&" + texts[i].substring(0, 1))).append(texts[i].substring(1))
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+            artifact(tasks.shadowJar.get().archiveFile) {
+                builtBy(tasks.shadowJar)
             }
-        } else {
-            finalText.append(texts[i])
         }
-        i++
-    }
-    return finalText.toString()
-}
-
-fun getMiniMessageNamedColor(namedColor: String): String {
-    return when (namedColor) {
-        "&0" -> "<black>"
-        "&1" -> "<dark_blue>"
-        "&2" -> "<dark_green>"
-        "&3" -> "<dark_aqua>"
-        "&4" -> "<dark_red>"
-        "&5" -> "<dark_purple>"
-        "&6" -> "<gold>"
-        "&7" -> "<gray>"
-        "&8" -> "<dark_gray>"
-        "&9" -> "<blue>"
-        "&a" -> "<green>"
-        "&b" -> "<aqua>"
-        "&c" -> "<red>"
-        "&d" -> "<light_purple>"
-        "&e" -> "<yellow>"
-        "&f" -> "<white>"
-        "&k" -> "<obf>"
-        "&l" -> "<b>"
-        "&m" -> "<st>"
-        "&n" -> "<u>"
-        "&o" -> "<i>"
-        "&r" -> "<reset>"
-        else -> throw IllegalStateException("Unexpected value: $namedColor")
     }
 }

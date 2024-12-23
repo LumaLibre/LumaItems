@@ -1,6 +1,5 @@
-package dev.jsinco.lumaitems.items.tools
+package dev.jsinco.lumaitems.items.weapons
 
-import dev.jsinco.lumaitems.util.tiers.Tier
 import dev.jsinco.lumaitems.items.ItemFactory
 import dev.jsinco.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.lumaitems.util.MiniMessageUtil
@@ -18,6 +17,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
+import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
@@ -89,6 +89,12 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
     }
 
     override fun onEntityPickupItem(event: EntityPickupItemEvent) {
+        if (event.item.itemStack.type == dropItem.type) {
+            event.isCancelled = true
+        }
+    }
+
+    override fun onHopperPickupItem(event: InventoryPickupItemEvent) {
         if (event.item.itemStack.type == dropItem.type) {
             event.isCancelled = true
         }

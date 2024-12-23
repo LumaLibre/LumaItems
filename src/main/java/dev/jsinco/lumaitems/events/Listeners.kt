@@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
+import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
@@ -467,5 +468,11 @@ class Listeners(val plugin: LumaItems) : Listener {
     @EventHandler
     fun onEntityPickupItem(event: EntityPickupItemEvent) {
         fire(event.item.itemStack.persistentDataContainer, Action.ENTITY_PICKUP_ITEM, null, event)
+    }
+
+    // Called when a hopper or hopper minecart picks up a dropped item.
+    @EventHandler
+    fun onHopperPickupEvent(event: InventoryPickupItemEvent) {
+        fire(event.item.itemStack.persistentDataContainer, Action.HOPPER_PICKUP_ITEM, null, event)
     }
 }
