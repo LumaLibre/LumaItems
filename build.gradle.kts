@@ -1,4 +1,6 @@
+import org.apache.commons.io.output.ByteArrayOutputStream
 import org.apache.tools.ant.filters.ReplaceTokens
+import java.nio.charset.Charset
 
 plugins {
     id("java")
@@ -10,7 +12,7 @@ plugins {
 
 
 group = "dev.jsinco.lumaitems"
-version = "paper-1.21.3"
+version = getGitCommitHashShort()
 
 val jdkVersion = 21
 val charset = "UTF-8"
@@ -63,8 +65,7 @@ tasks {
     }
 
     jar {
-        version = ""
-        //enabled = false
+        enabled = false
     }
 
     withType<JavaCompile>().configureEach {
@@ -116,4 +117,14 @@ publishing {
             }
         }
     }
+}
+
+fun getGitCommitHashShort(): String = ByteArrayOutputStream().use { stream ->
+    var branch = "none"
+    project.exec {
+        commandLine = listOf("git", "log", "-1", "--format=%h")
+        standardOutput = stream
+    }
+    if (stream.size() > 0) branch = stream.toString(Charset.defaultCharset().name()).trim()
+    return branch
 }

@@ -1,5 +1,5 @@
 name: LumaItems
-version: 'paper-1.21.3'
+version: '${version}'
 main: dev.jsinco.lumaitems.LumaItems
 api-version: '1.21'
 author: 'Jsinco'
