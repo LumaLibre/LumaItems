@@ -43,14 +43,14 @@ public final class ItemManager {
      * List of all packages to search for Custom Items
      */
     public final static List<String> packages = List.of(
-            "dev.jsinco.luma.lumaitems.items.items.weapons",
-            "dev.jsinco.luma.lumaitems.items.items.tools",
-            "dev.jsinco.luma.lumaitems.items.items.misc",
-            "dev.jsinco.luma.lumaitems.items.items.armor",
-            "dev.jsinco.luma.lumaitems.items.items.magical",
-            "dev.jsinco.luma.lumaitems.items.items.astral",
-            "dev.jsinco.luma.lumaitems.items.items.astral.sets",
-            "dev.jsinco.luma.lumaitems.items.items.test"
+            "dev.jsinco.luma.lumaitems.items.weapons",
+            "dev.jsinco.luma.lumaitems.items.tools",
+            "dev.jsinco.luma.lumaitems.items.misc",
+            "dev.jsinco.luma.lumaitems.items.armor",
+            "dev.jsinco.luma.lumaitems.items.magical",
+            "dev.jsinco.luma.lumaitems.items.astral",
+            "dev.jsinco.luma.lumaitems.items.astral.sets",
+            "dev.jsinco.luma.lumaitems.items.test"
     );
 
 
@@ -109,6 +109,7 @@ public final class ItemManager {
         for (String pack: packages) {
             registerForPackage(pack, file);
         }
+        LumaItems.log("Registered &6" + customItems.size() + " &2classes through reflection");
     }
 
     public void registerForPackage(String pack, File file) throws IOException {
@@ -124,7 +125,6 @@ public final class ItemManager {
                 LumaItems.log("Failed to register class " + clazz.getSimpleName(), e);
             }
         }
-        LumaItems.log("Registered &6" + customItems.size() + " &#f498f6classes through reflection");
     }
 
     public void registerItem(CustomItem item) {
