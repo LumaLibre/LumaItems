@@ -1,6 +1,7 @@
 package dev.jsinco.luma.api;
 
 import dev.jsinco.luma.LumaItems;
+import dev.jsinco.luma.items.ItemFactory;
 import dev.jsinco.luma.manager.CustomItem;
 import dev.jsinco.luma.manager.ItemManager;
 import org.bukkit.NamespacedKey;
@@ -8,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -115,5 +118,33 @@ public final class LumaItemsAPI {
      */
     public List<ItemStack> getAllItems() {
         return ItemManager.getAllItems();
+    }
+
+    /**
+     * Register an external CustomItem
+     * @param customItem CustomItem to register
+     */
+    public void registerCustomItem(CustomItem customItem) {
+        LumaItems.getItemManagerInstance().registerItem(customItem);
+    }
+
+    /**
+     * Uses reflection to register all Custom Items in a package
+     * @param pack Package to register
+     * @throws IOException if the package cannot be found
+     * @throws InvocationTargetException if the method cannot be invoked
+     * @throws NoSuchMethodException if the method cannot be found
+     * @throws IllegalAccessException if the method cannot be accessed
+     */
+    public void registerForPackage(String pack) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        LumaItems.getItemManagerInstance().registerForPackage(pack);
+    }
+
+    /**
+     * Get an instance of the ItemFactory builder
+     * @return ItemFactory builder
+     */
+    public ItemFactory.Builder factory() {
+        return new ItemFactory.Builder();
     }
 }

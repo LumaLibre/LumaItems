@@ -29,7 +29,6 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 import java.util.concurrent.ConcurrentLinkedQueue
 
-@NeedsEdits(review = true)
 @Suppress("Duplicates")
 class BookOfKnowledgeItem : CustomItemFunctions() {
 

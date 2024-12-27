@@ -100,58 +100,65 @@ public final class ItemManager {
         this.plugin = plugin;
     }
 
-    public void registerCustomItemsByName() {
-        for (CustomItem item : customItems.values()) {
-            ItemStack itemStack;
-            try {
-                itemStack = item.createItem().component2();
-            } catch (Exception e) {
-                LumaItems.log("Failed to create item for " + item.getClass().getSimpleName(), e);
-                continue;
-            }
-            if (AstralSet.class.isAssignableFrom(item.getClass())) {
-                continue;
-            } else if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasDisplayName()) {
-                LumaItems.log("Item " + itemStack.getType() + " does not have a display name or meta!");
-                continue;
-            }
-            String formattedName = ChatColor.stripColor(itemStack.getItemMeta().getDisplayName()).replace(" ", "_").toLowerCase();
-            customItemsByName.put(formattedName, item);
-        }
-        LumaItems.log("Finished initializing " + customItemsByName.size() + " physical items by display names");
-    }
-
 
     /**
      * Registers all Custom Items in the packages list
      */
     public void registerItems() throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
-        List<Class<?>> classes = new ArrayList<>();
-
-        for (String packagee : packages) {
-            classes.addAll(findClasses(packagee));
+        for (String pack: packages) {
+            registerForPackage(pack);
         }
+    }
+
+    public void registerForPackage(String pack) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        Set<Class<?>> classes = findClasses(pack);
 
         for (Class<?> clazz : classes) {
             try {
                 if (CustomItem.class.isAssignableFrom(clazz) && !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers())) {
                     CustomItem item = (CustomItem) clazz.getDeclaredConstructor().newInstance();
-                    customItems.put(new NamespacedKey(plugin, item.createItem().component1()), item);
-
-                    NeedsEdits edits = clazz.getAnnotation(NeedsEdits.class);
-                    if (edits != null) {
-                        if (!edits.review()) {
-                            LumaItems.log("&cClass &6" + clazz.getSimpleName() + " &cneeds edits!");
-                        } else {
-                            LumaItems.log("&aClass &6" + clazz.getSimpleName() + " &ais ready for review!");
-                        }
-                    }
+                    registerItem(item);
                 }
             } catch (Exception e) {
                 LumaItems.log("Failed to register class " + clazz.getSimpleName(), e);
             }
         }
         LumaItems.log("Registered &6" + customItems.size() + " &#f498f6classes through reflection");
+    }
+
+    public void registerItem(CustomItem item) {
+        customItems.put(new NamespacedKey(plugin, item.createItem().component1()), item);
+        registerForName(item);
+        Class<?> clazz = item.getClass();
+        NeedsEdits edits = clazz.getAnnotation(NeedsEdits.class);
+        if (edits != null) {
+            if (!edits.review()) {
+                LumaItems.log("&cClass &6" + clazz.getSimpleName() + " &cneeds edits!");
+            } else {
+                LumaItems.log("&aClass &6" + clazz.getSimpleName() + " &ais ready for review!");
+            }
+        }
+    }
+
+    public void registerForName(CustomItem item) {
+        ItemStack itemStack;
+        try {
+            itemStack = item.createItem().component2();
+        } catch (Exception e) {
+            LumaItems.log("Failed to create item for " + item.getClass().getSimpleName(), e);
+            return;
+        }
+        if (AstralSet.class.isAssignableFrom(item.getClass())) {
+            return;
+        } else if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasDisplayName()) {
+            LumaItems.log("Item " + itemStack.getType() + " does not have a display name or meta!");
+            return;
+        }
+        String formattedName = ChatColor.stripColor(
+                itemStack.getItemMeta().getDisplayName()
+                )
+                .replace(" ", "_").toLowerCase();
+        customItemsByName.put(formattedName, item);
     }
 
     /**

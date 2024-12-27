@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-@NeedsEdits(review = true)
 class CarnivalLollipopItem : CustomItemFunctions() {
 
     private val haste = PotionEffect(PotionEffectType.HASTE, 260, 0, false, false, false)

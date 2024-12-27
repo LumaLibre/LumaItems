@@ -36,6 +36,7 @@ public final class LumaItems extends JavaPlugin {
     private static boolean withMythicMobs;
     private static PAPIManager papiManager;
     private static PassiveListeners passiveListeners;
+    private static ItemManager itemManagerInstance;
 
     @Override
     public void onEnable() {
@@ -46,17 +47,17 @@ public final class LumaItems extends JavaPlugin {
 
 
         passiveListeners = new PassiveListeners(this);
-        final ItemManager itemManager = new ItemManager(this);
+        itemManagerInstance = new ItemManager(this);
 
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             log("Players are online, registering items asynchronously");
             Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-                initItemManager(itemManager);
+                initItemManager(itemManagerInstance);
                 initListeners();
                 log("Finished asynchronous item registration!");
             });
         } else {
-            initItemManager(itemManager);
+            initItemManager(itemManagerInstance);
             initListeners();
         }
 
@@ -78,7 +79,6 @@ public final class LumaItems extends JavaPlugin {
     private void initItemManager(ItemManager itemManager) {
         try {
             itemManager.registerItems();
-            itemManager.registerCustomItemsByName();
             passiveListeners.onPluginAction(Action.PLUGIN_ENABLE); // Fire this as soon as we're done registering our items
             passiveListeners.getPassiveListener(Action.RUNNABLE).runTaskTimer(this, 0L, PassiveListeners.DEFAULT_PASSIVE_LISTENER_TICKS);
             passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS);
@@ -135,6 +135,10 @@ public final class LumaItems extends JavaPlugin {
 
     public static boolean isWithMythicMobs() {
         return withMythicMobs;
+    }
+
+    public static ItemManager getItemManagerInstance() {
+        return itemManagerInstance;
     }
 
     public static void log(String m) {
