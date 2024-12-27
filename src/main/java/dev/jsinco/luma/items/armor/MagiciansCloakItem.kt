@@ -36,7 +36,7 @@ class MagiciansCloakItem : CustomItem {
         Util.hex2AwtColor("#ffd365")
     )
     private val vector0 = Vector(0, 0,0)
-    private val key = NamespacedKey(INSTANCE, "magicianscloak")
+    private val key = NamespacedKey(instance(), "magicianscloak")
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -69,7 +69,7 @@ class MagiciansCloakItem : CustomItem {
                 }
 
                 val particleDisplay = ParticleDisplay.of(Particle.DUST).withLocation(target.location).withColor(colors.random())
-                Particles.meguminExplosion(INSTANCE, 5.0, particleDisplay)
+                Particles.meguminExplosion(instance(), 5.0, particleDisplay)
                 updateCloakDamage(player, 0)
                 showDamageStars(player)
 

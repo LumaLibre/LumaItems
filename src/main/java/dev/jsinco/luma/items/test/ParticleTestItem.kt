@@ -29,7 +29,7 @@ class ParticleTestItem : CustomItemFunctions() {
         val location = player.location
 
         val particleDisplayCloud = ParticleDisplay.of(Particle.DUST).withLocation(location).withColor(Color.CYAN)
-        //Particles.vortex(INSTANCE, 30, 4.0, particleDisplayCloud)
+        //Particles.vortex(instance(), 30, 4.0, particleDisplayCloud)
         //diamond(double radiusRate, double rate, double height, ParticleDisplay display)
         //Particles.sphere(3.0, 30.0, particleDisplayCloud.mixWith(Color.BLUE))
         // Particles.rainbow(double radius, double rate, double curve, double layers, double compact, ParticleDisplay display)

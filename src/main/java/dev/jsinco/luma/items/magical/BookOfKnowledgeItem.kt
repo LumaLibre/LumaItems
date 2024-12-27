@@ -61,7 +61,7 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
             .persistentData(STRING_KEY)
             .tier(Tier.CARNIVAL_2024)
             .vanillaEnchants(mutableMapOf(Enchantment.BANE_OF_ARTHROPODS to 5, Enchantment.FIRE_ASPECT to 4, Enchantment.SHARPNESS to 5))
-            .stringPersistentDatas(mutableMapOf(NamespacedKey(INSTANCE, SPELL_KEY) to DEFAULT_SPELL))
+            .stringPersistentDatas(mutableMapOf(NamespacedKey(instance(), SPELL_KEY) to DEFAULT_SPELL))
             .buildPair()
     }
 
@@ -95,7 +95,7 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
-        val spell = event.entity.persistentDataContainer.get(NamespacedKey(INSTANCE, SPELL_KEY), PersistentDataType.STRING)?.uppercase()?.let { Spell.valueOf(it) } ?: return
+        val spell = event.entity.persistentDataContainer.get(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING)?.uppercase()?.let { Spell.valueOf(it) } ?: return
 
         when (spell) {
             Spell.VALIANT_EXPLODE -> valiantExplodeSpell(player, event.hitEntity as? LivingEntity ?: return)
@@ -123,7 +123,7 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
         AbilityUtil.spawnSpell(player, null, STRING_KEY, 150) {
             Particles.sphere(0.2, 4.0, particleDisplay.withLocation(it.location))
         }.also {
-            it.persistentDataContainer.set(NamespacedKey(INSTANCE, SPELL_KEY), PersistentDataType.STRING, spell.name)
+            it.persistentDataContainer.set(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING, spell.name)
         }
     }
 
@@ -135,14 +135,14 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
             spells[nextIndex]
         }
         item.itemMeta = item.itemMeta?.apply {
-            persistentDataContainer.set(NamespacedKey(INSTANCE, SPELL_KEY), PersistentDataType.STRING, nextSpell.name)
+            persistentDataContainer.set(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING, nextSpell.name)
         }
         MiniMessageUtil.msg(player, "Spell changed to <gradient:#CF9C68:#815531>${Util.formatMaterialName(nextSpell.name)}")
     }
 
 
     private fun getSpell(item: ItemStack) =
-        item.itemMeta?.persistentDataContainer?.get(NamespacedKey(INSTANCE, SPELL_KEY), PersistentDataType.STRING)?.uppercase()?.let { Spell.valueOf(it) }
+        item.itemMeta?.persistentDataContainer?.get(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING)?.uppercase()?.let { Spell.valueOf(it) }
 
 
     private fun drainSpell(player: Player) {
@@ -168,7 +168,7 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
                     Particles.line(player.boundingBox.center.toLocation(player.world), entity.boundingBox.center.toLocation(entity.world), 0.2, particleDisplay)
                 }
             }
-        }.runTaskTimer(INSTANCE, 0, 20)
+        }.runTaskTimer(instance(), 0, 20)
     }
 
     private fun valiantExplodeSpell(player: Player, target: LivingEntity) {
@@ -187,7 +187,7 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
                 target.world.createExplosion(target.location, 4.0f, true, false, player)
             }
         })
-        Particles.meguminExplosion(INSTANCE, 5.0, particleDisplay)
+        Particles.meguminExplosion(instance(), 5.0, particleDisplay)
         target.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, 40, 50, false, false, false))
     }
 }

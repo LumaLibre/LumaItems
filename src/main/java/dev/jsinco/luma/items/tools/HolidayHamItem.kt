@@ -68,7 +68,7 @@ class HolidayHamItem : CustomItemFunctions() {
 
         player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.consumeMessages.random())) // random message
 
-        Bukkit.getScheduler().runTaskLater(INSTANCE, Runnable {
+        Bukkit.getScheduler().runTaskLater(instance(), Runnable {
             cooldownPlayers.remove(player.uniqueId)
         }, COOLDOWN_TIME)
     }

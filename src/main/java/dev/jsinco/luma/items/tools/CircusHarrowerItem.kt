@@ -78,7 +78,7 @@ class CircusHarrowerItem : CustomItem {
                     override fun run() {
                         if (!blocks.hasNext()) {
                             this.cancel()
-                            Bukkit.getScheduler().runTaskLater(INSTANCE, Runnable {
+                            Bukkit.getScheduler().runTaskLater(instance(), Runnable {
                                 cooldown.remove(player.uniqueId)
                             }, 400L)
                             return
@@ -92,7 +92,7 @@ class CircusHarrowerItem : CustomItem {
                         }
                         blocks.remove()
                     }
-                }.runTaskTimer(INSTANCE, 0, 5L)
+                }.runTaskTimer(instance(), 0, 5L)
             }
 
             else -> return false

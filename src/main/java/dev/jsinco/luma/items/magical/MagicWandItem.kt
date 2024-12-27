@@ -58,7 +58,7 @@ class MagicWandItem : CustomItem {
             .persistentData("magicwand")
             .tier(Tier.CARNIVAL_2024)
             .vanillaEnchants(mutableMapOf(Enchantment.BANE_OF_ARTHROPODS to 5, Enchantment.FIRE_ASPECT to 4, Enchantment.SHARPNESS to 5))
-            .stringPersistentDatas(mutableMapOf(NamespacedKey(INSTANCE, SPELL_KEY) to DEFAULT_SPELL))
+            .stringPersistentDatas(mutableMapOf(NamespacedKey(instance(), SPELL_KEY) to DEFAULT_SPELL))
             .buildPair()
     }
 
@@ -89,7 +89,7 @@ class MagicWandItem : CustomItem {
             Action.PROJECTILE_LAND -> {
                 event as ProjectileHitEvent
 
-                val spell = event.entity.persistentDataContainer.get(NamespacedKey(INSTANCE, SPELL_KEY), PersistentDataType.STRING)?.uppercase()?.let { Spell.valueOf(it) } ?: return false
+                val spell = event.entity.persistentDataContainer.get(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING)?.uppercase()?.let { Spell.valueOf(it) } ?: return false
 
                 when (spell) {
                     Spell.LAUNCH -> launchSpell(player, event.hitBlock?.location ?: event.hitEntity?.location ?: return false)
@@ -120,13 +120,13 @@ class MagicWandItem : CustomItem {
         AbilityUtil.spawnSpell(player, null, "magicwand", 150) {
             Particles.sphere(0.2, 4.0, particleDisplay.withLocation(it.location))
         }.also {
-            it.persistentDataContainer.set(NamespacedKey(INSTANCE, SPELL_KEY), PersistentDataType.STRING, spell.name)
+            it.persistentDataContainer.set(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING, spell.name)
         }
     }
 
 
     private fun getSpell(item: ItemStack) =
-        item.itemMeta?.persistentDataContainer?.get(NamespacedKey(INSTANCE, SPELL_KEY), PersistentDataType.STRING)?.uppercase()?.let { Spell.valueOf(it) }
+        item.itemMeta?.persistentDataContainer?.get(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING)?.uppercase()?.let { Spell.valueOf(it) }
 
     private fun nextSpell(player: Player, item: ItemStack) {
         val currentSpell = getSpell(item) ?: return
@@ -136,7 +136,7 @@ class MagicWandItem : CustomItem {
             spells[nextIndex]
         }
         item.itemMeta = item.itemMeta?.apply {
-            persistentDataContainer.set(NamespacedKey(INSTANCE, SPELL_KEY), PersistentDataType.STRING, nextSpell.name)
+            persistentDataContainer.set(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING, nextSpell.name)
         }
         MiniMessageUtil.msg(player, "Spell changed to <gradient:#C7305D:#ff9ccb>${Util.formatMaterialName(nextSpell.name)}")
     }
@@ -169,7 +169,7 @@ class MagicWandItem : CustomItem {
                     Particles.line(livingEntity.location, loc, 0.2, particleDisplay)
                     livingEntity.damage(5.0)
                 }
-            }.runTaskTimer(INSTANCE, 0, 2)
+            }.runTaskTimer(instance(), 0, 2)
         }
     }
 

@@ -83,7 +83,7 @@ class GiantInflatableHammerItem : CustomItemFunctions() {
                 )
                 addQueueEntityDamage(player, entity, event.damage.toFloat())
 
-                Bukkit.getScheduler().runTaskLater(INSTANCE, Runnable {
+                Bukkit.getScheduler().runTaskLater(instance(), Runnable {
                     val damageStore = getQueuedEntityDamage(entity) ?: return@Runnable
                     damageStore.executeAndRemove(player, entity)
                 }, 100L)

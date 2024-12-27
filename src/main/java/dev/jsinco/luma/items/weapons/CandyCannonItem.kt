@@ -53,8 +53,8 @@ class CandyCannonItem : CustomItemFunctions() {
         itemDisplay.displayHeight = 0.2f
 
 
-        arrow.persistentDataContainer.set(NamespacedKey(INSTANCE, "candycannon"), PersistentDataType.SHORT, 1)
-        player.hideEntity(INSTANCE, arrow)
+        arrow.persistentDataContainer.set(NamespacedKey(instance(), "candycannon"), PersistentDataType.SHORT, 1)
+        player.hideEntity(instance(), arrow)
 
         object : BukkitRunnable() {
             var ticks = 0
@@ -64,13 +64,13 @@ class CandyCannonItem : CustomItemFunctions() {
 
                 if (arrow.isDead || itemDisplay.isDead || ticks++ >= 300) {
                     cancel()
-                    Bukkit.getScheduler().runTask(INSTANCE, Runnable {
+                    Bukkit.getScheduler().runTask(instance(), Runnable {
                         itemDisplay.remove()
                         arrow.remove()
                     })
                 }
             }
-        }.runTaskTimerAsynchronously(INSTANCE, 0L, 1L)
+        }.runTaskTimerAsynchronously(instance(), 0L, 1L)
 
         // Despawn if it doesn't land
     }

@@ -65,25 +65,25 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
 
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
         val target = event.entity as? LivingEntity ?: return
-        val rand = RANDOM.nextInt(3,8).also {
+        val rand = random().nextInt(3,8).also {
             event.damage += 2.0 * it
         }
 
-        if (RANDOM.nextInt(100) > 20) {
+        if (random().nextInt(100) > 20) {
             return
         }
 
         val list: MutableList<Entity> = mutableListOf()
         for (i in 0 until rand) {
             list.add(target.world.dropItemNaturally(target.boundingBox.center.toLocation(target.world), dropItem.clone().apply {
-                editMeta { it.setDisplayName(RANDOM.nextInt(50).toString()) } // prevent stacking
+                editMeta { it.setDisplayName(random().nextInt(50).toString()) } // prevent stacking
             }))
         }
         target.world.playSound(target.location, Sound.BLOCK_HONEY_BLOCK_HIT, 1.0f, 1.0f)
 
 
 
-        Bukkit.getScheduler().runTaskLater(INSTANCE, Runnable {
+        Bukkit.getScheduler().runTaskLater(instance(), Runnable {
             list.forEach { it.remove() }
         }, 25)
     }
@@ -117,7 +117,7 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
 
         player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.consumeMessages.random()))
 
-        Bukkit.getScheduler().runTaskLater(INSTANCE, Runnable {
+        Bukkit.getScheduler().runTaskLater(instance(), Runnable {
             cooldownPlayers.remove(player.uniqueId)
         }, COOLDOWN_TIME)
     }

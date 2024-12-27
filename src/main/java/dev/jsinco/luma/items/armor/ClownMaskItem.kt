@@ -23,7 +23,7 @@ class ClownMaskItem : CustomItemFunctions() {
         private const val KEY = "clownmask"
     }
 
-    private val namespacedKey = NamespacedKey(INSTANCE, KEY)
+    private val namespacedKey = NamespacedKey(instance(), KEY)
 
     override fun createItem(): Pair<String, ItemStack> {
 
@@ -34,7 +34,7 @@ class ClownMaskItem : CustomItemFunctions() {
             .tier(Tier.CARNIVAL_2024)
             .b64PHead(headTextures.random())
             .persistentData(KEY)
-            .attributeModifiers(DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(INSTANCE, KEY), 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)))
+            .attributeModifiers(DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(instance(), KEY), 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)))
             .vanillaEnchants(mutableMapOf(Enchantment.PROTECTION to 7, Enchantment.RESPIRATION to 4, Enchantment.AQUA_AFFINITY to 2))
             .lore("Disguise yourself in this", "neat mask!", "", "Wearing this mask grants", "an extra <#FA909D>3</#FA909D> hearts.", "", "<red>Same stats as Netherite</red>")
             .buildPair()
