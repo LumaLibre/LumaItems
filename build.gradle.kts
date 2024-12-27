@@ -86,6 +86,7 @@ tasks {
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(jdkVersion)
+    withSourcesJar()
 }
 
 kotlin {

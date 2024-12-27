@@ -10,8 +10,12 @@ import kotlin.random.Random
 
 interface CustomItem {
 
-    fun instance(): LumaItems = LumaItems.getInstance()
-    fun random(): Random = Random
+    fun instance(): LumaItems {
+        return LumaItems.getInstance()
+    }
+    fun random(): Random {
+        return Random
+    }
 
     /**
      * Called at startup to initialize and create each custom item
