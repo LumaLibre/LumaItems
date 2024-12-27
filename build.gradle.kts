@@ -11,7 +11,7 @@ plugins {
 }
 
 
-group = "dev.jsinco.luma"
+group = "dev.jsinco.luma.lumaitems"
 version = getGitCommitHashShort()
 
 val jdkVersion = 21
