@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
+import dev.jsinco.luma.lumaitems.api.LumaItemsAPIReadyEvent;
 import dev.jsinco.luma.lumaitems.commands.CommandManager;
 import dev.jsinco.luma.lumaitems.commands.nonsub.UpgradeCMD;
 import dev.jsinco.luma.lumaitems.events.ExternalListeners;
@@ -85,6 +86,9 @@ public final class LumaItems extends JavaPlugin {
             passiveListeners.onPluginAction(Action.PLUGIN_ENABLE); // Fire this as soon as we're done registering our items
             passiveListeners.getPassiveListener(Action.RUNNABLE).runTaskTimer(this, 0L, PassiveListeners.DEFAULT_PASSIVE_LISTENER_TICKS);
             passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS);
+
+            LumaItemsAPIReadyEvent event = new LumaItemsAPIReadyEvent();
+            Bukkit.getPluginManager().callEvent(event);
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "An error occurred while registering items", e);
             Bukkit.getPluginManager().disablePlugin(this);

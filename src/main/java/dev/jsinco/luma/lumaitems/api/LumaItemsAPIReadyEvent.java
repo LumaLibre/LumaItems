@@ -4,10 +4,14 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class LumaItemsStartupEvent extends Event {
+public class LumaItemsAPIReadyEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
-    public LumaItemsStartupEvent() {
+    public LumaItemsAPIReadyEvent() {
+    }
+
+    public LumaItemsAPI getLumaItemsAPI() {
+        return LumaItemsAPI.getInstance();
     }
 
     @NotNull
