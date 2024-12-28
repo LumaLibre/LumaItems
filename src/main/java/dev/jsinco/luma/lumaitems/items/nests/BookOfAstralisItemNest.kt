@@ -25,11 +25,12 @@ abstract class BookOfAstralisItemNest(private val jobType: JobType) : CustomItem
         FISHERMAN,
         HUNTER,
         LUMBERJACK,
-        MINER
+        MINER;
+
+        val key = "archiveofastralis_${this.name.lowercase()}"
     }
 
-    val key = "archiveofastralis_${jobType.name.lowercase()}"
-    private fun nameSpacedKey() = NamespacedKey(instance(), key)
+    private fun nameSpacedKey() = NamespacedKey(instance(), jobType.key)
 
     fun genericBookOfAstralis(): ItemFactory.Builder {
         return ItemFactory.Builder()
@@ -37,7 +38,7 @@ abstract class BookOfAstralisItemNest(private val jobType: JobType) : CustomItem
             .material(Material.BOOK)
             .tier(Tier.WINTER_2024)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
-            .persistentData(key)
+            .persistentData(jobType.key)
     }
 
     override fun executeWithContainer(type: Action, player: Player, event: Any, container: PersistentDataContainerView): Boolean {
