@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-abstract class BookOfAstralisItemNest(private val jobType: JobType) : CustomItemFunctions() {
+abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomItemFunctions() {
     enum class JobType {
         ALCHEMIST,
         BLACKSMITH,
@@ -32,7 +32,7 @@ abstract class BookOfAstralisItemNest(private val jobType: JobType) : CustomItem
 
     private fun nameSpacedKey() = NamespacedKey(instance(), jobType.key)
 
-    fun genericBookOfAstralis(): ItemFactory.Builder {
+    fun genericArchiveOfAstralis(): ItemFactory.Builder {
         return ItemFactory.Builder()
             .name("<b><#f498f6>Archive</b> <!b><#F7FFC9>of Astralis")
             .material(Material.BOOK)
@@ -63,10 +63,10 @@ abstract class BookOfAstralisItemNest(private val jobType: JobType) : CustomItem
     }
 }
 
-class AlchemistBookOfAstralisItem : BookOfAstralisItemNest(JobType.ALCHEMIST) {
+class AlchemistArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.ALCHEMIST) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Alchemist Job EXP &",
                 "<gray>money boost whilst held.")
@@ -75,10 +75,10 @@ class AlchemistBookOfAstralisItem : BookOfAstralisItemNest(JobType.ALCHEMIST) {
     }
 }
 
-class BlacksmithBookOfAstralisItem : BookOfAstralisItemNest(JobType.BLACKSMITH) {
+class BlacksmithArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.BLACKSMITH) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Blacksmith Job EXP &",
                 "<gray>money boost whilst held.")
@@ -87,10 +87,10 @@ class BlacksmithBookOfAstralisItem : BookOfAstralisItemNest(JobType.BLACKSMITH) 
     }
 }
 
-class BuilderBookOfAstralisItem : BookOfAstralisItemNest(JobType.BUILDER) {
+class BuilderArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.BUILDER) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Builder Job EXP &",
                 "<gray>money boost whilst held.")
@@ -99,10 +99,10 @@ class BuilderBookOfAstralisItem : BookOfAstralisItemNest(JobType.BUILDER) {
     }
 }
 
-class CookBookOfAstralisItem : BookOfAstralisItemNest(JobType.COOK) {
+class CookArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.COOK) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Cook Job EXP &",
                 "<gray>money boost whilst held.")
@@ -111,10 +111,10 @@ class CookBookOfAstralisItem : BookOfAstralisItemNest(JobType.COOK) {
     }
 }
 
-class DiggerBookOfAstralisItem : BookOfAstralisItemNest(JobType.DIGGER) {
+class DiggerArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.DIGGER) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Digger Job EXP &",
                 "<gray>money boost whilst held.")
@@ -123,10 +123,10 @@ class DiggerBookOfAstralisItem : BookOfAstralisItemNest(JobType.DIGGER) {
     }
 }
 
-class FarmerBookOfAstralisItem : BookOfAstralisItemNest(JobType.FARMER) {
+class FarmerArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.FARMER) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore( // <#f0e9c4>
                 "<red>$level% <gray>Farmer Job EXP &",
                 "<gray>money boost whilst held.")
@@ -135,10 +135,10 @@ class FarmerBookOfAstralisItem : BookOfAstralisItemNest(JobType.FARMER) {
     }
 }
 
-class FishermanBookOfAstralisItem : BookOfAstralisItemNest(JobType.FISHERMAN) {
+class FishermanArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.FISHERMAN) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Fisherman Job EXP &",
                 "<gray>money boost whilst held.")
@@ -147,10 +147,10 @@ class FishermanBookOfAstralisItem : BookOfAstralisItemNest(JobType.FISHERMAN) {
     }
 }
 
-class HunterBookOfAstralisItem : BookOfAstralisItemNest(JobType.HUNTER) {
+class HunterArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.HUNTER) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Hunter Job EXP &",
                 "<gray>money boost whilst held.")
@@ -159,10 +159,10 @@ class HunterBookOfAstralisItem : BookOfAstralisItemNest(JobType.HUNTER) {
     }
 }
 
-class LumberjackBookOfAstralisItem : BookOfAstralisItemNest(JobType.LUMBERJACK) {
+class LumberjackArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.LUMBERJACK) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Lumberjack Job EXP &",
                 "<gray>money boost whilst held.")
@@ -171,10 +171,10 @@ class LumberjackBookOfAstralisItem : BookOfAstralisItemNest(JobType.LUMBERJACK) 
     }
 }
 
-class MinerBookOfAstralisItem : BookOfAstralisItemNest(JobType.MINER) {
+class MinerArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.MINER) {
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
-        return genericBookOfAstralis()
+        return genericArchiveOfAstralis()
             .lore(
                 "<red>$level% <gray>Miner Job EXP &",
                 "<gray>money boost whilst held.")
