@@ -15,6 +15,12 @@ public enum Action {
     PLUGIN_DISABLE, // When the plugin is disabled
 
     /**
+     * External actions that must be called by listeners provided by another plugin.
+     */
+    JOBS_EXP_GAIN, // When a player gains experience from Jobs Reborn
+    JOBS_PRE_PAYMENT, // When a player is about to be paid from Jobs Reborn
+
+    /**
      * Player actions that effect a specific player. Called by a listener.
      */
     CROSSBOW_LOAD, // When a player loads a crossbow in their main hand

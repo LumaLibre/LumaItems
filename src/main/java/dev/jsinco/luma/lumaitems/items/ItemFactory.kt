@@ -41,8 +41,12 @@ class ItemFactory(
     val stringPersistentDatas: MutableMap<NamespacedKey, String> = mutableMapOf(),
     var quotes: MutableList<String> = mutableListOf(),
     var b64PHead: String? = null,
-    var spoofEnchants: Boolean = false
+    var spoofEnchants: Boolean = false,
+    var persistentDataValue: Short = 1
 ) {
+
+    val item = ItemStack(material)
+    val meta: Damageable? = item.itemMeta as? Damageable
 
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()
@@ -65,27 +69,35 @@ class ItemFactory(
 
     var miniMessage = false
 
-    fun miniMessage() {
+    fun miniMessage(): ItemFactory {
         miniMessage = true
+        return this
     }
 
-    fun addQuote(s: String) {
+    fun addQuote(s: String): ItemFactory {
         quotes.add(s)
+        return this
     }
 
-    fun addGradientQuote(s: String, color1: String, color2: String) {
+    fun addGradientQuote(s: String, color1: String, color2: String): ItemFactory {
         val strippedColor1 = color1.replace("#", "").replace("&", "").trim()
         val strippedColor2 = color2.replace("#", "").replace("&", "").trim()
         quotes.add(IridiumColorAPI.process("<GRADIENT:$strippedColor1>\"$s\"</GRADIENT:$strippedColor2>"))
+        return this
+    }
+
+    fun <P, C : Any> addPersistentData(key: NamespacedKey, type: PersistentDataType<P, C>, value: C): ItemFactory {
+        if (meta == null) return this
+        meta.persistentDataContainer.set(key, type, value)
+        return this
     }
 
     fun createItem(): ItemStack {
-        val item = ItemStack(material)
-        val meta = item.itemMeta as? Damageable ?: return item
+        if (meta == null) return item
 
         meta.persistentDataContainer.set(NamespacedKey(plugin, "lumaitem"), PersistentDataType.SHORT, 1)
         for (name in persistentData) {
-            meta.persistentDataContainer.set(NamespacedKey(plugin, name), PersistentDataType.SHORT, 1)
+            meta.persistentDataContainer.set(NamespacedKey(plugin, name), PersistentDataType.SHORT, persistentDataValue)
         }
 
         for (stringPersistentData in stringPersistentDatas) {
@@ -155,6 +167,7 @@ class ItemFactory(
         return item
     }
 
+
     class Builder {
         private var name: String = ""
         private var customEnchants: MutableList<String> = mutableListOf()
@@ -172,6 +185,7 @@ class ItemFactory(
         private var quotes: MutableList<String> = mutableListOf()
         private var b64PHead: String? = null
         private var spoofEnchants: Boolean = false
+        private var persistentDataValue: Short = 1
 
         fun name(name: String) = apply { this.name = name }
         fun customEnchants(customEnchants: MutableList<String>) = apply { this.customEnchants = customEnchants }
@@ -196,6 +210,7 @@ class ItemFactory(
         fun quotes(vararg quotes: String) = apply { this.quotes = quotes.toMutableList() }
         fun b64PHead(b64PHead: String) = apply { this.b64PHead = b64PHead }
         fun spoofEnchants(spoofEnchants: Boolean) = apply { this.spoofEnchants = spoofEnchants }
+        fun persistentDataValue(persistentDataValue: Short) = apply { this.persistentDataValue = persistentDataValue }
 
         fun build() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,

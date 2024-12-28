@@ -7,8 +7,9 @@ import dev.jsinco.luma.lumaitems.commands.CommandManager;
 import dev.jsinco.luma.lumaitems.commands.nonsub.UpgradeCMD;
 import dev.jsinco.luma.lumaitems.events.ExternalListeners;
 import dev.jsinco.luma.lumaitems.events.GeneralListeners;
-import dev.jsinco.luma.lumaitems.events.Listeners;
-import dev.jsinco.luma.lumaitems.events.PassiveListeners;
+import dev.jsinco.luma.lumaitems.events.items.JobsListeners;
+import dev.jsinco.luma.lumaitems.events.items.Listeners;
+import dev.jsinco.luma.lumaitems.events.items.PassiveListeners;
 import dev.jsinco.luma.lumaitems.guis.AbstractGui;
 import dev.jsinco.luma.lumaitems.enums.Action;
 import dev.jsinco.luma.lumaitems.manager.FileManager;
@@ -94,6 +95,7 @@ public final class LumaItems extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Listeners(this), this);
         getServer().getPluginManager().registerEvents(new GeneralListeners(this), this);
         getServer().getPluginManager().registerEvents(new ExternalListeners(this), this);
+        getServer().getPluginManager().registerEvents(new JobsListeners(), this);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package dev.jsinco.luma.lumaitems.events
+package dev.jsinco.luma.lumaitems.events.items
 
 import dev.jsinco.luma.lumaitems.obj.PlayerCachedBlocks
 import org.bukkit.block.Block

@@ -291,4 +291,13 @@ object Util {
         return AwtColor.getHSBColor(hue, saturation, luminance);
     }
 
+
+    @JvmStatic
+    fun <E : Enum<E>> enumValueOfOrNull(enumClass: Class<E>, name: String): E? {
+        return try {
+            java.lang.Enum.valueOf(enumClass, name)
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }
 }

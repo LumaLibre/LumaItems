@@ -9,6 +9,7 @@ public class Tier {
     public static final Tier DEBUG = new Tier("<b><light_green>Debug</light_green></b>");
     public static final Tier ASTRAL = new Tier("<b><#AC87FB>Astral</#AC87FB></b>");
     public static final Tier CARNIVAL_2024 = new Tier("<b><#8EC4F7>C<#B4B7E8>a<#D9A9DA>r<#FF9CCB>n<#F2BAB6>i<#E4D7A2>v<#D7F58D>a<#E4F88C>l <#FFFE8A>2<#FFF07E>0<#FFE171>2<#FFD365>4</b>");
+    public static final Tier WINTER_2024 = new Tier("<b><#CCD8E9>Winter 2024</b>");
 
 
     private final String mmTierString;

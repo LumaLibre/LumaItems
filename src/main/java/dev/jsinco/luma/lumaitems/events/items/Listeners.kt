@@ -1,4 +1,4 @@
-package dev.jsinco.luma.lumaitems.events
+package dev.jsinco.luma.lumaitems.events.items
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
@@ -6,22 +6,16 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.ItemManager
 import dev.jsinco.luma.lumaitems.util.FireForAllNBT
-import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
-import io.papermc.paper.persistence.PersistentDataContainerView
-import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
@@ -50,7 +44,6 @@ import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
-import java.util.UUID
 
 /**
  * Main listeners class for LumaItems
@@ -58,117 +51,7 @@ import java.util.UUID
  * Blocks cannot store persistent data, so we will have to store in a file (if needed for long term)
  * Or have our listeners fire every single executeAbilities() method every time we need to grab data from a block
  */
-class Listeners(val plugin: LumaItems) : Listener {
-
-    companion object {
-
-        // This exists because Kotlin doesn't allow null values unless the variable is nullable, and I'm not going to edit 75+ classes
-        // Maybe replace with a class that implements player sometime?
-        private var player: Player? = null
-        private fun getDummyPlayer(): Player? {
-            if (player == null && Bukkit.getOnlinePlayers().isNotEmpty()) {
-                player = Bukkit.getOnlinePlayers().random()
-            }
-            return player
-        }
-
-
-        // Loosely notify players if they're using a disabled custom item
-        private val notifees: MutableSet<UUID> = mutableSetOf()
-        private fun notify(player: Player, persistentNotification: Boolean) {
-            if (notifees.contains(player.uniqueId) && !persistentNotification) return
-            player.sendActionBar(MiniMessageUtil.mm("<red>Custom abilities for equipped item(s) are disabled in this world."))
-            notifees.add(player.uniqueId)
-        }
-    }
-
-    // Paper added this, just makes it easier to look at the PDC
-    private fun fire(data: PersistentDataContainerView, action: Action, player: Player?, event: Any) {
-        for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-            if (!data.has(customItem.key, PersistentDataType.SHORT)) {
-                continue
-            } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                notify(player, false)
-                return
-            }
-            customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-            break
-        }
-    }
-
-    private fun fire(data: PersistentDataContainer, action: Action, player: Player?, event: Any) {
-        for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-            if (!data.has(customItem.key, PersistentDataType.SHORT)) {
-                continue
-            } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                notify(player, false)
-                return
-            }
-            customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-            break
-        }
-    }
-
-    private fun fire(data: List<PersistentDataContainer>, action: Action, player: Player?, event: Any) {
-        for (itemData: PersistentDataContainer in data) {
-            for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
-                    continue
-                } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                    notify(player, false)
-                    break
-                }
-                customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-                break
-            }
-        }
-    }
-
-    private fun fire(data: List<PersistentDataContainer>, action1: Action, action2: Action, player: Player?, event: Any) {
-        for (itemData: PersistentDataContainer in data) {
-            for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
-                    continue
-                } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                    notify(player, false)
-                    break
-                }
-                customItem.value.executeActions(action1, player ?: getDummyPlayer() ?: return, event)
-                customItem.value.executeActions(action2, player ?: getDummyPlayer() ?: return, event)
-                break
-            }
-        }
-    }
-
-    private fun fire(data: List<PersistentDataContainer>, vararg actions: Action, player: Player?, event: Any) {
-        for (itemData: PersistentDataContainer in data) {
-            for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
-                    continue
-                } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                    notify(player, false)
-                    break
-                }
-                for (action in actions) {
-                    customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-                }
-                break
-            }
-        }
-    }
-
-    private fun fire(key: String, action: Action, player: Player?, event: Any) {
-        for (customItem in ItemManager.customItems) {
-            if (key.equals(customItem.key.key, true)) {
-                if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                    notify(player, false)
-                    return
-                }
-                customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-                break
-            }
-        }
-    }
+class Listeners(val plugin: LumaItems) : ItemListener() {
 
     @EventHandler
     fun onCrossbowLoad(event: EntityLoadCrossbowEvent) {

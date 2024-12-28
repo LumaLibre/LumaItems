@@ -50,7 +50,8 @@ public final class ItemManager {
             "dev.jsinco.luma.lumaitems.items.magical",
             "dev.jsinco.luma.lumaitems.items.astral",
             "dev.jsinco.luma.lumaitems.items.astral.sets",
-            "dev.jsinco.luma.lumaitems.items.test"
+            "dev.jsinco.luma.lumaitems.items.test",
+            "dev.jsinco.luma.lumaitems.items.nests"
     );
 
 
@@ -62,12 +63,20 @@ public final class ItemManager {
      */
     @Nullable
     public static ItemStack getItemByName(String name) {
-        return customItemsByName.get(name.replace(" ", "_").toLowerCase()).createItem().component2();
+        var customItem = customItemsByName.get(name.replace(" ", "_").toLowerCase());
+        if (customItem == null) {
+            return null;
+        }
+        return customItem.createItem().component2();
     }
 
     @Nullable
     public static ItemStack getItemByKey(String key) {
-        return customItems.get(new NamespacedKey(LumaItems.getInstance(), key)).createItem().component2();
+        var customItem = customItems.get(new NamespacedKey(LumaItems.getInstance(), key));
+        if (customItem == null) {
+            return null;
+        }
+        return customItem.createItem().component2();
     }
 
     /**

@@ -1,8 +1,8 @@
 package dev.jsinco.luma.lumaitems.items.astral
 
 import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Rarity
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -43,8 +43,6 @@ class AstralSetFactory (val name: String, val customEnchantNames: List<String>?)
     fun astralSetItem(material: Material, vanillaEnchants: MutableMap<Enchantment, Int>, lore: List<String>, includeCommonEnchants: Boolean, attributeModifiers: MutableMap<Attribute, AttributeModifier>?): ItemStack {
         return astralSetItem(material, vanillaEnchants, lore, includeCommonEnchants, attributeModifiers, null, null)
     }
-
-
 
     fun astralSetItem(
         material: Material,

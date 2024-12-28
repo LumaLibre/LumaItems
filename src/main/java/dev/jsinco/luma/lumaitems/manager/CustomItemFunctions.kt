@@ -4,9 +4,12 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
+import com.gamingmesh.jobs.api.JobsExpGainEvent
+import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import dev.jsinco.luma.lumaitems.enums.Action
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
+import io.papermc.paper.persistence.PersistentDataContainerView
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
@@ -49,6 +52,8 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ASYNC_RUNNABLE -> onAsyncRunnable(player)
             Action.PLUGIN_ENABLE -> onPluginEnable()
             Action.PLUGIN_DISABLE -> onPluginDisable()
+            Action.JOBS_EXP_GAIN -> onJobsExpGain(player, event as JobsExpGainEvent)
+            Action.JOBS_PRE_PAYMENT -> onJobsPrePayment(player, event as JobsPrePaymentEvent)
             Action.CROSSBOW_LOAD -> onCrossBowLoad(player, event as EntityLoadCrossbowEvent)
             Action.PROJECTILE_LAUNCH -> onProjectileLaunch(player, event as ProjectileLaunchEvent)
             Action.PROJECTILE_LAND -> onProjectileLand(player, event as ProjectileHitEvent)
@@ -96,11 +101,12 @@ abstract class CustomItemFunctions : CustomItem {
 
 
 
-
     open fun onRunnable(player: Player) {}
     open fun onAsyncRunnable(player: Player) {}
     open fun onPluginEnable() {}
     open fun onPluginDisable() {}
+    open fun onJobsExpGain(player: Player, event: JobsExpGainEvent) {}
+    open fun onJobsPrePayment(player: Player, event: JobsPrePaymentEvent) {}
     open fun onCrossBowLoad(player: Player, event: EntityLoadCrossbowEvent) {}
     open fun onProjectileLaunch(player: Player, event: ProjectileLaunchEvent) {}
     open fun onProjectileLand(player: Player, event: ProjectileHitEvent) {}

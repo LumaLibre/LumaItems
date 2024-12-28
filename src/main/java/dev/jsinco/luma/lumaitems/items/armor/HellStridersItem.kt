@@ -1,7 +1,7 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
 import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.events.BlockCacheManager
+import dev.jsinco.luma.lumaitems.events.items.BlockCacheManager
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
