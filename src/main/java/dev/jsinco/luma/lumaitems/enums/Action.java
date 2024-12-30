@@ -24,9 +24,9 @@ public enum Action {
      * Player actions that effect a specific player. Called by a listener.
      */
     CROSSBOW_LOAD, // When a player loads a crossbow in their main hand
-    PROJECTILE_LAUNCH, // WHen a player launches a projectile from their main or offhand
+    PROJECTILE_LAUNCH, // When a player launches a projectile from their main or offhand
     PROJECTILE_LAND, // When a projectile that was shot by a player and has a specific persistent data lands
-    RIGHT_CLICK, // When a player right-clicks and item
+    RIGHT_CLICK, // When a player right-clicks an item
     LEFT_CLICK, // When a player left-clicks an item
     GENERIC_INTERACT, // A generic interaction (I believe this is called when a player crouches while holding an item?)
     SWAP_HAND, // When a player swaps their main and offhand items (F Key)
@@ -55,7 +55,7 @@ public enum Action {
     ARMOR_CHANGE, // When a player changes their armor
     ENTITY_TELEPORT, // When a living entity with a specific persistent data teleports
     PLAYER_INTERACT_ENTITY, // When a player interacts at a living entity (Unused, No listener)
-    INVENTORY_CLICK, // When a player clicks in their inventory
+    //INVENTORY_CLICK, // When a player clicks in their inventory
     SHEAR_ENTITY, // When a player shears a living entity
     BLOCK_SHEAR_ENTITY, // When a block shears a living entity
     PLAYER_TELEPORT, // When a player teleports
@@ -64,4 +64,5 @@ public enum Action {
     MACE_SMASH_ATTACK, // When a player performs a smash attack with a mace
     ENTITY_PICKUP_ITEM, // When a living entity data picks up an item with specific persistent data
     HOPPER_PICKUP_ITEM, // When a hopper or hopper minecart picks up an item with specific persistent data
+    INVENTORY_CLICK, // When a player clicks an item in their inventory with a specific persistent data
 }

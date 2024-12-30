@@ -30,6 +30,7 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -355,5 +356,15 @@ class Listeners(val plugin: LumaItems) : ItemListener() {
     @EventHandler
     fun onHopperPickupEvent(event: InventoryPickupItemEvent) {
         fire(event.item.itemStack.persistentDataContainer, Action.HOPPER_PICKUP_ITEM, null, event)
+    }
+
+    @EventHandler
+    fun onInventoryClickEvent(event: InventoryClickEvent) {
+        val player = event.whoClicked as? Player ?: return
+        val datas: MutableList<PersistentDataContainer> = mutableListOf()
+        event.currentItem?.itemMeta?.persistentDataContainer?.let { datas.add(it) }
+        event.cursor.itemMeta?.persistentDataContainer?.let { datas.add(it) }
+
+        fire(datas, Action.INVENTORY_CLICK, player, event)
     }
 }

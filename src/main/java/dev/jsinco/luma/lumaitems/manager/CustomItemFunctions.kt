@@ -9,7 +9,6 @@ import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import dev.jsinco.luma.lumaitems.enums.Action
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
-import io.papermc.paper.persistence.PersistentDataContainerView
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
@@ -86,7 +85,6 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ARMOR_CHANGE -> onArmorChange(player, event as PlayerArmorChangeEvent)
             Action.ENTITY_TELEPORT -> onEntityTeleport(event as EntityTeleportEvent)
             Action.PLAYER_INTERACT_ENTITY -> onPlayerInteractEntity(player, event as PlayerInteractAtEntityEvent)
-            Action.INVENTORY_CLICK -> onInventoryClick(player, event as InventoryClickEvent)
             Action.SHEAR_ENTITY -> onShearEntity(player, event as PlayerShearEntityEvent)
             Action.BLOCK_SHEAR_ENTITY -> onBlockShearEntity(event as BlockShearEntityEvent)
             Action.PLAYER_TELEPORT -> onPlayerTeleport(player, event as PlayerTeleportEvent)
@@ -95,6 +93,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.MACE_SMASH_ATTACK -> onMaceSmashAttack(player, event as EntityDamageByEntityEvent)
             Action.ENTITY_PICKUP_ITEM -> onEntityPickupItem(event as EntityPickupItemEvent)
             Action.HOPPER_PICKUP_ITEM -> onHopperPickupItem(event as InventoryPickupItemEvent)
+            Action.INVENTORY_CLICK -> onInventoryClick(player, event as InventoryClickEvent)
         }
         return true
     }
@@ -139,7 +138,6 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {}
     open fun onEntityTeleport(event: EntityTeleportEvent) {}
     open fun onPlayerInteractEntity(player: Player, event: PlayerInteractAtEntityEvent) {}
-    open fun onInventoryClick(player: Player, event: InventoryClickEvent) {}
     open fun onShearEntity(player: Player, event: PlayerShearEntityEvent) {}
     open fun onBlockShearEntity(event: BlockShearEntityEvent) {}
     open fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {}
@@ -148,4 +146,5 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onMaceSmashAttack(player: Player, event: EntityDamageByEntityEvent) {}
     open fun onEntityPickupItem(event: EntityPickupItemEvent) {}
     open fun onHopperPickupItem(event: InventoryPickupItemEvent) {}
+    open fun onInventoryClick(player: Player, event: InventoryClickEvent) {}
 }
