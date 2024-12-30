@@ -29,6 +29,7 @@ class WinterVaultItem : CustomItemFunctions() {
             .material(Material.BREEZE_ROD)
             .vanillaEnchants(Enchantment.UNBREAKING to 10, Enchantment.KNOCKBACK to 4)
             .tier(Tier.WINTER_2024)
+            .persistentData("wintervault")
             .buildPair()
     }
 

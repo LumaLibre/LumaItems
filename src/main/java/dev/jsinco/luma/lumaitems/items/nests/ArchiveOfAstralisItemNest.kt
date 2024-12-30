@@ -39,10 +39,11 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
             .tier(Tier.WINTER_2024)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
             .persistentData(jobType.key)
+            .hideEnchants(true)
     }
 
     override fun executeWithContainer(type: Action, player: Player, event: Any, container: PersistentDataContainerView): Boolean {
-        val level: Short = container.get(nameSpacedKey(), PersistentDataType.SHORT) ?: 1
+        val level: Short = container.get(nameSpacedKey(), PersistentDataType.SHORT) ?: 2
 
         when (type) {
             Action.JOBS_EXP_GAIN -> {

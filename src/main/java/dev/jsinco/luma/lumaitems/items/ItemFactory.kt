@@ -215,13 +215,13 @@ class ItemFactory(
         fun build() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
             tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, stringPersistentDatas, quotes, b64PHead,
-            spoofEnchants
+            spoofEnchants, persistentDataValue
         ).apply { miniMessage() }
 
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
             tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, stringPersistentDatas, quotes, b64PHead,
-            spoofEnchants
+            spoofEnchants, persistentDataValue
         )
 
         fun buildPair(): Pair<String, ItemStack> {
