@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 class GiveItemCommand : SubCommand {
 
     override fun execute(plugin: LumaItems, sender: CommandSender, args: Array<out String>) {
-        val player = if (args.size == 3) {
+        val player = if (args.size >= 3) {
             plugin.server.getPlayerExact(args[2]) ?: return
         } else {
             sender as Player
@@ -24,10 +24,19 @@ class GiveItemCommand : SubCommand {
             null
         }
 
+        val amount = if (args.size >= 4) {
+            args[3].toIntOrNull() ?: 1
+        } else {
+            1
+        }
+
 
         if (item != null) {
-            Util.giveItem(player, item)
-            MiniMessageUtil.msg(player, item.itemMeta?.displayName()?.let { MiniMessageUtil.mm("You have been given a custom item! <dark_gray>(</dark_gray>").append(it).append(MiniMessageUtil.mm("<dark_gray>)</dark_gray>")) })
+            Util.giveItem(player, item.asQuantity(amount))
+            if (!args.contains("-silent")) {
+                MiniMessageUtil.msg(player, item.itemMeta?.displayName()?.let {
+                    MiniMessageUtil.mm("<reset>You have been given</reset> <gold>${amount}x</gold> ").append(it) })
+            }
         } else {
             for (customItem in ItemManager.getAllItems()) {
                 Util.giveItem(player, customItem)
@@ -37,14 +46,22 @@ class GiveItemCommand : SubCommand {
     }
 
     override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
-        when (args.size) {
+        return when (args.size) {
             2 -> {
                 val list: MutableList<String> = ItemManager.customItemsByName.keys.toMutableList()
                 list.add("all")
-                return list
+                list
+            }
+            3 -> {
+                null
+            }
+            4 -> {
+                listOf("<amount>")
+            }
+            else -> {
+                listOf("-silent")
             }
         }
-        return null
     }
 
     override fun permission(): String {
