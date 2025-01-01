@@ -76,13 +76,13 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
             Action.JOBS_EXP_GAIN -> {
                 event as JobsExpGainEvent
                 if (event.job.name.equals(jobType.name, ignoreCase = true)) {
-                    event.exp *= level / (100.0 + 1)
+                    event.exp *= (level / 100.0) + 1
                 }
             }
             Action.JOBS_PRE_PAYMENT -> {
                 event as JobsPrePaymentEvent
                 if (event.job.name.equals(jobType.name, ignoreCase = true)) {
-                    event.amount *= level / (100.0 + 1)
+                    event.amount *= (level / 100.0) + 1
                 }
             }
             else -> return false
