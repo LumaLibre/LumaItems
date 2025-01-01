@@ -2,13 +2,8 @@ package dev.jsinco.luma.lumaitems;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import dev.jsinco.luma.lumacore.manager.modules.ModuleManager;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
-import dev.jsinco.luma.lumaitems.commands.CommandManager;
-import dev.jsinco.luma.lumaitems.commands.nonsub.UpgradeCMD;
-import dev.jsinco.luma.lumaitems.events.ExternalListeners;
-import dev.jsinco.luma.lumaitems.events.GeneralListeners;
-import dev.jsinco.luma.lumaitems.events.items.JobsListeners;
-import dev.jsinco.luma.lumaitems.events.items.Listeners;
 import dev.jsinco.luma.lumaitems.events.items.PassiveListeners;
 import dev.jsinco.luma.lumaitems.guis.AbstractGui;
 import dev.jsinco.luma.lumaitems.enums.Action;
@@ -40,11 +35,17 @@ public final class LumaItems extends JavaPlugin {
     private static PAPIManager papiManager;
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManagerInstance;
+    private static ModuleManager moduleManager;
+
+    @Override
+    public void onLoad() {
+        instance = this;
+        moduleManager = new ModuleManager(this);
+        FileManager.generateDefaultFiles();
+    }
 
     @Override
     public void onEnable() {
-        instance = this;
-        FileManager.generateDefaultFiles();
         withProtocolLib = getServer().getPluginManager().getPlugin("ProtocolLib") != null;
         withMythicMobs = getServer().getPluginManager().getPlugin("MythicMobs") != null;
 
@@ -56,22 +57,18 @@ public final class LumaItems extends JavaPlugin {
             log("Players are online, registering items asynchronously");
             Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
                 initItemManager(itemManagerInstance);
-                initListeners();
+                moduleManager.reflectivelyRegisterModules();
                 log("Finished asynchronous item registration!");
             });
         } else {
             initItemManager(itemManagerInstance);
-            initListeners();
+            moduleManager.reflectivelyRegisterModules();
         }
 
 
         GlowManager.initGlowTeams();
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();
-
-
-        getCommand("lumaitems").setExecutor(new CommandManager(this));
-        getCommand("upgrade").setExecutor(new UpgradeCMD());
 
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiManager = new PAPIManager(this);
@@ -91,16 +88,10 @@ public final class LumaItems extends JavaPlugin {
         }
     }
 
-    private void initListeners() {
-        getServer().getPluginManager().registerEvents(new Listeners(this), this);
-        getServer().getPluginManager().registerEvents(new GeneralListeners(this), this);
-        getServer().getPluginManager().registerEvents(new ExternalListeners(this), this);
-        getServer().getPluginManager().registerEvents(new JobsListeners(), this);
-    }
-
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this); // Immediately disable all listeners to prevent any further events from firing
+        moduleManager.unregisterModules();
         passiveListeners.onPluginAction(Action.PLUGIN_DISABLE); // Then fire this for whatever items need to use this
 
 
