@@ -6,8 +6,8 @@ plugins {
     id("java")
     id("maven-publish")
     kotlin("jvm") version "2.0.21"
-    id("com.gradleup.shadow") version("8.3.5")
-    id("io.papermc.paperweight.userdev") version("1.7.5") // PaperWeight
+    id("com.gradleup.shadow") version "8.3.5"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.11"
 }
 
 
@@ -38,7 +38,7 @@ dependencies {
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 }
 
 tasks {

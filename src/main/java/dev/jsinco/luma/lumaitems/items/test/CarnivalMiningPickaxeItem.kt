@@ -24,10 +24,11 @@ class CarnivalMiningPickaxeItem : CustomItemFunctions() {
             .buildPair()
     }
 
+    override fun onLowPriorityBlockBreak(player: Player, event: BlockBreakEvent) {
+        event.isCancelled = true
+    }
+
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
-        if (player.hasPotionEffect(PotionEffectType.HASTE)) {
-            player.removePotionEffect(PotionEffectType.HASTE)
-        }
         event.isCancelled = true
     }
 }

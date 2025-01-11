@@ -25,7 +25,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Transformation
 import org.joml.Vector3f
-import java.util.*
+import java.util.UUID
 
 class YolkPlaidYataghanItem : CustomItem {
 

@@ -38,6 +38,7 @@ public enum Action {
     ENTITY_DAMAGED_GENERIC, // When a living entity is damaged from ANYTHING and not just other living entities
     DROP_ITEM, // When a player drops an item
     BREAK_BLOCK, // When a player breaks a block
+    LOW_PRIO_BREAK_BLOCK, // When a player breaks a block, but with a lower priority
     CACHED_BLOCK_BREAK, // When a player breaks a block and the block is cached <-- Edit description
     BLOCK_DROP_ITEM, // After a player breaks a block, and the block drops item(s)
     PLACE_BLOCK, // When a player places a block

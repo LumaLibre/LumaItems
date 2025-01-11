@@ -68,6 +68,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_DAMAGED_GENERIC -> onEntityDamageGeneric(player, event as EntityDamageEvent)
             Action.DROP_ITEM -> onPlayerDropItem(player, event as PlayerDropItemEvent)
             Action.BREAK_BLOCK -> onBreakBlock(player, event as BlockBreakEvent)
+            Action.LOW_PRIO_BREAK_BLOCK -> onLowPriorityBlockBreak(player, event as BlockBreakEvent)
             Action.CACHED_BLOCK_BREAK -> onCachedBlockBreak(player, event as BlockBreakEvent)
             Action.BLOCK_DROP_ITEM -> onBlockDropItem(player, event as BlockDropItemEvent)
             Action.PLACE_BLOCK -> onPlaceBlock(player, event as BlockPlaceEvent)
@@ -121,6 +122,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityDamageGeneric(player: Player, event: EntityDamageEvent) {}
     open fun onPlayerDropItem(player: Player, event: PlayerDropItemEvent) {}
     open fun onBreakBlock(player: Player, event: BlockBreakEvent) {}
+    open fun onLowPriorityBlockBreak(player: Player, event: BlockBreakEvent) {}
     open fun onCachedBlockBreak(player: Player, event: BlockBreakEvent) {}
     open fun onBlockDropItem(player: Player, event: BlockDropItemEvent) {}
     open fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {}

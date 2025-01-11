@@ -174,6 +174,14 @@ class Listeners(val plugin: LumaItems) : ItemListener() {
         }
     }
 
+
+    @EventHandler(priority = EventPriority.LOW)
+    fun onLowPriorityPlayerBreakBlock(event: BlockBreakEvent) {
+        this.onPlayerBreakBlock(event)
+    }
+
+
+
     @EventHandler
     fun onBlockDropItems(event: BlockDropItemEvent) {
         val player = event.player
