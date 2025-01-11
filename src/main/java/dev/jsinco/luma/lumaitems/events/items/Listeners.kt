@@ -177,7 +177,12 @@ class Listeners(val plugin: LumaItems) : ItemListener() {
 
     @EventHandler(priority = EventPriority.LOW)
     fun onLowPriorityPlayerBreakBlock(event: BlockBreakEvent) {
-        this.onPlayerBreakBlock(event)
+        val player = event.player
+        val data: PersistentDataContainer? = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
+
+        if (data != null) {
+            fire(data, Action.BREAK_BLOCK, player, event)
+        }
     }
 
 
