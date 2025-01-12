@@ -6,6 +6,7 @@ import dev.jsinco.luma.lumaitems.enums.RomanNumeral
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
+import io.papermc.paper.datacomponent.DataComponentType.Valued
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
@@ -92,6 +93,11 @@ class ItemFactory(
         return this
     }
 
+    fun <T : Any> addDataComponents(type: Valued<T>, value: T): ItemFactory {
+        item.setData(type, value)
+        return this
+    }
+
     fun createItem(): ItemStack {
         if (meta == null) return item
 
@@ -161,7 +167,6 @@ class ItemFactory(
         if (b64PHead != null && material == Material.PLAYER_HEAD) {
             Util.setBase64Texture(meta, b64PHead)
         }
-
 
         item.itemMeta = meta
         return item

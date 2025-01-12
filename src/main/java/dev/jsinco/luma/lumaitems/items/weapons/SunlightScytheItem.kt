@@ -37,7 +37,7 @@ class SunlightScytheItem : CustomItem {
             Material.NETHERITE_HOE,
             mutableListOf("sunlightscythe"),
             mutableMapOf(Enchantment.SHARPNESS to 9, Enchantment.BANE_OF_ARTHROPODS to 7, Enchantment.UNBREAKING to 10, Enchantment.LOOTING to 6, Enchantment.MENDING to 1)
-            )
+        )
         return Pair("sunlightscythe", item.createItem())
     }
 

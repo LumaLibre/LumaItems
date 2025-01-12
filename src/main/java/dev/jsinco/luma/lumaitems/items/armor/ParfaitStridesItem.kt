@@ -6,11 +6,12 @@ import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -34,7 +35,7 @@ class ParfaitStridesItem : CustomItem {
         )
         item.tier = "&#fb5a5a&lV&#fb6069&la&#fc6677&ll&#fc6c86&le&#fc7294&ln&#fd78a3&lt&#fd7eb2&li&#fb83be&ln&#f788c9&le&#f38dd4&ls &#f092df&l2&#ec97e9&l0&#e89cf4&l2&#e4a1ff&l4"
         item.attributeModifiers = DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(
-            Attribute.MAX_HEALTH, AttributeModifier(UUID.randomUUID(), "genericMaxHealth", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS)
+            Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(instance(), "parfaitstrides"), 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
         )
 
         return Pair("parfaitstrides", item.createItem())
