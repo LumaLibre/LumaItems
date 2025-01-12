@@ -46,10 +46,10 @@ class KindlingBaton : CustomItemFunctions() {
         event.isCancelled = true
         val item = player.inventory.itemInMainHand
 
-        if (item.type == Material.NETHERITE_PICKAXE) {
-            item.type = Material.NETHERITE_SHOVEL
-        } else if (item.type == Material.NETHERITE_SHOVEL) {
-            item.type = Material.NETHERITE_PICKAXE
+        item.type = when (item.type) {
+            Material.NETHERITE_PICKAXE -> Material.NETHERITE_SHOVEL
+            Material.NETHERITE_SHOVEL -> Material.NETHERITE_PICKAXE
+            else -> Material.NETHERITE_PICKAXE
         }
     }
 

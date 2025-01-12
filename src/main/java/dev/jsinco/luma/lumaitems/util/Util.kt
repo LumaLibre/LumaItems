@@ -300,4 +300,8 @@ object Util {
             null
         }
     }
+
+    fun namespacedKey(key: String): NamespacedKey {
+        return NamespacedKey(plugin, key)
+    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MiniMessageUtil {
 
-    public static final Component PREFIX = mm("<b><#f498f6>I<#c990f9>n<#9d88fc>f<#7280ff>o</b> <dark_gray>»<white> ");
+    public static final Component PREFIX = mm("<b><#b986f9>Info</b> <dark_gray>»<white> ");
 
     public static void msg(CommandSender sender, String m) {
         sender.sendMessage(PREFIX.append(mm(m)));
