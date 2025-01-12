@@ -59,11 +59,9 @@ class FrostbarkChiselItem : CustomItemFunctions() {
         val axe = player.inventory.itemInMainHand
         val drops = event.block.getDrops(axe)
 
-        println("DROPS: ${drops.joinToString { it.type.name }}")
         event.isDropItems = false
         for (drop in drops) {
-            println("DROPPING: ${drop.type}")
-            player.world.dropItem(event.block.location, setWoodTypeFromMode(getMode(axe), drop.asOne()))
+            player.world.dropItemNaturally(event.block.location, setWoodTypeFromMode(getMode(axe), drop.asOne()))
         }
     }
 
@@ -97,7 +95,7 @@ class FrostbarkChiselItem : CustomItemFunctions() {
         val newMeta = axe.itemMeta?.apply { persistentDataContainer.set(key, PersistentDataType.STRING, newMode.name) }
             ?: return
         axe.itemMeta = newMeta
-        player.sendActionBar(MiniMessageUtil.mm("<#f498f6><b>${Util.formatMaterialName(newMode.name)}"))
+        player.sendActionBar(MiniMessageUtil.mm("<#f498f6>${Util.formatMaterialName(newMode.name)}"))
     }
 
     enum class Mode {

@@ -36,11 +36,11 @@ class FlourishingFedoraItem : CustomItemFunctions() {
     override fun onRunnable(player: Player) {
         // Make nearby crops grow faster
 
-        if (random().nextInt(100) > 10) {
+        if (random().nextInt(100) > 5) {
             return
         }
 
-        val sphere = Sphere(player.location, 8.0, 20.0)
+        val sphere = Sphere(player.location, 6.0, 20.0)
         val crops = sphere.sphere.filter { !it.isEmpty && it.blockData is Ageable }
 
         crops.forEach {
