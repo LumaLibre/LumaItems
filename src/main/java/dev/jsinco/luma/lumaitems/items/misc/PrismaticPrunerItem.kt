@@ -1,18 +1,19 @@
 package dev.jsinco.luma.lumaitems.items.misc
 
-import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.items.ItemFactory
-import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
+import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.event.block.BlockShearEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerShearEntityEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 
-class PrismaticPrunerItem : CustomItem {
+class PrismaticPrunerItem : CustomItemFunctions() {
 
     companion object {
         val wools: List<Material> = listOf(
@@ -20,6 +21,7 @@ class PrismaticPrunerItem : CustomItem {
             Material.PINK_WOOL, Material.GRAY_WOOL, Material.LIGHT_GRAY_WOOL, Material.CYAN_WOOL, Material.PURPLE_WOOL, Material.BLUE_WOOL,
             Material.BROWN_WOOL, Material.GREEN_WOOL, Material.RED_WOOL, Material.BLACK_WOOL
         )
+        val key = Util.namespacedKey("wooltype")
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -30,50 +32,35 @@ class PrismaticPrunerItem : CustomItem {
             .vanillaEnchants(Enchantment.UNBREAKING to 6, Enchantment.EFFICIENCY to 7, Enchantment.MENDING to 1)
             .tier(Tier.WINTER_2024)
             .persistentData("prismaticpruner")
+            .stringPersistentDatas(mutableMapOf(key to Material.WHITE_WOOL.name))
             .buildPair()
 
     }
 
-    private var woolChoice: Int = 0
-    override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        when (type) {
-            Action.RIGHT_CLICK -> {
-                event as PlayerInteractEvent
+    private fun getActiveWoolType(itemStack: ItemStack): Material {
+        val woolType = itemStack.itemMeta?.persistentDataContainer?.get(key, PersistentDataType.STRING) ?: return Material.WHITE_WOOL
+        return Material.valueOf(woolType)
 
-                if (player.isSneaking) {
-                    woolChoice++
-                    if (woolChoice >= wools.size) {
-                        woolChoice = 0
-                    }
+    }
 
-                    player.sendMessage("Wool type set to: ${wools[woolChoice].name}")
-                }
-            }
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
 
-            Action.SHEAR_ENTITY -> {
-                event as PlayerShearEntityEvent
-                val drops: MutableList<ItemStack> = event.drops.toMutableList()
+        if (!player.isSneaking) return
 
-                for (i in 0 until 2) {
-                    drops.add(ItemStack(wools[woolChoice]))
-                }
+        val item = player.inventory.itemInMainHand
+        val woolChoice = wools.indexOf(getActiveWoolType(item))
+        val nextWool = (woolChoice + 1) % wools.size
 
-                event.drops = drops
-            }
+        val newMeta = item.itemMeta?.apply { persistentDataContainer.set(key, PersistentDataType.STRING, wools[nextWool].name) }
+            ?: return
+        item.itemMeta = newMeta
 
-            Action.BLOCK_SHEAR_ENTITY -> {
-                event as BlockShearEntityEvent
-                val drops: MutableList<ItemStack> = event.drops.toMutableList()
+        player.sendActionBar(MiniMessageUtil.mm("<#f498f6>${wools[nextWool].name}"))
+    }
 
-                for (i in 0 until 2) {
-                    drops.add(ItemStack(wools[woolChoice]))
-                }
-
-                event.drops = drops
-            }
-            else -> return false
-        }
-        return true
+    override fun onShearEntity(player: Player, event: PlayerShearEntityEvent) {
+        val woolType = getActiveWoolType(player.inventory.itemInMainHand)
+        event.drops = mutableListOf(ItemStack(woolType, random().nextInt(1,4)))
     }
 
 }
