@@ -95,6 +95,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_PICKUP_ITEM -> onEntityPickupItem(event as EntityPickupItemEvent)
             Action.HOPPER_PICKUP_ITEM -> onHopperPickupItem(event as InventoryPickupItemEvent)
             Action.INVENTORY_CLICK -> onInventoryClick(player, event as InventoryClickEvent)
+            Action.FILL_BUCKET -> onPlayerFillBucket(player, event as PlayerInteractEvent)
         }
         return true
     }
@@ -149,4 +150,5 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityPickupItem(event: EntityPickupItemEvent) {}
     open fun onHopperPickupItem(event: InventoryPickupItemEvent) {}
     open fun onInventoryClick(player: Player, event: InventoryClickEvent) {}
+    open fun onPlayerFillBucket(player: Player, event: PlayerInteractEvent) {}
 }
