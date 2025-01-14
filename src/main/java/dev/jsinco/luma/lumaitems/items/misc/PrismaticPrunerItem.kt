@@ -5,7 +5,6 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.NeedsEdits
 import dev.jsinco.luma.lumaitems.util.Util
-import dev.jsinco.luma.lumaitems.util.Util.formatMaterialName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -60,7 +59,7 @@ class PrismaticPrunerItem : CustomItemFunctions() {
             ?: return
         item.itemMeta = newMeta
 
-        player.sendActionBar(MiniMessageUtil.mm("<#f498f6>${formatMaterialName(wools[nextWool].toString())}"))
+        player.sendActionBar(MiniMessageUtil.mm("<#f498f6>${Util.formatMaterialName(wools[nextWool].toString())}"))
     }
 
     override fun onShearEntity(player: Player, event: PlayerShearEntityEvent) {
