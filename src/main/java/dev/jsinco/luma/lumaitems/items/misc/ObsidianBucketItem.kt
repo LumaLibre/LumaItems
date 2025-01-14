@@ -7,6 +7,7 @@ import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.Action
+import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -29,24 +30,21 @@ class ObsidianBucketItem : CustomItemFunctions() {
             .buildPair()
     }
 
-    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+    private fun onPlayerFillBucket(player: Player, event: PlayerBucketFillEvent) {
         if (cooldown.contains(player.uniqueId)) return
 
-        if ((event.action == Action.RIGHT_CLICK_BLOCK || event.action == Action.RIGHT_CLICK_AIR) &&
-            event.item != null && event.item!!.type == Material.BUCKET) {
-            val clickedBlock = event.clickedBlock
+        if (event.blockClicked.type == Material.LAVA ) {
+            event.isCancelled = true;
 
-            if (clickedBlock!!.type == Material.LAVA) {
-                event.isCancelled = true
+            val newItem = ItemStack(Material.OBSIDIAN)
+            player.world.dropItemNaturally(player.location, newItem)
 
-                val newItem = ItemStack(Material.OBSIDIAN)
-                player.inventory.addItem(newItem)
-
-                cooldown.add(player.uniqueId)
-                Bukkit.getServer().scheduler.scheduleSyncDelayedTask(instance(), {
-                    cooldown.remove(player.uniqueId)
-                }, 160L)
-            }
+            cooldown.add(player.uniqueId)
+            Bukkit.getServer().scheduler.scheduleSyncDelayedTask(instance(), {
+                cooldown.remove(player.uniqueId)
+            }, 160L)
         }
+
     }
+
 }

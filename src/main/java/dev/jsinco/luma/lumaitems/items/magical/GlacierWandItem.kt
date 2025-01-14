@@ -82,8 +82,6 @@ class GlacierWandItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (player.isSneaking) {
             magicGlacierExplosion(player)
-        }
     }
 }

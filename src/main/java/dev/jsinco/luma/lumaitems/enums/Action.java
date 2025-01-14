@@ -66,4 +66,5 @@ public enum Action {
     ENTITY_PICKUP_ITEM, // When a living entity data picks up an item with specific persistent data
     HOPPER_PICKUP_ITEM, // When a hopper or hopper minecart picks up an item with specific persistent data
     INVENTORY_CLICK, // When a player clicks an item in their inventory with a specific persistent data
+    FILL_BUCKET,
 }
