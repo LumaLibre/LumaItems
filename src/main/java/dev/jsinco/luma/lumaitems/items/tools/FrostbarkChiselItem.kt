@@ -1,12 +1,11 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
+import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.NeedsEdits
 import dev.jsinco.luma.lumaitems.util.Util
-import dev.jsinco.luma.lumaitems.util.disabling.Disable
-import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -16,18 +15,18 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-@Disable(value = [
-    WorldName.MAIN,
-    WorldName.MAIN_NETHER,
-    WorldName.MAIN_THE_END,
-    WorldName.MAIN_SEASONS,
-    WorldName.RESOURCE,
-    WorldName.RESOURCE_NETHER,
-    WorldName.SPAWN,
-    WorldName.EVENT,
-    WorldName.EVENT_NEW,
-    WorldName.EVENT_THE_END
-])
+//@Disable(value = [
+//    WorldName.MAIN,
+//    WorldName.MAIN_NETHER,
+//    WorldName.MAIN_THE_END,
+//    WorldName.MAIN_SEASONS,
+//    WorldName.RESOURCE,
+//    WorldName.RESOURCE_NETHER,
+//    WorldName.SPAWN,
+//    WorldName.EVENT,
+//    WorldName.EVENT_NEW,
+//    WorldName.EVENT_THE_END
+//])
 @NeedsEdits
 class FrostbarkChiselItem : CustomItemFunctions() {
 
@@ -71,15 +70,16 @@ class FrostbarkChiselItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val axe = player.inventory.itemInMainHand
-        val drops = event.block.getDrops(axe)
+        val drops = event.block.getDrops(axe) .ifEmpty { return }
 
-        println("Frostbark Chisel debug call")
-        println("Drops: $drops")
+        if (drops.size > 1) {
+            LumaItems.log("Frostbark Chisel: Unsupported drop amount.")
+            LumaItems.log("Drops: ${drops.joinToString { "${it.type.name}x${it.amount}" }}")
+            return
+        }
 
         event.isDropItems = false
-        for (drop in drops) {
-            player.world.dropItemNaturally(event.block.location, setWoodTypeFromMode(getMode(axe), drop.asOne()))
-        }
+        player.world.dropItemNaturally(event.block.location, setWoodTypeFromMode(getMode(axe), drops.first()))
     }
 
 
@@ -92,6 +92,7 @@ class FrostbarkChiselItem : CustomItemFunctions() {
     private fun setWoodTypeFromMode(mode: Mode, block: ItemStack): ItemStack {
         var materialName = block.type.name
         if (!materialName.contains("_LOG") && !materialName.contains("_STEM")) return block
+        else if (mode == Mode.LOGS) return block
 
         materialName = materialName.replace("_LOG", "").replace("_STEM", "")
         val simpleWoodType = Util.enumValueOfOrNull(SimpleWoodType::class.java, materialName) ?: return block

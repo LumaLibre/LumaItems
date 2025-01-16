@@ -48,7 +48,6 @@ public final class LumaItems extends JavaPlugin {
         withProtocolLib = getServer().getPluginManager().getPlugin("ProtocolLib") != null;
         withMythicMobs = getServer().getPluginManager().getPlugin("MythicMobs") != null;
 
-
         passiveListeners = new PassiveListeners(this);
         itemManagerInstance = new ItemManager(this);
 
