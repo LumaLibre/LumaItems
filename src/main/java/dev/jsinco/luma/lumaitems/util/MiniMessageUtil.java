@@ -34,26 +34,9 @@ public class MiniMessageUtil {
         return List.of(m).stream().map(MiniMessageUtil::mm).toList();
     }
 
-
-    /*public static String convertMiniMessageToLegacy(String miniMessage) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        String[] texts = miniMessage.split("<");
-        for (String text : texts) {
-            if (text.isEmpty()) continue;
-            if (text.charAt(0) == '#') {
-                stringBuilder.append("&").append(text);
-            } else if (text.charAt(0) == '/') {
-                stringBuilder.append("&").append(text.charAt(1));
-            }
-
-            else {
-                stringBuilder.append("&").append(text.charAt(0));
-            }
-            stringBuilder.append(text.substring(1));
-        }
-    }*/
-
+    public static Component fromLegacy(String legacy) {
+        return mm(convertLegacyToMiniMesssageString(legacy));
+    }
 
     public static String convertLegacyToMiniMesssageString(String legacy) {
         String[] texts = legacy.split(String.format(Util.WITH_DELIMITER, "&"));
@@ -62,12 +45,14 @@ public class MiniMessageUtil {
 
         for (int i = 0; i < texts.length; i++) {
             if (texts[i].equalsIgnoreCase("&")) {
-                //get the next string
                 i++;
                 if (texts[i].charAt(0) == '#') {
-                    finalText.append("<").append(texts[i].substring(0, 7)).append(texts[i].substring(7) + ">");
+                    finalText.append("<")
+                            .append(texts[i], 0, 7)
+                            .append(texts[i].substring(7))
+                            .append(">");
                 } else {
-                    finalText.append(getMiniMessageNamedColor('&' + texts[i]));
+                    finalText.append(translateLegacyKey(texts[i]));
                 }
             } else {
                 finalText.append(texts[i]);
@@ -77,35 +62,31 @@ public class MiniMessageUtil {
     }
 
 
-    public static String getMiniMessageNamedColor(String namedColor) {
+    public static String translateLegacyKey(String namedColor) {
         return switch (namedColor) {
-            case "&0" -> "<black>";
-            case "&1" -> "<dark_blue>";
-            case "&2" -> "<dark_green>";
-            case "&3" -> "<dark_aqua>";
-            case "&4" -> "<dark_red>";
-            case "&5" -> "<dark_purple>";
-            case "&6" -> "<gold>";
-            case "&7" -> "<gray>";
-            case "&8" -> "<dark_gray>";
-            case "&9" -> "<blue>";
-            case "&a" -> "<green>";
-            case "&b" -> "<aqua>";
-            case "&c" -> "<red>";
-            case "&d" -> "<light_purple>";
-            case "&e" -> "<yellow>";
-            case "&f" -> "<white>";
-            case "&k" -> "<obf>";
-            case "&l" -> "<b>";
-            case "&m" -> "<st>";
-            case "&n" -> "<u>";
-            case "&o" -> "<i>";
-            case "&r" -> "<reset>";
+            case "0" -> "<black>";
+            case "1" -> "<dark_blue>";
+            case "2" -> "<dark_green>";
+            case "3" -> "<dark_aqua>";
+            case "4" -> "<dark_red>";
+            case "5" -> "<dark_purple>";
+            case "6" -> "<gold>";
+            case "7" -> "<gray>";
+            case "8" -> "<dark_gray>";
+            case "9" -> "<blue>";
+            case "a" -> "<green>";
+            case "b" -> "<aqua>";
+            case "c" -> "<red>";
+            case "d" -> "<light_purple>";
+            case "e" -> "<yellow>";
+            case "f" -> "<white>";
+            case "k" -> "<obf>";
+            case "l" -> "<b>";
+            case "m" -> "<st>";
+            case "n" -> "<u>";
+            case "o" -> "<i>";
+            case "r" -> "<reset>";
             default -> throw new IllegalStateException("Unexpected value: " + namedColor);
         };
     }
-
-    /*public static String getLegacyNamedColor(String namedColor) {
-
-    }*/
 }
