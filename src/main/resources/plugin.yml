@@ -10,6 +10,7 @@ softdepend:
 - ProtocolLib
 - MythicMobs
 - Jobs
+- mcMMO
 permissions:
   lumaitems.command.give:
     description: Gives a player a LumaItem

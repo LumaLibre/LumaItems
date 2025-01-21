@@ -27,6 +27,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://mvn.lumine.io/repository/maven-public/")
+    maven("https://nexus.neetgames.com/repository/maven-releases/")
 }
 
 dependencies {
@@ -34,6 +35,7 @@ dependencies {
     compileOnly("com.github.Zrips:jobs:v4.17.2")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
+    compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.030")
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 

@@ -37,6 +37,7 @@ public final class LumaItems extends JavaPlugin {
     private static LumaItems instance;
     private static boolean withProtocolLib;
     private static boolean withMythicMobs;
+    private static boolean withmcMMO;
     private static PAPIManager papiManager;
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManagerInstance;
@@ -45,8 +46,9 @@ public final class LumaItems extends JavaPlugin {
     public void onEnable() {
         instance = this;
         FileManager.generateDefaultFiles();
-        withProtocolLib = getServer().getPluginManager().getPlugin("ProtocolLib") != null;
-        withMythicMobs = getServer().getPluginManager().getPlugin("MythicMobs") != null;
+        withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");
+        withMythicMobs = getServer().getPluginManager().isPluginEnabled("MythicMobs");
+        withmcMMO = getServer().getPluginManager().isPluginEnabled("mcMMO");
 
         passiveListeners = new PassiveListeners(this);
         itemManagerInstance = new ItemManager(this);
@@ -144,6 +146,10 @@ public final class LumaItems extends JavaPlugin {
 
     public static boolean isWithMythicMobs() {
         return withMythicMobs;
+    }
+
+    public static boolean isWithmcMMO() {
+        return withmcMMO;
     }
 
     public static ItemManager getItemManagerInstance() {
