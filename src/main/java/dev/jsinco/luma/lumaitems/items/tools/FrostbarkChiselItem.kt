@@ -70,7 +70,11 @@ class FrostbarkChiselItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val axe = player.inventory.itemInMainHand
-        val drops = event.block.getDrops(axe) .ifEmpty { return }
+        val strName = event.block.type.name
+        if (!strName.endsWith("_LOG") && strName.endsWith("_STEM")) {
+            return
+        }
+        val drops = event.block.getDrops(axe).ifEmpty { return }
 
         if (drops.size > 1) {
             LumaItems.log("Frostbark Chisel: Unsupported drop amount.")
