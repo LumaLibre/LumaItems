@@ -58,6 +58,10 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
 
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
+        return createItem(level)
+    }
+
+    fun createItem(level: Int): Pair<String, ItemStack> {
         return ItemFactory.Builder()
             .name("<b><#f498f6>Archive</#f498f6></b> <!b><#F7FFC9>of Astralis</#F7FFC9></!b>")
             .material(Material.BOOK)
