@@ -43,7 +43,7 @@ class WonderBeanieItem : CustomItemFunctions() {
             .tier(Tier.WINTER_2024)
             .attributeModifiers(
                 DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
-                    Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(instance(), "max_health"), 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
+                    Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(instance(), "wonderbeanie"), 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
                 )
             )
             .buildPair()

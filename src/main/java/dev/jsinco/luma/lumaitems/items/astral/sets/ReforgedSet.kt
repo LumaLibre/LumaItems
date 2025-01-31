@@ -1,19 +1,17 @@
 package dev.jsinco.luma.lumaitems.items.astral.sets
 
-import dev.jsinco.luma.lumaitems.items.astral.AstralSet
-import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
-import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
+import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
+import dev.jsinco.luma.lumaitems.items.astral.AstralSetFunctions
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Player
-import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
 
-class ReforgedSet : AstralSet {
+class ReforgedSet : AstralSetFunctions() {
     override fun setItems(): List<ItemStack> {
         val astralSetFactory = AstralSetFactory("Reforged", mutableListOf("&#AC87FBUnwavering"))
         astralSetFactory.commonEnchants = mutableMapOf(
@@ -22,6 +20,7 @@ class ReforgedSet : AstralSet {
             Enchantment.PROTECTION to 7
         )
 
+        val key = NamespacedKey(instance(), identifier())
 
         astralSetFactory.astralSetItem(
             Material.NETHERITE_HELMET,
@@ -29,7 +28,7 @@ class ReforgedSet : AstralSet {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD))
+                AttributeModifier(key, 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD))
         )
 
         astralSetFactory.astralSetItem(
@@ -38,7 +37,7 @@ class ReforgedSet : AstralSet {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_CHESTPLATE.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST))
+                AttributeModifier(key, 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST))
         )
 
         astralSetFactory.astralSetItem(
@@ -47,7 +46,7 @@ class ReforgedSet : AstralSet {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.LEGS))
+                AttributeModifier(key, 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS))
         )
 
         astralSetFactory.astralSetItem(
@@ -56,7 +55,7 @@ class ReforgedSet : AstralSet {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_BOOTS.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.FEET))
+                AttributeModifier(key, 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET))
         )
 
         return astralSetFactory.createdAstralItems
@@ -64,9 +63,5 @@ class ReforgedSet : AstralSet {
 
     override fun identifier(): String {
         return "reforged-set"
-    }
-
-    override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        return false
     }
 }

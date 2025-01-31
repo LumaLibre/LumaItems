@@ -27,7 +27,6 @@ class HellStridersItem : CustomItem {
     // - Summer 2024
     // Inspiration:
     // - Frost Walker enchantment
-    // - Lilac's implementation of this item
     // Idea:
     // Movement-based boots
     // - Ability to walk on lava exactly like frost walker but with obsidian instead of ice
