@@ -20,15 +20,13 @@ class ReforgedSet : AstralSetFunctions() {
             Enchantment.PROTECTION to 7
         )
 
-        val key = NamespacedKey(instance(), identifier())
-
         astralSetFactory.astralSetItem(
             Material.NETHERITE_HELMET,
             mutableMapOf(Enchantment.RESPIRATION to 3),
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                AttributeModifier(key, 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD))
+                identifier(), 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
         )
 
         astralSetFactory.astralSetItem(
@@ -37,7 +35,7 @@ class ReforgedSet : AstralSetFunctions() {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_CHESTPLATE.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                AttributeModifier(key, 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST))
+                identifier(), 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
         )
 
         astralSetFactory.astralSetItem(
@@ -46,7 +44,7 @@ class ReforgedSet : AstralSetFunctions() {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                AttributeModifier(key, 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS))
+                identifier(), 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
         )
 
         astralSetFactory.astralSetItem(
@@ -55,7 +53,7 @@ class ReforgedSet : AstralSetFunctions() {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_BOOTS.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                AttributeModifier(key, 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET))
+                identifier(), 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
         )
 
         return astralSetFactory.createdAstralItems

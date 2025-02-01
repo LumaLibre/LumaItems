@@ -14,6 +14,7 @@ import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -31,7 +32,7 @@ class TrainingKatanaItem : CustomItemFunctions() {
             .vanillaEnchants()
             .attributeModifiers(
                 DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
-                    Attribute.ATTACK_SPEED, AttributeModifier(NamespacedKey(instance(), k), 4.0, AttributeModifier.Operation.ADD_NUMBER),
+                    Attribute.ATTACK_SPEED, k, 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY
                 )
             )
             .tier(Tier.WINTER_2024)

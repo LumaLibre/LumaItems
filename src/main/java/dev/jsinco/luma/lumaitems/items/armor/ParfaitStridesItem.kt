@@ -35,7 +35,7 @@ class ParfaitStridesItem : CustomItem {
         )
         item.tier = "&#fb5a5a&lV&#fb6069&la&#fc6677&ll&#fc6c86&le&#fc7294&ln&#fd78a3&lt&#fd7eb2&li&#fb83be&ln&#f788c9&le&#f38dd4&ls &#f092df&l2&#ec97e9&l0&#e89cf4&l2&#e4a1ff&l4"
         item.attributeModifiers = DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(
-            Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(instance(), "parfaitstrides"), 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
+            Attribute.MAX_HEALTH, "parfaitstrides", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS
         )
 
         return Pair("parfaitstrides", item.createItem())

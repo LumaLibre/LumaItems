@@ -8,10 +8,12 @@ import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
 import dev.jsinco.luma.lumaitems.enums.ToolType
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -51,16 +53,16 @@ class MistralSet : AstralSet {
                 when (genericMCToolType) {
                     GenericMCToolType.SWORD -> {
                         DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
-                            Attribute.MOVEMENT_SPEED, AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER)
+                            Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
                         )
                     }
                     GenericMCToolType.PICKAXE -> {
                         DefaultAttributes.NETHERITE_PICKAXE.appendThenGetAttributes(
-                            Attribute.MOVEMENT_SPEED, AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER)
+                            Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
                         )
                     }
                     GenericMCToolType.FISHING_ROD -> {
-                        mutableMapOf(Attribute.MOVEMENT_SPEED to AttributeModifier(UUID.randomUUID(), "movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER))
+                        DefaultAttributes.of(Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY)
                     }
                     else -> null
                 }

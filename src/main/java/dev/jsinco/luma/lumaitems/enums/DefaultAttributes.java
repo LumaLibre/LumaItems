@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("UnstableApiUsage")
 public enum DefaultAttributes {
 
     NETHERITE_HELMET(List.of(
@@ -51,29 +52,78 @@ public enum DefaultAttributes {
 
     public Map<Attribute, AttributeModifier> getAttributes() {
         final Map<Attribute, AttributeModifier> attributeModifierMap = new HashMap<>();
-
         for (AttributeContainer attributeContainer : attributeContainers) {
             attributeModifierMap.put(attributeContainer.attribute, new AttributeModifier(
-                    new NamespacedKey(LumaItems.getInstance(), attributeContainer.attribute.name().toLowerCase()),
+                    attributeContainer.getKey(),
                     attributeContainer.amount,
-                    AttributeModifier.Operation.ADD_NUMBER, // TODO: Mutable operations
-                    attributeContainer.slot
+                    attributeContainer.operation,
+                    attributeContainer.getSlot()
             ));
         }
 
         return attributeModifierMap;
     }
 
-    public void addAttribute(Attribute attribute, AttributeModifier attributeModifier) {
-        attributeContainers.add(new AttributeContainer(attribute, attributeModifier.getAmount(), attributeModifier.getSlotGroup()));
+    public void addAttribute(AttributeContainer attributeModifier) {
+        attributeContainers.add(attributeModifier);
+    }
+    public void addAttribute(String key, Attribute attribute, double amount, AttributeModifier.Operation operation, @Nullable EquipmentSlotGroup slot) {
+        addAttribute(new AttributeContainer(key, attribute, operation, amount, slot));
     }
 
-    public Map<Attribute, AttributeModifier> appendThenGetAttributes(Attribute attribute, AttributeModifier attributeModifier) {
-        addAttribute(attribute, attributeModifier);
+    public Map<Attribute, AttributeModifier> appendThenGetAttributes(AttributeContainer attributeContainer) {
+        addAttribute(attributeContainer);
         return getAttributes();
     }
 
+    public Map<Attribute, AttributeModifier> appendThenGetAttributes(String key,
+                                                                     Attribute attribute,
+                                                                     double amount,
+                                                                    AttributeModifier.Operation operation,
+                                                                    @Nullable EquipmentSlotGroup slot) {
+        return appendThenGetAttributes(new AttributeContainer(key, attribute, operation, amount, slot));
+    }
 
-    private record AttributeContainer(Attribute attribute, double amount, @Nullable EquipmentSlotGroup slot) {
+    public Map<Attribute, AttributeModifier> appendThenGetAttributes(Attribute attribute,
+                                                                     String key,
+                                                                     double amount,
+                                                                     AttributeModifier.Operation operation,
+                                                                     @Nullable EquipmentSlotGroup slot) {
+        return appendThenGetAttributes(new AttributeContainer(key, attribute, operation, amount, slot));
+    }
+
+    public Map<Attribute, AttributeModifier> appendThenGetAttributes(Attribute attribute,
+                                                                     String key,
+                                                                     double amount,
+                                                                     AttributeModifier.Operation operation) {
+        return appendThenGetAttributes(new AttributeContainer(key, attribute, operation, amount, EquipmentSlotGroup.ANY));
+    }
+
+
+
+    public record AttributeContainer(String key,
+                                     Attribute attribute,
+                                     AttributeModifier.Operation operation,
+                                     double amount,
+                                     @Nullable EquipmentSlotGroup slot) {
+
+        public AttributeContainer(Attribute attribute, double amount, @Nullable EquipmentSlotGroup slot) {
+            this("defaultattribute", attribute, AttributeModifier.Operation.ADD_NUMBER, amount, slot);
+        }
+
+        public NamespacedKey getKey() {
+            return new NamespacedKey(LumaItems.getInstance(), key);
+        }
+
+        public EquipmentSlotGroup getSlot() {
+            if (slot == null) {
+                return EquipmentSlotGroup.ANY;
+            }
+            return slot;
+        }
+    }
+
+    public static Map<Attribute, AttributeModifier> of(Attribute attribute, String key, double amount, AttributeModifier.Operation operation, EquipmentSlotGroup slot) {
+        return Map.of(attribute, new AttributeModifier(new NamespacedKey(LumaItems.getInstance(), key), amount, operation, slot));
     }
 }
