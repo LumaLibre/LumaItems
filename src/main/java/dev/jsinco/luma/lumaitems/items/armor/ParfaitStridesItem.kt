@@ -1,12 +1,11 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
 import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
+import dev.jsinco.luma.lumaitems.items.ItemFactory
+import dev.jsinco.luma.lumaitems.manager.CustomItem
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
