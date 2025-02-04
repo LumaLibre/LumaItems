@@ -16,6 +16,7 @@ import java.util.Map;
 @SuppressWarnings("UnstableApiUsage")
 public enum DefaultAttributes {
 
+    //<editor-fold desc="Gear Type Values" defaultstate="uncollapsed">
     // Netherite
     NETHERITE_HELMET(
             container(Attribute.ARMOR, 3.0, EquipmentSlotGroup.HEAD),
@@ -227,6 +228,7 @@ public enum DefaultAttributes {
             container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
     )
     ;
+    //</editor-fold>
 
     private final List<AttributeContainer> attributeContainers;
 

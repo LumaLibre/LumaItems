@@ -36,6 +36,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
+import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerMoveEvent
@@ -325,6 +326,11 @@ class Listeners(val plugin: LumaItems) : ItemListener() {
     @EventHandler
     fun onEntityTeleport(event: EntityTeleportEvent) {
         fire(event.entity.persistentDataContainer, Action.ENTITY_TELEPORT, null, event)
+    }
+
+    @EventHandler
+    fun onPlayerInteractAtEntity(event: PlayerInteractAtEntityEvent) {
+        fire(Util.getHandNBT(event.player), Action.PLAYER_INTERACT_ENTITY, event.player, event)
     }
 
     @EventHandler

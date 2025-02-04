@@ -120,6 +120,13 @@ object Util {
         return nbtList
     }
 
+    fun getHandNBT(player: Player): List<PersistentDataContainer> {
+        val nbtList: MutableList<PersistentDataContainer> = mutableListOf()
+        player.inventory.itemInMainHand.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
+        player.inventory.itemInOffHand.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
+        return nbtList
+    }
+
     fun isWearingWithNBT(player: Player, identifier: String): Boolean {
         val armorDatas: List<PersistentDataContainer?> =
             armorEquipmentSlots.map { player.equipment.getItem(it).itemMeta?.persistentDataContainer }

@@ -63,9 +63,9 @@ class ItemFactory(
 
     private val miniMessageTierFormat = listOf(
         "",
-        "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st>",
-        "<#EEE1D5>Tier • <PLACEHOLDER>",
-        "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st>"
+        "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>",
+        "<#EEE1D5>Tier •</#EEE1D5> <PLACEHOLDER>",
+        "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>"
     )
 
     var miniMessage = false
