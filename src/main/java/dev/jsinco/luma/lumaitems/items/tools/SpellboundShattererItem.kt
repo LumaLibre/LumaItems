@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.tools
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.shapes.Cuboid
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
@@ -72,7 +73,7 @@ class SpellboundShattererItem : CustomItem {
 
         player.setMetadata("shattering", FixedMetadataValue(plugin, true))
         for (b in cuboid.blockList()) {
-            if (AbilityUtil.blockTypeBlacklist.contains(b.type)) continue
+            if (BlockConstants.BLACKLISTED.contains(b.type)) continue
 
             if (Random().nextInt(50) <= 5) {
                 b.world.spawnParticle(Particle.DUST, block.location, 10, 0.5, 0.5, 0.5, 0.1, dustOptions.random())

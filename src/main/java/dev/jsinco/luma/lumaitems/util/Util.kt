@@ -87,6 +87,12 @@ object Util {
         }
     }
 
+    fun giveItem(player: Player, items: Collection<ItemStack>) {
+        for (item in items) {
+            giveItem(player, item)
+        }
+    }
+
 
     fun getColorCodeByChatColor(colorCode: ChatColor): String {
         return when (colorCode) {

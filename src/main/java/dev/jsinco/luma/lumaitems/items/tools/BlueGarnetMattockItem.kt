@@ -1,6 +1,7 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.shapes.ShapeUtil
@@ -37,7 +38,7 @@ class BlueGarnetMattockItem : CustomItem {
                 val b = event.block
 
                 val blocklist = ShapeUtil.getCuboidBlocks(b.location.add(1.0, 1.0, 1.0), b.location.add(-1.0, -1.0, -1.0)).filter {
-                    !AbilityUtil.blockTypeBlacklist.contains(it.type) && it.isSolid
+                    !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid
                 }
 
 

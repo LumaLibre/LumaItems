@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
+import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
@@ -76,7 +77,7 @@ class HolidayHamItem : CustomItemFunctions() {
     private fun clearBlocksInRadius(player: Player) {
         val loc: Location = player.location
         val sphere = Sphere(loc, 6.0, 11.0).sphere.filter {
-            !AbilityUtil.blockTypeBlacklist.contains(it.type) && it.isSolid
+            !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid
         }
         for (block in sphere) {
             player.breakBlock(block)
