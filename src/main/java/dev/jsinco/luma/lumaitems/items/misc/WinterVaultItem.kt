@@ -2,8 +2,8 @@ package dev.jsinco.luma.lumaitems.items.misc
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.obj.Cooldowns
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -13,13 +13,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.UUID
 
 class WinterVaultItem : CustomItemFunctions() {
-
-    companion object {
-        private val cooldown: MutableSet<UUID> = mutableSetOf()
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -34,15 +29,15 @@ class WinterVaultItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (cooldown.contains(player.uniqueId)) {
+        if (Cooldowns.isOnCooldown(this, player.uniqueId)) {
             return
         }
 
         player.velocity = player.velocity.add(Vector(0.0, 1.5, 0.0)).multiply(2.45)
         player.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_FLAP, 1f, 1f)
 
-        cooldown.add(player.uniqueId)
-        Bukkit.getServer().scheduler.scheduleSyncDelayedTask(instance(), { cooldown.remove(player.uniqueId) }, 300L)
+
+        Cooldowns.addCooldown(this, player.uniqueId, 300L)
 
         object : BukkitRunnable() {
             var ticks = 0

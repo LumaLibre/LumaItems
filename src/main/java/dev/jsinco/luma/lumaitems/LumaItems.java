@@ -86,6 +86,7 @@ public final class LumaItems extends JavaPlugin {
             passiveListeners.onPluginAction(Action.PLUGIN_ENABLE); // Fire this as soon as we're done registering our items
             passiveListeners.getPassiveListener(Action.RUNNABLE).runTaskTimer(this, 0L, PassiveListeners.DEFAULT_PASSIVE_LISTENER_TICKS);
             passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS);
+            passiveListeners.getGlobalTask().runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_GLOBAL_TASK_TICKS);
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "An error occurred while registering items", e);
             Bukkit.getPluginManager().disablePlugin(this);

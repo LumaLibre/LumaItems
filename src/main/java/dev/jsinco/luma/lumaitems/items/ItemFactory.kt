@@ -211,6 +211,7 @@ class ItemFactory(
         fun autoHat(autoHat: Boolean) = apply { this.autoHat = autoHat }
         fun attributeModifiers(attributeModifiers: MutableMap<Attribute, AttributeModifier>) = apply { this.attributeModifiers = attributeModifiers }
         fun stringPersistentDatas(stringPersistentDatas: MutableMap<NamespacedKey, String>) = apply { this.stringPersistentDatas = stringPersistentDatas }
+        fun stringPersistentData(key: String, value: String) = apply { this.stringPersistentDatas[NamespacedKey(plugin, key)] = value }
         fun quotes(quotes: MutableList<String>) = apply { this.quotes = quotes }
         fun quotes(vararg quotes: String) = apply { this.quotes = quotes.toMutableList() }
         fun b64PHead(b64PHead: String) = apply { this.b64PHead = b64PHead }

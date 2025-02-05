@@ -38,6 +38,9 @@ interface CustomItem {
         return executeActions(type, player, event)
     }
 
+
+    fun asyncGlobalTask() {}
+
     fun isDisabled(inLocation: Location): Boolean {
         val disableAnnotation: Disable? = this::class.java.getAnnotation(Disable::class.java)
         disableAnnotation?.value?.forEach {
