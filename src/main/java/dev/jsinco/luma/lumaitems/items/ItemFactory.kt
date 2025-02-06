@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.items
 
 import com.iridium.iridiumcolorapi.IridiumColorAPI
 import dev.jsinco.luma.lumaitems.LumaItems
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.enums.RomanNumeral
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
@@ -46,29 +47,28 @@ class ItemFactory(
     var persistentDataValue: Short = 1
 ) {
 
-    val item = ItemStack(material)
-    val meta: Damageable? = item.itemMeta as? Damageable
-
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()
         fun builder() = Builder()
+        private val tierFormat = listOf(
+            "",
+            "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
+            "&#EEE1D5Tier • <PLACEHOLDER>",
+            "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "
+        )
+
+        private val miniMessageTierFormat = listOf(
+            "",
+            "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>",
+            "<#EEE1D5>Tier •</#EEE1D5> <PLACEHOLDER>",
+            "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>"
+        )
     }
 
-    private val tierFormat = listOf(
-        "",
-        "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
-        "&#EEE1D5Tier • <PLACEHOLDER>",
-        "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "
-    )
-
-    private val miniMessageTierFormat = listOf(
-        "",
-        "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>",
-        "<#EEE1D5>Tier •</#EEE1D5> <PLACEHOLDER>",
-        "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>"
-    )
-
+    val item = ItemStack(material)
+    val meta: Damageable? = item.itemMeta as? Damageable
     var miniMessage = false
+    var hideDefaultAttributes = true
 
     fun miniMessage(): ItemFactory {
         miniMessage = true
@@ -155,6 +155,13 @@ class ItemFactory(
         if (attributeModifiers.isNotEmpty()) {
             for (attributeModifier in attributeModifiers) {
                 meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
+            }
+        } else if (hideDefaultAttributes) {
+            val defaultAttributes = DefaultAttributes.getFromMaterial(material)
+            if (defaultAttributes != null) {
+                for (attributeModifier in defaultAttributes.attributes) {
+                    meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
+                }
             }
         }
         meta.isUnbreakable = unbreakable

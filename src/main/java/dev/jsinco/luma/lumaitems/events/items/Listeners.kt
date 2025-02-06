@@ -33,6 +33,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
@@ -394,5 +395,12 @@ class Listeners(val plugin: LumaItems) : ItemListener() {
         val data: PersistentDataContainer = event.itemStack?.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.FILL_BUCKET, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
+        val data: PersistentDataContainer = event.itemStack?.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.EMPTY_BUCKET, event.player, event)
     }
 }

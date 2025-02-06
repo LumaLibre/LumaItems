@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.enums;
 
 import dev.jsinco.luma.lumaitems.LumaItems;
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -272,6 +273,16 @@ public enum DefaultAttributes {
 
     public Map<Attribute, AttributeModifier> appendThenGetAttributes(Attribute attribute, String key, double amount, AttributeModifier.Operation operation) {
         return appendThenGetAttributes(new AttributeContainer(key, attribute, operation, amount, EquipmentSlotGroup.ANY));
+    }
+
+    @Nullable
+    public static DefaultAttributes getFromMaterial(Material material) {
+        for (DefaultAttributes value : values()) {
+            if (value.name().equals(material.name())) {
+                return value;
+            }
+        }
+        return null;
     }
 
     public static Map<Attribute, AttributeModifier> of(Attribute attribute, String key, double amount, AttributeModifier.Operation operation, EquipmentSlotGroup slot) {

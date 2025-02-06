@@ -84,6 +84,10 @@ object AbilityUtil {
         return !entity.location.add(0.0,-0.1, 0.0).block.type.isAir
     }
 
+    fun isJobsTracked(block: Block): Boolean {
+        return block.state.hasMetadata("BlockOwner") || block.state.hasMetadata("JobsExploit")
+    }
+
     fun breakRelativeBlock(block: Block, player: Player, particle: Particle?, type: String, limiterInitial: Int) {
         var limiter = limiterInitial
         if (blockedAbility.contains(player.uniqueId)) return

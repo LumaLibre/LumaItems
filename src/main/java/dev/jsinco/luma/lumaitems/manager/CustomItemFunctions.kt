@@ -27,6 +27,8 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerBucketEmptyEvent
+import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
@@ -95,7 +97,8 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_PICKUP_ITEM -> onEntityPickupItem(event as EntityPickupItemEvent)
             Action.HOPPER_PICKUP_ITEM -> onHopperPickupItem(event as InventoryPickupItemEvent)
             Action.INVENTORY_CLICK -> onInventoryClick(player, event as InventoryClickEvent)
-            Action.FILL_BUCKET -> onPlayerFillBucket(player, event as PlayerInteractEvent)
+            Action.FILL_BUCKET -> onPlayerFillBucket(player, event as PlayerBucketFillEvent)
+            Action.EMPTY_BUCKET -> onPlayerEmptyBucket(player, event as PlayerBucketEmptyEvent)
         }
         return true
     }
@@ -150,5 +153,6 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityPickupItem(event: EntityPickupItemEvent) {}
     open fun onHopperPickupItem(event: InventoryPickupItemEvent) {}
     open fun onInventoryClick(player: Player, event: InventoryClickEvent) {}
-    open fun onPlayerFillBucket(player: Player, event: PlayerInteractEvent) {}
+    open fun onPlayerFillBucket(player: Player, event: PlayerBucketFillEvent) {}
+    open fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {}
 }

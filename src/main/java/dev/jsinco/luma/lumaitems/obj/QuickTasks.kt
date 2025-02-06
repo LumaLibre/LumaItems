@@ -3,10 +3,11 @@ package dev.jsinco.luma.lumaitems.obj
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import org.bukkit.Bukkit
+import org.bukkit.scheduler.BukkitRunnable
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-object Cooldowns {
+object QuickTasks {
 
     val activeCooldowns: MutableMap<Class<out CustomItem>, CustomItemCooldown> = ConcurrentHashMap()
 
@@ -38,5 +39,19 @@ object Cooldowns {
         Bukkit.getScheduler().runTaskLaterAsynchronously(LumaItems.getInstance(), Runnable {
             removeNow(customItem, player)
         }, ticks)
+    }
+
+
+    fun runTaskAsyncFor(period: Long, forAmount: Long, runnable: Runnable) {
+        object : BukkitRunnable() {
+            var ticksRan = 0L
+            override fun run() {
+                ticksRan += period
+                if (ticksRan >= forAmount) {
+                    cancel()
+                }
+                runnable.run()
+            }
+        }.runTaskTimerAsynchronously(LumaItems.getInstance(), 0L, period)
     }
 }

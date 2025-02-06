@@ -2,7 +2,7 @@ package dev.jsinco.luma.lumaitems.items.misc
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.obj.Cooldowns
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -29,7 +29,7 @@ class WinterVaultItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (Cooldowns.isOnCooldown(this, player.uniqueId)) {
+        if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
             return
         }
 
@@ -37,7 +37,7 @@ class WinterVaultItem : CustomItemFunctions() {
         player.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_FLAP, 1f, 1f)
 
 
-        Cooldowns.addCooldown(this, player.uniqueId, 300L)
+        QuickTasks.addCooldown(this, player.uniqueId, 300L)
 
         object : BukkitRunnable() {
             var ticks = 0

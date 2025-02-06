@@ -4,7 +4,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.obj.Cooldowns
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.shapes.Sphere
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
@@ -12,6 +12,8 @@ import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.Sound
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -21,44 +23,76 @@ import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
 
-class LoversBondItemCapsule : CustomItemFunctions() {
+class SoulboundSeeker : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><#D4668E>L<#DF7F9A>o<#EA98A6>v<#F4B1B2>e<#FFCABE>r<#FFD5C9>'<#FFDFD4>s <#FEF4EA>B<#FEE0E1>o<#FFCCD9>n<#FFB8D0>d <#FDD2C6>I<#FCDEC1>t<#FBEBBC>e<#F0E3CC>m<#E5DCDD> C<#D9D4ED>a<#CECCFD>p<#CECCFD>s<#CECCFD>u<#CECCFD>l<#CECCFD>e")
+            .name("<b><#7B76D0>S<#8D78C8>o<#9E7BC0>u<#B07DB8>l<#C27FB0>b<#D382A8>o<#E584A0>u<#DC84AA>n<#D384B4>d <#C084C7>S<#B784D1>e<#AE84DB>e<#A584E5>k<#AF80D5>e<#B97BC4>r <#CE72A3>S<#D86E93>e<#E26982>t")
             .material(Material.RED_DYE)
             .tier(Tier.VALENTIDE_2025)
+            .vanillaEnchants(Enchantment.UNBREAKING to 10)
+            .lore(
+                "<gray>Right-click to redeem!",
+                "",
+                "Each mattock is intended to",
+                "be held onto by another player.",
+                "",
+                "Whilst your partner has the other",
+                "mattock in their inventory, mined",
+                "ore veins will be broken instantly.",
+                "",
+                "While holding this mattock,",
+                "<#7B76D0>sneak <white>& press your <#7B76D0>swap key (F)",
+                "to teleport to your partner."
+            )
             .persistentData("lovers-bond-capsule")
             .buildPair()
     }
 
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        player.sendMessage("You have right-clicked the lovers bond capsule")
+        val item = event.item ?: return
+        item.amount -= 1
 
-        val loversBondMattockItem = LoversBondMattockItem().createItem().second
-        Util.giveItem(player, loversBondMattockItem.asQuantity(2))
+        val parent = SoulboundSeekerItem()
+        player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)
+        Util.giveItem(player, parent.create(SoulboundSeekerItem.Style.STYLE_1).createItem())
+        Util.giveItem(player, parent.create(SoulboundSeekerItem.Style.STYLE_2).createItem())
     }
 }
 
 
-class LoversBondMattockItem : CustomItemFunctions() {
+class SoulboundSeekerItem : CustomItemFunctions() {
 
-
+    // Static
     companion object {
-        val key = NamespacedKey(LumaItems.getInstance(), "lovers-bond-mattock")
-        val secretKey = NamespacedKey(LumaItems.getInstance(), "lovers-bond-secret")
-        val cachedBonds: MutableMap<UUID, String> = mutableMapOf()
+        private val key = NamespacedKey(LumaItems.getInstance(), "lovers-bond-mattock")
+        private val secretKey = NamespacedKey(LumaItems.getInstance(), "lovers-bond-secret")
+        private val cachedBonds: MutableMap<UUID, String> = mutableMapOf()
     }
 
-    var secret: () -> String = {
+    // Item creation
+
+    var secret: String
+    init {
         val chars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        (1..7).map { chars.random() }.joinToString("")
+        secret = (1..7).map { chars.random() }.joinToString("")
     }
 
-    override fun createItem(): Pair<String, ItemStack> {
+    enum class Style(val styleName: String, val baseColor: String) {
+        STYLE_1(
+            "<b><#B54476>S<#BB4C7B>o<#C15481>u<#C75C86>l<#CD648B>b<#D36C90>o<#D97496>u<#DF7C9B>n<#E584A0>d <#DE7591>S<#DA6E89>e<#D66781>e<#D26079>k<#CF5872>e<#CB516A>r",
+            "<#B54476>"
+        ),
+        STYLE_2(
+            "<b><#5951E2>S<#6357E2>o<#6C5EE3>u<#7664E3>l<#7F6BE4>b<#8971E4>o<#9277E4>u<#9C7EE5>n<#A584E5>d <#9C75DE>S<#976EDA>e<#9267D6>e<#8D60D2>k<#8958CF>e<#8451CB>r",
+            "<#5951E2>"
+        )
+    }
+
+    fun create(style: Style): ItemFactory {
         return ItemFactory.builder()
-            .name("<b><#D4668E>L<#DF7F9A>o<#EA98A6>v<#F4B1B2>e<#FFCABE>r<#FFD5C9>'<#FFDFD4>s <#FEF4EA>B<#FEE0E1>o<#FFCCD9>n<#FFB8D0>d <#FDD2C6>M<#FCDEC1>a<#FBEBBC>t<#F0E3CC>t<#E5DCDD>o<#D9D4ED>c<#CECCFD>k")
-            .customEnchants("<#D4668E>Better Together")
+            .name(style.styleName)
+            .customEnchants("${style.baseColor}Better Together")
             .lore(
                 "Each mattock is intended to",
                 "be held onto by another player.",
@@ -68,14 +102,20 @@ class LoversBondMattockItem : CustomItemFunctions() {
                 "ore veins will be broken instantly.",
                 "",
                 "While holding this mattock,",
-                "<#D4668E>sneak <white>& press your <#D4668E>swap key (F)",
+                "${style.baseColor}sneak <white>& press your ${style.baseColor}swap key (F)",
                 "to teleport to your partner."
             )
             .material(Material.NETHERITE_PICKAXE)
             .tier(Tier.VALENTIDE_2025)
             .persistentData(key.key)
-            .stringPersistentDatas(mutableMapOf(secretKey to secret()))
-            .buildPair()
+            .stringPersistentDatas(mutableMapOf(secretKey to secret))
+            .vanillaEnchants(Enchantment.EFFICIENCY to 7, Enchantment.UNBREAKING to 10, Enchantment.SILK_TOUCH to 1, Enchantment.MENDING to 1)
+            .build()
+    }
+
+    override fun createItem(): Pair<String, ItemStack> {
+        val style = Style.entries.random()
+        return Pair(key.key, create(style).createItem())
     }
 
 
@@ -87,15 +127,21 @@ class LoversBondMattockItem : CustomItemFunctions() {
     }
 
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
-        if (!player.isSneaking || Cooldowns.isOnCooldown(this, player.uniqueId)) {
+        if (!player.isSneaking) {
             return
         }
+        event.isCancelled = true
+
+        if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
+            return
+        }
+
         val bondedPlayer = getBondedPlayer(player) ?: return run {
             player.sendActionBar(MiniMessageUtil.mm("<red>\uD83D\uDC94 <gray>Couldn't find your partner."))
         }
-        event.isCancelled = true
+
         player.teleportAsync(bondedPlayer.location)
-        Cooldowns.addCooldown(this, player.uniqueId, 100L)
+        QuickTasks.addCooldown(this, player.uniqueId, 30L)
     }
 
 
@@ -165,7 +211,7 @@ class LoversBondMattockItem : CustomItemFunctions() {
 
 /*
 rip my poor idea of having drops going into the other player's inventory...
-"NOOO DON'T HAVE THE DROPS GO INTO THE OTHER PLAYERS INV ITS SO STUPID" - kat
+"NOOO DON'T HAVE THE DROPS GO INTO THE OTHER PLAYERS INV IT'S SO STUPID" - kat
 
 val partner = getBondedPlayer(player) ?: return
         val blocks = Sphere(event.block.location, 9.0, 20.0).sphere
@@ -183,7 +229,7 @@ val partner = getBondedPlayer(player) ?: return
 
             Util.giveItem(partner, block.getDrops(item).first())
             partner.giveExp(exp, true)
-            // TODO: Add particles + Sound
+            // Add particles + Sound
         }
 
         allDrops.forEach { (item, exp) ->

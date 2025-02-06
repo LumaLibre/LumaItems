@@ -1,7 +1,6 @@
 package dev.jsinco.luma.lumaitems.items.magical
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
-import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.MagicItemCooldown
@@ -9,8 +8,8 @@ import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
-import dev.jsinco.luma.lumaitems.util.NeedsEdits
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
