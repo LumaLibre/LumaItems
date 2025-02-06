@@ -104,7 +104,7 @@ class RosethornRapierItem : CustomItemFunctions() {
 
 
     private fun increaseItemStackAmount(itemStack: ItemStack, damageDealt: Double) {
-        itemStack.amount += 1 // base
+        //itemStack.amount += 1 // base
         when (damageDealt) {
             in 0.0..130.0 -> {
                 itemStack.amount += (itemStack.amount / 3)
