@@ -40,24 +40,24 @@ public enum DefaultAttributes {
             container(Attribute.KNOCKBACK_RESISTANCE, 1.0, EquipmentSlotGroup.FEET)
     ),
     NETHERITE_SWORD(
-            container(Attribute.ATTACK_DAMAGE, 8.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 8.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.MAINHAND)
     ),
     NETHERITE_PICKAXE(
-            container(Attribute.ATTACK_DAMAGE, 6.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 6.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.MAINHAND)
     ),
     NETHERITE_AXE(
-            container(Attribute.ATTACK_DAMAGE, 10.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 10.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     NETHERITE_SHOVEL(
-            container(Attribute.ATTACK_DAMAGE, 6.5, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 6.5, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     NETHERITE_HOE(
-            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 4.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 4.0, EquipmentSlotGroup.MAINHAND)
     ),
     // Diamond
     DIAMOND_HELMET(
@@ -77,24 +77,24 @@ public enum DefaultAttributes {
             container(Attribute.ARMOR_TOUGHNESS, 2.0, EquipmentSlotGroup.FEET)
     ),
     DIAMOND_SWORD(
-            container(Attribute.ATTACK_DAMAGE, 7.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 7.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.MAINHAND)
     ),
     DIAMOND_PICKAXE(
-            container(Attribute.ATTACK_DAMAGE, 5.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 5.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.MAINHAND)
     ),
     DIAMOND_AXE(
-            container(Attribute.ATTACK_DAMAGE, 9.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 9.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     DIAMOND_SHOVEL(
-            container(Attribute.ATTACK_DAMAGE, 5.5, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 5.5, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     DIAMOND_HOE(
-            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 4.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 4.0, EquipmentSlotGroup.MAINHAND)
     ),
     // Gold
     GOLDEN_HELMET(
@@ -110,24 +110,24 @@ public enum DefaultAttributes {
             container(Attribute.ARMOR, 1.0, EquipmentSlotGroup.FEET)
     ),
     GOLDEN_SWORD(
-            container(Attribute.ATTACK_DAMAGE, 4.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 4.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.MAINHAND)
     ),
     GOLDEN_PICKAXE(
-            container(Attribute.ATTACK_DAMAGE, 2.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 2.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.MAINHAND)
     ),
     GOLDEN_AXE(
-            container(Attribute.ATTACK_DAMAGE, 7.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 7.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     GOLDEN_SHOVEL(
-            container(Attribute.ATTACK_DAMAGE, 2.5, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 2.5, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     GOLDEN_HOE(
-            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     // Iron
     IRON_HELMET(
@@ -143,24 +143,24 @@ public enum DefaultAttributes {
             container(Attribute.ARMOR, 2.0, EquipmentSlotGroup.FEET)
     ),
     IRON_SWORD(
-            container(Attribute.ATTACK_DAMAGE, 6.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 6.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.MAINHAND)
     ),
     IRON_PICKAXE(
-            container(Attribute.ATTACK_DAMAGE, 4.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 4.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.MAINHAND)
     ),
     IRON_AXE(
-            container(Attribute.ATTACK_DAMAGE, 9.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 0.9, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 9.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 0.9, EquipmentSlotGroup.MAINHAND)
     ),
     IRON_SHOVEL(
-            container(Attribute.ATTACK_DAMAGE, 4.5, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 4.5, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     IRON_HOE(
-            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 3.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 3.0, EquipmentSlotGroup.MAINHAND)
     ),
     // Chainmail & Stone
     CHAINMAIL_HELMET(
@@ -176,24 +176,24 @@ public enum DefaultAttributes {
             container(Attribute.ARMOR, 1.0, EquipmentSlotGroup.FEET)
     ),
     STONE_SWORD(
-            container(Attribute.ATTACK_DAMAGE, 5.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 5.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.MAINHAND)
     ),
     STONE_PICKAXE(
-            container(Attribute.ATTACK_DAMAGE, 3.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 3.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.MAINHAND)
     ),
     STONE_AXE(
-            container(Attribute.ATTACK_DAMAGE, 9.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 0.8, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 9.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 0.8, EquipmentSlotGroup.MAINHAND)
     ),
     STONE_SHOVEL(
-            container(Attribute.ATTACK_DAMAGE, 3.5, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 3.5, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     STONE_HOE(
-            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 2.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 2.0, EquipmentSlotGroup.MAINHAND)
     ),
     // Leather & Wood
     LEATHER_HELMET(
@@ -209,32 +209,32 @@ public enum DefaultAttributes {
             container(Attribute.ARMOR, 1.0, EquipmentSlotGroup.FEET)
     ),
     WOODEN_SWORD(
-            container(Attribute.ATTACK_DAMAGE, 4.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 4.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.6, EquipmentSlotGroup.MAINHAND)
     ),
     WOODEN_PICKAXE(
-            container(Attribute.ATTACK_DAMAGE, 2.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 2.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.2, EquipmentSlotGroup.MAINHAND)
     ),
     WOODEN_AXE(
-            container(Attribute.ATTACK_DAMAGE, 7.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 0.8, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 7.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 0.8, EquipmentSlotGroup.MAINHAND)
     ),
     WOODEN_SHOVEL(
-            container(Attribute.ATTACK_DAMAGE, 2.5, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
+            container(Attribute.ATTACK_DAMAGE, 2.5, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
     WOODEN_HOE(
-            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.HAND),
-            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.HAND)
-    )
+            container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.MAINHAND),
+            container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
+    ),
     ;
     //</editor-fold>
 
     private final List<AttributeContainer> attributeContainers;
 
     DefaultAttributes(AttributeContainer... attributeContainers) {
-        this.attributeContainers = new ArrayList<>(List.of(attributeContainers));
+        this.attributeContainers = List.of(attributeContainers);
     }
 
     public Map<Attribute, AttributeModifier> getAttributes() {
@@ -251,16 +251,17 @@ public enum DefaultAttributes {
         return attributeModifierMap;
     }
 
-    public void addAttribute(AttributeContainer attributeModifier) {
-        attributeContainers.add(attributeModifier);
-    }
-    public void addAttribute(String key, Attribute attribute, double amount, AttributeModifier.Operation operation, @Nullable EquipmentSlotGroup slot) {
-        addAttribute(new AttributeContainer(key, attribute, operation, amount, slot));
-    }
 
-    public Map<Attribute, AttributeModifier> appendThenGetAttributes(AttributeContainer attributeContainer) {
-        addAttribute(attributeContainer);
-        return getAttributes();
+    public Map<Attribute, AttributeModifier> appendThenGetAttributes(AttributeContainer... attributeContainer) {
+        List<AttributeContainer> newContainers = new ArrayList<>(attributeContainers);
+        newContainers.addAll(List.of(attributeContainer));
+        return newContainers.stream().collect(HashMap::new, (map, container) ->
+                map.put(container.attribute(), new AttributeModifier(
+                container.getKey(),
+                container.amount(),
+                container.operation(),
+                container.getSlot()
+        )), HashMap::putAll);
     }
 
     public Map<Attribute, AttributeModifier> appendThenGetAttributes(String key, Attribute attribute, double amount, AttributeModifier.Operation operation, @Nullable EquipmentSlotGroup slot) {
@@ -283,6 +284,10 @@ public enum DefaultAttributes {
             }
         }
         return null;
+    }
+
+    public List<AttributeContainer> getAttributeContainers() {
+        return attributeContainers;
     }
 
     public static Map<Attribute, AttributeModifier> of(Attribute attribute, String key, double amount, AttributeModifier.Operation operation, EquipmentSlotGroup slot) {
