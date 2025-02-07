@@ -26,7 +26,7 @@ class ReforgedSet : AstralSetFunctions() {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                identifier(), 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
+                "${identifier()}-helm", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
         )
 
         astralSetFactory.astralSetItem(
@@ -35,7 +35,7 @@ class ReforgedSet : AstralSetFunctions() {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_CHESTPLATE.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                identifier(), 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
+                "${identifier()}-chest", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
         )
 
         astralSetFactory.astralSetItem(
@@ -44,7 +44,7 @@ class ReforgedSet : AstralSetFunctions() {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                identifier(), 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
+                "${identifier()}-legs", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
         )
 
         astralSetFactory.astralSetItem(
@@ -53,7 +53,7 @@ class ReforgedSet : AstralSetFunctions() {
             mutableListOf("Increases max amount", "of health while worn"),
             true,
             DefaultAttributes.NETHERITE_BOOTS.appendThenGetAttributes(Attribute.MAX_HEALTH,
-                identifier(), 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
+                "${identifier()}-boots", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
         )
 
         return astralSetFactory.createdAstralItems
