@@ -295,6 +295,6 @@ public enum DefaultAttributes {
     }
 
     private static AttributeContainer container(Attribute attribute, double amt, EquipmentSlotGroup slot) {
-        return new AttributeContainer(attribute, amt, slot);
+        return AttributeContainer.defaultAttributeContainer(attribute, amt, slot);
     }
 }

@@ -7,6 +7,7 @@ import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffectType
 
@@ -24,7 +25,15 @@ class CarnivalMiningPickaxeItem : CustomItemFunctions() {
             .buildPair()
     }
 
-    override fun onLowPriorityBlockBreak(player: Player, event: BlockBreakEvent) {
+    override fun onLeftClick(player: Player, event: PlayerInteractEvent) {
+        event.isCancelled = true
+    }
+
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        event.isCancelled = true
+    }
+
+    override fun onGenericInteract(player: Player, event: PlayerInteractEvent) {
         event.isCancelled = true
     }
 

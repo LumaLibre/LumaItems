@@ -1,15 +1,13 @@
 package dev.jsinco.luma.lumaitems.items.test
 
-import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 
 class CarnivalTargetPracticeBowItem : CustomItemFunctions() {
 
@@ -26,7 +24,6 @@ class CarnivalTargetPracticeBowItem : CustomItemFunctions() {
     }
 
     override fun onProjectileLaunch(player: Player, event: ProjectileLaunchEvent) {
-        event.entity.setMetadata("carnival_target_practice_bow", FixedMetadataValue(LumaItems.getInstance(), true))
         event.isCancelled = true
     }
 }

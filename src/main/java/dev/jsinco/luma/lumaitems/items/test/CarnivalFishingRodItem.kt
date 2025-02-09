@@ -1,8 +1,8 @@
 package dev.jsinco.luma.lumaitems.items.test
 
-import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -24,18 +24,6 @@ class CarnivalFishingRodItem : CustomItemFunctions() {
     }
 
     override fun onFish(player: Player, event: PlayerFishEvent) {
-        //val item = event.caught as? Item ?: return
-        //if (!item.itemStack.type.toString().contains("APPLE")) {
-//            player.sendMessage(Util.colorcode("""
-//                        &eWell, this is awkward... I'm catching something but it isn't an apple. I'm not a really big fan of fish that
-//                        aren't apples. Why do we even catch fish that aren't apples? I don't know. I'm just a fishing rod. I don't really want to be used
-//                        for fishing anyways. Why was I made to catch apples anyways? Can you just put me back, I don't want to be a fishing rod anymore.
-//                    """.trimIndent()))
-           // event.isCancelled = true
-       // }
-
-        if (!player.world.name.contains("event")) {
-            return
-        }
+        event.isCancelled = true
     }
 }

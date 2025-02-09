@@ -36,7 +36,7 @@ object Util {
     private val armorEquipmentSlots: List<EquipmentSlot> = listOf(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
     private val gearTypes: List<String> = listOf("Helmet", "Chestplate", "Leggings", "Boots", "Sword", "Pickaxe", "Axe", "Shovel", "Hoe", "Rod", "Elytra", "Shield", "Crossbow", "Bow")
 
-    val prefix: String = colorcode(plugin.config.getString("prefix") ?: "")
+    val prefix: String = colorcode("&#b986f9&lInfo &8»&#E2E2E2")
 
 
 
