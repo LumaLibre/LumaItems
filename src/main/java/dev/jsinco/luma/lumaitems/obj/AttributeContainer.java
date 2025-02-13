@@ -19,6 +19,10 @@ public record AttributeContainer(String key,
         return new AttributeContainer("defaultattribute", attribute, AttributeModifier.Operation.ADD_NUMBER, getAmountBasedFromPlayer(attribute, amount), slot);
     }
 
+    public static AttributeContainer of(String key, Attribute attribute, AttributeModifier.Operation operation, double amount, @Nullable EquipmentSlotGroup slot) {
+        return new AttributeContainer(key, attribute, operation, amount, slot);
+    }
+
     public NamespacedKey getKey() {
         return new NamespacedKey(LumaItems.getInstance(), key);
     }

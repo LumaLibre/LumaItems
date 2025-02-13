@@ -20,6 +20,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
+import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -56,6 +57,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.JOBS_EXP_GAIN -> onJobsExpGain(player, event as JobsExpGainEvent)
             Action.JOBS_PRE_PAYMENT -> onJobsPrePayment(player, event as JobsPrePaymentEvent)
             Action.CROSSBOW_LOAD -> onCrossBowLoad(player, event as EntityLoadCrossbowEvent)
+            Action.PLAYER_SHOOT_BOW -> onPlayerShootBow(player, event as EntityShootBowEvent)
             Action.PROJECTILE_LAUNCH -> onProjectileLaunch(player, event as ProjectileLaunchEvent)
             Action.PROJECTILE_LAND -> onProjectileLand(player, event as ProjectileHitEvent)
             Action.RIGHT_CLICK -> onRightClick(player, event as PlayerInteractEvent)
@@ -112,6 +114,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onJobsExpGain(player: Player, event: JobsExpGainEvent) {}
     open fun onJobsPrePayment(player: Player, event: JobsPrePaymentEvent) {}
     open fun onCrossBowLoad(player: Player, event: EntityLoadCrossbowEvent) {}
+    open fun onPlayerShootBow(player: Player, event: EntityShootBowEvent) {}
     open fun onProjectileLaunch(player: Player, event: ProjectileLaunchEvent) {}
     open fun onProjectileLand(player: Player, event: ProjectileHitEvent) {}
     open fun onRightClick(player: Player, event: PlayerInteractEvent) {}

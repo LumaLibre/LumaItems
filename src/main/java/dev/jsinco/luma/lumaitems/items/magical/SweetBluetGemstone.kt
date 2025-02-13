@@ -115,7 +115,7 @@ class SweetBluetGemstone : CustomItem {
     }
 
 
-    private fun magicalDownFall(player: Player) {
+    private fun magicalDownFall(player: Player) {//todo;rem
         if (activeSnowballs.contains(player.uniqueId)) return
         val targetBlock = player.getTargetBlockExact(170) ?: return
 

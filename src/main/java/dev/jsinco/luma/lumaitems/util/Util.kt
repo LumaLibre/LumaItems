@@ -120,7 +120,7 @@ object Util {
         player.inventory.itemInMainHand.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
         player.inventory.itemInOffHand.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
 
-        for (equipment in player.equipment.armorContents) {
+        for (equipment in player.equipment?.armorContents ?: return nbtList) {
             equipment?.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
         }
         return nbtList
@@ -135,7 +135,7 @@ object Util {
 
     fun isWearingWithNBT(player: Player, identifier: String): Boolean {
         val armorDatas: List<PersistentDataContainer?> =
-            armorEquipmentSlots.map { player.equipment.getItem(it).itemMeta?.persistentDataContainer }
+            armorEquipmentSlots.map { player.equipment?.getItem(it)?.itemMeta?.persistentDataContainer }
 
         for (data in armorDatas) {
             if (data != null && data.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT)) return true
@@ -217,7 +217,7 @@ object Util {
     }
 
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player): Boolean {
-        return player.equipment.getItem(slot).itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT) == true
+        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT) == true
     }
 
     fun isItemInSlots(identifier: String, slots: List<EquipmentSlot>, player: Player): Boolean {

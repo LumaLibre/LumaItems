@@ -228,6 +228,10 @@ public enum DefaultAttributes {
             container(Attribute.ATTACK_DAMAGE, 1.0, EquipmentSlotGroup.MAINHAND),
             container(Attribute.ATTACK_SPEED, 1.0, EquipmentSlotGroup.MAINHAND)
     ),
+    // Misc
+    SHEARS(
+            container(Attribute.MINING_EFFICIENCY, 0.0, EquipmentSlotGroup.MAINHAND)
+    )
     ;
     //</editor-fold>
 

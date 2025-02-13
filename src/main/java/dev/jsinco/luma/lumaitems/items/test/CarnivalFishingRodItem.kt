@@ -24,6 +24,7 @@ class CarnivalFishingRodItem : CustomItemFunctions() {
     }
 
     override fun onFish(player: Player, event: PlayerFishEvent) {
-        event.isCancelled = true
+        // handle this later
+        //event.isCancelled = true
     }
 }

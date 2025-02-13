@@ -122,7 +122,7 @@ object RelicCrafting {
     }
 
     fun hasFullSet(key: String, player: Player): Boolean {
-        for (equipment in player.equipment.armorContents) {
+        for (equipment in player.equipment?.armorContents ?: return false) {
             if (equipment == null || equipment.type == Material.AIR || !equipment.hasItemMeta()) return false
             if (!equipment.itemMeta.persistentDataContainer.has(NamespacedKey(plugin, key), PersistentDataType.SHORT)) return false
         }

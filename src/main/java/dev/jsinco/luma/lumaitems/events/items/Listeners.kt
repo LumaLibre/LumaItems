@@ -26,6 +26,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
+import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -63,6 +64,14 @@ class Listeners(val plugin: LumaItems) : ItemListener() {
         val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.CROSSBOW_LOAD, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerBowShoot(event: EntityShootBowEvent) {
+        val player = event.entity as? Player ?: return
+        val data: PersistentDataContainer = event.bow?.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.PLAYER_SHOOT_BOW, player, event)
     }
 
     @FireForAllNBT

@@ -70,8 +70,8 @@ class PrideCrownItem : CustomItem {
                 event.isCancelled = true
 
                 val item = event.item ?: return false
-                if (player.equipment.helmet == null) {
-                    player.equipment.helmet = item
+                if (player.equipment?.helmet == null) {
+                    player.equipment?.helmet = item
                     item.amount = 0
                 }
             }

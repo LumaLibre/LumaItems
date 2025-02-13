@@ -56,8 +56,8 @@ class WizardsHatItem : CustomItem {
                 if (!Util.isItemInSlot("wizardshat", EquipmentSlot.HEAD, player)) {
                     return false
                 }
-                val item = player.equipment.helmet
-                item.itemMeta = (item.itemMeta as? LeatherArmorMeta)?.apply {
+                val item = player.equipment?.helmet
+                item?.itemMeta = (item?.itemMeta as? LeatherArmorMeta)?.apply {
                     setColor(colors.random())
                 }
             }

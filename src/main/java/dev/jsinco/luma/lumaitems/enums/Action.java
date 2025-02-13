@@ -24,6 +24,7 @@ public enum Action {
      * Player actions that effect a specific player. Called by a listener.
      */
     CROSSBOW_LOAD, // When a player loads a crossbow in their main hand
+    PLAYER_SHOOT_BOW, // When a player shoots a bow
     PROJECTILE_LAUNCH, // When a player launches a projectile from their main or offhand
     PROJECTILE_LAND, // When a projectile that was shot by a player and has a specific persistent data lands
     RIGHT_CLICK, // When a player right-clicks an item

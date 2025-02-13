@@ -11,12 +11,16 @@ import org.bukkit.entity.Player
 class CopyCoordinates : SubCommand {
     override fun execute(plugin: LumaItems, sender: CommandSender, args: Array<out String>) {
         sender as Player
-        val coordinatesString = "${sender.world.name},${sender.location.blockX},${sender.location.blockY},${sender.location.blockZ}"
+        val coordinatesString = if (args.contains("-yp")) {
+            "${sender.world.name},${sender.location.blockX},${sender.location.blockY},${sender.location.blockZ},${sender.location.yaw},${sender.location.pitch}"
+        } else {
+            "${sender.world.name},${sender.location.blockX},${sender.location.blockY},${sender.location.blockZ}"
+        }
         MiniMessageUtil.msg(sender, Component.text(coordinatesString).clickEvent(ClickEvent.copyToClipboard(coordinatesString)).hoverEvent(Component.text("Click to copy")))
     }
 
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
-        return null
+    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String> {
+        return listOf("-yp")
     }
 
     override fun permission(): String {
