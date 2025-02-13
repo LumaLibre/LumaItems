@@ -199,16 +199,21 @@ class ItemFactory(
         private var spoofEnchants: Boolean = false
         private var persistentDataValue: Short = 1
 
+        @SafeVarargs
         fun name(name: String) = apply { this.name = name }
         fun customEnchants(customEnchants: MutableList<String>) = apply { this.customEnchants = customEnchants }
+        @SafeVarargs
         fun customEnchants(vararg customEnchants: String) = apply { this.customEnchants = customEnchants.toMutableList() }
         fun lore(lore: MutableList<String>) = apply { this.lore = lore }
+        @SafeVarargs
         fun lore(vararg lore: String) = apply { this.lore = lore.toMutableList() }
         fun material(material: Material) = apply { this.material = material }
         fun material(s: String) = apply { this.material = Material.matchMaterial(s) ?: Material.AIR }
         fun persistentData(persistentData: MutableList<String>) = apply { this.persistentData = persistentData }
+        @SafeVarargs
         fun persistentData(vararg persistentData: String) = apply { this.persistentData = persistentData.toMutableList() }
         fun vanillaEnchants(vanillaEnchants: MutableMap<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
+        @SafeVarargs
         fun vanillaEnchants(vararg vanillaEnchants: Pair<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants.toMap().toMutableMap() }
         fun tier(tier: String) = apply { this.tier = tier }
         fun tier (tier: Tier) = apply { this.tier = tier.tierString }
@@ -220,6 +225,7 @@ class ItemFactory(
         fun stringPersistentDatas(stringPersistentDatas: MutableMap<NamespacedKey, String>) = apply { this.stringPersistentDatas = stringPersistentDatas }
         fun stringPersistentData(key: String, value: String) = apply { this.stringPersistentDatas[NamespacedKey(plugin, key)] = value }
         fun quotes(quotes: MutableList<String>) = apply { this.quotes = quotes }
+        @SafeVarargs
         fun quotes(vararg quotes: String) = apply { this.quotes = quotes.toMutableList() }
         fun b64PHead(b64PHead: String) = apply { this.b64PHead = b64PHead }
         fun spoofEnchants(spoofEnchants: Boolean) = apply { this.spoofEnchants = spoofEnchants }
