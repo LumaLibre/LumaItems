@@ -3,8 +3,10 @@ package dev.jsinco.luma.lumaitems.commands.subcommands
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.commands.SubCommand
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
+import dev.jsinco.luma.lumaitems.util.Util
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -16,7 +18,13 @@ class CopyCoordinates : SubCommand {
         } else {
             "${sender.world.name},${sender.location.blockX},${sender.location.blockY},${sender.location.blockZ}"
         }
-        MiniMessageUtil.msg(sender, Component.text(coordinatesString).clickEvent(ClickEvent.copyToClipboard(coordinatesString)).hoverEvent(Component.text("Click to copy")))
+
+        val c = Util.getRandomColor()
+        val comp = Component.text(coordinatesString)
+            .clickEvent(ClickEvent.copyToClipboard(coordinatesString))
+            .hoverEvent(Component.text("Click to copy"))
+            .color(TextColor.color(c.red, c.green, c.blue))
+        MiniMessageUtil.msg(sender, comp)
     }
 
     override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String> {

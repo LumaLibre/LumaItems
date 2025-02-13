@@ -84,10 +84,10 @@ class StraszLongbow : CustomItemFunctions() {
         var i = 0
         hitLivingEntity.getNearbyEntities(20.0, 20.0, 20.0).forEach {
             // mayhaps check if the entity is in line of sight?
-            if (it !is LivingEntity || it == player /*|| !hitLivingEntity.hasLineOfSight(it)*/) return@forEach
+            if (it !is LivingEntity || it is Player /*|| !hitLivingEntity.hasLineOfSight(it)*/) return@forEach
             else if (i++ > MAX_DUPLICATE_ARROWS) return
             val vector: Vector = AbilityUtil.getDirectionBetweenLocations(hitLivingEntity.eyeLocation, it.eyeLocation)
-            spawnProjectile(vector.multiply(0.2), hitLivingEntity.eyeLocation.add(0.0,0.4,0.0), true, player, true)
+            spawnProjectile(vector.multiply(0.5), hitLivingEntity.eyeLocation.add(0.0,0.4,0.0), true, player, true)
         }
     }
 
