@@ -1,4 +1,4 @@
-package dev.jsinco.luma.lumaitems.items.test
+package dev.jsinco.luma.lumaitems.items.playground
 
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.items.ItemFactory

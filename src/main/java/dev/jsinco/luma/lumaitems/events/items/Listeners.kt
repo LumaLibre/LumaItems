@@ -47,6 +47,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
@@ -408,8 +409,12 @@ class Listeners(val plugin: LumaItems) : ItemListener() {
 
     @EventHandler
     fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
-        val data: PersistentDataContainer = event.itemStack?.itemMeta?.persistentDataContainer ?: return
-
-        fire(data, Action.EMPTY_BUCKET, event.player, event)
+        val player = event.player
+        val data = when (event.hand) {
+            EquipmentSlot.HAND -> player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
+            EquipmentSlot.OFF_HAND -> player.inventory.itemInOffHand.itemMeta?.persistentDataContainer
+            else -> return
+        } ?: return
+        fire(data, Action.EMPTY_BUCKET, player, event)
     }
 }

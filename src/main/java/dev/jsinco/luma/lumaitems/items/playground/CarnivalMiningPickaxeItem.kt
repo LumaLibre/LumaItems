@@ -1,4 +1,4 @@
-package dev.jsinco.luma.lumaitems.items.test
+package dev.jsinco.luma.lumaitems.items.playground
 
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import dev.jsinco.luma.lumaitems.items.ItemFactory
@@ -9,7 +9,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.potion.PotionEffectType
 
 class CarnivalMiningPickaxeItem : CustomItemFunctions() {
 

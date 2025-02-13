@@ -48,7 +48,6 @@ public final class ItemManager {
             "dev.jsinco.luma.lumaitems.items.magical",
             "dev.jsinco.luma.lumaitems.items.astral",
             "dev.jsinco.luma.lumaitems.items.astral.sets",
-            "dev.jsinco.luma.lumaitems.items.test",
             "dev.jsinco.luma.lumaitems.items.nests",
             "dev.jsinco.luma.lumaitems.items.playground"
     );
