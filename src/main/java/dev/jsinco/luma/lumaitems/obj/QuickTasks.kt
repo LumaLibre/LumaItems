@@ -11,10 +11,12 @@ object QuickTasks {
 
     val activeCooldowns: MutableMap<Class<out CustomItem>, CustomItemCooldown> = ConcurrentHashMap()
 
+    @JvmStatic
     fun isOnCooldown(customItem: CustomItem, player: UUID): Boolean {
         return activeCooldowns[customItem::class.java]?.isOnCooldown(player) ?: false
     }
 
+    @JvmStatic
     fun addCooldown(customItem: CustomItem, player: UUID, ticks: Long) {
         val customItemCooldown = activeCooldowns[customItem::class.java]
             ?:
@@ -23,6 +25,11 @@ object QuickTasks {
         Bukkit.getScheduler().runTaskLaterAsynchronously(LumaItems.getInstance(), Runnable {
             customItemCooldown.removeCooldown(player)
         }, ticks)
+    }
+
+    @JvmStatic
+    fun getActiveCooldowns(customItem: CustomItem): Int {
+        return activeCooldowns[customItem::class.java]?.players?.size ?: 0
     }
 
     fun addIndefinitely(customItem: CustomItem, player: UUID) {

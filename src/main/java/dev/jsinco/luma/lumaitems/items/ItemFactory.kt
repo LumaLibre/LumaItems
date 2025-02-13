@@ -49,20 +49,20 @@ class ItemFactory(
 
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()
-        fun builder() = Builder()
         private val tierFormat = listOf(
             "",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
             "&#EEE1D5Tier • <PLACEHOLDER>",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "
         )
-
         private val miniMessageTierFormat = listOf(
             "",
             "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>",
             "<#EEE1D5>Tier •</#EEE1D5> <PLACEHOLDER>",
             "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>"
         )
+        @JvmStatic
+        fun builder() = Builder()
     }
 
     val item = ItemStack(material)

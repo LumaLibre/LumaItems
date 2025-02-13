@@ -5,6 +5,7 @@ api-version: '1.21'
 author: 'Jsinco'
 #libraries: ['org.jetbrains.kotlin:kotlin-stdlib:2.0.21']
 softdepend:
+- LumaCore
 - PlaceHolderAPI
 - EvenMoreFish # Softdepending EMF to register listeners after it
 - ProtocolLib
