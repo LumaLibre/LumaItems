@@ -32,8 +32,6 @@ import java.util.logging.Level;
 
 public final class LumaItems extends JavaPlugin {
 
-    // TODO: write a program to go through an replace all legacy rgb with minimessage
-
     private static LumaItems instance;
     private static boolean withProtocolLib;
     private static boolean withMythicMobs;
