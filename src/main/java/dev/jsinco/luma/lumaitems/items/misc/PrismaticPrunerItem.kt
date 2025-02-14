@@ -25,14 +25,10 @@ class PrismaticPrunerItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><#C18DF5>P<#C784E9>r<#CD7BDE>i<#D372D2>s<#D969C7>m<#DF5FBB>a<#E556AF>t<#EB4DA4>i<#F14498>c <#DC6F8B>P<#D28485>r<#C89A7E>u<#BDAF78>n<#B3C471>e<#A8DA6B>r<#9EEF64>s")
+            .customEnchants("<#CD7BDE>Clippers")
             .lore(
-                "Ever wanted to shear",
-                "anything other than a sheep?",
-                "Well now you can!",
-                "",
-                "With the latest addition to the",
-                "<#C18DF5>P<#C784E9>r<#CD7BDE>i<#D372D2>s<#D969C7>m<#DF5FBB>a<#E556AF>t<#EB4DA4>i<#F14498>c<white> series, shear",
-                "your heart's content!"
+                "<#C18DF5>Right-click <white>any entity",
+                "to shear it and get wool."
                 )
             .material(Material.SHEARS)
             .vanillaEnchants(Enchantment.UNBREAKING to 4, Enchantment.EFFICIENCY to 4, Enchantment.MENDING to 1)
