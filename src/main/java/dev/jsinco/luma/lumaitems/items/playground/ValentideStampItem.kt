@@ -9,7 +9,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class ValentideTokenItem : CustomItem {
+class ValentideStampItem : CustomItem {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gradient:#954381:#EC60B0:#EE80C6:#954381>Valentide Stamp")
@@ -24,7 +24,7 @@ class ValentideTokenItem : CustomItem {
             )
             .tier(Tier.VALENTIDE_2025)
             .persistentData("valentide-stamp")
-            .material(Material.RED_DYE)
+            .material(Material.CLAY_BALL)
             .buildPair()
     }
 

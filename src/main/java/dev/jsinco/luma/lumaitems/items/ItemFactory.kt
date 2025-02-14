@@ -111,7 +111,13 @@ class ItemFactory(
         }
 
 
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE)
+        meta.addItemFlags(
+            ItemFlag.HIDE_ATTRIBUTES,
+            ItemFlag.HIDE_ARMOR_TRIM,
+            ItemFlag.HIDE_UNBREAKABLE,
+            ItemFlag.HIDE_DYE,
+            ItemFlag.HIDE_ADDITIONAL_TOOLTIP
+        )
 
         val combinedLore: MutableList<String> = mutableListOf()
 

@@ -14,8 +14,7 @@ class InfiniteWaterBucketItem : CustomItemFunctions() {
     private val infiniteWaterBucket: ItemStack = ItemFactory.builder()
         .name("<b><gradient:#4498DB:#778CF4>Infinite Wa</gradient><gradient:#778CF4:#2E5FD7>ter Bucket</gradient></b>")
         .lore(
-            "Right-click to place water",
-            "infinite times!"
+            "Place water infinitely!"
         )
         .material(Material.WATER_BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)
@@ -39,8 +38,7 @@ class InfiniteLavaBucketItem : CustomItemFunctions() {
     private val infiniteLavaBucket: ItemStack = ItemFactory.builder()
         .name("<b><gradient:#E55F33:#E09738>Infinite L</gradient><gradient:#E09738:#d53e0f>ava Bucket</gradient></b>")
         .lore(
-            "Right-click to place lava",
-            "infinite times!"
+            "Place lava infinitely!"
         )
         .material(Material.LAVA_BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)

@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.NeedsEdits
+import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Bukkit
@@ -20,7 +21,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 
-@NeedsEdits
+@Ignore
 class TrainingKatanaItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         val k = "training-katana"

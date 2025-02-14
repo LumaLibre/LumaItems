@@ -27,7 +27,6 @@ import org.bukkit.persistence.PersistentDataType
 //    WorldName.EVENT_NEW,
 //    WorldName.EVENT_THE_END
 //])
-@NeedsEdits
 class FrostbarkChiselItem : CustomItemFunctions() {
 
 

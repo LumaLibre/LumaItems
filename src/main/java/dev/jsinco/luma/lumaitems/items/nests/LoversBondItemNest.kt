@@ -27,7 +27,7 @@ class SoulboundSeeker : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><#7B76D0>S<#8D78C8>o<#9E7BC0>u<#B07DB8>l<#C27FB0>b<#D382A8>o<#E584A0>u<#DC84AA>n<#D384B4>d <#C084C7>S<#B784D1>e<#AE84DB>e<#A584E5>k<#AF80D5>e<#B97BC4>r <#CE72A3>S<#D86E93>e<#E26982>t")
-            .material(Material.RED_BUNDLE)
+            .material(Material.PURPLE_BUNDLE)
             .tier(Tier.VALENTIDE_2025)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
             .lore(

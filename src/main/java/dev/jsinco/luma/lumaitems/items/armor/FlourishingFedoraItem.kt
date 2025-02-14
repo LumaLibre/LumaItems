@@ -11,7 +11,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-@NeedsEdits
+
 class FlourishingFedoraItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
