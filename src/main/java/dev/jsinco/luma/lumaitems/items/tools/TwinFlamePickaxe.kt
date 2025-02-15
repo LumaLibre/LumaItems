@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.tools
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
@@ -48,9 +49,11 @@ class TwinFlamePickaxe : CustomItemFunctions() {
         if (meta.hasEnchant(Enchantment.FORTUNE)) {
             meta.removeEnchant(Enchantment.FORTUNE)
             meta.addEnchant(Enchantment.SILK_TOUCH, 1, true)
+            player.sendActionBar(net.kyori.adventure.text.Component.text("Switched to Silk Touch").color(TextColor.fromHexString("#FF6AA8")))
         } else if (meta.hasEnchant(Enchantment.SILK_TOUCH)) {
             meta.removeEnchant(Enchantment.SILK_TOUCH)
             meta.addEnchant(Enchantment.FORTUNE, 5, true)
+            player.sendActionBar(net.kyori.adventure.text.Component.text("Switched to Fortune").color(TextColor.fromHexString("#FF6AA8")))
         }
         item.itemMeta = meta
         event.isCancelled = true
