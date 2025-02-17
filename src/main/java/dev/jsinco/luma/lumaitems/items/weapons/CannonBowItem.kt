@@ -21,10 +21,6 @@ import org.bukkit.persistence.PersistentDataType
 
 class CannonBowItem : CustomItem {
 
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-    }
-
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
             "&#090909&lC&#1b1911&la&#2e281a&ln&#403822&ln&#52472b&lo&#645733&ln&#77663b&lB&#897644&lo&#9b854c&lw",
@@ -78,7 +74,7 @@ class CannonBowItem : CustomItem {
         val cannonBall = p.world.spawn(projectile.location, EnderPearl::class.java)
         GlowManager.setGlowColor(cannonBall, ChatColor.BLACK)
         cannonBall.isGlowing = true
-        cannonBall.persistentDataContainer.set(NamespacedKey(plugin, "cannonbow"), PersistentDataType.SHORT, 1)
+        cannonBall.persistentDataContainer.set(NamespacedKey(instance(), "cannonbow"), PersistentDataType.SHORT, 1)
         cannonBall.velocity = projectile.velocity
     }
 

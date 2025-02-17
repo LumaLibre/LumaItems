@@ -16,9 +16,6 @@ import org.bukkit.inventory.ItemStack
 import kotlin.random.Random
 
 class LoversAlluringItem : CustomItem {
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -39,7 +36,7 @@ class LoversAlluringItem : CustomItem {
                 event as PlayerFishEvent
                 when (event.state) {
                     PlayerFishEvent.State.BITE -> {
-                        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, Runnable {
+                        Bukkit.getScheduler().runTaskLaterAsynchronously(instance(), Runnable {
                             LumaItems.getProtocolManager()?.receiveClientPacket(player, PacketContainer(PacketType.Play.Client.USE_ITEM))
                         }, 1L)
                     }

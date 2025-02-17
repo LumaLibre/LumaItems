@@ -1,8 +1,9 @@
 package dev.jsinco.luma.lumaitems.commands
 
 import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.commands.subcommands.AddTier
-import dev.jsinco.luma.lumaitems.commands.subcommands.CopyCoordinates
+import dev.jsinco.luma.lumaitems.commands.subcommands.AddTierCommand
+import dev.jsinco.luma.lumaitems.commands.subcommands.ClearCooldownCommand
+import dev.jsinco.luma.lumaitems.commands.subcommands.CopyCoordinatesCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.DebugCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.GiveAstralCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.GiveItemCommand
@@ -25,9 +26,10 @@ class CommandManager(val plugin: LumaItems) : CommandExecutor, TabCompleter {
         commands["debug"] = DebugCommand()
         commands["relic"] = RelicCommand()
         commands["giveastral"] = GiveAstralCommand()
-        commands["addtier"] = AddTier()
+        commands["addtier"] = AddTierCommand()
         commands["upgrade"] = UpgradeCommand()
-        commands["copycoordinates"] = CopyCoordinates()
+        commands["copycoordinates"] = CopyCoordinatesCommand()
+        commands["clearcooldown"] = ClearCooldownCommand()
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {

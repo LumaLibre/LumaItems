@@ -6,7 +6,7 @@ import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class AddTier : SubCommand {
+class AddTierCommand : SubCommand {
     override fun execute(plugin: LumaItems, sender: CommandSender, args: Array<out String>) {
         sender as Player
         val item = sender.inventory.itemInMainHand

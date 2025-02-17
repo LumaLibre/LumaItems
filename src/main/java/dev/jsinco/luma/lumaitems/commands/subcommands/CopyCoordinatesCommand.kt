@@ -10,7 +10,7 @@ import net.kyori.adventure.text.format.TextColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class CopyCoordinates : SubCommand {
+class CopyCoordinatesCommand : SubCommand {
     override fun execute(plugin: LumaItems, sender: CommandSender, args: Array<out String>) {
         sender as Player
         val coordinatesString = if (args.contains("-yp")) {

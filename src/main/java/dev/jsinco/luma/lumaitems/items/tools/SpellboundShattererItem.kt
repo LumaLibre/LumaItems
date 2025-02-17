@@ -26,7 +26,6 @@ import java.util.Random
 class SpellboundShattererItem : CustomItem {
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
         private val dustOptions: List<DustOptions> = listOf(
             DustOptions(Color.fromRGB(118, 0, 117), 1f),
             DustOptions(Color.fromRGB(245, 96, 1), 1f),
@@ -71,7 +70,7 @@ class SpellboundShattererItem : CustomItem {
         block.world.playSound(block.location, Sound.ENTITY_WITCH_AMBIENT, 0.5f, 1f)
         block.world.playSound(block.location, Sound.ENTITY_GENERIC_EXPLODE, 0.2f, 1f)
 
-        player.setMetadata("shattering", FixedMetadataValue(plugin, true))
+        player.setMetadata("shattering", FixedMetadataValue(instance(), true))
         for (b in cuboid.blockList()) {
             if (BlockConstants.BLACKLISTED.contains(b.type)) continue
 
@@ -81,6 +80,6 @@ class SpellboundShattererItem : CustomItem {
             player.breakBlock(b)
             b.world.spawnParticle(Particle.BLOCK, b.location.add(0.5, 0.5, 0.5), 10, 0.5, 0.5, 0.5, 0.1, b.blockData)
         }
-        player.removeMetadata("shattering", plugin)
+        player.removeMetadata("shattering", instance())
     }
 }

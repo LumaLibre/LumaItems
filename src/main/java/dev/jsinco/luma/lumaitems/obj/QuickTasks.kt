@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.obj
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -17,6 +18,21 @@ object QuickTasks {
     }
 
     @JvmStatic
+    fun isOnCooldown(customItem: CustomItem, player: Player): Boolean {
+        return activeCooldowns[customItem::class.java]?.isOnCooldown(player.uniqueId) ?: false
+    }
+
+    @JvmStatic
+    fun addCooldown(customItem: CustomItem, player: Player, ticks: Long) {
+        addCooldown(customItem, player.uniqueId, ticks)
+    }
+
+    @JvmStatic
+    fun addCooldown(customItem: CustomItem, player: Player, ticks: Long, callback: () -> Unit) {
+        addCooldown(customItem, player.uniqueId, ticks, callback)
+    }
+
+    @JvmStatic
     fun addCooldown(customItem: CustomItem, player: UUID, ticks: Long) {
         val customItemCooldown = activeCooldowns[customItem::class.java]
             ?:
@@ -24,6 +40,18 @@ object QuickTasks {
         customItemCooldown.addCooldown(player)
         Bukkit.getScheduler().runTaskLaterAsynchronously(LumaItems.getInstance(), Runnable {
             customItemCooldown.removeCooldown(player)
+        }, ticks)
+    }
+
+    @JvmStatic
+    fun addCooldown(customItem: CustomItem, player: UUID, ticks: Long, callback: () -> Unit) {
+        val customItemCooldown = activeCooldowns[customItem::class.java]
+            ?:
+        CustomItemCooldown(customItem::class.java, mutableListOf()).also { activeCooldowns[customItem::class.java] = it }
+        customItemCooldown.addCooldown(player)
+        Bukkit.getScheduler().runTaskLaterAsynchronously(LumaItems.getInstance(), Runnable {
+            customItemCooldown.removeCooldown(player)
+            callback()
         }, ticks)
     }
 
@@ -36,6 +64,10 @@ object QuickTasks {
         val customItemCooldown = activeCooldowns[customItem::class.java] ?:
         CustomItemCooldown(customItem::class.java, mutableListOf()).also { activeCooldowns[customItem::class.java] = it }
         customItemCooldown.addCooldown(player)
+    }
+
+    fun removeNow(player: UUID) {
+        activeCooldowns.values.forEach { it.removeCooldown(player) }
     }
 
     fun removeNow(customItem: CustomItem, player: UUID) {

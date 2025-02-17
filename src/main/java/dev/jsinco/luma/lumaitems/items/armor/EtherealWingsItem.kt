@@ -1,10 +1,9 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
-import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
-import org.bukkit.Bukkit
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
@@ -12,10 +11,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 class EtherealWingsItem : CustomItem {
-
-    companion object {
-        private val cooldown: MutableList<Player> = mutableListOf()
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -42,10 +37,9 @@ class EtherealWingsItem : CustomItem {
     }
 
     private fun ethWingsLaunch(p: Player) {
-        if (cooldown.contains(p)) return
-        p.velocity = p.location.getDirection().multiply(3)
+        if (QuickTasks.isOnCooldown(this, p)) return
+        p.velocity = p.location.direction.multiply(3)
         p.playSound(p.location, Sound.ENTITY_ENDER_DRAGON_FLAP, 1f, 1f)
-        cooldown.add(p)
-        Bukkit.getServer().scheduler.scheduleSyncDelayedTask(LumaItems.getInstance(), { cooldown.remove(p) }, 200L)
+        QuickTasks.addCooldown(this, p, 200)
     }
 }

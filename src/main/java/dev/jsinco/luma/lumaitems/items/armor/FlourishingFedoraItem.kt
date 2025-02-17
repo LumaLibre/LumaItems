@@ -3,7 +3,6 @@ package dev.jsinco.luma.lumaitems.items.armor
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
-import dev.jsinco.luma.lumaitems.util.NeedsEdits
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable

@@ -1,13 +1,12 @@
 package dev.jsinco.luma.lumaitems.items.weapons
 
-import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.GlowManager
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -24,9 +23,7 @@ import org.bukkit.util.Vector
 class RemakerItem : CustomItem {
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
         private val dustOptions = DustOptions(Color.BLACK, 1f)
-        private val cooldown: MutableList<Player> = mutableListOf()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -66,8 +63,8 @@ class RemakerItem : CustomItem {
     }
 
     private fun nearSightEnemies(p: Player) {
-        if (cooldown.contains(p)) return
-        cooldown.add(p)
+        if (QuickTasks.isOnCooldown(this, p)) return
+        QuickTasks.addCooldown(this, p, 460L)
         p.getNearbyEntities(10.0, 10.0, 10.0).forEach { entity ->
             if (entity !is LivingEntity || AbilityUtil.noDamagePermission(p, entity)) return@forEach
             entity.world.spawnParticle(Particle.DUST, entity.eyeLocation, 300, 0.2, 0.1, 0.2, 0.1, dustOptions)
@@ -75,11 +72,7 @@ class RemakerItem : CustomItem {
             entity.addPotionEffect(PotionEffect(PotionEffectType.LEVITATION, 100, 0))
             entity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 100, 0))
 
-            GlowManager.addToTeamForTicks(entity, ChatColor.BLACK, 100)
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
-                cooldown.remove(p)
-            }, 460L)
+            GlowManager.addToTeamForTicks(entity, NamedTextColor.BLACK, 100)
         }
     }
 }

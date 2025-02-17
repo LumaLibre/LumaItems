@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil.isOnGround
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -24,15 +25,9 @@ import java.util.UUID
 class ThunderStridesItem : CustomItem {
 
     companion object {
-        val plugin: LumaItems = LumaItems.getInstance()
         val directions: MutableMap<UUID, Vector> = mutableMapOf()
 
         val activeFastLane: MutableList<UUID> = mutableListOf()
-        val cooldown: MutableList<UUID> = mutableListOf()
-    }
-
-    override fun isDisabled(inLocation: Location): Boolean {
-        return false
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -53,7 +48,7 @@ class ThunderStridesItem : CustomItem {
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.PLAYER_CROUCH -> {
-                if (player.isSneaking || cooldown.contains(player.uniqueId)) return false
+                if (player.isSneaking || QuickTasks.isOnCooldown(this, player)) return false
 
                 if (activeFastLane.contains(player.uniqueId) && isOnGround(player)) {
                     slideAbility(player)
@@ -72,23 +67,16 @@ class ThunderStridesItem : CustomItem {
         return true
     }
 
-    private fun startCooldown(uuid: UUID) {
-        cooldown.add(uuid)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
-            cooldown.remove(uuid)
-        }, 320L)
-    }
-
 
     private fun startFastLane(player: Player) {
         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 140, 2, false, false, false))
         activeFastLane.add(player.uniqueId)
-        val particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
+        val particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
             player.world.spawnParticle(Particle.DUST, player.location, 1, 0.2, 0.0, 0.2, 0.1, DustOptions(Color.fromRGB(251, 216, 90), 0.9f))
             player.world.spawnParticle(Particle.DUST, player.location, 1, 0.2, 0.0, 0.2, 0.1, DustOptions(Color.fromRGB(106, 129, 253), 0.9f))
         }, 0L, 1L)
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
             stopFastLane(player)
             Bukkit.getScheduler().cancelTask(particles)
         }, 140L)
@@ -96,7 +84,7 @@ class ThunderStridesItem : CustomItem {
 
     private fun stopFastLane(player: Player) {
         activeFastLane.remove(player.uniqueId)
-        startCooldown(player.uniqueId)
+        QuickTasks.addCooldown(this, player, 320L)
     }
 
     private fun slideAbility(player: Player) {
@@ -105,9 +93,9 @@ class ThunderStridesItem : CustomItem {
         player.velocity = directions[player.uniqueId]?.multiply(7.5)?.setY(-0.1) ?: return
         player.world.spawnParticle(Particle.WAX_OFF, player.location, 6, 0.5, 0.5, 0.5, 0.3)
 
-        player.setMetadata("thunderstrides", FixedMetadataValue(plugin, true))
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
-            player.removeMetadata("thunderstrides", plugin)
+        player.setMetadata("thunderstrides", FixedMetadataValue(instance(), true))
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+            player.removeMetadata("thunderstrides", instance())
         }, 17)
     }
 }

@@ -39,7 +39,6 @@ class SunbrellaHatItem : CustomItem {
     // - Slide forward?
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
         private val dustOption = DustOptions(Color.WHITE, 1f)
         private val fallingPlayers: ConcurrentHashMap<Player, Double> = ConcurrentHashMap()
     }
@@ -64,7 +63,7 @@ class SunbrellaHatItem : CustomItem {
         when (type) {
             Action.PLAYER_CROUCH -> {
                 if (!player.isSneaking && player.velocity.y < -0.1) {
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
                         fallingPlayers[player] = 0.77
                     }, 200L)
                 }
@@ -121,11 +120,11 @@ class SunbrellaHatItem : CustomItem {
                 val projectile = event.entity as? Arrow ?: return false
                 projectile.setGravity(false)
                 projectile.isPersistent = false
-                projectile.persistentDataContainer.set(NamespacedKey(plugin, "sunbrellahat"), PersistentDataType.SHORT, 0)
-                player.hideEntity(plugin, projectile)
+                projectile.persistentDataContainer.set(NamespacedKey(instance(), "sunbrellahat"), PersistentDataType.SHORT, 0)
+                player.hideEntity(instance(), projectile)
                 for (entity in projectile.getNearbyEntities(100.0, 100.0, 100.0)) {
                     if (entity is Player) {
-                        entity.hideEntity(plugin, projectile)
+                        entity.hideEntity(instance(), projectile)
                     }
                 }
 
@@ -151,7 +150,7 @@ class SunbrellaHatItem : CustomItem {
                         }
                         count+= 3
                     }
-                }.runTaskTimer(plugin, 1L, 3L)
+                }.runTaskTimer(instance(), 1L, 3L)
             }
 
             Action.PROJECTILE_LAND -> {

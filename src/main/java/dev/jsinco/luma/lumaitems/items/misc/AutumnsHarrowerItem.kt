@@ -25,7 +25,6 @@ import kotlin.random.Random
 class AutumnsHarrowerItem : CustomItem {
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
         private val crops: Map<Material, Color> = mapOf(
             Material.WHEAT to Color.fromRGB(220, 187, 101),
             Material.BEETROOT to Color.fromRGB(164, 39, 44),
@@ -81,12 +80,12 @@ class AutumnsHarrowerItem : CustomItem {
 
     private fun topHarvestAnimation(location: Location, material: Material, dustOptions: DustOptions) {
         val loc = location.add(0.0,0.2,0.0).toCenterLocation()
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
+        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
             loc.world.dropItem(loc, ItemStack(material))
             loc.world.spawnParticle(Particle.DUST, loc, 30, 0.2, 0.2, 0.2, dustOptions)
         }, 0, 5)
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
             Bukkit.getScheduler().cancelTask(task)
         }, 150)
     }

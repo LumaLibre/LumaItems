@@ -26,10 +26,6 @@ import java.util.function.Consumer
 
 class PumpkinLauncherItem : CustomItem {
 
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-    }
-
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
             "&#fb6c1b&lP&#fb751b&lu&#fb7f1a&lm&#fb881a&lp&#fb921a&lk&#fb9b1a&li&#fba519&ln &#fbae19&lL&#fba519&la&#fb9b1a&lu&#fb921a&ln&#fb881a&lc&#fb7f1a&lh&#fb751b&le&#fb6c1b&lr",
@@ -65,14 +61,14 @@ class PumpkinLauncherItem : CustomItem {
             event.isCancelled = true
             return
         }
-        player.setMetadata("pumpkinLauncher", FixedMetadataValue(plugin, true))
+        player.setMetadata("pumpkinLauncher", FixedMetadataValue(instance(), true))
 
         val armorStand: ArmorStand = projectile.world.spawnEntity(projectile.location, EntityType.ARMOR_STAND) as ArmorStand
         armorStand.equipment.helmet = ItemStack(Material.JACK_O_LANTERN);
         armorStand.isInvisible = true
         armorStand.isInvulnerable = false
         armorStand.setGravity(false);
-        armorStand.persistentDataContainer.set(NamespacedKey(plugin, "pumpkinlauncher"), PersistentDataType.SHORT, 1)
+        armorStand.persistentDataContainer.set(NamespacedKey(instance(), "pumpkinlauncher"), PersistentDataType.SHORT, 1)
 
 
         object : BukkitRunnable() {
@@ -87,18 +83,18 @@ class PumpkinLauncherItem : CustomItem {
                     this.cancel();
                 }
             }
-        }.runTaskTimer(plugin, 0L, 1L);
+        }.runTaskTimer(instance(), 0L, 1L);
         for (entity in projectile.getNearbyEntities(100.0,100.0,100.0)) {
             if (entity is Player) {
-                entity.hideEntity(plugin, projectile)
+                entity.hideEntity(instance(), projectile)
             }
         }
 
 
         projectile.setGravity(false);
-        projectile.persistentDataContainer.set(NamespacedKey(plugin, "pumpkinlauncher"), PersistentDataType.SHORT, 1)
+        projectile.persistentDataContainer.set(NamespacedKey(instance(), "pumpkinlauncher"), PersistentDataType.SHORT, 1)
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
             if (!projectile.isDead) {
                 jackOLand(projectile, player);
             }
@@ -107,14 +103,14 @@ class PumpkinLauncherItem : CustomItem {
 
     private fun jackOLand(projectile: Projectile, player: Player) {
         projectile.getNearbyEntities(4.0, 4.0, 4.0).forEach(Consumer { entity: Entity ->
-            if (entity.persistentDataContainer.has(NamespacedKey(plugin, "pumpkinlauncher"), PersistentDataType.SHORT)) {
+            if (entity.persistentDataContainer.has(NamespacedKey(instance(), "pumpkinlauncher"), PersistentDataType.SHORT)) {
                 entity.remove()
             }
         })
 
         projectile.world.createExplosion(projectile.location, 2f, false, false, player)
         projectile.remove()
-        player.removeMetadata("pumpkinLauncher", plugin)
+        player.removeMetadata("pumpkinLauncher", instance())
     }
 
 

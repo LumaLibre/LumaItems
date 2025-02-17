@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -14,11 +15,6 @@ import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
 class FrozenFlareShieldItem : CustomItem {
-
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-        private val cooldown: MutableList<UUID> = mutableListOf()
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -59,22 +55,15 @@ class FrozenFlareShieldItem : CustomItem {
 
 
     private fun countdownLighter(player: Player) {
-        if (cooldown.contains(player.uniqueId)) return
+        if (QuickTasks.isOnCooldown(this, player)) return
 
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
-            if (!player.isSneaking || cooldown.contains(player.uniqueId)) return@scheduleSyncDelayedTask
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+            if (!player.isSneaking || QuickTasks.isOnCooldown(this, player)) return@scheduleSyncDelayedTask
             player.world.createExplosion(player.location, 7f, false, false, player)
             player.world.spawnParticle(Particle.FLAME, player.location, 50, 0.5, 0.5, 0.5, 0.8)
             player.world.spawnParticle(Particle.SOUL_FIRE_FLAME, player.location, 50, 0.5, 0.5, 0.5, 0.8)
-            cooldown(player.uniqueId)
+            QuickTasks.addCooldown(this, player, 300L)
         },40)
-    }
-
-    private fun cooldown(uuid: UUID) {
-        cooldown.add(uuid)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
-            cooldown.remove(uuid)
-        }, 300) // 600
     }
 }

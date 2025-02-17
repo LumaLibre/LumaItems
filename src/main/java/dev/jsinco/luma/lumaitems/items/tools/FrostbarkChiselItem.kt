@@ -15,18 +15,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-//@Disable(value = [
-//    WorldName.MAIN,
-//    WorldName.MAIN_NETHER,
-//    WorldName.MAIN_THE_END,
-//    WorldName.MAIN_SEASONS,
-//    WorldName.RESOURCE,
-//    WorldName.RESOURCE_NETHER,
-//    WorldName.SPAWN,
-//    WorldName.EVENT,
-//    WorldName.EVENT_NEW,
-//    WorldName.EVENT_THE_END
-//])
 class FrostbarkChiselItem : CustomItemFunctions() {
 
 

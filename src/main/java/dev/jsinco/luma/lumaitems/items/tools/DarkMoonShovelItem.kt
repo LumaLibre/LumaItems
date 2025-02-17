@@ -1,17 +1,15 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
-import dev.jsinco.luma.lumaitems.util.disabling.Disable
-import dev.jsinco.luma.lumaitems.util.disabling.WorldName
+import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
-@Disable(WorldName.EVENT_NEW)
+@Ignore // Does nothing
 class DarkMoonShovelItem : CustomItem {
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -27,14 +25,6 @@ class DarkMoonShovelItem : CustomItem {
     }
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        val blockBreakEvent: BlockBreakEvent? = event as? BlockBreakEvent
-
-        when (type) {
-            Action.BREAK_BLOCK -> {
-                //AbilityUtil.breakThreeByThree(blockBreakEvent!!.block, player, BestTool.SHOVEL)
-            }
-            else -> return false
-        }
-        return true
+        return false
     }
 }

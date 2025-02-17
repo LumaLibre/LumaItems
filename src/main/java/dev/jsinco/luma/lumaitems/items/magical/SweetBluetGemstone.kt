@@ -30,7 +30,7 @@ class SweetBluetGemstone : CustomItem {
 
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()
-        // Todo: why the hell do i have 3 lists for this...
+        // Todo: replace with MagicItemCooldown
         private val activeSnowballs: MutableSet<UUID> = mutableSetOf()
         private val cooldownStorm: MutableSet<UUID> = mutableSetOf()
         private val cooldownGlacier: MutableSet<UUID> = mutableSetOf()

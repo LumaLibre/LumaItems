@@ -14,7 +14,6 @@ class PetalPrismAegisItem : CustomItem {
 
     companion object {
         private val blockedDamages: MutableMap<UUID, BlockedDamage> = mutableMapOf()
-        //private const val TIMEOUT_MS: Long = 30000
     }
 
     override fun createItem(): Pair<String, ItemStack> {

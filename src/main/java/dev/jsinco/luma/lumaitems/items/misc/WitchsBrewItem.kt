@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
@@ -44,8 +45,6 @@ class WitchsBrewItem : CustomItem {
             PotionEffectType.FIRE_RESISTANCE,
             PotionEffectType.STRENGTH
         )
-
-        val cooldown: MutableList<UUID> = mutableListOf()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -74,8 +73,8 @@ class WitchsBrewItem : CustomItem {
                 event as PlayerItemConsumeEvent
 
                 event.isCancelled = true
-                if (cooldown.contains(player.uniqueId)) return false
-                startCooldown(player.uniqueId)
+                if (QuickTasks.isOnCooldown(this, player)) return false
+                QuickTasks.addCooldown(this, player, 400)
                 player.playSound(player.location, Sound.ENTITY_WITCH_DRINK, 1f, 1f)
 
                 val amount = Random.nextInt(5,10)
@@ -96,12 +95,5 @@ class WitchsBrewItem : CustomItem {
             else -> return false
         }
         return true
-    }
-
-    private fun startCooldown(uuid: UUID) {
-        cooldown.add(uuid)
-        Bukkit.getScheduler().runTaskLater(LumaItems.getInstance(), Runnable {
-            cooldown.remove(uuid)
-        }, 400)
     }
 }

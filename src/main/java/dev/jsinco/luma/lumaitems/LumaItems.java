@@ -4,7 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
 import dev.jsinco.luma.lumaitems.commands.CommandManager;
-import dev.jsinco.luma.lumaitems.commands.nonsub.UpgradeCMD;
+import dev.jsinco.luma.lumaitems.commands.UpgradeBukkitCommand;
 import dev.jsinco.luma.lumaitems.events.ExternalListeners;
 import dev.jsinco.luma.lumaitems.events.GeneralListeners;
 import dev.jsinco.luma.lumaitems.events.items.JobsListeners;
@@ -70,7 +70,7 @@ public final class LumaItems extends JavaPlugin {
 
 
         getCommand("lumaitems").setExecutor(new CommandManager(this));
-        getCommand("upgrade").setExecutor(new UpgradeCMD());
+        getCommand("upgrade").setExecutor(new UpgradeBukkitCommand());
 
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiManager = new PAPIManager(this);

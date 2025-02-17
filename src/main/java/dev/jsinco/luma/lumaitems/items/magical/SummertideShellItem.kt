@@ -4,7 +4,9 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -35,8 +37,6 @@ class SummertideShellItem : CustomItem {
 
     companion object {
         const val ID = "summertideshell"
-        private val cooldown: MutableSet<UUID> = mutableSetOf()
-        private val plugin: LumaItems = LumaItems.getInstance()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -52,7 +52,7 @@ class SummertideShellItem : CustomItem {
             mutableMapOf(Enchantment.KNOCKBACK to 3, Enchantment.SHARPNESS to 4, Enchantment.UNBREAKING to 6)
         )
         item.tier = "&#F34848&lS&#E36643&lo&#D3843E&ll&#C3A239&ls&#B3C034&lt&#A3DE2F&li&#93FC2A&lc&#7DE548&le&#66CD66&l &#50B684&l2&#399EA1&l0&#2387BF&l2&#0C6FDD&l4"
-        item.stringPersistentDatas[NamespacedKey(plugin, "ability-type")] = AbilityType.SPEED.name
+        item.stringPersistentDatas[NamespacedKey(instance(), "ability-type")] = AbilityType.SPEED.name
         return Pair(ID, item.createItem())
     }
 
@@ -61,7 +61,7 @@ class SummertideShellItem : CustomItem {
             Action.RIGHT_CLICK -> {
                 event as PlayerInteractEvent
                 val activeAbilityType: AbilityType = event.item?.itemMeta?.persistentDataContainer?.get(NamespacedKey(
-                    plugin, "ability-type"), PersistentDataType.STRING)?.uppercase()?.let {
+                    instance(), "ability-type"), PersistentDataType.STRING)?.uppercase()?.let {
                     try {
                         AbilityType.valueOf(it)
                     } catch (e: IllegalArgumentException) {
@@ -76,7 +76,7 @@ class SummertideShellItem : CustomItem {
                     } else {
                         AbilityType.entries[AbilityType.entries.indexOf(activeAbilityType) + 1]
                     }
-                    meta.persistentDataContainer.set(NamespacedKey(plugin, "ability-type"), PersistentDataType.STRING, newAbilityType.name)
+                    meta.persistentDataContainer.set(NamespacedKey(instance(), "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
                     player.sendMessage(Util.colorcode("${Util.prefix} Changed to ${newAbilityType.fName} &#E2E2E2spell."))
@@ -108,44 +108,37 @@ class SummertideShellItem : CustomItem {
         return true
     }
 
-    private fun cooldownPlayer(uuid: UUID, ticks: Long = 250) {
-        cooldown.add(uuid)
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, Runnable {
-            cooldown.remove(uuid)
-        }, ticks)
-    }
 
     private fun speedAbility(player: Player) {
-        if (player.uniqueId in cooldown) {
-            player.sendMessage(Util.colorcode("${Util.prefix} You are on cooldown for this item."))
+        if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
+            MiniMessageUtil.msg(player, "You are on cooldown for this item.")
             return
         }
         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 4, false, false, false))
-
     }
 
     private fun spellAbility(player: Player) {
-        if (player.uniqueId in cooldown) {
-            player.sendMessage(Util.colorcode("${Util.prefix} You are on cooldown for this item."))
+        if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
+            MiniMessageUtil.msg(player, "You are on cooldown for this item.")
             return
         }
-        AbilityUtil.spawnSpell(player, Particle.ENTITY_EFFECT, ID, 120L).setMetadata("spell-ability", FixedMetadataValue(plugin, true))
+        AbilityUtil.spawnSpell(player, Particle.ENTITY_EFFECT, ID, 120L).setMetadata("spell-ability", FixedMetadataValue(instance(), true))
     }
 
     private fun spellAbilityLand(player: Player, entity: LivingEntity) {
         if (entity is Ageable) {
             entity.setBaby()
             entity.ageLock = true
-            cooldownPlayer(player.uniqueId)
+            QuickTasks.addCooldown(this, player.uniqueId, 250)
         }
     }
 
     private fun nourishAbility(player: Player) {
-        if (player.uniqueId in cooldown) {
-            player.sendMessage(Util.colorcode("${Util.prefix} You are on cooldown for this item."))
+        if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
+            MiniMessageUtil.msg(player, "You are on cooldown for this item.")
             return
         }
-        AbilityUtil.spawnSpell(player, Particle.CRIMSON_SPORE, ID, 120L).setMetadata("nourish-ability", FixedMetadataValue(plugin, true))
+        AbilityUtil.spawnSpell(player, Particle.CRIMSON_SPORE, ID, 120L).setMetadata("nourish-ability", FixedMetadataValue(instance(), true))
     }
 
     private fun nourishAbilityLand(player: Player, entity: LivingEntity) {
@@ -154,6 +147,6 @@ class SummertideShellItem : CustomItem {
             entity.foodLevel = 20
             entity.saturation = 20.0F
         }
-        cooldownPlayer(player.uniqueId)
+        QuickTasks.addCooldown(this, player.uniqueId, 250)
     }
 }

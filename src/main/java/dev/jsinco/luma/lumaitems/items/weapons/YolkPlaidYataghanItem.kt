@@ -31,7 +31,6 @@ class YolkPlaidYataghanItem : CustomItem {
 
     companion object {
         private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
-        private val plugin: LumaItems = LumaItems.getInstance()
         private val coolingDownEggs: MutableMap<UUID, Int> = mutableMapOf()
     }
 
@@ -88,7 +87,7 @@ class YolkPlaidYataghanItem : CustomItem {
 
 
         livingEntity.isCollidable = false
-        livingEntity.persistentDataContainer.set(NamespacedKey(plugin, "yolkplaidyataghan"), PersistentDataType.SHORT, 1)
+        livingEntity.persistentDataContainer.set(NamespacedKey(instance(), "yolkplaidyataghan"), PersistentDataType.SHORT, 1)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
         GlowManager.addToTeamForTicks(livingEntity, ChatColor.RED, 240)
         object: BukkitRunnable() {
@@ -107,13 +106,13 @@ class YolkPlaidYataghanItem : CustomItem {
                 }
 
                 if (stop) {
-                    livingEntity.persistentDataContainer.remove(NamespacedKey(plugin, "yolkplaidyataghan"))
+                    livingEntity.persistentDataContainer.remove(NamespacedKey(instance(), "yolkplaidyataghan"))
                     egg.remove()
                     this.cancel()
                 }
                 totalTicks+=20
             }
-        }.runTaskTimer(plugin, 0L, 20L)
+        }.runTaskTimer(instance(), 0L, 20L)
     }
 
     private fun cooldownTaskPlayer(player: Player): Boolean {
@@ -133,7 +132,7 @@ class YolkPlaidYataghanItem : CustomItem {
                         coolingDownEggs.remove(player.uniqueId)
                     }
                 }
-            }.runTaskLater(plugin, 400)
+            }.runTaskLater(instance(), 400)
         }
         return true
     }

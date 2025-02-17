@@ -1,8 +1,7 @@
 package dev.jsinco.luma.lumaitems.items.weapons
 
-import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import org.bukkit.Bukkit
@@ -25,10 +24,6 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 
 class SoulEaterItem : CustomItem {
-
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -77,8 +72,8 @@ class SoulEaterItem : CustomItem {
 
     fun soulOrb(entity: LivingEntity) {
         val armorStand = entity.world.spawnEntity(entity.location, EntityType.ARMOR_STAND) as ArmorStand
-        armorStand.setMetadata("SolItem", FixedMetadataValue(plugin, "SolItem"))
-        armorStand.setMetadata("SoulOrb", FixedMetadataValue(plugin, "SoulOrb"))
+        armorStand.setMetadata("SolItem", FixedMetadataValue(instance(), "SolItem"))
+        armorStand.setMetadata("SoulOrb", FixedMetadataValue(instance(), "SoulOrb"))
         armorStand.isInvisible = true
         armorStand.setGravity(false)
         armorStand.maxHealth = entity.maxHealth
@@ -91,8 +86,8 @@ class SoulEaterItem : CustomItem {
                     cancel()
                 }
             }
-        }.runTaskTimer(plugin, 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, { armorStand.remove() }, 80L)
+        }.runTaskTimer(instance(), 0L, 1L)
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), { armorStand.remove() }, 80L)
     }
 
     fun canDevour(p: Player): Boolean {
@@ -108,7 +103,7 @@ class SoulEaterItem : CustomItem {
 
     private fun devour(entity: LivingEntity, p: Player) {
         //im not good at math
-        val repTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
+        val repTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
             val loc1 = entity.location.add(0.0, 1.0, 0.0)
             val loc2 = p.location.add(0.0, 1.0, 0.0)
             val vector: Vector = AbilityUtil.getDirectionBetweenLocations(loc1, loc2)
@@ -125,7 +120,7 @@ class SoulEaterItem : CustomItem {
             loc1.getWorld().spawnParticle(Particle.SCULK_SOUL, loc1, 5, 0.5, 0.5, 0.5, 0.1)
             loc1.getWorld().spawnParticle(Particle.REVERSE_PORTAL, loc1, 5, 0.5, 0.5, 0.5, 0.1)
         }, 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(),
             { Bukkit.getScheduler().cancelTask(repTask) }, 80L
         )
 

@@ -24,10 +24,6 @@ import kotlin.random.Random
 
 class SweetHeartsLaceItem : CustomItem {
 
-    companion object {
-        private val p: LumaItems = LumaItems.getInstance()
-    }
-
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
             "&#fb5ab6&lS&#fb5db5&lw&#fb61b4&le&#fb64b3&le&#fc68b1&lt&#fc6bb0&lH&#fc6eaf&le&#fc72ae&la&#fc75ad&lr&#fc79ac&lt&#fc7cab&l'&#fc7faa&ls &#fd83a8&lL&#fd86a7&la&#fd8aa6&lc&#fd8da5&le",
@@ -53,11 +49,11 @@ class SweetHeartsLaceItem : CustomItem {
                 event.entity.remove() // Can remove after we pull its location and velocity
                 snowball.setGravity(false)
 
-                player.hideEntity(p, snowball)
+                player.hideEntity(instance(), snowball)
                 for (watcher in nearbyWatchers) {
-                    watcher.hideEntity(p, snowball)
+                    watcher.hideEntity(instance(), snowball)
                 }
-                snowball.persistentDataContainer.set(NamespacedKey(p, "sweetheartslace"), PersistentDataType.SHORT, 1)
+                snowball.persistentDataContainer.set(NamespacedKey(instance(), "sweetheartslace"), PersistentDataType.SHORT, 1)
                 snowball.shooter = player
                 object : BukkitRunnable() {
                     override fun run() {
@@ -68,7 +64,7 @@ class SweetHeartsLaceItem : CustomItem {
                         }
                         snowball.world.spawnParticle(Particle.HEART, snowball.location, 2, 0.3, 0.2, 0.3, 0.3)
                     }
-                }.runTaskTimer(p, 0L, 1L);
+                }.runTaskTimer(instance(), 0L, 1L);
 
             }
             Action.PROJECTILE_LAND -> {
@@ -78,10 +74,10 @@ class SweetHeartsLaceItem : CustomItem {
                 entity.world.spawnParticle(Particle.WITCH, entity.location, 30, 0.5, 0.5, 0.5, 0.5)
 
                 if (entity is Enemy && Random.nextInt(100) <= 40) {
-                    entity.persistentDataContainer.set(NamespacedKey(p, "sweetheartslace"), PersistentDataType.SHORT, 1.toShort())
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(p, {
+                    entity.persistentDataContainer.set(NamespacedKey(instance(), "sweetheartslace"), PersistentDataType.SHORT, 1.toShort())
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
                         if (entity.isDead) return@scheduleSyncDelayedTask
-                        entity.persistentDataContainer.remove(NamespacedKey(p, "sweetheartslace"))
+                        entity.persistentDataContainer.remove(NamespacedKey(instance(), "sweetheartslace"))
                     }, 600L)
                 }
             }

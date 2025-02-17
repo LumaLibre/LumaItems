@@ -1,8 +1,7 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
-import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.util.Util
 import net.md_5.bungee.api.ChatMessageType
@@ -21,7 +20,6 @@ import java.util.UUID
 class LuminaLensesItem : CustomItem {
 
     companion object {
-        val plugin: LumaItems = LumaItems.getInstance()
         val ticker: MutableMap<UUID, Int> = mutableMapOf()
     }
 
@@ -57,7 +55,7 @@ class LuminaLensesItem : CustomItem {
     fun tickPlayer(player: Player): Boolean {
         val helmet = player.inventory.helmet ?: return false
         val meta = helmet.itemMeta ?: return false
-        val currentCharge = meta.persistentDataContainer.get(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT) ?: return false
+        val currentCharge = meta.persistentDataContainer.get(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) ?: return false
         if (currentCharge <= 0) return false
         ticker.set(player.uniqueId, ticker.get(player.uniqueId)?.plus(1) ?: 0)
 
@@ -73,36 +71,36 @@ class LuminaLensesItem : CustomItem {
         if (copper.type != Material.RAW_COPPER) return
         val amount = copper.amount.toShort()
         val meta = eyeGlasses.itemMeta
-        val currentCharge = meta.persistentDataContainer.get(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT)!!
+        val currentCharge = meta.persistentDataContainer.get(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT)!!
         if (currentCharge + amount > 100) { // smartest thing I've seen copilot write
-            meta.persistentDataContainer.set(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT, 100.toShort())
+            meta.persistentDataContainer.set(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT, 100.toShort())
             copper.amount = amount - (100 - currentCharge)
         } else {
-            meta.persistentDataContainer.set(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT, (currentCharge + amount).toShort())
+            meta.persistentDataContainer.set(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT, (currentCharge + amount).toShort())
             copper.amount = 0
         }
         val lore = meta.lore
         for (i in lore!!.indices) {
             if (lore[i] != null && ChatColor.stripColor(lore[i])!!.contains("Battery")) {
-                lore[i] = Util.colorcode("&#3efeecB&#47e2efa&#50c5f1t&#5aa9f4t&#638df6e&#6c70f9r&#7554fby " + meta.persistentDataContainer.get(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT) + "%")
+                lore[i] = Util.colorcode("&#3efeecB&#47e2efa&#50c5f1t&#5aa9f4t&#638df6e&#6c70f9r&#7554fby " + meta.persistentDataContainer.get(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) + "%")
             }
         }
         meta.lore = lore
         eyeGlasses.setItemMeta(meta)
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ChatColor.BLUE.toString() + "Battery: " + meta.persistentDataContainer.get<Short, Short>(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT) + "%"))
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ChatColor.BLUE.toString() + "Battery: " + meta.persistentDataContainer.get<Short, Short>(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) + "%"))
         addNoctalEffects(player)
     }
 
     private fun deductBatteryCharges(helmet: ItemStack) {
         val meta = helmet.itemMeta ?: return
-        if (!meta.persistentDataContainer.has(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT)) return
-        val currentCharge: Short = meta.persistentDataContainer.get(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT)!!
+        if (!meta.persistentDataContainer.has(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT)) return
+        val currentCharge: Short = meta.persistentDataContainer.get(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT)!!
         if (currentCharge > 0) {
-            meta.persistentDataContainer.set(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT, (currentCharge - 1).toShort())
+            meta.persistentDataContainer.set(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT, (currentCharge - 1).toShort())
             val lore = meta.lore!!
             for (i in lore.indices) {
                 if (lore[i] != null && ChatColor.stripColor(lore[i])!!.contains("Battery")) {
-                    lore[i] = Util.colorcode("&#3efeecB&#47e2efa&#50c5f1t&#5aa9f4t&#638df6e&#6c70f9r&#7554fby " + meta.persistentDataContainer.get(NamespacedKey(plugin, "LuminaLenses"), PersistentDataType.SHORT) + "%")
+                    lore[i] = Util.colorcode("&#3efeecB&#47e2efa&#50c5f1t&#5aa9f4t&#638df6e&#6c70f9r&#7554fby " + meta.persistentDataContainer.get(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) + "%")
                 }
             }
             meta.lore = lore
