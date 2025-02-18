@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender
 class RelicCommand : SubCommand {
     override fun execute(plugin: LumaItems, sender: CommandSender, args: Array<out String>) {
         if (args.size < 2) {
-            sender.sendMessage(Util.colorcode("${Util.prefix} Usage: /lumaitems relics <player> <shard|core|orb> <amount>?"))
+            sender.sendMessage(Util.colorcode("${Util.legacyPrefix} Usage: /lumaitems relics <player> <shard|core|orb> <amount>?"))
             return
         }
 
@@ -49,7 +49,7 @@ class RelicCommand : SubCommand {
                         Util.giveItem(player, item)
                     }
                     else -> {
-                        sender.sendMessage(Util.colorcode("${Util.prefix} Usage: /lumaitems relics <player> core <lunar|astral> <amount>?"))
+                        sender.sendMessage(Util.colorcode("${Util.legacyPrefix} Usage: /lumaitems relics <player> core <lunar|astral> <amount>?"))
                     }
                 }
             }
@@ -71,7 +71,7 @@ class RelicCommand : SubCommand {
                         Util.giveItem(player, item)
                     }
                     else -> {
-                        sender.sendMessage(Util.colorcode("${Util.prefix} Usage: /lumaitems relics <player> orb <lunar|astral> <amount>?"))
+                        sender.sendMessage(Util.colorcode("${Util.legacyPrefix} Usage: /lumaitems relics <player> orb <lunar|astral> <amount>?"))
                     }
                 }
             }

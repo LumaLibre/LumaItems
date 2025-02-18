@@ -1,6 +1,5 @@
 package dev.jsinco.luma.lumaitems.items.magical
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
@@ -8,7 +7,6 @@ import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -25,7 +23,6 @@ import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.UUID
 
 class SummertideShellItem : CustomItem {
 
@@ -79,7 +76,7 @@ class SummertideShellItem : CustomItem {
                     meta.persistentDataContainer.set(NamespacedKey(instance(), "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
-                    player.sendMessage(Util.colorcode("${Util.prefix} Changed to ${newAbilityType.fName} &#E2E2E2spell."))
+                    player.sendMessage(Util.colorcode("${Util.legacyPrefix} Changed to ${newAbilityType.fName} &#E2E2E2spell."))
                 } else {
                     when (activeAbilityType) {
                         AbilityType.SPEED -> speedAbility(player)

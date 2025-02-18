@@ -77,7 +77,7 @@ class SweetBluetGemstone : CustomItem {
                     meta.persistentDataContainer.set(NamespacedKey(plugin, "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
-                    player.sendMessage(Util.colorcode("${Util.prefix} Changed to ${newAbilityType.friendlyName} &#E2E2E2spell"))
+                    player.sendMessage(Util.colorcode("${Util.legacyPrefix} Changed to ${newAbilityType.friendlyName} &#E2E2E2spell"))
                 } else if (player.inventory.containsAtLeast(ItemStack(Material.LAPIS_LAZULI), 4)) {
 
                     runAbilityType(activeAbilityType, player)

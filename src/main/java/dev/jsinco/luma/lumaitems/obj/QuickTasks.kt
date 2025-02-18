@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 object QuickTasks {
 
     val activeCooldowns: MutableMap<Class<out CustomItem>, CustomItemCooldown> = ConcurrentHashMap()
+    val flagged: MutableMap<UUID, Any> = ConcurrentHashMap()
 
     @JvmStatic
     fun isOnCooldown(customItem: CustomItem, player: UUID): Boolean {
@@ -80,6 +81,30 @@ object QuickTasks {
         }, ticks)
     }
 
+
+    fun flag(player: UUID, anything: Any) {
+        flagged[player] = anything
+    }
+
+    fun flag(player: UUID) {
+        flagged[player] = true
+    }
+
+    fun isFlagged(player: UUID): Boolean {
+        return flagged.containsKey(player)
+    }
+
+    fun getFlag(player: UUID): Any? {
+        return flagged[player]
+    }
+
+    fun <T> getFlag(player: UUID, anticipated: Class<T>): T? {
+        return flagged[player] as? T
+    }
+
+    fun removeFlag(player: UUID) {
+        flagged.remove(player)
+    }
 
     fun runTaskAsyncFor(period: Long, forAmount: Long, runnable: Runnable) {
         object : BukkitRunnable() {

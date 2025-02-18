@@ -11,12 +11,12 @@ class AddTierCommand : SubCommand {
         sender as Player
         val item = sender.inventory.itemInMainHand
         if (item.type.isAir) {
-            sender.sendMessage("${Util.prefix} You must be holding an item to add a tier")
+            sender.sendMessage("${Util.legacyPrefix} You must be holding an item to add a tier")
             return
         }
 
         if (args.size < 2) {
-            sender.sendMessage("${Util.prefix} Invalid arguments. Usage: /lumaitems addtier <tier/gradient>")
+            sender.sendMessage("${Util.legacyPrefix} Invalid arguments. Usage: /lumaitems addtier <tier/gradient>")
             return
         }
 
@@ -30,7 +30,7 @@ class AddTierCommand : SubCommand {
         lore.add(Util.colorcode("&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "))
         meta?.lore = lore
         item.itemMeta = meta
-        sender.sendMessage("${Util.prefix} Successfully added tier to item")
+        sender.sendMessage("${Util.legacyPrefix} Successfully added tier to item")
     }
 
     override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {

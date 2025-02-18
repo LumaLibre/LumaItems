@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.util
 
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.jsinco.luma.lumaitems.LumaItems
+import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import org.bukkit.Bukkit
@@ -36,7 +37,7 @@ object Util {
     private val armorEquipmentSlots: List<EquipmentSlot> = listOf(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
     private val gearTypes: List<String> = listOf("Helmet", "Chestplate", "Leggings", "Boots", "Sword", "Pickaxe", "Axe", "Shovel", "Hoe", "Rod", "Elytra", "Shield", "Crossbow", "Bow")
 
-    val prefix: String = colorcode("&#b986f9&lInfo &8»&#E2E2E2")
+    val legacyPrefix: String = colorcode("&#b986f9&lInfo &8»&#E2E2E2")
 
 
 
@@ -171,8 +172,8 @@ object Util {
         return getGearType(item.type)
     }
     fun getGearType(material: Material): String? {
-        for (gear in gearTypes) {
-            if (material.toString().contains(gear, ignoreCase = true)) return gear
+        for (gear in GenericMCToolType.entries.map { it.toString() }) {
+            if (material.toString().contains(gear, ignoreCase = true)) return formatMaterialName(gear)
         }
         return null
     }
