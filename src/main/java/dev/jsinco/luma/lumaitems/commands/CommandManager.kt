@@ -7,6 +7,7 @@ import dev.jsinco.luma.lumaitems.commands.subcommands.CopyCoordinatesCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.DebugCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.GiveAstralCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.GiveItemCommand
+import dev.jsinco.luma.lumaitems.commands.subcommands.HideToolTipsCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.PinataFileCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.RelicCommand
 import dev.jsinco.luma.lumaitems.commands.subcommands.UpgradeCommand
@@ -30,6 +31,7 @@ class CommandManager(val plugin: LumaItems) : CommandExecutor, TabCompleter {
         commands["upgrade"] = UpgradeCommand()
         commands["copycoordinates"] = CopyCoordinatesCommand()
         commands["clearcooldown"] = ClearCooldownCommand()
+        commands["hidetooltips"] = HideToolTipsCommand()
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -45,7 +47,12 @@ class CommandManager(val plugin: LumaItems) : CommandExecutor, TabCompleter {
     }
 
     override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>): List<String>? {
-        if (args.size == 1) return commands.keys.toList()
+        if (args.size == 1) {
+            // filter out commands no permission for
+            return commands.filter { (name, subCommand) ->
+                subCommand.permission() == null || sender.hasPermission(subCommand.permission()!!)
+            }.keys.toList()
+        }
 
         val subCommand = commands[args[0]] ?: return null
 

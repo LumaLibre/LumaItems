@@ -2,12 +2,17 @@ package dev.jsinco.luma.lumaitems.items.armor
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
+import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
@@ -19,6 +24,7 @@ class BouquetTrousersItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
+        val key = "bouquet-trousers"
         return ItemFactory.builder()
             .name("<#FAA4DF>B<#F58ACD>o<#EF6FBB>u<#EA55A8>q<#E43A96>e<#E3438F>t <#E05482>T<#DF7E87>r<#DFA88C>o<#DED191>u<#DDFB96>s<#C6F191>e<#AEE78D>r<#97DD88>s")
             .vanillaEnchants(
@@ -28,12 +34,16 @@ class BouquetTrousersItem : CustomItemFunctions() {
                 Enchantment.MENDING to 1
             )
             .customEnchants("<#DDFB96>Lift")
-            .persistentData("bouquet-trousers")
+            .persistentData(key)
             .lore(
                 "While falling, <#DDFB96>sneak<white> to",
                 "perform a double jump."
             )
             .tier(Tier.VALENTIDE_2025)
+            .material(Material.NETHERITE_LEGGINGS)
+            .attributeModifiers(
+                AttributeContainer.of(key, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.LEGS),
+            )
             .buildPair()
     }
 
