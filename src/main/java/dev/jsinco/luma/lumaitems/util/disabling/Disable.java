@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Disable {
     WorldName[] value();
+    boolean hard() default false;
 }

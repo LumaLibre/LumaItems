@@ -6,6 +6,8 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.disabling.Disable
+import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Color
 import org.bukkit.Location
@@ -26,6 +28,7 @@ import org.bukkit.util.Vector
 import kotlin.math.cos
 import kotlin.math.sin
 
+@Disable(value = [WorldName.SPAWN], hard = true)
 class DeoriumCutlassItem : CustomItemFunctions() {
 
     companion object {
