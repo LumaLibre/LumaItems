@@ -10,6 +10,7 @@ import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlotGroup
@@ -26,7 +27,7 @@ class BouquetTrousersItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         val key = "bouquet-trousers"
         return ItemFactory.builder()
-            .name("<#FAA4DF>B<#F58ACD>o<#EF6FBB>u<#EA55A8>q<#E43A96>e<#E3438F>t <#E05482>T<#DF7E87>r<#DFA88C>o<#DED191>u<#DDFB96>s<#C6F191>e<#AEE78D>r<#97DD88>s")
+            .name("<b><#FAA4DF>B<#F796D4>o<#F388C8>u<#F07ABD>q<#ED6DB1>u<#EA5FA6>e<#E6519A>t <#E27191>T<#E09F93>r<#DFCD94>o<#DDFB96>u<#CCF493>s<#BAEC8F>e<#A9E58C>r<#97DD88>s")
             .vanillaEnchants(
                 Enchantment.UNBREAKING to 7,
                 Enchantment.PROTECTION to 9,
@@ -60,5 +61,11 @@ class BouquetTrousersItem : CustomItemFunctions() {
             return
         }
         tracked.remove(player.uniqueId)
+    }
+
+    override fun onPlayerDamageGeneric(player: Player, event: EntityDamageEvent) {
+        if (tracked.contains(player.uniqueId)) {
+            event.isCancelled = true
+        }
     }
 }

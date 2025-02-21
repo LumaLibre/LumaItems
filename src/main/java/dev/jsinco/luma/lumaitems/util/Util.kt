@@ -3,6 +3,8 @@ package dev.jsinco.luma.lumaitems.util
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.manager.ItemManager
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import org.bukkit.Bukkit
@@ -215,6 +217,11 @@ object Util {
             EquipmentSlot.OFF_HAND -> entity.equipment?.setItemInOffHand(item)
             else -> return
         }
+    }
+
+    fun isMatchingItem(itemStack: ItemStack, key: String): Boolean {
+        val meta = itemStack.itemMeta ?: return false
+        return meta.persistentDataContainer.has(NamespacedKey(plugin, key))
     }
 
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player): Boolean {
