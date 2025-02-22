@@ -1,13 +1,11 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
-import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.shapes.Cuboid
 import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakRelativeBlock
-import dev.jsinco.luma.lumaitems.util.disabling.Disable
-import dev.jsinco.luma.lumaitems.util.disabling.WorldName
+import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -17,12 +15,8 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 
-@Disable(WorldName.EVENT_NEW)
+@Ignore // This disaster should never be used again
 class CrescentMoonHatchetItem : CustomItem {
-
-    companion object {
-        val plugin: LumaItems = LumaItems.getInstance()
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -54,7 +48,7 @@ class CrescentMoonHatchetItem : CustomItem {
             block.location.add(-1.0, -5.0, -1.0),
             block.location.add(1.0, 25.0, 1.0)
         )
-        player.setMetadata("BlockTreeFeller", FixedMetadataValue(plugin, true))
+        player.setMetadata("BlockTreeFeller", FixedMetadataValue(instance(), true))
         for (i in 0 until cuboid.blockList().size) {
             val b: Block = cuboid.blockList().get(i)
             if (b.type.toString().contains("LOG")) {
@@ -62,8 +56,8 @@ class CrescentMoonHatchetItem : CustomItem {
                 breakRelativeBlock(b, player, null, "leaves", 0)
             }
         }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
-            { player.removeMetadata("BlockTreeFeller", plugin) }, 35L
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(),
+            { player.removeMetadata("BlockTreeFeller", instance()) }, 35L
         )
     }
 }

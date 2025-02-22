@@ -28,6 +28,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
+import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -35,8 +36,11 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerBucketEmptyEvent
+import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
+import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerMoveEvent
@@ -45,6 +49,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
@@ -65,6 +70,14 @@ class Listeners : ItemListener() {
         val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.CROSSBOW_LOAD, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerBowShoot(event: EntityShootBowEvent) {
+        val player = event.entity as? Player ?: return
+        val data: PersistentDataContainer = event.bow?.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.PLAYER_SHOOT_BOW, player, event)
     }
 
     @FireForAllNBT
@@ -178,6 +191,19 @@ class Listeners : ItemListener() {
             }
         }
     }
+
+
+//    @EventHandler(priority = EventPriority.LOW)
+//    fun onLowPriorityPlayerBreakBlock(event: BlockBreakEvent) {
+//        val player = event.player
+//        val data: PersistentDataContainer? = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
+//
+//        if (data != null) {
+//            fire(data, Action.BREAK_BLOCK, player, event)
+//        }
+//    }
+
+
 
     @EventHandler
     fun onBlockDropItems(event: BlockDropItemEvent) {
@@ -319,6 +345,11 @@ class Listeners : ItemListener() {
     }
 
     @EventHandler
+    fun onPlayerInteractAtEntity(event: PlayerInteractAtEntityEvent) {
+        fire(Util.getHandNBT(event.player), Action.PLAYER_INTERACT_ENTITY, event.player, event)
+    }
+
+    @EventHandler
     fun onShearEntity(event: PlayerShearEntityEvent) {
         val player = event.player
         val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
@@ -363,7 +394,7 @@ class Listeners : ItemListener() {
         fire(event.item.itemStack.persistentDataContainer, Action.HOPPER_PICKUP_ITEM, null, event)
     }
 
-    @EventHandler
+    //@EventHandler
     fun onInventoryClickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
         val datas: MutableList<PersistentDataContainer> = mutableListOf()
@@ -371,5 +402,24 @@ class Listeners : ItemListener() {
         event.cursor.itemMeta?.persistentDataContainer?.let { datas.add(it) }
 
         fire(datas, Action.INVENTORY_CLICK, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerFillBucket(event: PlayerBucketFillEvent) {
+        val player = event.player
+        val data: PersistentDataContainer = event.itemStack?.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.FILL_BUCKET, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
+        val player = event.player
+        val data = when (event.hand) {
+            EquipmentSlot.HAND -> player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
+            EquipmentSlot.OFF_HAND -> player.inventory.itemInOffHand.itemMeta?.persistentDataContainer
+            else -> return
+        } ?: return
+        fire(data, Action.EMPTY_BUCKET, player, event)
     }
 }

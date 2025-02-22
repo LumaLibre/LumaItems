@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender
 @CommandInfo(
     name = "relic",
     description = "Obtain a relic item",
-    usage = "/<command> relic <player> <shard|core|orb> <amount?>",
+    usage = "/<command> relic <player> <shard|core|orb|upgradecore!> <lunar|astral?> <amount?>",
     permission = "lumaitems.command.upgrade",
     playerOnly = false,
     parent = CommandManager::class
@@ -61,7 +61,7 @@ class RelicCommand : SubCommand {
                         Util.giveItem(player, item)
                     }
                     else -> {
-                        sender.sendMessage(Util.colorcode("${Util.prefix} Usage: /lumaitems relics <player> core <lunar|astral> <amount>?"))
+                        return false
                     }
                 }
             }
@@ -83,7 +83,7 @@ class RelicCommand : SubCommand {
                         Util.giveItem(player, item)
                     }
                     else -> {
-                        sender.sendMessage(Util.colorcode("${Util.prefix} Usage: /lumaitems relics <player> orb <lunar|astral> <amount>?"))
+                        return false
                     }
                 }
             }

@@ -3,7 +3,6 @@ package dev.jsinco.luma.lumaitems.items.armor
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
-import dev.jsinco.luma.lumaitems.util.NeedsEdits
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable
@@ -11,7 +10,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-@NeedsEdits
+
 class FlourishingFedoraItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -36,11 +35,11 @@ class FlourishingFedoraItem : CustomItemFunctions() {
     override fun onRunnable(player: Player) {
         // Make nearby crops grow faster
 
-        if (random().nextInt(100) > 10) {
+        if (random().nextInt(100) > 5) {
             return
         }
 
-        val sphere = Sphere(player.location, 8.0, 20.0)
+        val sphere = Sphere(player.location, 6.0, 20.0)
         val crops = sphere.sphere.filter { !it.isEmpty && it.blockData is Ageable }
 
         crops.forEach {

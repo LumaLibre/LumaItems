@@ -1,17 +1,15 @@
 package dev.jsinco.luma.lumaitems.items.misc
 
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import org.bukkit.Material
-import org.bukkit.attribute.Attribute
-import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
 
+@Ignore
 class MoonshineFallowItem : CustomItem {
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -22,9 +20,9 @@ class MoonshineFallowItem : CustomItem {
             mutableListOf("moonshinefallow"),
             mutableMapOf(Enchantment.EFFICIENCY to 7, Enchantment.FORTUNE to 5, Enchantment.UNBREAKING to 8, Enchantment.MENDING to 1)
         )
-        item.attributeModifiers[Attribute.MOVEMENT_SPEED] = AttributeModifier(UUID.randomUUID(), "generic.movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
-        item.attributeModifiers[Attribute.ATTACK_SPEED] = AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
-        item.attributeModifiers[Attribute.ATTACK_DAMAGE] = AttributeModifier(UUID.randomUUID(), "generic.attackDamage", 0.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
+        //item.attributeModifiers[Attribute.MOVEMENT_SPEED] = AttributeModifier(UUID.randomUUID(), "generic.movementSpeed", 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
+        //item.attributeModifiers[Attribute.ATTACK_SPEED] = AttributeModifier(UUID.randomUUID(), "generic.attackSpeed", 0.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
+        //item.attributeModifiers[Attribute.ATTACK_DAMAGE] = AttributeModifier(UUID.randomUUID(), "generic.attackDamage", 0.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HAND)
         return Pair("moonshinefallow", item.createItem())
     }
 

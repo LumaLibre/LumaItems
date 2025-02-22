@@ -1,17 +1,22 @@
 package dev.jsinco.luma.lumaitems.items.misc
 
 import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
+import com.comphenix.protocol.wrappers.EnumWrappers
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerFishEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+
 
 class FrostedAlluringItem : CustomItemFunctions() {
 
@@ -29,11 +34,22 @@ class FrostedAlluringItem : CustomItemFunctions() {
 
 
     override fun onFish(player: Player, event: PlayerFishEvent) {
-        if (event.state == PlayerFishEvent.State.BITE) {
-            Bukkit.getScheduler().runTaskLaterAsynchronously(instance(), Runnable {
-                LumaItems.getProtocolManager()?.receiveClientPacket(player, PacketContainer(PacketType.Play.Client.USE_ITEM))
-            }, 1L)
+        if (event.state != PlayerFishEvent.State.BITE) {
+            return
         }
-    }
 
+        Bukkit.getScheduler().runTaskLaterAsynchronously(instance(), Runnable {
+            val protocolManager = LumaItems.getProtocolManager() ?: return@Runnable
+
+            val hand = if (Util.isItemInSlot("frosted-alluring", EquipmentSlot.OFF_HAND, player)) {
+                EnumWrappers.Hand.OFF_HAND
+            } else {
+                EnumWrappers.Hand.MAIN_HAND
+            }
+
+            val packet = protocolManager.createPacket(PacketType.Play.Client.USE_ITEM)
+            packet.hands.write(0, hand)
+            protocolManager.receiveClientPacket(player, packet)
+        }, 1L)
+    }
 }

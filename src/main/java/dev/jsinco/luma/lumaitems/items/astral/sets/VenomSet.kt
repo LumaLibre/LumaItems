@@ -56,7 +56,7 @@ class VenomSet : AstralSet {
             }
             Action.ENTITY_DAMAGE -> {
                 event as EntityDamageByEntityEvent
-                val entity = event.entity as LivingEntity
+                val entity = event.entity as? LivingEntity ?: return false
                 entity.addPotionEffect(PotionEffect(PotionEffectType.POISON, 60, 1, false, false, false))
             }
 

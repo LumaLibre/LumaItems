@@ -34,26 +34,7 @@ import kotlin.random.Random
 object AbilityUtil {
 
     val plugin: LumaItems = LumaItems.getInstance()
-    val blockTypeBlacklist = mutableSetOf( // Move to YAML file
-        Material.CHEST, Material.BARREL, Material.TRAPPED_CHEST,
-        Material.FURNACE, Material.BLAST_FURNACE, Material.SMOKER,
-        Material.HOPPER, Material.BREWING_STAND, Material.DROPPER,
-        Material.DISPENSER, Material.BEDROCK, Material.END_PORTAL_FRAME,
-        Material.SPAWNER, Material.COMMAND_BLOCK, Material.BARRIER,
-        Material.STRUCTURE_BLOCK, Material.JIGSAW, Material.END_GATEWAY,
-        Material.BUDDING_AMETHYST, Material.FARMLAND, Material.DIRT_PATH,
-        Material.END_PORTAL, Material.REINFORCED_DEEPSLATE
-    )
     private val blockedAbility: MutableSet<UUID> = mutableSetOf()
-
-    init {
-        // Shulker boxes
-        for (material in Material.entries) {
-            if (material.name.contains("SHULKER_BOX")) {
-                blockTypeBlacklist.add(material)
-            }
-        }
-    }
 
     @Suppress("deprecation", "removal")
     @JvmStatic
@@ -103,6 +84,10 @@ object AbilityUtil {
         return !entity.location.add(0.0,-0.1, 0.0).block.type.isAir
     }
 
+    fun isJobsTracked(block: Block): Boolean {
+        return block.state.hasMetadata("BlockOwner") || block.state.hasMetadata("JobsExploit")
+    }
+
     fun breakRelativeBlock(block: Block, player: Player, particle: Particle?, type: String, limiterInitial: Int) {
         var limiter = limiterInitial
         if (blockedAbility.contains(player.uniqueId)) return
@@ -131,33 +116,6 @@ object AbilityUtil {
                 )
             }
         }
-    }
-
-    // Usage: DarkMoonMattockItem, DarkMoonShovelItem
-    fun breakThreeByThree(block: Block, player: Player, restrict: List<Material?>?) {
-        if (blockedAbility.contains(player.uniqueId)) return
-        val cube = Cuboid(
-            block.location.add(-1.0, -1.0, -1.0),
-            block.location.add(1.0, 1.0, 1.0)
-        )
-        blockedAbility.add(player.uniqueId)
-        if (restrict != null) {
-            for (i in 0 until cube.blockList().size) {
-                val b: Block = cube.blockList()[i]
-                if (blockTypeBlacklist.contains(b.type) || !restrict.contains(b.type)) continue
-                b.world.spawnParticle(Particle.BLOCK, b.location.add(0.5, 0.5, 0.5), 10, 0.5, 0.5, 0.5, 0.1, b.blockData)
-                player.breakBlock(b)
-            }
-        } else {
-            for (i in 0 until cube.blockList().size) {
-                val b: Block = cube.blockList()[i]
-                if (blockTypeBlacklist.contains(b.type)) continue
-                b.world.spawnParticle(
-                    Particle.BLOCK, b.location.add(0.5, 0.5, 0.5), 10, 0.5, 0.5, 0.5, 0.1, b.blockData)
-                player.breakBlock(b)
-            }
-        }
-        blockedAbility.remove(player.uniqueId)
     }
 
     // Usage: Stellaris' Set

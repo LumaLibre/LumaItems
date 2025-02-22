@@ -1,9 +1,9 @@
 package dev.jsinco.luma.lumaitems.items.misc
 
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
+import dev.jsinco.luma.lumaitems.items.ItemFactory
+import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -14,8 +14,8 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
 
 class PrideCrownItem : CustomItem {
 
@@ -43,7 +43,7 @@ class PrideCrownItem : CustomItem {
         item.autoHat = true
         item.tier = "&#731385&lP&#4332B9&lr&#1351ED&li&#0C6A87&ld&#058221&le &#7FB715&l2&#F9EB08&l0&#EF7A05&l2&#E40902&l4"
         item.attributeModifiers = DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
-            Attribute.MAX_HEALTH, AttributeModifier(UUID.randomUUID(),"genericMaxHealth", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.HEAD)
+            Attribute.MAX_HEALTH, "pridecrown", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD
         )
         return Pair("pridecrown", item.createItem())
     }
@@ -70,8 +70,8 @@ class PrideCrownItem : CustomItem {
                 event.isCancelled = true
 
                 val item = event.item ?: return false
-                if (player.equipment.helmet == null) {
-                    player.equipment.helmet = item
+                if (player.equipment?.helmet == null) {
+                    player.equipment?.helmet = item
                     item.amount = 0
                 }
             }

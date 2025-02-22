@@ -2,6 +2,9 @@ package dev.jsinco.luma.lumaitems.util
 
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.jsinco.luma.lumaitems.LumaItems
+import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.manager.ItemManager
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import org.bukkit.Bukkit
@@ -36,7 +39,7 @@ object Util {
     private val armorEquipmentSlots: List<EquipmentSlot> = listOf(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
     private val gearTypes: List<String> = listOf("Helmet", "Chestplate", "Leggings", "Boots", "Sword", "Pickaxe", "Axe", "Shovel", "Hoe", "Rod", "Elytra", "Shield", "Crossbow", "Bow")
 
-    val prefix: String = colorcode(plugin.config.getString("prefix") ?: "")
+    val legacyPrefix: String = colorcode("&#b986f9&lInfo &8»&#E2E2E2")
 
 
 
@@ -87,6 +90,12 @@ object Util {
         }
     }
 
+    fun giveItem(player: Player, items: Collection<ItemStack>) {
+        for (item in items) {
+            giveItem(player, item)
+        }
+    }
+
 
     fun getColorCodeByChatColor(colorCode: ChatColor): String {
         return when (colorCode) {
@@ -114,15 +123,22 @@ object Util {
         player.inventory.itemInMainHand.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
         player.inventory.itemInOffHand.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
 
-        for (equipment in player.equipment.armorContents) {
+        for (equipment in player.equipment?.armorContents ?: return nbtList) {
             equipment?.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
         }
         return nbtList
     }
 
+    fun getHandNBT(player: Player): List<PersistentDataContainer> {
+        val nbtList: MutableList<PersistentDataContainer> = mutableListOf()
+        player.inventory.itemInMainHand.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
+        player.inventory.itemInOffHand.itemMeta?.persistentDataContainer?.let { nbtList.add(it) }
+        return nbtList
+    }
+
     fun isWearingWithNBT(player: Player, identifier: String): Boolean {
         val armorDatas: List<PersistentDataContainer?> =
-            armorEquipmentSlots.map { player.equipment.getItem(it).itemMeta?.persistentDataContainer }
+            armorEquipmentSlots.map { player.equipment?.getItem(it)?.itemMeta?.persistentDataContainer }
 
         for (data in armorDatas) {
             if (data != null && data.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT)) return true
@@ -158,8 +174,8 @@ object Util {
         return getGearType(item.type)
     }
     fun getGearType(material: Material): String? {
-        for (gear in gearTypes) {
-            if (material.toString().contains(gear, ignoreCase = true)) return gear
+        for (gear in GenericMCToolType.entries.map { it.toString() }) {
+            if (material.toString().contains(gear, ignoreCase = true)) return formatMaterialName(gear)
         }
         return null
     }
@@ -203,8 +219,13 @@ object Util {
         }
     }
 
+    fun isMatchingItem(itemStack: ItemStack, key: String): Boolean {
+        val meta = itemStack.itemMeta ?: return false
+        return meta.persistentDataContainer.has(NamespacedKey(plugin, key))
+    }
+
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player): Boolean {
-        return player.equipment.getItem(slot).itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT) == true
+        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT) == true
     }
 
     fun isItemInSlots(identifier: String, slots: List<EquipmentSlot>, player: Player): Boolean {

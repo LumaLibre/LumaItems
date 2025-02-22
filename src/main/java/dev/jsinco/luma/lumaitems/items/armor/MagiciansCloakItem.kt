@@ -36,7 +36,7 @@ class MagiciansCloakItem : CustomItem {
         Util.hex2AwtColor("#ffd365")
     )
     private val vector0 = Vector(0, 0,0)
-    private val key = NamespacedKey(instance(), "magicianscloak")
+    private val key = Util.namespacedKey("magicianscloak")
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -88,7 +88,7 @@ class MagiciansCloakItem : CustomItem {
     }
 
     private fun appendCloakDamage(player: Player, amt: Short) {
-        val item = player.equipment.chestplate ?: return
+        val item = player.equipment?.chestplate ?: return
         val meta = item.itemMeta ?: return
 
         val currentDamage = meta.persistentDataContainer.get(key, PersistentDataType.SHORT) ?: 0
@@ -99,7 +99,7 @@ class MagiciansCloakItem : CustomItem {
     }
 
     private fun updateCloakDamage(player: Player, amt: Short) {
-        val item = player.equipment.chestplate ?: return
+        val item = player.equipment?.chestplate ?: return
         val meta = item.itemMeta ?: return
 
         meta.persistentDataContainer.set(key, PersistentDataType.SHORT, amt)
@@ -107,7 +107,7 @@ class MagiciansCloakItem : CustomItem {
     }
 
     private fun getTotalDamage(player: Player): Short {
-        val item = player.equipment.chestplate ?: return 0
+        val item = player.equipment?.chestplate ?: return 0
         val meta = item.itemMeta ?: return 0
         return meta.persistentDataContainer.get(key, PersistentDataType.SHORT) ?: 0
     }

@@ -6,7 +6,6 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
@@ -43,7 +42,7 @@ class WonderBeanieItem : CustomItemFunctions() {
             .tier(Tier.WINTER_2024)
             .attributeModifiers(
                 DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
-                    Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(instance(), "max_health"), 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
+                    "wonderbeanie", Attribute.MAX_HEALTH, 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD
                 )
             )
             .buildPair()

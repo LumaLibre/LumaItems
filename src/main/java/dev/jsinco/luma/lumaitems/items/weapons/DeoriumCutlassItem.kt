@@ -3,10 +3,12 @@ package dev.jsinco.luma.lumaitems.items.weapons
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.items.weapons.OriginalDeoriumCutlassItem.Companion.plugin
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.disabling.Disable
+import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -23,14 +25,13 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.UUID
 import kotlin.math.cos
 import kotlin.math.sin
 
+@Disable(value = [WorldName.SPAWN], hard = true)
 class DeoriumCutlassItem : CustomItemFunctions() {
 
     companion object {
-        private val cooldown: MutableList<UUID> = mutableListOf()
         private val colors: List<Color> = listOf(
             "#cab1d1", "#fde6f0", "#fffff8", "#7f839c", "#adbfd2"
         ).map { Util.hex2BukkitColor(it) }
@@ -49,10 +50,10 @@ class DeoriumCutlassItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (cooldown.contains(player.uniqueId)) return
+        if (QuickTasks.isOnCooldown(this, player.uniqueId)) return
         val block = player.getTargetBlockExact(50) ?: return
         createPullVoid(block.location.add(0.0,1.0,0.0), player)
-        cooldownPlayer(player.uniqueId)
+        QuickTasks.addCooldown(this, player.uniqueId, 600L)
     }
 
 
@@ -104,13 +105,5 @@ class DeoriumCutlassItem : CustomItemFunctions() {
                 }
             }
         }.runTaskTimer(plugin, 0L, 5L)
-    }
-
-
-    private fun cooldownPlayer(uuid: UUID) {
-        cooldown.add(uuid)
-        Bukkit.getScheduler().runTaskLaterAsynchronously(instance(), Runnable {
-            cooldown.remove(uuid)
-        }, 600L)
     }
 }

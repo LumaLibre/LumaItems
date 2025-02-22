@@ -24,6 +24,7 @@ public enum Action {
      * Player actions that effect a specific player. Called by a listener.
      */
     CROSSBOW_LOAD, // When a player loads a crossbow in their main hand
+    PLAYER_SHOOT_BOW, // When a player shoots a bow
     PROJECTILE_LAUNCH, // When a player launches a projectile from their main or offhand
     PROJECTILE_LAND, // When a projectile that was shot by a player and has a specific persistent data lands
     RIGHT_CLICK, // When a player right-clicks an item
@@ -38,6 +39,7 @@ public enum Action {
     ENTITY_DAMAGED_GENERIC, // When a living entity is damaged from ANYTHING and not just other living entities
     DROP_ITEM, // When a player drops an item
     BREAK_BLOCK, // When a player breaks a block
+    LOW_PRIO_BREAK_BLOCK, // When a player breaks a block, but with a lower priority
     CACHED_BLOCK_BREAK, // When a player breaks a block and the block is cached <-- Edit description
     BLOCK_DROP_ITEM, // After a player breaks a block, and the block drops item(s)
     PLACE_BLOCK, // When a player places a block
@@ -54,7 +56,7 @@ public enum Action {
     ENTITY_TARGET_PLAYER, // When a living entity with a specific persistent data targets a player
     ARMOR_CHANGE, // When a player changes their armor
     ENTITY_TELEPORT, // When a living entity with a specific persistent data teleports
-    PLAYER_INTERACT_ENTITY, // When a player interacts at a living entity (Unused, No listener)
+    PLAYER_INTERACT_ENTITY, // When a player interacts at a living entity
     //INVENTORY_CLICK, // When a player clicks in their inventory
     SHEAR_ENTITY, // When a player shears a living entity
     BLOCK_SHEAR_ENTITY, // When a block shears a living entity
@@ -65,4 +67,6 @@ public enum Action {
     ENTITY_PICKUP_ITEM, // When a living entity data picks up an item with specific persistent data
     HOPPER_PICKUP_ITEM, // When a hopper or hopper minecart picks up an item with specific persistent data
     INVENTORY_CLICK, // When a player clicks an item in their inventory with a specific persistent data
+    FILL_BUCKET, // When a player fills a bucket with a specific persistent data
+    EMPTY_BUCKET, // When a player empties a bucket with a specific persistent data
 }

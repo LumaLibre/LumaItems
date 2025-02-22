@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.shapes.ShapeUtil
@@ -34,8 +35,6 @@ class CircusHarrowerItem : CustomItem {
             Material.PUMPKIN to Color(199,121,25),
             Material.COCOA to Color(87, 51, 26)
         )
-
-        private val cooldown: MutableList<UUID> = mutableListOf()
     }
 
 
@@ -57,7 +56,7 @@ class CircusHarrowerItem : CustomItem {
             Action.RIGHT_CLICK -> {
                 event as PlayerInteractEvent
 
-                if (cooldown.contains(player.uniqueId) || !player.isSneaking) {
+                if (QuickTasks.isOnCooldown(this, player.uniqueId) || !player.isSneaking) {
                     return false
                 }
 
@@ -69,7 +68,7 @@ class CircusHarrowerItem : CustomItem {
                     return false
                 }
 
-                cooldown.add(player.uniqueId)
+                QuickTasks.addIndefinitely(this, player.uniqueId)
 
                 object : BukkitRunnable() {
                     val particleDisplay = ParticleDisplay.of(Particle.DUST)
@@ -78,9 +77,7 @@ class CircusHarrowerItem : CustomItem {
                     override fun run() {
                         if (!blocks.hasNext()) {
                             this.cancel()
-                            Bukkit.getScheduler().runTaskLater(instance(), Runnable {
-                                cooldown.remove(player.uniqueId)
-                            }, 400L)
+                            QuickTasks.removeWhen(this@CircusHarrowerItem, player.uniqueId, 400L)
                             return
                         }
                         val block = blocks.next()

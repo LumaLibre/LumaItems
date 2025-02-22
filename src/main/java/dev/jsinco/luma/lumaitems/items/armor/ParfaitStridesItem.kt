@@ -1,12 +1,12 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
 import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
+import dev.jsinco.luma.lumaitems.items.ItemFactory
+import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
@@ -18,11 +18,7 @@ import org.bukkit.potion.PotionEffectType
 import java.util.UUID
 
 class ParfaitStridesItem : CustomItem {
-
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-        private val cooldown: MutableSet<UUID> = mutableSetOf()
-    }
+    
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -35,7 +31,7 @@ class ParfaitStridesItem : CustomItem {
         )
         item.tier = "&#fb5a5a&lV&#fb6069&la&#fc6677&ll&#fc6c86&le&#fc7294&ln&#fd78a3&lt&#fd7eb2&li&#fb83be&ln&#f788c9&le&#f38dd4&ls &#f092df&l2&#ec97e9&l0&#e89cf4&l2&#e4a1ff&l4"
         item.attributeModifiers = DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(
-            Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(instance(), "parfaitstrides"), 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
+            Attribute.MAX_HEALTH, "parfaitstrides", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS
         )
 
         return Pair("parfaitstrides", item.createItem())
@@ -44,7 +40,7 @@ class ParfaitStridesItem : CustomItem {
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.RIGHT_CLICK -> {
-                if (cooldown.contains(player.uniqueId) || !player.isSneaking) return false
+                if (QuickTasks.isOnCooldown(this, player) || !player.isSneaking) return false
 
                 val nearbyPlayers: MutableList<Player> = player.getNearbyEntities(10.0, 10.0, 10.0).mapNotNull { it as? Player }.toMutableList()
                 nearbyPlayers.add(player)
@@ -55,10 +51,7 @@ class ParfaitStridesItem : CustomItem {
                     nearbyPlayer.addPotionEffect(PotionEffect(PotionEffectType.HASTE, 450, 1))
                 }
 
-                cooldown.add(player.uniqueId)
-                plugin.server.scheduler.scheduleSyncDelayedTask(plugin, {
-                    cooldown.remove(player.uniqueId)
-                }, 1200L)
+                QuickTasks.addCooldown(this, player, 1200L)
             }
 
             else -> return false

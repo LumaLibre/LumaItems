@@ -29,8 +29,6 @@ import java.util.concurrent.ConcurrentLinkedQueue
 class KazkanSet : AstralSet {
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-
         private val holdingPlayers: ConcurrentLinkedQueue<ClickHoldingPlayer> = ConcurrentLinkedQueue()
         private val playerLinkedArrows: ConcurrentHashMap<Player, List<Arrow>> = ConcurrentHashMap()
     }
@@ -160,7 +158,7 @@ class KazkanSet : AstralSet {
 
                 playerLinkedArrows[player] = linkedArrows.plus(projectile)
 
-                Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+                Bukkit.getScheduler().runTaskLater(instance(), Runnable {
                     if (!projectile.isOnGround) {
                         projectile.setGravity(true)
                         val arrows = playerLinkedArrows[player]?.toMutableList() ?: return@Runnable

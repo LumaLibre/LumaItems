@@ -33,7 +33,7 @@ class AstralOrbItem : CustomItem {
                 player.playSound(player.location, Sound.ENTITY_EVOKER_CAST_SPELL, 1f, 1f)
                 for (globalPlayer in Bukkit.getOnlinePlayers()) {
                     globalPlayer.playSound(globalPlayer.location, Sound.ENTITY_EVOKER_CAST_SPELL, 0.9f, 1f)
-                    globalPlayer.sendMessage(Util.colorcode("${Util.prefix} &#F7FFC9${player.name}&#E2E2E2 has revealed a relic inside of a &#AC87FB&lAstral &#F7FFC9Orb&#E2E2E2!"))
+                    globalPlayer.sendMessage(Util.colorcode("${Util.legacyPrefix} &#F7FFC9${player.name}&#E2E2E2 has revealed a relic inside of a &#AC87FB&lAstral &#F7FFC9Orb&#E2E2E2!"))
                 }
 
                 Util.giveItem(player, getAstralItem() ?: return false)

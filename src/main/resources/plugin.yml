@@ -3,7 +3,6 @@ version: '${version}'
 main: dev.jsinco.luma.lumaitems.LumaItems
 api-version: '1.21'
 author: 'Jsinco'
-#libraries: ['org.jetbrains.kotlin:kotlin-stdlib:2.0.21']
 depend:
   - LumaCore
 softdepend:
@@ -12,6 +11,7 @@ softdepend:
 - ProtocolLib
 - MythicMobs
 - Jobs
+- mcMMO
 permissions:
   lumaitems.disassemblergui:
     description: Permission to open the disassembler GUI

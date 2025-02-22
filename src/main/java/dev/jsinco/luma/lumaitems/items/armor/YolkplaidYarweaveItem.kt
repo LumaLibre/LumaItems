@@ -34,7 +34,6 @@ class YolkplaidYarweaveItem : CustomItem {
 
     companion object {
         private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
-        private val plugin: LumaItems = LumaItems.getInstance()
     }
 
 
@@ -81,7 +80,7 @@ class YolkplaidYarweaveItem : CustomItem {
     }
 
     private fun shellings(damager: LivingEntity, player: Player) {
-        if (damager.persistentDataContainer.has(NamespacedKey(plugin, "yolkplaidyarweave"), PersistentDataType.SHORT)) return
+        if (damager.persistentDataContainer.has(NamespacedKey(instance(), "yolkplaidyarweave"), PersistentDataType.SHORT)) return
 
         val loc = player.boundingBox.center.toLocation(player.world)
         val locDamager = damager.boundingBox.center.toLocation(damager.world)
@@ -113,7 +112,7 @@ class YolkplaidYarweaveItem : CustomItem {
 
 
         livingEntity.isCollidable = false
-        livingEntity.persistentDataContainer.set(NamespacedKey(plugin, "yolkplaidyarweave"), PersistentDataType.SHORT, 1)
+        livingEntity.persistentDataContainer.set(NamespacedKey(instance(), "yolkplaidyarweave"), PersistentDataType.SHORT, 1)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
         GlowManager.addToTeamForTicks(livingEntity, ChatColor.RED, 240)
         object: BukkitRunnable() {
@@ -132,12 +131,12 @@ class YolkplaidYarweaveItem : CustomItem {
                 livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 2f, 7.7f)
 
                 if (stop) {
-                    livingEntity.persistentDataContainer.remove(NamespacedKey(plugin, "yolkplaidyarweave"))
+                    livingEntity.persistentDataContainer.remove(NamespacedKey(instance(), "yolkplaidyarweave"))
                     egg.remove()
                     this.cancel()
                 }
                 totalTicks+=20
             }
-        }.runTaskTimer(plugin, 0L, 20L)
+        }.runTaskTimer(instance(), 0L, 20L)
     }
 }

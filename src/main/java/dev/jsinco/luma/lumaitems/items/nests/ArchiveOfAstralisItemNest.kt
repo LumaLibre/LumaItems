@@ -2,6 +2,8 @@ package dev.jsinco.luma.lumaitems.items.nests
 
 import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
+import com.gmail.nossr50.api.AbilityAPI as mcMMOAbilityAPI
+import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
@@ -42,7 +44,7 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
         val key = "archive-of-astralis-${this.name.lowercase()}"
     }
 
-    private val nameSpacedKey  = NamespacedKey(instance(), jobType.key)
+    private val nameSpacedKey = Util.namespacedKey(jobType.key)
 
     private fun archiveLore(level: Int): MutableList<String> {
         val job = Util.formatMaterialName(jobType.name)
@@ -56,6 +58,10 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
 
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
+        return createItem(level)
+    }
+
+    fun createItem(level: Int): Pair<String, ItemStack> {
         return ItemFactory.Builder()
             .name("<b><#f498f6>Archive</#f498f6></b> <!b><#F7FFC9>of Astralis</#F7FFC9></!b>")
             .material(Material.BOOK)
@@ -70,19 +76,26 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
     }
 
     override fun executeWithContainer(type: Action, player: Player, event: Any, container: PersistentDataContainerView): Boolean {
+        if (LumaItems.isWithmcMMO() && mcMMOAbilityAPI.treeFellerEnabled(player)) {
+            // Kroxxis ticket @1/19/25, mcMMO treefeller with multiple books
+            // has way too many variables for me to deal with right now,
+            // just disabling for now.
+            return false
+        }
+
         val level: Short = container.get(nameSpacedKey, PersistentDataType.SHORT) ?: 2
 
         when (type) {
             Action.JOBS_EXP_GAIN -> {
                 event as JobsExpGainEvent
                 if (event.job.name.equals(jobType.name, ignoreCase = true)) {
-                    event.exp *= level / (100.0 + 1)
+                    event.exp *= (level / 100.0) + 1
                 }
             }
             Action.JOBS_PRE_PAYMENT -> {
                 event as JobsPrePaymentEvent
                 if (event.job.name.equals(jobType.name, ignoreCase = true)) {
-                    event.amount *= level / (100.0 + 1)
+                    event.amount *= (level / 100.0) + 1
                 }
             }
             else -> return false

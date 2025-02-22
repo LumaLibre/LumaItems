@@ -2,10 +2,12 @@ package dev.jsinco.luma.lumaitems.items
 
 import com.iridium.iridiumcolorapi.IridiumColorAPI
 import dev.jsinco.luma.lumaitems.LumaItems
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.enums.RomanNumeral
-import dev.jsinco.luma.lumaitems.util.tiers.Tier
+import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentType.Valued
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -46,29 +48,30 @@ class ItemFactory(
     var persistentDataValue: Short = 1
 ) {
 
-    val item = ItemStack(material)
-    val meta: Damageable? = item.itemMeta as? Damageable
-
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()
+        @JvmField
+        val LUMAITEM = Util.namespacedKey("lumaitem")
+        private val tierFormat = listOf(
+            "",
+            "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
+            "&#EEE1D5Tier • <PLACEHOLDER>",
+            "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "
+        )
+        private val miniMessageTierFormat = listOf(
+            "",
+            "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>",
+            "<#EEE1D5>Tier •</#EEE1D5> <PLACEHOLDER>",
+            "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>"
+        )
+        @JvmStatic
         fun builder() = Builder()
     }
 
-    private val tierFormat = listOf(
-        "",
-        "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
-        "&#EEE1D5Tier • <PLACEHOLDER>",
-        "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "
-    )
-
-    private val miniMessageTierFormat = listOf(
-        "",
-        "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st>",
-        "<#EEE1D5>Tier • <PLACEHOLDER>",
-        "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st>"
-    )
-
+    val item = ItemStack(material)
+    val meta: Damageable? = item.itemMeta as? Damageable
     var miniMessage = false
+    var hideDefaultAttributes = true
 
     fun miniMessage(): ItemFactory {
         miniMessage = true
@@ -101,7 +104,7 @@ class ItemFactory(
     fun createItem(): ItemStack {
         if (meta == null) return item
 
-        meta.persistentDataContainer.set(NamespacedKey(plugin, "lumaitem"), PersistentDataType.SHORT, 1)
+        meta.persistentDataContainer.set(LUMAITEM, PersistentDataType.SHORT, 1)
         for (name in persistentData) {
             meta.persistentDataContainer.set(NamespacedKey(plugin, name), PersistentDataType.SHORT, persistentDataValue)
         }
@@ -111,7 +114,13 @@ class ItemFactory(
         }
 
 
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DYE)
+        meta.addItemFlags(
+            ItemFlag.HIDE_ATTRIBUTES,
+            ItemFlag.HIDE_ARMOR_TRIM,
+            ItemFlag.HIDE_UNBREAKABLE,
+            ItemFlag.HIDE_DYE,
+            ItemFlag.HIDE_ADDITIONAL_TOOLTIP
+        )
 
         val combinedLore: MutableList<String> = mutableListOf()
 
@@ -156,6 +165,13 @@ class ItemFactory(
             for (attributeModifier in attributeModifiers) {
                 meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
             }
+        } else if (hideDefaultAttributes) {
+            val defaultAttributes = DefaultAttributes.getFromMaterial(material)
+            if (defaultAttributes != null) {
+                for (attributeModifier in defaultAttributes.attributes) {
+                    meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
+                }
+            }
         }
         meta.isUnbreakable = unbreakable
         if (hideEnchants) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
@@ -192,16 +208,21 @@ class ItemFactory(
         private var spoofEnchants: Boolean = false
         private var persistentDataValue: Short = 1
 
+        @SafeVarargs
         fun name(name: String) = apply { this.name = name }
         fun customEnchants(customEnchants: MutableList<String>) = apply { this.customEnchants = customEnchants }
+        @SafeVarargs
         fun customEnchants(vararg customEnchants: String) = apply { this.customEnchants = customEnchants.toMutableList() }
         fun lore(lore: MutableList<String>) = apply { this.lore = lore }
+        @SafeVarargs
         fun lore(vararg lore: String) = apply { this.lore = lore.toMutableList() }
         fun material(material: Material) = apply { this.material = material }
         fun material(s: String) = apply { this.material = Material.matchMaterial(s) ?: Material.AIR }
         fun persistentData(persistentData: MutableList<String>) = apply { this.persistentData = persistentData }
+        @SafeVarargs
         fun persistentData(vararg persistentData: String) = apply { this.persistentData = persistentData.toMutableList() }
         fun vanillaEnchants(vanillaEnchants: MutableMap<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
+        @SafeVarargs
         fun vanillaEnchants(vararg vanillaEnchants: Pair<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants.toMap().toMutableMap() }
         fun tier(tier: String) = apply { this.tier = tier }
         fun tier (tier: Tier) = apply { this.tier = tier.tierString }
@@ -210,8 +231,16 @@ class ItemFactory(
         fun addSpace(addSpace: Boolean) = apply { this.addSpace = addSpace }
         fun autoHat(autoHat: Boolean) = apply { this.autoHat = autoHat }
         fun attributeModifiers(attributeModifiers: MutableMap<Attribute, AttributeModifier>) = apply { this.attributeModifiers = attributeModifiers }
+        @Suppress("UnstableApiUsage")
+        fun attributeModifiers(vararg containers: AttributeContainer) = apply {
+            this.attributeModifiers = containers.associate {
+                it.attribute to AttributeModifier(it.key, it.amount, it.operation, it.slot)
+            }.toMutableMap()
+        }
         fun stringPersistentDatas(stringPersistentDatas: MutableMap<NamespacedKey, String>) = apply { this.stringPersistentDatas = stringPersistentDatas }
+        fun stringPersistentData(key: String, value: String) = apply { this.stringPersistentDatas[NamespacedKey(plugin, key)] = value }
         fun quotes(quotes: MutableList<String>) = apply { this.quotes = quotes }
+        @SafeVarargs
         fun quotes(vararg quotes: String) = apply { this.quotes = quotes.toMutableList() }
         fun b64PHead(b64PHead: String) = apply { this.b64PHead = b64PHead }
         fun spoofEnchants(spoofEnchants: Boolean) = apply { this.spoofEnchants = spoofEnchants }

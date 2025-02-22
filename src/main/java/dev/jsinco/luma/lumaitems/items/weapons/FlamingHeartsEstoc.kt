@@ -5,8 +5,10 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.GlowManager
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -24,10 +26,6 @@ import org.bukkit.util.Vector
 import java.util.UUID
 
 class FlamingHeartsEstoc : CustomItem {
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-        private val cooldown: MutableSet<UUID> = mutableSetOf()
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -46,23 +44,21 @@ class FlamingHeartsEstoc : CustomItem {
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.RIGHT_CLICK -> {
-                if (cooldown.contains(player.uniqueId)) return false
+                if (QuickTasks.isOnCooldown(this, player.uniqueId)) return false
 
                 val fireBall: Fireball = player.launchProjectile(Fireball::class.java)
                 fireBall.yield = 0.0f
-                fireBall.persistentDataContainer.set(NamespacedKey(plugin, "flamingheartssword"), PersistentDataType.SHORT, 1)
+                fireBall.persistentDataContainer.set(NamespacedKey(instance(), "flamingheartssword"), PersistentDataType.SHORT, 1)
                 GlowManager.setGlowColor(fireBall, NamedTextColor.DARK_RED)
                 fireBall.isGlowing = true
                 fireBall.setIsIncendiary(false)
 
 
-                cooldown.add(player.uniqueId)
-                plugin.server.scheduler.runTaskLater(plugin, Runnable {
-                    cooldown.remove(player.uniqueId)
+                QuickTasks.addCooldown(this, player.uniqueId, 600L) {
                     if (fireBall.isValid) {
                         fireBall.remove()
                     }
-                }, 600L)
+                }
             }
 
             Action.PROJECTILE_LAND -> {

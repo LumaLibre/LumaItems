@@ -40,7 +40,7 @@ class WizardsHatItem : CustomItem {
             .vanillaEnchants(mutableMapOf(Enchantment.MENDING to 1))
             .attributeModifiers(
                 DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
-                Attribute.MAX_HEALTH, AttributeModifier(NamespacedKey(instance(), key), 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)))
+                Attribute.MAX_HEALTH, key, 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD))
             .build().createItem()
 
         item.itemMeta = (item.itemMeta as? LeatherArmorMeta)?.apply {
@@ -56,8 +56,8 @@ class WizardsHatItem : CustomItem {
                 if (!Util.isItemInSlot("wizardshat", EquipmentSlot.HEAD, player)) {
                     return false
                 }
-                val item = player.equipment.helmet
-                item.itemMeta = (item.itemMeta as? LeatherArmorMeta)?.apply {
+                val item = player.equipment?.helmet
+                item?.itemMeta = (item?.itemMeta as? LeatherArmorMeta)?.apply {
                     setColor(colors.random())
                 }
             }

@@ -105,9 +105,9 @@ object RelicCrafting {
 
     fun getItemsFromClass(className: String): List<ItemStack> {
         val clazz = try {
-            Class.forName("dev.jsinco.luma.lumaitemsitems.items.astral.sets.$className")
+            Class.forName("dev.jsinco.luma.lumaitems.items.astral.sets.$className")
         } catch (e: ClassNotFoundException) {
-            Class.forName("dev.jsinco.luma.lumaitemsitems.items.astral.$className")
+            Class.forName("dev.jsinco.luma.lumaitems.items.astral.$className")
         }
         return if (AstralSet::class.java.isAssignableFrom(clazz)) {
             val astralSet = clazz.getDeclaredConstructor().newInstance() as AstralSet
@@ -122,7 +122,7 @@ object RelicCrafting {
     }
 
     fun hasFullSet(key: String, player: Player): Boolean {
-        for (equipment in player.equipment.armorContents) {
+        for (equipment in player.equipment?.armorContents ?: return false) {
             if (equipment == null || equipment.type == Material.AIR || !equipment.hasItemMeta()) return false
             if (!equipment.itemMeta.persistentDataContainer.has(NamespacedKey(plugin, key), PersistentDataType.SHORT)) return false
         }

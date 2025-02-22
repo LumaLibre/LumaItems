@@ -6,33 +6,33 @@ import dev.jsinco.luma.lumacore.manager.modules.RegisterType
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.commands.CommandManager
 import dev.jsinco.luma.lumaitems.commands.SubCommand
-import dev.jsinco.luma.lumaitems.guis.AstralUpgradeGui
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
+import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 @AutoRegister(RegisterType.SUBCOMMAND)
 @CommandInfo(
-    name = "upgrade",
-    description = "Open the Astral Upgrade GUI",
-    usage = "/<command> upgrade",
-    permission = "lumaitems.command.upgrade",
-    playerOnly = true,
+    name = "clearcooldown",
+    description = "Clear cooldowns for a player",
+    usage = "/<command> clearcooldown <player!>",
+    permission = "lumaitems.command.clearcooldown",
     parent = CommandManager::class
 )
-class UpgradeCommand : SubCommand {
-
-    companion object {
-        val astralUpgradeGui = AstralUpgradeGui()
-    }
-
+class ClearCooldownCommand : SubCommand {
     override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        sender as Player
-        sender.openInventory(astralUpgradeGui.getInventory())
+        val player = args.getOrNull(1)?.let { Bukkit.getPlayerExact(it) } ?: sender as? Player ?: run {
+            MiniMessageUtil.msg(sender, "Player not found")
+            return true
+        }
+
+        QuickTasks.removeNow(player.uniqueId)
+        MiniMessageUtil.msg(sender, "Cooldowns cleared for ${player.name}")
         return true
     }
 
     override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
         return null
     }
-
 }

@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.commands.subcommands
 import dev.jsinco.luma.lumacore.manager.commands.CommandInfo
 import dev.jsinco.luma.lumacore.manager.modules.AutoRegister
 import dev.jsinco.luma.lumacore.manager.modules.RegisterType
+import dev.jsinco.luma.lumacore.utility.Text
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.commands.CommandManager
 import dev.jsinco.luma.lumaitems.commands.SubCommand
@@ -24,12 +25,11 @@ class AddTier : SubCommand {
         sender as Player
         val item = sender.inventory.itemInMainHand
         if (item.type.isAir) {
-            sender.sendMessage("${Util.prefix} You must be holding an item to add a tier")
+            Text.msg(sender, "You must be holding an item to add a tier")
             return false
         }
 
         if (args.isEmpty()) {
-            sender.sendMessage("${Util.prefix} Invalid arguments. Usage: /lumaitems addtier <tier/gradient>")
             return false
         }
 
@@ -43,7 +43,7 @@ class AddTier : SubCommand {
         lore.add(Util.colorcode("&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "))
         meta?.lore = lore
         item.itemMeta = meta
-        sender.sendMessage("${Util.prefix} Successfully added tier to item")
+        Text.msg(sender, "Successfully added tier to item")
         return true
     }
 

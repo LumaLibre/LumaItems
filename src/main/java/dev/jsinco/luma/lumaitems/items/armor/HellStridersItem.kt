@@ -1,9 +1,8 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
-import dev.jsinco.luma.lumaitems.LumaItems
+import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.events.items.BlockCacheManager
 import dev.jsinco.luma.lumaitems.items.ItemFactory
-import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.shapes.ShapeUtil
 import dev.jsinco.luma.lumaitems.util.Util
@@ -27,7 +26,6 @@ class HellStridersItem : CustomItem {
     // - Summer 2024
     // Inspiration:
     // - Frost Walker enchantment
-    // - Lilac's implementation of this item
     // Idea:
     // Movement-based boots
     // - Ability to walk on lava exactly like frost walker but with obsidian instead of ice
@@ -35,7 +33,6 @@ class HellStridersItem : CustomItem {
 
     companion object {
         const val ID = "hellstriders"
-        private val plugin: LumaItems = LumaItems.getInstance()
     }
 
     override fun isDisabled(inLocation: Location): Boolean {
@@ -114,7 +111,7 @@ class HellStridersItem : CustomItem {
 
                 if (_B.size >= 40) {
                     for (index in 0 until _B.size / 4) {
-                        Bukkit.getScheduler().runTask(plugin, Runnable {
+                        Bukkit.getScheduler().runTask(instance(), Runnable {
                             val block = _B[index]
                             if (block.type == Material.OBSIDIAN) {
                                 block.type = Material.CRYING_OBSIDIAN
@@ -127,7 +124,7 @@ class HellStridersItem : CustomItem {
                 }
 
                 for (i in 0 until 3) {
-                    Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+                    Bukkit.getScheduler().runTaskLater(instance(), Runnable {
                         for (e in 0 until 6) {
                             val block = _B.random()
                             if (block.location.distance(player.location) > 10) {

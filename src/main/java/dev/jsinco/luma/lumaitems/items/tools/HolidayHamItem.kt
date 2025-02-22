@@ -1,7 +1,9 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
+import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.shapes.Sphere
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
@@ -24,11 +26,6 @@ import org.bukkit.potion.PotionEffectType
 import java.util.UUID
 
 class HolidayHamItem : CustomItemFunctions() {
-
-    companion object {
-        private val cooldownPlayers: MutableSet<UUID> = mutableSetOf()
-        private const val COOLDOWN_TIME = 3600L
-    }
 
     @Suppress("UnstableApiUsage")
     override fun createItem(): Pair<String, ItemStack> {
@@ -58,25 +55,21 @@ class HolidayHamItem : CustomItemFunctions() {
 
     override fun onConsumeItem(player: Player, event: PlayerItemConsumeEvent) {
         event.isCancelled = true
-        if (cooldownPlayers.contains(player.uniqueId)) {
+        if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
             player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.cannotConsumeMessage))
             return
         }
-        cooldownPlayers.add(player.uniqueId)
+        QuickTasks.addCooldown(this, player.uniqueId, 3600L)
         clearBlocksInRadius(player) // explosion
         player.addPotionEffect(PotionEffect(PotionEffectType.HASTE, 600, 2)) // haste 3 for 30s
 
         player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.consumeMessages.random())) // random message
-
-        Bukkit.getScheduler().runTaskLater(instance(), Runnable {
-            cooldownPlayers.remove(player.uniqueId)
-        }, COOLDOWN_TIME)
     }
 
     private fun clearBlocksInRadius(player: Player) {
         val loc: Location = player.location
         val sphere = Sphere(loc, 6.0, 11.0).sphere.filter {
-            !AbilityUtil.blockTypeBlacklist.contains(it.type) && it.isSolid
+            !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid
         }
         for (block in sphere) {
             player.breakBlock(block)

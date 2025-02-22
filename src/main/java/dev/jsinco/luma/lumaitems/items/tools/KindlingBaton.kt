@@ -63,7 +63,7 @@ class KindlingBaton : CustomItemFunctions() {
         for (drop in drops) {
             drop.type = smeltTypes[block.type] ?: continue
         }
-        //block.world.spawn(block.location, ExperienceOrb::class.java).experience = 1
+
         for (i in drops.indices) {
             event.block.world.dropItemNaturally(event.block.location, drops.elementAt(i))
         }

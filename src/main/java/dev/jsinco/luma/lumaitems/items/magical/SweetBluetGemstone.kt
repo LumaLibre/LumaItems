@@ -30,7 +30,7 @@ class SweetBluetGemstone : CustomItem {
 
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()
-        // Todo: why the hell do i have 3 lists for this...
+        // Todo: replace with MagicItemCooldown
         private val activeSnowballs: MutableSet<UUID> = mutableSetOf()
         private val cooldownStorm: MutableSet<UUID> = mutableSetOf()
         private val cooldownGlacier: MutableSet<UUID> = mutableSetOf()
@@ -77,7 +77,7 @@ class SweetBluetGemstone : CustomItem {
                     meta.persistentDataContainer.set(NamespacedKey(plugin, "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
-                    player.sendMessage(Util.colorcode("${Util.prefix} Changed to ${newAbilityType.friendlyName} &#E2E2E2spell"))
+                    player.sendMessage(Util.colorcode("${Util.legacyPrefix} Changed to ${newAbilityType.friendlyName} &#E2E2E2spell"))
                 } else if (player.inventory.containsAtLeast(ItemStack(Material.LAPIS_LAZULI), 4)) {
 
                     runAbilityType(activeAbilityType, player)
@@ -115,7 +115,7 @@ class SweetBluetGemstone : CustomItem {
     }
 
 
-    private fun magicalDownFall(player: Player) {
+    private fun magicalDownFall(player: Player) {//todo;rem
         if (activeSnowballs.contains(player.uniqueId)) return
         val targetBlock = player.getTargetBlockExact(170) ?: return
 

@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import dev.jsinco.luma.lumacore.manager.modules.ModuleManager;
+import dev.jsinco.luma.lumacore.reflect.ReflectionUtil;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
 import dev.jsinco.luma.lumaitems.events.items.PassiveListeners;
 import dev.jsinco.luma.lumaitems.guis.AbstractGui;
@@ -10,7 +11,6 @@ import dev.jsinco.luma.lumaitems.enums.Action;
 import dev.jsinco.luma.lumaitems.manager.FileManager;
 import dev.jsinco.luma.lumaitems.manager.GlowManager;
 import dev.jsinco.luma.lumaitems.manager.ItemManager;
-import dev.jsinco.luma.lumaitems.placeholders.PAPIManager;
 import dev.jsinco.luma.lumaitems.relics.RelicCrafting;
 import dev.jsinco.luma.lumaitems.relics.RelicDisassembler;
 import dev.jsinco.luma.lumaitems.util.Util;
@@ -23,16 +23,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Set;
 import java.util.logging.Level;
 
 public final class LumaItems extends JavaPlugin {
 
-    // TODO: write a program to go through an replace all legacy rgb with minimessage
-
     private static LumaItems instance;
     private static boolean withProtocolLib;
     private static boolean withMythicMobs;
-    private static PAPIManager papiManager;
+    private static boolean withmcMMO;
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManagerInstance;
     private static ModuleManager moduleManager;
@@ -41,14 +40,19 @@ public final class LumaItems extends JavaPlugin {
     public void onLoad() {
         instance = this;
         moduleManager = new ModuleManager(this);
-        FileManager.generateDefaultFiles();
     }
 
     @Override
     public void onEnable() {
+        FileManager.generateDefaultFiles();
+
+        ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
+        reflectionUtil.whitelistPackages("commands", "events", "placeholders");
+        Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
+
         withProtocolLib = getServer().getPluginManager().getPlugin("ProtocolLib") != null;
         withMythicMobs = getServer().getPluginManager().getPlugin("MythicMobs") != null;
-
+        withmcMMO = getServer().getPluginManager().isPluginEnabled("mcMMO");
 
         passiveListeners = new PassiveListeners(this);
         itemManagerInstance = new ItemManager(this);
@@ -57,23 +61,17 @@ public final class LumaItems extends JavaPlugin {
             log("Players are online, registering items asynchronously");
             Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
                 initItemManager(itemManagerInstance);
-                moduleManager.reflectivelyRegisterModules();
+                moduleManager.reflectivelyRegisterModules(classSet);
                 log("Finished asynchronous item registration!");
             });
         } else {
             initItemManager(itemManagerInstance);
-            moduleManager.reflectivelyRegisterModules();
+            moduleManager.reflectivelyRegisterModules(classSet);
         }
-
 
         GlowManager.initGlowTeams();
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();
-
-        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            papiManager = new PAPIManager(this);
-            papiManager.register();
-        }
     }
 
     private void initItemManager(ItemManager itemManager) {
@@ -82,6 +80,7 @@ public final class LumaItems extends JavaPlugin {
             passiveListeners.onPluginAction(Action.PLUGIN_ENABLE); // Fire this as soon as we're done registering our items
             passiveListeners.getPassiveListener(Action.RUNNABLE).runTaskTimer(this, 0L, PassiveListeners.DEFAULT_PASSIVE_LISTENER_TICKS);
             passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS);
+            passiveListeners.getGlobalTask().runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_GLOBAL_TASK_TICKS);
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "An error occurred while registering items", e);
             Bukkit.getPluginManager().disablePlugin(this);
@@ -100,11 +99,9 @@ public final class LumaItems extends JavaPlugin {
                 player.closeInventory();
             }
         }
-        if (papiManager != null) {
-            papiManager.unregister();
-        }
 
-        // here
+
+        // stupid and unnecessary
         try {
             Field singleTonField = LumaItemsAPI.class.getDeclaredField("singleton");
             singleTonField.setAccessible(true);
@@ -116,7 +113,6 @@ public final class LumaItems extends JavaPlugin {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             LumaItems.log("Failed to reset API Singleton instance!", e);
         }
-        // here
     }
 
     @NotNull
@@ -136,6 +132,10 @@ public final class LumaItems extends JavaPlugin {
 
     public static boolean isWithMythicMobs() {
         return withMythicMobs;
+    }
+
+    public static boolean isWithmcMMO() {
+        return withmcMMO;
     }
 
     public static ItemManager getItemManagerInstance() {

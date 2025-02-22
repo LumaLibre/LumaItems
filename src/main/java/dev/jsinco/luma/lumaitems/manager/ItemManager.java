@@ -4,6 +4,7 @@ import com.google.common.reflect.ClassPath;
 import dev.jsinco.luma.lumaitems.LumaItems;
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet;
 import dev.jsinco.luma.lumaitems.util.NeedsEdits;
+import dev.jsinco.luma.lumaitems.util.disabling.Ignore;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -47,8 +48,8 @@ public final class ItemManager {
             "dev.jsinco.luma.lumaitems.items.magical",
             "dev.jsinco.luma.lumaitems.items.astral",
             "dev.jsinco.luma.lumaitems.items.astral.sets",
-            "dev.jsinco.luma.lumaitems.items.test",
-            "dev.jsinco.luma.lumaitems.items.nests"
+            "dev.jsinco.luma.lumaitems.items.nests",
+            "dev.jsinco.luma.lumaitems.items.playground"
     );
 
 
@@ -123,7 +124,9 @@ public final class ItemManager {
 
         for (Class<?> clazz : classes) {
             try {
-                if (CustomItem.class.isAssignableFrom(clazz) && !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers())) {
+                if (CustomItem.class.isAssignableFrom(clazz) && !clazz.isInterface() &&
+                        !Modifier.isAbstract(clazz.getModifiers()) && !clazz.isAnnotationPresent(Ignore.class)
+                ) {
                     CustomItem item = (CustomItem) clazz.getDeclaredConstructor().newInstance();
                     registerItem(item);
                 }

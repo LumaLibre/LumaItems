@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
+import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
@@ -7,13 +8,13 @@ import dev.jsinco.luma.lumaitems.util.NeedsEdits
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-@NeedsEdits
 class FrostbarkChiselItem : CustomItemFunctions() {
 
 
@@ -27,14 +28,20 @@ class FrostbarkChiselItem : CustomItemFunctions() {
             .name("<b><#8A4E4E>F<#8A5A5F>r<#8A6770>o<#8A7380>s<#8B7F91>t<#8B8BA2>b<#8B98B3>a<#8BA4C3>r<#8BB0D4>k <#8BB0D4>C<#8BB0D4>h<#8BB0D4>i<#8BB0D4>s<#8BB0D4>e<#8BB0D4>l</b>")
             .material(Material.NETHERITE_AXE)
             .lore(
-                "Broken logs may drop as any",
-                "type of tree wood.",
+                "Broken logs may drop as",
+                "any type of tree wood.",
                 "",
-                "<gold>Sneak & right-click <white>to",
-                "set what type of wood should drop."
+                "<gold>Sneak & right-click <white>to set",
+                "the type of wood to drop."
             )
-            .vanillaEnchants()
-            .quotes("<#8A4E4E>\"<#8A5354>C<#8A575B>h<#8A5C61>o<#8A6168>o<#8A656E>s<#8A6A74>e <#8A7381>i<#8A7887>t<#8A7D8E>, <#8B869B>C<#8B8BA1>h<#8B8FA7>i<#8B94AE>s<#8B99B4>e<#8B9DBA>l <#8BA7C7>i<#8BABCE>t<#8BB0D4>\"\n")
+            .vanillaEnchants(
+                Enchantment.EFFICIENCY to 7,
+                Enchantment.UNBREAKING to 4,
+                Enchantment.FORTUNE to 5,
+                Enchantment.SMITE to 5,
+                Enchantment.MENDING to 1
+            )
+            .quotes("<#8A4E4E>\"<#8A5254>C<#8A575A>h<#8A5B60>o<#8A6066>o<#8A646C>s<#8A6973>e <#8A727F>i<#8A7685>t<#8A7B8B>, <#8B8397>c<#8B889D>h<#8B8CA3>i<#8B91A9>s<#8B95AF>e<#8B9AB6>l <#8BA3C2>i<#8BA7C8>t<#8BACCE>.<#8BB0D4>\"")
             .tier(Tier.WINTER_2024)
             .stringPersistentDatas(mutableMapOf(key to Mode.LOGS.name))
             .persistentData("frostbark-chisel")
@@ -50,14 +57,20 @@ class FrostbarkChiselItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val axe = player.inventory.itemInMainHand
-        val drops = event.block.getDrops(axe)
+        val strName = event.block.type.name
+        if (!strName.endsWith("_LOG") && !strName.endsWith("_STEM")) {
+            return
+        }
+        val drops = event.block.getDrops(axe).ifEmpty { return }
 
-        event.isDropItems = false
-        drops.forEach { drop ->
-            setWoodTypeFromMode(getMode(axe), drop)
-            player.world.dropItemNaturally(event.block.location, drop)
+        if (drops.size > 1) {
+            LumaItems.log("Frostbark Chisel: Unsupported drop amount.")
+            LumaItems.log("Drops: ${drops.joinToString { "${it.type.name}x${it.amount}" }}")
+            return
         }
 
+        event.isDropItems = false
+        player.world.dropItemNaturally(event.block.location, setWoodTypeFromMode(getMode(axe), drops.first()))
     }
 
 
@@ -67,16 +80,15 @@ class FrostbarkChiselItem : CustomItemFunctions() {
             ?: Mode.LOGS
     }
 
-    private fun setWoodTypeFromMode(mode: Mode, block: ItemStack) {
+    private fun setWoodTypeFromMode(mode: Mode, block: ItemStack): ItemStack {
         var materialName = block.type.name
-        println(materialName)
-        if (!materialName.contains("_LOG") && !materialName.contains("_STEM")) return
+        if (!materialName.contains("_LOG") && !materialName.contains("_STEM")) return block
+        else if (mode == Mode.LOGS) return block
 
         materialName = materialName.replace("_LOG", "").replace("_STEM", "")
-        println(materialName)
-        val simpleWoodType = Util.enumValueOfOrNull(SimpleWoodType::class.java, materialName) ?: return
-
+        val simpleWoodType = Util.enumValueOfOrNull(SimpleWoodType::class.java, materialName) ?: return block
         block.type = simpleWoodType.asMaterial(mode)
+        return block
     }
 
     private fun swapMode(axe: ItemStack, player: Player) {
@@ -92,7 +104,7 @@ class FrostbarkChiselItem : CustomItemFunctions() {
         val newMeta = axe.itemMeta?.apply { persistentDataContainer.set(key, PersistentDataType.STRING, newMode.name) }
             ?: return
         axe.itemMeta = newMeta
-        MiniMessageUtil.msg(player, "<green>Mode set to <white>${newMode.name.lowercase()}")
+        player.sendActionBar(MiniMessageUtil.mm("<#f498f6>${Util.formatMaterialName(newMode.name)}"))
     }
 
     enum class Mode {

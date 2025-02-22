@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.FileManager
+import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -21,6 +22,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.random.Random
 
+@Ignore
 class UnnamedItem : CustomItem {
 
     companion object {

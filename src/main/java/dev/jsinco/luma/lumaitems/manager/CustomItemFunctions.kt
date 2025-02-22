@@ -20,6 +20,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
+import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -27,6 +28,8 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerBucketEmptyEvent
+import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
@@ -54,6 +57,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.JOBS_EXP_GAIN -> onJobsExpGain(player, event as JobsExpGainEvent)
             Action.JOBS_PRE_PAYMENT -> onJobsPrePayment(player, event as JobsPrePaymentEvent)
             Action.CROSSBOW_LOAD -> onCrossBowLoad(player, event as EntityLoadCrossbowEvent)
+            Action.PLAYER_SHOOT_BOW -> onPlayerShootBow(player, event as EntityShootBowEvent)
             Action.PROJECTILE_LAUNCH -> onProjectileLaunch(player, event as ProjectileLaunchEvent)
             Action.PROJECTILE_LAND -> onProjectileLand(player, event as ProjectileHitEvent)
             Action.RIGHT_CLICK -> onRightClick(player, event as PlayerInteractEvent)
@@ -68,6 +72,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_DAMAGED_GENERIC -> onEntityDamageGeneric(player, event as EntityDamageEvent)
             Action.DROP_ITEM -> onPlayerDropItem(player, event as PlayerDropItemEvent)
             Action.BREAK_BLOCK -> onBreakBlock(player, event as BlockBreakEvent)
+            Action.LOW_PRIO_BREAK_BLOCK -> onLowPriorityBlockBreak(player, event as BlockBreakEvent)
             Action.CACHED_BLOCK_BREAK -> onCachedBlockBreak(player, event as BlockBreakEvent)
             Action.BLOCK_DROP_ITEM -> onBlockDropItem(player, event as BlockDropItemEvent)
             Action.PLACE_BLOCK -> onPlaceBlock(player, event as BlockPlaceEvent)
@@ -94,6 +99,8 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_PICKUP_ITEM -> onEntityPickupItem(event as EntityPickupItemEvent)
             Action.HOPPER_PICKUP_ITEM -> onHopperPickupItem(event as InventoryPickupItemEvent)
             Action.INVENTORY_CLICK -> onInventoryClick(player, event as InventoryClickEvent)
+            Action.FILL_BUCKET -> onPlayerFillBucket(player, event as PlayerBucketFillEvent)
+            Action.EMPTY_BUCKET -> onPlayerEmptyBucket(player, event as PlayerBucketEmptyEvent)
         }
         return true
     }
@@ -107,6 +114,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onJobsExpGain(player: Player, event: JobsExpGainEvent) {}
     open fun onJobsPrePayment(player: Player, event: JobsPrePaymentEvent) {}
     open fun onCrossBowLoad(player: Player, event: EntityLoadCrossbowEvent) {}
+    open fun onPlayerShootBow(player: Player, event: EntityShootBowEvent) {}
     open fun onProjectileLaunch(player: Player, event: ProjectileLaunchEvent) {}
     open fun onProjectileLand(player: Player, event: ProjectileHitEvent) {}
     open fun onRightClick(player: Player, event: PlayerInteractEvent) {}
@@ -121,6 +129,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityDamageGeneric(player: Player, event: EntityDamageEvent) {}
     open fun onPlayerDropItem(player: Player, event: PlayerDropItemEvent) {}
     open fun onBreakBlock(player: Player, event: BlockBreakEvent) {}
+    open fun onLowPriorityBlockBreak(player: Player, event: BlockBreakEvent) {}
     open fun onCachedBlockBreak(player: Player, event: BlockBreakEvent) {}
     open fun onBlockDropItem(player: Player, event: BlockDropItemEvent) {}
     open fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {}
@@ -147,4 +156,6 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityPickupItem(event: EntityPickupItemEvent) {}
     open fun onHopperPickupItem(event: InventoryPickupItemEvent) {}
     open fun onInventoryClick(player: Player, event: InventoryClickEvent) {}
+    open fun onPlayerFillBucket(player: Player, event: PlayerBucketFillEvent) {}
+    open fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {}
 }

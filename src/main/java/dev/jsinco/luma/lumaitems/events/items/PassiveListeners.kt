@@ -16,6 +16,7 @@ class PassiveListeners(val plugin: LumaItems) {
     companion object {
         const val DEFAULT_PASSIVE_LISTENER_TICKS: Long = 70
         const val ASYNC_PASSIVE_LISTENER_TICKS: Long = 30
+        const val ASYNC_GLOBAL_TASK_TICKS: Long = 40
     }
 
     private fun fire(dataList: List<PersistentDataContainer>, player: Player, action: Action) {
@@ -33,6 +34,16 @@ class PassiveListeners(val plugin: LumaItems) {
             override fun run() {
                 for (player in Bukkit.getOnlinePlayers()) {
                     fire(Util.getAllEquipmentNBT(player), player, action)
+                }
+            }
+        }
+    }
+
+    fun getGlobalTask(): BukkitRunnable {
+        return object: BukkitRunnable() {
+            override fun run() {
+                for (customItem in ItemManager.customItems) {
+                    customItem.value.asyncGlobalTask()
                 }
             }
         }

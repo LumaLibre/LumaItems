@@ -16,8 +16,6 @@ class ColorCrystalSpade : CustomItem {
 
     companion object {
         val glassTypes: List<Material> = listOf(
-                //Material.GLASS,
-                //Material.TINTED_GLASS,
                 Material.LIGHT_BLUE_STAINED_GLASS,
                 Material.BLACK_STAINED_GLASS,
                 Material.BLUE_STAINED_GLASS,
