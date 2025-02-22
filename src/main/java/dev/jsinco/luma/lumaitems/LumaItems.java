@@ -29,12 +29,12 @@ import java.util.logging.Level;
 public final class LumaItems extends JavaPlugin {
 
     private static LumaItems instance;
-    private static boolean withProtocolLib;
-    private static boolean withMythicMobs;
-    private static boolean withmcMMO;
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManagerInstance;
     private static ModuleManager moduleManager;
+    private static boolean withProtocolLib;
+    private static boolean withMythicMobs;
+    private static boolean withmcMMO;
 
     @Override
     public void onLoad() {
