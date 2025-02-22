@@ -4,6 +4,8 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.disabling.Disable
+import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -21,6 +23,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 import java.util.function.Consumer
 
+@Disable(WorldName.SPAWN)
 class DazzlingHeartsScytheItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {

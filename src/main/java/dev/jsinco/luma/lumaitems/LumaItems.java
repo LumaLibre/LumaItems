@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
 import dev.jsinco.luma.lumaitems.commands.CommandManager;
+import dev.jsinco.luma.lumaitems.commands.SwapHandsCommand;
 import dev.jsinco.luma.lumaitems.commands.UpgradeBukkitCommand;
 import dev.jsinco.luma.lumaitems.events.ExternalListeners;
 import dev.jsinco.luma.lumaitems.events.GeneralListeners;
@@ -20,8 +21,10 @@ import dev.jsinco.luma.lumaitems.relics.RelicCrafting;
 import dev.jsinco.luma.lumaitems.relics.RelicDisassembler;
 import dev.jsinco.luma.lumaitems.util.Util;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,7 +66,6 @@ public final class LumaItems extends JavaPlugin {
             initListeners();
         }
 
-
         GlowManager.initGlowTeams();
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();
@@ -71,6 +73,7 @@ public final class LumaItems extends JavaPlugin {
 
         getCommand("lumaitems").setExecutor(new CommandManager(this));
         getCommand("upgrade").setExecutor(new UpgradeBukkitCommand());
+        getCommand("swaphands").setExecutor(new SwapHandsCommand());
 
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             papiManager = new PAPIManager(this);
