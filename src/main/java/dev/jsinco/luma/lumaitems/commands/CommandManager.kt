@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender
     name = "lumaitems",
     aliases = ["li"],
     description = "Main command for LumaItems",
-    usage = "/<command> <subcommand",
+    usage = "/<command> <subcommand>",
     permission = "lumaitems.command",
     playerOnly = false
 )

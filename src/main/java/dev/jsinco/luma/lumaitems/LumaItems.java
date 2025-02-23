@@ -45,13 +45,17 @@ public final class LumaItems extends JavaPlugin {
     @Override
     public void onEnable() {
         FileManager.generateDefaultFiles();
-
+        long start = System.currentTimeMillis();
         ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
-        reflectionUtil.whitelistPackages("commands", "events", "placeholders");
-        Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
+        reflectionUtil.whitelistPackages(
+                "commands",
+                "commands.subcommands",
+                "events",
+                "placeholders"
+        );
 
-        withProtocolLib = getServer().getPluginManager().getPlugin("ProtocolLib") != null;
-        withMythicMobs = getServer().getPluginManager().getPlugin("MythicMobs") != null;
+        withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");
+        withMythicMobs = getServer().getPluginManager().isPluginEnabled("MythicMobs");
         withmcMMO = getServer().getPluginManager().isPluginEnabled("mcMMO");
 
         passiveListeners = new PassiveListeners(this);
@@ -61,12 +65,15 @@ public final class LumaItems extends JavaPlugin {
             log("Players are online, registering items asynchronously");
             Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
                 initItemManager(itemManagerInstance);
+                Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
                 moduleManager.reflectivelyRegisterModules(classSet);
-                log("Finished asynchronous item registration!");
+                log("Finished asynchronous item registration! " + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {
             initItemManager(itemManagerInstance);
+            Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
             moduleManager.reflectivelyRegisterModules(classSet);
+            log("Finished synchronous item registration! " + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
         GlowManager.initGlowTeams();
