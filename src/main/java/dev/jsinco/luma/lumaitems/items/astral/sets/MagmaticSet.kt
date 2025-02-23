@@ -6,6 +6,7 @@ import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
@@ -28,7 +29,6 @@ import java.util.UUID
 class MagmaticSet : AstralSet {
 
     companion object {
-        private val cooldown: MutableList<UUID> = mutableListOf()
         private val smeltOreTypes = listOf(
             Material.GOLD_ORE, Material.DEEPSLATE_GOLD_ORE, Material.NETHER_GOLD_ORE,
             Material.IRON_ORE, Material.DEEPSLATE_IRON_ORE, Material.COPPER_ORE,
@@ -78,9 +78,9 @@ class MagmaticSet : AstralSet {
         when (type) {
             Action.RIGHT_CLICK -> {
                 // poorly written but im in a rush
-                if ((Util.isItemInSlot("magmatic-set", EquipmentSlot.HAND, player)|| Util.isItemInSlot("magmatic-set", EquipmentSlot.OFF_HAND, player)) && genericMCToolType == GenericMCToolType.SWORD && !cooldown.contains(player.uniqueId)) {
+                if ((Util.isItemInSlot("magmatic-set", EquipmentSlot.HAND, player)|| Util.isItemInSlot("magmatic-set", EquipmentSlot.OFF_HAND, player)) && genericMCToolType == GenericMCToolType.SWORD && !QuickTasks.isOnCooldown(this, player)) {
                     AbilityUtil.spawnSpell(player, Particle.FLAME, "magmatic-set", 120L)
-                    cooldownPlayer(player.uniqueId)
+                    QuickTasks.addCooldown(this, player.uniqueId, 200L)
                 }
             }
             Action.PROJECTILE_LAND -> {
@@ -141,10 +141,4 @@ class MagmaticSet : AstralSet {
         return true
     }
 
-    private fun cooldownPlayer(uuid: UUID) {
-        cooldown.add(uuid)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(LumaItems.getInstance(), {
-            cooldown.remove(uuid)
-        },200L)
-    }
 }

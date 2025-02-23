@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.GlowManager
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -29,9 +30,7 @@ import java.util.function.Consumer
 class SunlightBladeItem : CustomItem {
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
         private val undeads = listOf(EntityType.ZOMBIE, EntityType.SKELETON, EntityType.ZOMBIE_VILLAGER, EntityType.STRAY, EntityType.DROWNED, EntityType.PHANTOM)
-        private val cooldown: MutableList<Player> = mutableListOf()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -63,7 +62,8 @@ class SunlightBladeItem : CustomItem {
     }
 
     private fun starbound(p: Player) {
-        if (cooldown.contains(p)) return
+        if (QuickTasks.isOnCooldown(this, p)) return
+        QuickTasks.addCooldown(this, p, 300L)
         createStar(p.location.add(0.0, 3.0, 0.0))
         p.getNearbyEntities(12.0, 10.0, 12.0).forEach(Consumer { entity: Entity ->
             if (entity is LivingEntity) {
@@ -75,12 +75,6 @@ class SunlightBladeItem : CustomItem {
             }
         })
 
-
-        //cooldown
-        cooldown.add(p)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin,
-            { cooldown.remove(p) }, 300L
-        )
     }
 
 
@@ -97,7 +91,7 @@ class SunlightBladeItem : CustomItem {
         val colors = listOf(ChatColor.YELLOW, ChatColor.GOLD, ChatColor.RED)
         val rand = Random().nextInt(3)
         GlowManager.setGlowColor(fireball, colors[rand])
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
             armorStand.remove()
             fireball.remove()
         }, 100L)

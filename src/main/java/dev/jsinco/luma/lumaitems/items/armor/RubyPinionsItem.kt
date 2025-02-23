@@ -17,10 +17,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.Random
 
 class RubyPinionsItem : CustomItem {
-
-    companion object {
-        val plugin: LumaItems = LumaItems.getInstance()
-    }
+    
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -58,11 +55,11 @@ class RubyPinionsItem : CustomItem {
                 player.inventory.itemInOffHand.amount -= 1
             }
         }
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
+        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
             player.world.spawnParticle(Particle.DUST, player.location.add(0.0, 1.0, 0.0), 1, 0.5, 0.5, 0.5, 0.1, DustOptions(
                 Color.fromRGB(255, 83, 114), 2f))
             player.world.spawnParticle(Particle.DUST, player.location.add(0.0, 1.0, 0.0), 1, 0.5, 0.5, 0.5, 0.1, DustOptions(Color.fromRGB(207, 74, 253), 2f))
         }, 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, { Bukkit.getScheduler().cancelTask(task) }, 35L)
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), { Bukkit.getScheduler().cancelTask(task) }, 35L)
     }
 }

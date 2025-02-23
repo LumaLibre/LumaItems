@@ -30,7 +30,7 @@ class CandyCannonItem : CustomItemFunctions() {
         Material.YELLOW_WOOL to Color.YELLOW,
     )
 
-    val particleDisplay = ParticleDisplay.of(Particle.DUST).withColor(AwtColor.WHITE).mixWith(AwtColor.RED)
+    private val particleDisplay: ParticleDisplay = ParticleDisplay.of(Particle.DUST).withColor(AwtColor.WHITE).mixWith(AwtColor.RED)
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()

@@ -3,6 +3,8 @@ package dev.jsinco.luma.lumaitems.items.weapons
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.disabling.Disable
+import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -25,6 +27,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import java.util.concurrent.TimeUnit
 
+@Disable(WorldName.SPAWN)
 class StraszLongbow : CustomItemFunctions() {
 
     companion object {

@@ -76,7 +76,7 @@ object RelicDisassembler {
         if (!rescheduleCooldownTask(player)) {
             return null
         } else if (rarity == Rarity.ASTRAL && action.isLeftClick) {
-            player.sendMessage(Util.colorcode("${Util.prefix} You must left click to disassemble &#F7FFC9Astral &#E2E2E2Relics"))
+            player.sendMessage(Util.colorcode("${Util.legacyPrefix} You must left click to disassemble &#F7FFC9Astral &#E2E2E2Relics"))
             return null
         }
 
@@ -104,7 +104,7 @@ object RelicDisassembler {
             Bukkit.getScheduler().cancelTask(confirmCooldownTasks[player.uniqueId]!!)
             returnValue = true
         } else {
-            player.sendMessage("${Util.prefix} Are you sure you want to disassemble this item? Click again to confirm.")
+            player.sendMessage("${Util.legacyPrefix} Are you sure you want to disassemble this item? Click again to confirm.")
         }
 
         confirmCooldownTasks[player.uniqueId] = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {

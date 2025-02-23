@@ -18,14 +18,9 @@ import org.bukkit.scheduler.BukkitRunnable
 class CottonTailCrossbowItem : CustomItem {
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
         private val dustColors: Set<Color> = setOf(
             Util.hex2BukkitColor("#EC62B6"),
-            Util.hex2BukkitColor("#FDADAD"),
-            //Util.hex2BukkitColor("#84EE3B"),
-            //Util.hex2BukkitColor("#aae681"),
-            //Util.hex2BukkitColor("#99cde8"),
-            //Util.hex2BukkitColor("#ec9be9")
+            Util.hex2BukkitColor("#FDADAD")
         )
     }
 
@@ -65,7 +60,7 @@ class CottonTailCrossbowItem : CustomItem {
                             this.cancel()
                         }
                     }
-                }.runTaskTimer(plugin, 0L, 1L)
+                }.runTaskTimer(instance(), 0L, 1L)
             }
             else -> return false
         }

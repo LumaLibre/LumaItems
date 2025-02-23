@@ -21,10 +21,7 @@ import org.bukkit.persistence.PersistentDataType
 import java.util.Random
 
 class RubyLongbowItem : CustomItem {
-
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-    }
+    
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -60,15 +57,15 @@ class RubyLongbowItem : CustomItem {
         val proj2: Projectile?
         proj.velocity = proj.velocity.multiply(2)
         if (Random().nextBoolean()) {
-            player.setMetadata("RubyLongbow", FixedMetadataValue(plugin, true))
+            player.setMetadata("RubyLongbow", FixedMetadataValue(instance(), true))
             proj2 = player.launchProjectile(proj.javaClass, proj.velocity.multiply(0.8))
-            player.removeMetadata("RubyLongbow", plugin)
-            proj2.setMetadata("no-pickup", FixedMetadataValue(plugin, true))
-            proj2.persistentDataContainer.set(NamespacedKey(plugin, "rubylongbow"), PersistentDataType.SHORT, 1)
+            player.removeMetadata("RubyLongbow", instance())
+            proj2.setMetadata("no-pickup", FixedMetadataValue(instance(), true))
+            proj2.persistentDataContainer.set(NamespacedKey(instance(), "rubylongbow"), PersistentDataType.SHORT, 1)
         } else {
             proj2 = null
         }
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
+        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
             proj.world.spawnParticle(Particle.DUST, proj.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(255, 83, 114), 1f))
             proj.world.spawnParticle(Particle.DUST, proj.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(207, 74, 253), 1f))
             if (proj2 != null) {
@@ -76,12 +73,12 @@ class RubyLongbowItem : CustomItem {
                 proj2.world.spawnParticle(Particle.DUST, proj2.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(207, 74, 253), 1f))
             }
         }, 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, { Bukkit.getScheduler().cancelTask(task) }, 45L)
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), { Bukkit.getScheduler().cancelTask(task) }, 45L)
     }
 
 
     private fun despawnArrow(arrow: Projectile) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
             if (arrow.isDead) return@scheduleSyncDelayedTask
             arrow.remove()
         }, 20L)

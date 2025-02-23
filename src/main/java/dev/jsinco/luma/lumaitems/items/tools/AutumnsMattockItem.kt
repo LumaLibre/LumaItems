@@ -24,7 +24,6 @@ import kotlin.random.Random
 class AutumnsMattockItem : CustomItem {
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
 
         private val oreColors: Map<Material, Color> = mapOf(
             Material.COAL to Color.fromRGB(33, 34, 31),
@@ -93,12 +92,12 @@ class AutumnsMattockItem : CustomItem {
     private fun topHarvestAnimation(location: Location, material: Material, dustOptions: Particle.DustOptions) {
         val loc = location.add(0.0, 0.2, 0.0).toCenterLocation()
         val period: Long = if (material == Material.ANCIENT_DEBRIS) 20 else 8
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
+        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
             loc.world.dropItem(loc, ItemStack(material))
             loc.world.spawnParticle(Particle.DUST, loc, 30, 0.2, 0.2, 0.2, dustOptions)
         }, 0, period)
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
             Bukkit.getScheduler().cancelTask(task)
         }, 150)
     }

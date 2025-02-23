@@ -39,3 +39,10 @@ commands:
     description: Upgrade an Astral item
     permission: lumaitems.command.upgrade
     usage: /<command>
+  swaphands:
+    description: Swap the items in your hands
+    permission: lumaitems.command.swaphands
+    usage: /<command>
+    aliases:
+      - offhand
+      - ofh

@@ -8,6 +8,7 @@ import io.papermc.paper.persistence.PersistentDataContainerView
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
+import org.bukkit.event.Cancellable
 import org.bukkit.event.Listener
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
@@ -42,14 +43,16 @@ abstract class ItemListener : Listener {
         for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
             if (!data.has(customItem.key, PersistentDataType.SHORT)) {
                 continue
-            } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                notify(player, false)
+            }
+            val item = customItem.value
+            if (player?.location?.let { item.isDisabled(it) } == true) {
+                item.handleDisabled(player, event)
                 return
             }
             if (!withContainer) {
-                customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
+                item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
             } else {
-                customItem.value.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
+                item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
             }
             break
         }
@@ -59,14 +62,16 @@ abstract class ItemListener : Listener {
         for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
             if (!data.has(customItem.key, PersistentDataType.SHORT)) {
                 continue
-            } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                notify(player, false)
+            }
+            val item = customItem.value
+            if (player?.location?.let { item.isDisabled(it) } == true) {
+                item.handleDisabled(player, event)
                 return
             }
             if (!withContainer) {
-                customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
+                item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
             } else {
-                customItem.value.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
+                item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
             }
             break
         }
@@ -77,14 +82,16 @@ abstract class ItemListener : Listener {
             for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
                 if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
                     continue
-                } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                    notify(player, false)
+                }
+                val item = customItem.value
+                if (player?.location?.let { item.isDisabled(it) } == true) {
+                    item.handleDisabled(player, event)
                     break
                 }
                 if (!withContainer) {
-                    customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
+                    item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
                 } else {
-                    customItem.value.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, itemData)
+                    item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, itemData)
                 }
                 break
             }
@@ -96,16 +103,18 @@ abstract class ItemListener : Listener {
             for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
                 if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
                     continue
-                } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                    notify(player, false)
+                }
+                val item = customItem.value
+                if (player?.location?.let { item.isDisabled(it) } == true) {
+                    item.handleDisabled(player, event)
                     break
                 }
                 if (!withContainer) {
-                    customItem.value.executeActions(action1, player ?: getDummyPlayer() ?: return, event)
-                    customItem.value.executeActions(action2, player ?: getDummyPlayer() ?: return, event)
+                    item.executeActions(action1, player ?: getDummyPlayer() ?: return, event)
+                    item.executeActions(action2, player ?: getDummyPlayer() ?: return, event)
                 } else {
-                    customItem.value.executeWithContainer(action1, player ?: getDummyPlayer() ?: return, event, itemData)
-                    customItem.value.executeWithContainer(action2, player ?: getDummyPlayer() ?: return, event, itemData)
+                    item.executeWithContainer(action1, player ?: getDummyPlayer() ?: return, event, itemData)
+                    item.executeWithContainer(action2, player ?: getDummyPlayer() ?: return, event, itemData)
                 }
                 break
             }
@@ -117,15 +126,17 @@ abstract class ItemListener : Listener {
             for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
                 if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
                     continue
-                } else if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                    notify(player, false)
+                }
+                val item = customItem.value
+                if (player?.location?.let { item.isDisabled(it) } == true) {
+                    item.handleDisabled(player, event)
                     break
                 }
                 for (action in actions) {
                     if (!withContainer) {
-                        customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
+                        item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
                     } else {
-                        customItem.value.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, itemData)
+                        item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, itemData)
                     }
                 }
                 break
@@ -136,14 +147,15 @@ abstract class ItemListener : Listener {
     fun fire(key: String, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
         for (customItem in ItemManager.customItems) {
             if (key.equals(customItem.key.key, true)) {
-                if (player?.location?.let { customItem.value.isDisabled(it) } == true) {
-                    notify(player, false)
+                val item = customItem.value
+                if (player?.location?.let { item.isDisabled(it) } == true) {
+                    item.handleDisabled(player, event)
                     return
                 }
                 if (!withContainer) {
-                    customItem.value.executeActions(action, player ?: getDummyPlayer() ?: return, event)
+                    item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
                 } else {
-                    customItem.value.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, player?.persistentDataContainer ?: return)
+                    item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, player?.persistentDataContainer ?: return)
                 }
                 break
             }

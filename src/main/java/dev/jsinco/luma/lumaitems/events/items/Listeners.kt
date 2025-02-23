@@ -389,7 +389,7 @@ class Listeners(val plugin: LumaItems) : ItemListener() {
         fire(event.item.itemStack.persistentDataContainer, Action.HOPPER_PICKUP_ITEM, null, event)
     }
 
-    @EventHandler
+    //@EventHandler
     fun onInventoryClickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
         val datas: MutableList<PersistentDataContainer> = mutableListOf()

@@ -3,10 +3,9 @@ package dev.jsinco.luma.lumaitems.items.tools
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
+import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
@@ -14,7 +13,7 @@ import org.bukkit.inventory.ItemStack
 
 class TwinFlamePickaxe : CustomItemFunctions() {
 
-    private val key = NamespacedKey(instance(), "twin-flame-pickaxe")
+    private val key = Util.namespacedKey("twin-flame-pickaxe")
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()

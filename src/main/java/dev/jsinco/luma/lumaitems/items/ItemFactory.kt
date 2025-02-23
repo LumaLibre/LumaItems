@@ -4,6 +4,7 @@ import com.iridium.iridiumcolorapi.IridiumColorAPI
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.enums.RomanNumeral
+import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -49,6 +50,8 @@ class ItemFactory(
 
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()
+        @JvmField
+        val LUMAITEM = Util.namespacedKey("lumaitem")
         private val tierFormat = listOf(
             "",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
@@ -101,7 +104,7 @@ class ItemFactory(
     fun createItem(): ItemStack {
         if (meta == null) return item
 
-        meta.persistentDataContainer.set(NamespacedKey(plugin, "lumaitem"), PersistentDataType.SHORT, 1)
+        meta.persistentDataContainer.set(LUMAITEM, PersistentDataType.SHORT, 1)
         for (name in persistentData) {
             meta.persistentDataContainer.set(NamespacedKey(plugin, name), PersistentDataType.SHORT, persistentDataValue)
         }
@@ -228,6 +231,12 @@ class ItemFactory(
         fun addSpace(addSpace: Boolean) = apply { this.addSpace = addSpace }
         fun autoHat(autoHat: Boolean) = apply { this.autoHat = autoHat }
         fun attributeModifiers(attributeModifiers: MutableMap<Attribute, AttributeModifier>) = apply { this.attributeModifiers = attributeModifiers }
+        @Suppress("UnstableApiUsage")
+        fun attributeModifiers(vararg containers: AttributeContainer) = apply {
+            this.attributeModifiers = containers.associate {
+                it.attribute to AttributeModifier(it.key, it.amount, it.operation, it.slot)
+            }.toMutableMap()
+        }
         fun stringPersistentDatas(stringPersistentDatas: MutableMap<NamespacedKey, String>) = apply { this.stringPersistentDatas = stringPersistentDatas }
         fun stringPersistentData(key: String, value: String) = apply { this.stringPersistentDatas[NamespacedKey(plugin, key)] = value }
         fun quotes(quotes: MutableList<String>) = apply { this.quotes = quotes }

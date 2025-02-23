@@ -44,7 +44,7 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
         val key = "archive-of-astralis-${this.name.lowercase()}"
     }
 
-    private val nameSpacedKey = NamespacedKey(instance(), jobType.key)
+    private val nameSpacedKey = Util.namespacedKey(jobType.key)
 
     private fun archiveLore(level: Int): MutableList<String> {
         val job = Util.formatMaterialName(jobType.name)

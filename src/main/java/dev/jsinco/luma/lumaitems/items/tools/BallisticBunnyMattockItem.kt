@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Bukkit
@@ -26,13 +27,11 @@ import kotlin.random.Random
 class BallisticBunnyMattockItem : CustomItem {
 
     companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
         private val stuckCarrots: LinkedHashMap<UUID, MutableList<CarrotDisplay>> = linkedMapOf()
         private const val EXPLOSION_POWER: Float = 2.3f
 
         // cant think rn
         private val coolingDownCarrots: MutableMap<UUID, Int> = mutableMapOf()
-        private val activelyCoolingDown: MutableSet<UUID> = mutableSetOf()
     }
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -106,11 +105,11 @@ class BallisticBunnyMattockItem : CustomItem {
         interaction.interactionHeight = 0.5f
         interaction.interactionWidth = 0.5f
         interaction.isResponsive = true
-        interaction.persistentDataContainer.set(NamespacedKey(plugin, "ballisticbunnymattock"), PersistentDataType.SHORT, 1)
+        interaction.persistentDataContainer.set(NamespacedKey(instance(), "ballisticbunnymattock"), PersistentDataType.SHORT, 1)
 
         stuckCarrots.getOrPut(player.uniqueId) { mutableListOf() }.add(CarrotDisplay(itemDisplay, interaction, block, if (double) 1.4f else 1.0f))
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
            if (!itemDisplay.isDead || !interaction.isDead) {
                detonateCarrots(player)
            }
@@ -149,12 +148,10 @@ class BallisticBunnyMattockItem : CustomItem {
         var carrots = coolingDownCarrots[uuid] ?: 0
 
         if (carrots >= 3) {
-            if (!activelyCoolingDown.contains(uuid)) {
-                activelyCoolingDown.add(uuid)
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
-                    activelyCoolingDown.remove(uuid)
+            if (!QuickTasks.isOnCooldown(this, uuid)) {
+                QuickTasks.addCooldown(this, uuid, 300L) {
                     coolingDownCarrots.remove(uuid)
-                }, 300L)
+                }
             }
             return false
         }

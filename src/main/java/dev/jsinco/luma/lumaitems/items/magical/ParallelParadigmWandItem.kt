@@ -23,10 +23,6 @@ import kotlin.random.Random
 
 class ParallelParadigmWandItem : CustomItem {
 
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-    }
-
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
             "&#349532&lP&#499433&la&#5e9333&lr&#739234&la&#899034&ll&#9e8f35&ll&#b38e35&le&#c88d36&ll &#dd8c36&lP&#f28b37&la&#fb8742&lr&#f68057&la&#f17a6c&ld&#ed7481&li&#e86d96&lg&#e467ab&lm &#df60c0&lW&#da5ad5&la&#d653ea&ln&#d14dff&ld",
@@ -102,7 +98,7 @@ class ParallelParadigmWandItem : CustomItem {
             tnts.add(tnt)
         }
         entity.world.playSound(entity.location, Sound.ENTITY_TNT_PRIMED, 1f, 0.9f)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
             entity.damage(30.0)
             entity.world.createExplosion(entity.location, 3f, false, false)
             for (tnt in tnts) {

@@ -2,10 +2,13 @@ package dev.jsinco.luma.lumaitems.manager
 
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.events.items.ItemListener
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import io.papermc.paper.persistence.PersistentDataContainerView
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.event.Cancellable
+import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
 import kotlin.random.Random
 
@@ -49,5 +52,19 @@ interface CustomItem {
             }
         }
         return false
+    }
+
+    fun isHardDisabled(): Boolean {
+        val disableAnnotation: Disable = this::class.java.getAnnotation(Disable::class.java) ?: return false
+        return disableAnnotation.hard
+    }
+
+    fun handleDisabled(player: Player, event: Any) {
+        var persistNotif = false
+        if (this.isHardDisabled() && event is Cancellable && event !is PlayerMoveEvent) {
+            event.isCancelled = true
+            persistNotif = true
+        }
+        ItemListener.notify(player, persistNotif)
     }
 }

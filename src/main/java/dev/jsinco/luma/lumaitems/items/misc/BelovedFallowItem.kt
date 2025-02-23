@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
@@ -13,11 +14,6 @@ import org.bukkit.inventory.ItemStack
 import java.util.UUID
 
 class BelovedFallowItem : CustomItem {
-
-    companion object {
-        private val cooldown: MutableSet<UUID> = mutableSetOf()
-        private val plugin: LumaItems = LumaItems.getInstance()
-    }
 
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -36,6 +32,9 @@ class BelovedFallowItem : CustomItem {
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.RIGHT_CLICK -> {
+                if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
+                    return false
+                }
                 val playerLocation = player.location
                 val entities = playerLocation.world.getNearbyEntities(playerLocation, 5.0, 5.0, 5.0)
 
@@ -55,11 +54,7 @@ class BelovedFallowItem : CustomItem {
                 if (affected == 0) {
                     return false
                 }
-
-                cooldown.add(player.uniqueId)
-                plugin.server.scheduler.runTaskLater(plugin, Runnable {
-                    cooldown.remove(player.uniqueId)
-                }, 2400L)
+                QuickTasks.addCooldown(this, player.uniqueId, 2400L)
             }
             else -> return false
         }

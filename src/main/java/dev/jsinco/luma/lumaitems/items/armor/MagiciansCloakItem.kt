@@ -36,7 +36,7 @@ class MagiciansCloakItem : CustomItem {
         Util.hex2AwtColor("#ffd365")
     )
     private val vector0 = Vector(0, 0,0)
-    private val key = NamespacedKey(instance(), "magicianscloak")
+    private val key = Util.namespacedKey("magicianscloak")
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()

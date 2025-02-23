@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.items.misc
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Color
 import org.bukkit.Material
@@ -19,7 +20,7 @@ import org.bukkit.persistence.PersistentDataType
 
 class PrismaticPrunerItem : CustomItemFunctions() {
 
-    private val nameSpacedKey = NamespacedKey(instance(), "prismaticpruners")
+    private val nameSpacedKey = Util.namespacedKey("prismaticpruners")
     private val wool = ItemStack(Material.WHITE_WOOL)
 
     override fun createItem(): Pair<String, ItemStack> {

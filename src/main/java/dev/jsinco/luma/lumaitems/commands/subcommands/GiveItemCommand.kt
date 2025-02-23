@@ -41,7 +41,7 @@ class GiveItemCommand : SubCommand {
             for (customItem in ItemManager.getAllItems()) {
                 Util.giveItem(player, customItem)
             }
-            player.sendMessage("${Util.prefix} You have been given all custom items!")
+            player.sendMessage("${Util.legacyPrefix} You have been given all custom items!")
         }
     }
 

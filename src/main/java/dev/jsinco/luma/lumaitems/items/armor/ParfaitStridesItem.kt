@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -17,11 +18,7 @@ import org.bukkit.potion.PotionEffectType
 import java.util.UUID
 
 class ParfaitStridesItem : CustomItem {
-
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-        private val cooldown: MutableSet<UUID> = mutableSetOf()
-    }
+    
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -43,7 +40,7 @@ class ParfaitStridesItem : CustomItem {
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.RIGHT_CLICK -> {
-                if (cooldown.contains(player.uniqueId) || !player.isSneaking) return false
+                if (QuickTasks.isOnCooldown(this, player) || !player.isSneaking) return false
 
                 val nearbyPlayers: MutableList<Player> = player.getNearbyEntities(10.0, 10.0, 10.0).mapNotNull { it as? Player }.toMutableList()
                 nearbyPlayers.add(player)
@@ -54,10 +51,7 @@ class ParfaitStridesItem : CustomItem {
                     nearbyPlayer.addPotionEffect(PotionEffect(PotionEffectType.HASTE, 450, 1))
                 }
 
-                cooldown.add(player.uniqueId)
-                plugin.server.scheduler.scheduleSyncDelayedTask(plugin, {
-                    cooldown.remove(player.uniqueId)
-                }, 1200L)
+                QuickTasks.addCooldown(this, player, 1200L)
             }
 
             else -> return false

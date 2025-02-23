@@ -67,12 +67,7 @@ public final class LumaItemsAPI {
         if (!itemStack.hasItemMeta()) return false;
         var meta = itemStack.getItemMeta();
 
-        for (var key : ItemManager.customItems.keySet()) {
-            if (meta.getPersistentDataContainer().has(key, PersistentDataType.SHORT)) {
-                return true;
-            }
-        }
-        return false;
+        return meta.getPersistentDataContainer().has(ItemFactory.LUMAITEM);
     }
 
     /**

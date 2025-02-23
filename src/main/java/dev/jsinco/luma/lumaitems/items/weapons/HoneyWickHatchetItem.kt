@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.items.weapons
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.tiers.ThanksgivingEventTier
 import io.papermc.paper.datacomponent.DataComponentTypes
@@ -22,14 +23,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.UUID
 
 class HoneyWickHatchetItem : CustomItemFunctions() {
-
-    companion object {
-        private val cooldownPlayers: MutableSet<UUID> = mutableSetOf()
-        private const val COOLDOWN_TIME = 1200L
-    }
 
     private val dropItem: ItemStack = ItemFactory.builder()
         .material(Material.HONEYCOMB)
@@ -103,12 +98,12 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
     override fun onConsumeItem(player: Player, event: PlayerItemConsumeEvent) {
         event.isCancelled = true
 
-        if (cooldownPlayers.contains(player.uniqueId)) {
+        if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
             player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.cannotConsumeMessage))
             return
         }
 
-        cooldownPlayers.add(player.uniqueId)
+        QuickTasks.addCooldown(this, player.uniqueId, 1200L)
 
         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 600, 2)) // speed 3 for 30s
         player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 600, 2)) // regen 3 for 30s
@@ -116,9 +111,5 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
         player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, 600, 2)) // sat 3 for 30s
 
         player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.consumeMessages.random()))
-
-        Bukkit.getScheduler().runTaskLater(instance(), Runnable {
-            cooldownPlayers.remove(player.uniqueId)
-        }, COOLDOWN_TIME)
     }
 }

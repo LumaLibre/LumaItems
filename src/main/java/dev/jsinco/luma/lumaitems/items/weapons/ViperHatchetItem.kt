@@ -1,8 +1,7 @@
 package dev.jsinco.luma.lumaitems.items.weapons
 
-import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -21,10 +20,6 @@ import org.bukkit.potion.PotionEffectType
 import java.util.Random
 
 class ViperHatchetItem : CustomItem {
-
-    companion object {
-        val plugin: LumaItems = LumaItems.getInstance()
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -54,13 +49,13 @@ class ViperHatchetItem : CustomItem {
     private fun viper(e: Entity, damage: Double, player: Player): Double {
         if (e !is LivingEntity) return damage
         if (e.category == EntityCategory.UNDEAD && !e.hasMetadata("viper")) {
-            e.setMetadata("viper", FixedMetadataValue(plugin, true))
-            val repeatTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin,
+            e.setMetadata("viper", FixedMetadataValue(instance(), true))
+            val repeatTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(),
                 { e.damage(0.5) }, 0L, 15L
             )
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
                 Bukkit.getScheduler().cancelTask(repeatTask)
-                e.removeMetadata("viper", plugin)
+                e.removeMetadata("viper", instance())
             }, 100L)
         }
         if (!e.hasPotionEffect(PotionEffectType.POISON)) {
