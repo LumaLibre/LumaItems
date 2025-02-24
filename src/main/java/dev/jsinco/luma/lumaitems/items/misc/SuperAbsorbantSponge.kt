@@ -10,6 +10,7 @@ import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.*
 import org.bukkit.block.Block
+import org.bukkit.block.data.Waterlogged
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockPlaceEvent
@@ -101,6 +102,7 @@ class SuperAbsorbantSponge : CustomItemFunctions() {
         val blocksInSphere = sphere.sphereFast
 
         for (targetBlock in blocksInSphere) {
+            if (types.contains(Material.WATER)) removeWaterlogged(targetBlock)
             if (targetBlock.type !in types) continue
             targetBlock.type = Material.AIR
             world.spawnParticle(Particle.CLOUD, targetBlock.location.add(0.5, 0.5, 0.5), 10, 0.2, 0.2, 0.2, 0.02)
@@ -110,6 +112,22 @@ class SuperAbsorbantSponge : CustomItemFunctions() {
         world.playSound(location, Sound.BLOCK_WET_GRASS_BREAK, 1.0f, 1.0f)
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(LumaItems.getInstance(), Runnable { if (sponge.type in types) sponge.type = Material.AIR }, 1L)
+    }
+
+    private fun removeWaterlogged(block: Block) {
+        when (block.type) {
+            Material.KELP, Material.KELP_PLANT,
+            Material.SEAGRASS, Material.TALL_SEAGRASS -> {
+                block.breakNaturally()
+            }
+            else -> {
+                val blockData = block.blockData
+                if (blockData is Waterlogged) {
+                    blockData.isWaterlogged = false
+                    block.blockData = blockData
+                }
+            }
+        }
     }
 
     private fun getModeFromItem(item: ItemStack): AbsorptionMode {
