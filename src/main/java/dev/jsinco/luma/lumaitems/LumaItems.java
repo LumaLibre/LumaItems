@@ -2,51 +2,59 @@ package dev.jsinco.luma.lumaitems;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import dev.jsinco.luma.lumacore.manager.modules.ModuleManager;
+import dev.jsinco.luma.lumacore.reflect.ReflectionUtil;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
-import dev.jsinco.luma.lumaitems.commands.CommandManager;
-import dev.jsinco.luma.lumaitems.commands.SwapHandsCommand;
-import dev.jsinco.luma.lumaitems.commands.UpgradeBukkitCommand;
-import dev.jsinco.luma.lumaitems.events.ExternalListeners;
-import dev.jsinco.luma.lumaitems.events.GeneralListeners;
-import dev.jsinco.luma.lumaitems.events.items.JobsListeners;
-import dev.jsinco.luma.lumaitems.events.items.Listeners;
 import dev.jsinco.luma.lumaitems.events.items.PassiveListeners;
 import dev.jsinco.luma.lumaitems.guis.AbstractGui;
 import dev.jsinco.luma.lumaitems.enums.Action;
 import dev.jsinco.luma.lumaitems.manager.FileManager;
 import dev.jsinco.luma.lumaitems.manager.GlowManager;
 import dev.jsinco.luma.lumaitems.manager.ItemManager;
-import dev.jsinco.luma.lumaitems.placeholders.PAPIManager;
 import dev.jsinco.luma.lumaitems.relics.RelicCrafting;
 import dev.jsinco.luma.lumaitems.relics.RelicDisassembler;
 import dev.jsinco.luma.lumaitems.util.Util;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Set;
 import java.util.logging.Level;
 
 public final class LumaItems extends JavaPlugin {
 
     private static LumaItems instance;
+    private static PassiveListeners passiveListeners;
+    private static ItemManager itemManagerInstance;
+    private static ModuleManager moduleManager;
     private static boolean withProtocolLib;
     private static boolean withMythicMobs;
     private static boolean withmcMMO;
-    private static PAPIManager papiManager;
-    private static PassiveListeners passiveListeners;
-    private static ItemManager itemManagerInstance;
+
+    @Override
+    public void onLoad() {
+        instance = this;
+        moduleManager = new ModuleManager(this);
+    }
 
     @Override
     public void onEnable() {
-        instance = this;
         FileManager.generateDefaultFiles();
+        long start = System.currentTimeMillis();
+        ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
+        reflectionUtil.whitelistPackages(
+                "commands",
+                "commands.subcommands",
+                "events",
+                "events.items",
+                "placeholders"
+        );
+
         withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");
         withMythicMobs = getServer().getPluginManager().isPluginEnabled("MythicMobs");
         withmcMMO = getServer().getPluginManager().isPluginEnabled("mcMMO");
@@ -58,27 +66,20 @@ public final class LumaItems extends JavaPlugin {
             log("Players are online, registering items asynchronously");
             Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
                 initItemManager(itemManagerInstance);
-                initListeners();
-                log("Finished asynchronous item registration!");
+                Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
+                moduleManager.reflectivelyRegisterModules(classSet);
+                log("Finished asynchronous item registration! " + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {
             initItemManager(itemManagerInstance);
-            initListeners();
+            Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
+            moduleManager.reflectivelyRegisterModules(classSet);
+            log("Finished synchronous item registration! " + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
         GlowManager.initGlowTeams();
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();
-
-
-        getCommand("lumaitems").setExecutor(new CommandManager(this));
-        getCommand("upgrade").setExecutor(new UpgradeBukkitCommand());
-        getCommand("swaphands").setExecutor(new SwapHandsCommand());
-
-        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            papiManager = new PAPIManager(this);
-            papiManager.register();
-        }
     }
 
     private void initItemManager(ItemManager itemManager) {
@@ -94,16 +95,10 @@ public final class LumaItems extends JavaPlugin {
         }
     }
 
-    private void initListeners() {
-        getServer().getPluginManager().registerEvents(new Listeners(this), this);
-        getServer().getPluginManager().registerEvents(new GeneralListeners(this), this);
-        getServer().getPluginManager().registerEvents(new ExternalListeners(this), this);
-        getServer().getPluginManager().registerEvents(new JobsListeners(), this);
-    }
-
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this); // Immediately disable all listeners to prevent any further events from firing
+        moduleManager.unregisterModules();
         passiveListeners.onPluginAction(Action.PLUGIN_DISABLE); // Then fire this for whatever items need to use this
 
 
@@ -112,11 +107,9 @@ public final class LumaItems extends JavaPlugin {
                 player.closeInventory();
             }
         }
-        if (papiManager != null) {
-            papiManager.unregister();
-        }
 
-        // here
+
+        // stupid and unnecessary
         try {
             Field singleTonField = LumaItemsAPI.class.getDeclaredField("singleton");
             singleTonField.setAccessible(true);
@@ -128,7 +121,6 @@ public final class LumaItems extends JavaPlugin {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             LumaItems.log("Failed to reset API Singleton instance!", e);
         }
-        // here
     }
 
     @NotNull

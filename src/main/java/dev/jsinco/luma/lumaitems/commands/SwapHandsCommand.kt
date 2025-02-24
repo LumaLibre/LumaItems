@@ -2,15 +2,26 @@ package dev.jsinco.luma.lumaitems.commands
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.wrappers.EnumWrappers
+import dev.jsinco.luma.lumacore.manager.commands.AbstractCommand
+import dev.jsinco.luma.lumacore.manager.commands.CommandInfo
+import dev.jsinco.luma.lumacore.manager.modules.AutoRegister
+import dev.jsinco.luma.lumacore.manager.modules.RegisterType
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class SwapHandsCommand : CommandExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+@AutoRegister(RegisterType.COMMAND)
+@CommandInfo(
+    name = "swaphands",
+    aliases = ["offhand", "ofh"],
+    description = "Command which sends a packet to swap the player's hands",
+    usage = "/<command>",
+    playerOnly = true
+)
+class SwapHandsCommand : AbstractCommand() {
+
+    override fun handle(sender: CommandSender, label: String, args: Array<out String>): Boolean {
         val protocolManager = LumaItems.getProtocolManager() ?: run {
             MiniMessageUtil.msg(sender, "Couldn't find ProtocolLib!")
             return true
@@ -26,4 +37,9 @@ class SwapHandsCommand : CommandExecutor {
         MiniMessageUtil.msg(sender, "Swapped hands!")
         return true
     }
+
+    override fun handleTabComplete(sender: CommandSender, label: String, args: Array<out String>): List<String>? {
+        return null
+    }
+
 }

@@ -28,6 +28,7 @@ repositories {
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://nexus.neetgames.com/repository/maven-releases/")
+    maven("https://repo.jsinco.dev/releases")
 }
 
 dependencies {
@@ -35,6 +36,7 @@ dependencies {
     compileOnly("com.github.Zrips:jobs:v4.17.2")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
+    compileOnly("dev.jsinco.luma.lumacore:LumaCore:4a645c3")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.030")
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
@@ -124,10 +126,16 @@ publishing {
 
 fun getGitCommitHashShort(): String = ByteArrayOutputStream().use { stream ->
     var branch = "none"
-    project.exec {
-        commandLine = listOf("git", "log", "-1", "--format=%h")
-        standardOutput = stream
+    try {
+        project.exec {
+            commandLine = listOf("git", "log", "-1", "--format=%h")
+            standardOutput = stream
+        }
+    } catch (e: Exception) {
+        println("Failed to get git commit hash! (No git repository found?)")
+        return branch
     }
+
     if (stream.size() > 0) branch = stream.toString(Charset.defaultCharset().name()).trim()
     return branch
 }
