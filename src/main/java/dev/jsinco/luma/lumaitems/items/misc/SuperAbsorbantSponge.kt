@@ -57,6 +57,7 @@ class SuperAbsorbantSponge : CustomItemFunctions() {
     }
 
     override fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {
+        if (event.isCancelled) return
         val item = player.inventory.itemInMainHand
         val mode = getModeFromItem(item)
         removeNearbyBlocks(event.block, 6, *mode.materials.toTypedArray())
