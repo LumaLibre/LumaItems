@@ -1,5 +1,7 @@
 package dev.jsinco.luma.lumaitems.events
 
+import dev.jsinco.luma.lumacore.manager.modules.AutoRegister
+import dev.jsinco.luma.lumacore.manager.modules.RegisterType
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.guis.AbstractGui
 import dev.jsinco.luma.lumaitems.guis.DisassemblerGui
@@ -30,7 +32,10 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
 import kotlin.random.Random
 
-class GeneralListeners(val plugin: LumaItems) : Listener {
+@AutoRegister(RegisterType.LISTENER)
+class GeneralListeners : Listener {
+
+    val plugin: LumaItems = LumaItems.getInstance()
 
     companion object {
         val relicFile = FileManager("relics.yml").generateYamlFile()

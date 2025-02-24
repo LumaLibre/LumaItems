@@ -1,65 +1,29 @@
 package dev.jsinco.luma.lumaitems.commands
 
+import dev.jsinco.luma.lumacore.manager.commands.AbstractCommandManager
+import dev.jsinco.luma.lumacore.manager.commands.CommandInfo
+import dev.jsinco.luma.lumacore.manager.modules.AutoRegister
+import dev.jsinco.luma.lumacore.manager.modules.RegisterType
+import dev.jsinco.luma.lumacore.utility.Text
 import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.commands.subcommands.AddTierCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.ClearCooldownCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.CopyCoordinatesCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.DebugCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.GiveAstralCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.GiveItemCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.HideToolTipsCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.PinataFileCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.RelicCommand
-import dev.jsinco.luma.lumaitems.commands.subcommands.UpgradeCommand
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
-import org.bukkit.entity.Player
 
-class CommandManager(val plugin: LumaItems) : CommandExecutor, TabCompleter {
+@AutoRegister(RegisterType.COMMAND)
+@CommandInfo(
+    name = "lumaitems",
+    aliases = ["li"],
+    description = "Main command for LumaItems",
+    usage = "/<command> <subcommand>",
+    permission = "lumaitems.command",
+    playerOnly = false
+)
+class CommandManager : AbstractCommandManager<LumaItems, SubCommand>(LumaItems.getInstance()) {
 
-    val commands: MutableMap<String, SubCommand> = mutableMapOf()
-
-    init {
-        commands["give"] = GiveItemCommand()
-        commands["pinatafile"] = PinataFileCommand()
-        commands["debug"] = DebugCommand()
-        commands["relic"] = RelicCommand()
-        commands["giveastral"] = GiveAstralCommand()
-        commands["addtier"] = AddTierCommand()
-        commands["upgrade"] = UpgradeCommand()
-        commands["copycoordinates"] = CopyCoordinatesCommand()
-        commands["clearcooldown"] = ClearCooldownCommand()
-        commands["hidetooltips"] = HideToolTipsCommand()
-    }
-
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        if (args.isEmpty()) return false
-
-        val subCommand = commands[args[0]] ?: return false
-
-        if (subCommand.playerOnly() && sender !is Player) return false
-        else if (subCommand.permission() != null && !sender.hasPermission(subCommand.permission()!!)) return false
-
-        subCommand.execute(plugin, sender, args)
-        return true
-    }
-
-    override fun onTabComplete(sender: CommandSender, command: Command, label: String, args: Array<out String>): List<String>? {
-        if (args.size == 1) {
-            // filter out commands no permission for
-            return commands.filter { (name, subCommand) ->
-                subCommand.permission() == null || sender.hasPermission(subCommand.permission()!!)
-            }.keys.toList()
+    override fun handle(sender: CommandSender, label: String, args: Array<out String>): Boolean {
+        if (args.isEmpty()) {
+            Text.msg(sender, "Please provide a subcommand.")
+            return false
         }
-
-        val subCommand = commands[args[0]] ?: return null
-
-        if (subCommand.playerOnly() && sender !is Player) return null
-        else if (subCommand.permission() != null && !sender.hasPermission(subCommand.permission()!!)) return null
-
-        return subCommand.tabComplete(plugin, sender, args)
+        return super.handle(sender, label, args)
     }
-
 }

@@ -4,6 +4,8 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
+import dev.jsinco.luma.lumacore.manager.modules.AutoRegister
+import dev.jsinco.luma.lumacore.manager.modules.RegisterType
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.ItemManager
@@ -57,7 +59,10 @@ import org.bukkit.persistence.PersistentDataType
  * Blocks cannot store persistent data, so we will have to store in a file (if needed for long term)
  * Or have our listeners fire every single executeAbilities() method every time we need to grab data from a block
  */
-class Listeners(val plugin: LumaItems) : ItemListener() {
+@AutoRegister(RegisterType.LISTENER)
+class Listeners : ItemListener() {
+
+    val plugin: LumaItems = LumaItems.getInstance()
 
     @EventHandler
     fun onCrossbowLoad(event: EntityLoadCrossbowEvent) {
