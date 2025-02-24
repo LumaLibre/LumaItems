@@ -51,6 +51,7 @@ public final class LumaItems extends JavaPlugin {
                 "commands",
                 "commands.subcommands",
                 "events",
+                "events.items",
                 "placeholders"
         );
 
