@@ -1,14 +1,14 @@
 package dev.jsinco.luma.lumaitems.items.misc
 
+import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.shapes.Sphere
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
+import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.bukkit.Material
-import org.bukkit.NamespacedKey
-import org.bukkit.Particle
-import org.bukkit.Sound
+import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -23,14 +23,9 @@ class SuperAbsorbantSponge : CustomItemFunctions() {
     private val modeKey = NamespacedKey(instance(), "sponge-mode")
 
     enum class AbsorptionMode(val displayName: String, val materials: List<Material>) {
-
         WATER("<#359BBD>Water", listOf(Material.WATER)),
         LAVA("<#FF4500>Lava", listOf(Material.LAVA)),
         BOTH("<#359BBD>Water <#F4E06D>& <#FF4500>Lava", listOf(Material.WATER, Material.LAVA));
-
-        companion object {
-            fun fromString(mode: String): AbsorptionMode = entries.firstOrNull { it.name == mode } ?: BOTH
-        }
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -100,35 +95,26 @@ class SuperAbsorbantSponge : CustomItemFunctions() {
 
         val world = sponge.world
         val location = sponge.location
-        val range = -radius..radius
 
-        if (sponge.type in types) sponge.type = Material.AIR
+        val sphere = Sphere(location, radius.toDouble(), 0.0)
+        val blocksInSphere = sphere.sphereFast
 
-        for (x in range) {
-            for (y in range) {
-                for (z in range) {
-                    val targetBlockLocation = location.clone().add(x.toDouble(), y.toDouble(), z.toDouble())
-
-                    val distanceSquared = location.distanceSquared(targetBlockLocation)
-                    if (distanceSquared > (radius * radius)) continue
-
-                    val targetBlock = world.getBlockAt(targetBlockLocation)
-                    if (targetBlock.type !in types) continue
-
-                    targetBlock.type = Material.AIR
-                    world.spawnParticle(Particle.CLOUD, targetBlock.location.add(0.5, 0.5, 0.5), 10, 0.2, 0.2, 0.2, 0.02)
-                }
-            }
+        for (targetBlock in blocksInSphere) {
+            if (targetBlock.type !in types) continue
+            targetBlock.type = Material.AIR
+            world.spawnParticle(Particle.CLOUD, targetBlock.location.add(0.5, 0.5, 0.5), 10, 0.2, 0.2, 0.2, 0.02)
         }
 
         world.playSound(location, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.5f)
         world.playSound(location, Sound.BLOCK_WET_GRASS_BREAK, 1.0f, 1.0f)
+
+        Bukkit.getScheduler().runTaskLaterAsynchronously(LumaItems.getInstance(), Runnable { if (sponge.type in types) sponge.type = Material.AIR }, 1L)
     }
 
     private fun getModeFromItem(item: ItemStack): AbsorptionMode {
         val meta = item.itemMeta ?: return AbsorptionMode.BOTH
         val modeString = meta.persistentDataContainer.get(modeKey, PersistentDataType.STRING) ?: AbsorptionMode.BOTH.name
-        return AbsorptionMode.fromString(modeString)
+        return Util.enumValueOfOrNull(AbsorptionMode::class.java, modeString) ?: AbsorptionMode.BOTH
     }
 
 }

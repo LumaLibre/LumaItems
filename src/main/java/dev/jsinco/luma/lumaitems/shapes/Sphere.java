@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +50,34 @@ public class Sphere implements Shape3D {
         return blockList;
     }
 
+    /**
+     * I do have idea and this should be way faster, but it does not consider density.
+     * @return Set of blocks that make up the sphere.
+     */
+    public Set<Block> getSphereFast() {
+
+        Set<Block> blockList = new HashSet<>();
+        int intRadius = (int) Math.ceil(radius);
+        double radiusSquared = radius * radius;
+
+        int centerX = center.getBlockX();
+        int centerY = center.getBlockY();
+        int centerZ = center.getBlockZ();
+
+        for (int x = -intRadius; x <= intRadius; x++) {
+            for (int y = -intRadius; y <= intRadius; y++) {
+                for (int z = -intRadius; z <= intRadius; z++) {
+                    double distanceSquared = x * x + y * y + z * z;
+                    if (distanceSquared > radiusSquared) continue;
+
+                    Block block = center.getWorld().getBlockAt(centerX + x, centerY + y, centerZ + z);
+                    blockList.add(block);
+                }
+            }
+        }
+
+        return blockList;
+    }
 
     /**
      * I have no idea. This was *mostly* taken from the XSeries particle lib.
