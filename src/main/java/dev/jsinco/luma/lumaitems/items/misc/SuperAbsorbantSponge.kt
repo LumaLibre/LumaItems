@@ -102,7 +102,7 @@ class SuperAbsorbantSponge : CustomItemFunctions() {
         val blocksInSphere = sphere.sphereFast
 
         for (targetBlock in blocksInSphere) {
-            if (types.contains(Material.WATER)) removeWaterlogged(targetBlock)
+            if (Material.WATER in types) removeWaterlogged(targetBlock)
             if (targetBlock.type !in types) continue
             targetBlock.type = Material.AIR
             world.spawnParticle(Particle.CLOUD, targetBlock.location.add(0.5, 0.5, 0.5), 10, 0.2, 0.2, 0.2, 0.02)
@@ -111,7 +111,10 @@ class SuperAbsorbantSponge : CustomItemFunctions() {
         world.playSound(location, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.5f)
         world.playSound(location, Sound.BLOCK_WET_GRASS_BREAK, 1.0f, 1.0f)
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(LumaItems.getInstance(), Runnable { if (sponge.type in types) sponge.type = Material.AIR }, 1L)
+        Bukkit.getScheduler().runTaskLater(LumaItems.getInstance(), Runnable {
+            if (Material.WATER in types) removeWaterlogged(sponge)
+            if (sponge.type in types) sponge.type = Material.AIR
+        }, 1L)
     }
 
     private fun removeWaterlogged(block: Block) {
