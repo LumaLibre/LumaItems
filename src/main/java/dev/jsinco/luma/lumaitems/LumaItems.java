@@ -51,8 +51,8 @@ public final class LumaItems extends JavaPlugin {
                 "commands",
                 "commands.subcommands",
                 "events",
-                "events.items",
-                "placeholders"
+                "events.items"
+                //"placeholders"
         );
 
         withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");
@@ -68,13 +68,13 @@ public final class LumaItems extends JavaPlugin {
                 initItemManager(itemManagerInstance);
                 Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
                 moduleManager.reflectivelyRegisterModules(classSet);
-                log("Finished asynchronous item registration! " + " Took " + (System.currentTimeMillis() - start) + "ms");
+                log("Finished asynchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {
             initItemManager(itemManagerInstance);
             Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
             moduleManager.reflectivelyRegisterModules(classSet);
-            log("Finished synchronous item registration! " + " Took " + (System.currentTimeMillis() - start) + "ms");
+            log("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
         GlowManager.initGlowTeams();

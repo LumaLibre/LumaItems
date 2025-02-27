@@ -23,8 +23,7 @@ public enum BlockConstants {
             Material.EMERALD_ORE, Material.DEEPSLATE_EMERALD_ORE, Material.GOLD_ORE,
             Material.DEEPSLATE_GOLD_ORE, Material.IRON_ORE, Material.DEEPSLATE_IRON_ORE,
             Material.LAPIS_ORE, Material.DEEPSLATE_LAPIS_ORE, Material.NETHER_GOLD_ORE,
-            Material.NETHER_QUARTZ_ORE, Material.REDSTONE_ORE, Material.DEEPSLATE_REDSTONE_ORE,
-            Material.ANCIENT_DEBRIS
+            Material.NETHER_QUARTZ_ORE, Material.REDSTONE_ORE, Material.DEEPSLATE_REDSTONE_ORE
     ),
 
 
@@ -51,5 +50,13 @@ public enum BlockConstants {
 
     public boolean contains(Material material) {
         return materials.contains(material);
+    }
+
+    public List<Material> getButExclude(Material... exclude) {
+        List<Material> materials = new ArrayList<>(this.materials);
+        for (var material : exclude) {
+            materials.remove(material);
+        }
+        return materials;
     }
 }
