@@ -5,7 +5,6 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.inventory.ItemStack
 
 // Yes, I'll add functionality to this item someday. Maybe...
 abstract class ValentideCharmItemNest(team: ValentideTeam) : CustomItemFunctions() {
