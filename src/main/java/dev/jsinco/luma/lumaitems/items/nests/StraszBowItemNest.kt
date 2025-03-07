@@ -6,7 +6,6 @@ import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
@@ -16,11 +15,11 @@ import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
 import org.bukkit.event.entity.CreatureSpawnEvent
-import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
@@ -72,7 +71,8 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
         val hitLivingEntity: LivingEntity = event.hitEntity as? LivingEntity ?: return
         val dmg = 10.0 * event.entity.velocity.length()
-        hitLivingEntity.damage(dmg, player)
+        // Replicate vanilla behavior - endermen are always immune to projectiles or able to teleport away
+        hitLivingEntity.takeIf { it.type != EntityType.ENDERMAN }?.damage(dmg, player)
         hitLivingEntity.world.playSound(hitLivingEntity.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1.8f)
 
 
@@ -81,8 +81,7 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
         }
         var i = 0
         hitLivingEntity.getNearbyEntities(20.0, 20.0, 20.0).forEach {
-            // mayhaps check if the entity is in line of sight?
-            if (it !is LivingEntity || it is Player /*|| !hitLivingEntity.hasLineOfSight(it)*/) return@forEach
+            if (it !is LivingEntity || it is Player || !hitLivingEntity.hasLineOfSight(it)) return@forEach
             else if (i++ > MAX_DUPLICATE_ARROWS) return
             val vector: Vector = AbilityUtil.getDirectionBetweenLocations(hitLivingEntity.eyeLocation, it.eyeLocation)
             spawnProjectile(vector.multiply(0.5), hitLivingEntity.eyeLocation.add(0.0,0.4,0.0), true, player, true)
