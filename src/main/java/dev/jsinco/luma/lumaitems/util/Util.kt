@@ -3,13 +3,10 @@ package dev.jsinco.luma.lumaitems.util
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
-import dev.jsinco.luma.lumaitems.manager.CustomItem
-import dev.jsinco.luma.lumaitems.manager.ItemManager
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.Color as BukkitColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
@@ -27,6 +24,7 @@ import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 import kotlin.random.Random
 import net.md_5.bungee.api.ChatColor as BungeeChatColor
+import org.bukkit.Color as BukkitColor
 import java.awt.Color as AwtColor
 
 

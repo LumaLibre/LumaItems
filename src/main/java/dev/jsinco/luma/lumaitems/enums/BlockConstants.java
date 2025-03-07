@@ -15,7 +15,8 @@ public enum BlockConstants {
             Material.SPAWNER, Material.COMMAND_BLOCK, Material.BARRIER,
             Material.STRUCTURE_BLOCK, Material.JIGSAW, Material.END_GATEWAY,
             Material.BUDDING_AMETHYST, Material.FARMLAND, Material.DIRT_PATH,
-            Material.END_PORTAL, Material.REINFORCED_DEEPSLATE
+            Material.END_PORTAL, Material.REINFORCED_DEEPSLATE, Material.TRIAL_SPAWNER,
+            Material.VAULT
     ),
     ORES(
             Material.COAL_ORE, Material.DEEPSLATE_COAL_ORE, Material.COPPER_ORE,

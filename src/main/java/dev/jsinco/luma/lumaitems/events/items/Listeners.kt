@@ -67,7 +67,7 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onCrossbowLoad(event: EntityLoadCrossbowEvent) {
         val player = event.entity as? Player ?: return
-        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+        val data: PersistentDataContainer = event.crossbow.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.CROSSBOW_LOAD, player, event)
     }

@@ -1,6 +1,7 @@
 import org.apache.commons.io.output.ByteArrayOutputStream
 import org.apache.tools.ant.filters.ReplaceTokens
 import java.nio.charset.Charset
+import java.nio.file.Path
 
 plugins {
     id("java")
@@ -8,6 +9,7 @@ plugins {
     kotlin("jvm") version "2.0.21"
     id("com.gradleup.shadow") version "8.3.5"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.11"
+    id("dev.jsinco.pterodactyldeploy") version "1.14-SNAPSHOT"
 }
 
 
@@ -86,6 +88,16 @@ tasks {
         dependsOn(shadowJar)
     }
 
+    pterodactylDeploy {
+        url = System.getenv("PTERO_URL") ?: return@pterodactylDeploy
+        apiKey = System.getenv("PTERO_TOKEN")
+        serverId = System.getenv("PTERO_SERVER")
+
+        dropIn {
+            uploadFiles = mutableListOf(file("build/libs/LumaItems.jar"))
+            deployCommands = mutableListOf("plugman reload LumaItems")
+        }
+    }
 }
 
 java {

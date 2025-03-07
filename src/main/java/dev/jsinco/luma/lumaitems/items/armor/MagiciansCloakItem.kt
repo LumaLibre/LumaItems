@@ -57,6 +57,7 @@ class MagiciansCloakItem : CustomItem {
                 event as EntityDamageByEntityEvent
                 if (event.isCancelled) return false
                 val damage = event.damage.toInt().toShort()
+                if (damage < 1) return false
                 appendCloakDamage(player, damage)
             }
 
