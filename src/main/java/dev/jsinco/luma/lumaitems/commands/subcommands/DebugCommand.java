@@ -3,25 +3,19 @@ package dev.jsinco.luma.lumaitems.commands.subcommands;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.ListeningWhitelist;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.events.PacketListener;
 import dev.jsinco.luma.lumacore.manager.commands.CommandInfo;
 import dev.jsinco.luma.lumacore.manager.modules.AutoRegister;
 import dev.jsinco.luma.lumacore.manager.modules.RegisterType;
 import dev.jsinco.luma.lumaitems.LumaItems;
 import dev.jsinco.luma.lumaitems.commands.CommandManager;
 import dev.jsinco.luma.lumaitems.commands.SubCommand;
-import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.minecraft.network.protocol.game.ClientboundChunksBiomesPacket;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +53,7 @@ public class DebugCommand implements SubCommand {
             super(new AdapterParameteters().plugin(
                     LumaItems.getInstance()
             ).serverSide().types(
-                    PacketType.Play.Server.CHUNKS_BIOMES
+                    PacketType.Play.Server.MAP_CHUNK
             ).listenerPriority(ListenerPriority.NORMAL));
         }
 

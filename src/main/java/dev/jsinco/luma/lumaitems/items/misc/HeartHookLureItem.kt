@@ -6,6 +6,7 @@ import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerFishEvent.State
@@ -43,7 +44,7 @@ class HeartHookLureItem : CustomItemFunctions() {
             }
             State.CAUGHT_ENTITY -> {
                 val hookedEntity = hook.hookedEntity ?: return
-                if (AbilityUtil.noDamagePermission(player, hookedEntity)) return
+                if (AbilityUtil.noDamagePermission(player, hookedEntity) || hookedEntity !is LivingEntity) return
 
                 if (player.isSneaking) {
                     player.teleportAsync(hookedEntity.location)
