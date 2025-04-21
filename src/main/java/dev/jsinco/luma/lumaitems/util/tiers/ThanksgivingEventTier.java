@@ -24,7 +24,7 @@ public class ThanksgivingEventTier extends Tier {
     }
 
     public String getCannotConsumeMessage() {
-        return "<gray>›.‹ <#E55DB0>I'm too full right now!";
+        return "›.‹ <#E55DB0>I'm too full right now!";
     }
 
 }

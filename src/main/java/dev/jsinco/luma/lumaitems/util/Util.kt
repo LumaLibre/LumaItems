@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
+import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 import kotlin.random.Random
@@ -94,27 +95,6 @@ object Util {
         }
     }
 
-
-    fun getColorCodeByChatColor(colorCode: ChatColor): String {
-        return when (colorCode) {
-            ChatColor.AQUA -> "§b"
-            ChatColor.BLACK -> "§0"
-            ChatColor.BLUE -> "§9"
-            ChatColor.DARK_AQUA -> "§3"
-            ChatColor.DARK_BLUE -> "§1"
-            ChatColor.DARK_GRAY -> "§8"
-            ChatColor.DARK_GREEN -> "§2"
-            ChatColor.DARK_PURPLE -> "§5"
-            ChatColor.DARK_RED -> "§4"
-            ChatColor.GOLD -> "§6"
-            ChatColor.GRAY -> "§7"
-            ChatColor.GREEN -> "§a"
-            ChatColor.LIGHT_PURPLE -> "§d"
-            ChatColor.RED -> "§c"
-            ChatColor.YELLOW -> "§e"
-            else -> "§f"
-        }
-    }
 
     fun getAllEquipmentNBT(player: Player): List<PersistentDataContainer> {
         val nbtList: MutableList<PersistentDataContainer> = mutableListOf()
@@ -322,5 +302,23 @@ object Util {
 
     fun namespacedKey(key: String): NamespacedKey {
         return NamespacedKey(plugin, key)
+    }
+
+    fun <P, C : Any> setPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey, dataType: PersistentDataType<P, C>, value: C) {
+        persistentDataHolder.persistentDataContainer.set(key, dataType, value)
+    }
+
+    fun <P : Any, C : Any> getPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey, dataType: PersistentDataType<P, C>): C? {
+        return persistentDataHolder.persistentDataContainer.get(key, dataType)
+    }
+
+    fun <P, C : Any> setPersistentKey(item: ItemStack, key: NamespacedKey, dataType: PersistentDataType<P, C>, value: C) {
+        val meta = item.itemMeta ?: return
+        meta.persistentDataContainer.set(key, dataType, value)
+        item.itemMeta = meta
+    }
+
+    fun <P : Any, C : Any> getPersistentKey(item: ItemStack, key: NamespacedKey, dataType: PersistentDataType<P, C>): C? {
+        return item.itemMeta?.persistentDataContainer?.get(key, dataType)
     }
 }

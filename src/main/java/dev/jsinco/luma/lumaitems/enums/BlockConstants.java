@@ -26,8 +26,17 @@ public enum BlockConstants {
             Material.LAPIS_ORE, Material.DEEPSLATE_LAPIS_ORE, Material.NETHER_GOLD_ORE,
             Material.NETHER_QUARTZ_ORE, Material.REDSTONE_ORE, Material.DEEPSLATE_REDSTONE_ORE
     ),
-
-
+    COLORED_GLASS(
+            Material.LIGHT_BLUE_STAINED_GLASS, Material.BLACK_STAINED_GLASS, Material.BLUE_STAINED_GLASS,
+            Material.BROWN_STAINED_GLASS, Material.CYAN_STAINED_GLASS, Material.GRAY_STAINED_GLASS,
+            Material.GREEN_STAINED_GLASS, Material.LIGHT_GRAY_STAINED_GLASS, Material.LIME_STAINED_GLASS,
+            Material.MAGENTA_STAINED_GLASS, Material.ORANGE_STAINED_GLASS, Material.PINK_STAINED_GLASS,
+            Material.PURPLE_STAINED_GLASS, Material.RED_STAINED_GLASS, Material.WHITE_STAINED_GLASS,
+            Material.YELLOW_STAINED_GLASS
+    ),
+    GLASS(
+            COLORED_GLASS.materials, Material.GLASS, Material.TINTED_GLASS
+    )
     ;
 
     private final List<Material> materials;
@@ -39,6 +48,11 @@ public enum BlockConstants {
                 this.materials.add(material);
             }
         }
+    }
+
+    BlockConstants(List<Material> materialList, Material... materials) {
+        this.materials = new ArrayList<>(materialList);
+        this.materials.addAll(List.of(materials));
     }
 
     BlockConstants(Material... materials) {

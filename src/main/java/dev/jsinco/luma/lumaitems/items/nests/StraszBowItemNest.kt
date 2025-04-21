@@ -70,7 +70,7 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
         val hitLivingEntity: LivingEntity = event.hitEntity as? LivingEntity ?: return
-        val dmg = 10.0 * event.entity.velocity.length()
+        val dmg = 10.0 + (hitLivingEntity.health / 10.0)
         // Replicate vanilla behavior - endermen are always immune to projectiles or able to teleport away
         hitLivingEntity.takeIf { it.type != EntityType.ENDERMAN }?.damage(dmg, player)
         hitLivingEntity.world.playSound(hitLivingEntity.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1.8f)

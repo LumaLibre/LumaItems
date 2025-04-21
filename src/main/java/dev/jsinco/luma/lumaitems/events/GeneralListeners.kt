@@ -21,6 +21,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.EntitySpawnEvent
@@ -100,8 +101,13 @@ class GeneralListeners : Listener {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     fun onInventoryClick(event: InventoryClickEvent) {
+        if (event.inventory.getHolder(false) is AbstractGui) {
+            (event.inventory.holder as AbstractGui).onInventoryClick(event)
+            return
+        }
+
         val player = event.whoClicked as Player
         val data = player.itemOnCursor.itemMeta?.persistentDataContainer
         if (data?.has(NamespacedKey(plugin, "autohat"), PersistentDataType.SHORT) == true) { // TODO: Organize
@@ -112,12 +118,7 @@ class GeneralListeners : Listener {
             if (cursorItem.type == Material.AIR || cursorItem == player.inventory.helmet) return
             event.isCancelled = true
             player.setItemOnCursor(hatItem);player.inventory.helmet = cursorItem;player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1f, 1f)
-            return
         }
-
-
-        if (event.inventory.getHolder(false) !is AbstractGui) return
-        (event.inventory.holder as AbstractGui).onInventoryClick(event)
     }
 
 

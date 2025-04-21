@@ -36,8 +36,9 @@ public class DebugCommand implements SubCommand {
     public boolean execute(@NotNull LumaItems plugin, @NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
 
-        ProtocolManager protocolManager = LumaItems.getProtocolManager();
-        //protocolManager.addPacketListener(new PacketListener(this,) {});
+        float power = Float.parseFloat(args[0]);
+
+        player.getWorld().createExplosion(player.getLocation(), power);
         return true;
     }
 
@@ -47,22 +48,4 @@ public class DebugCommand implements SubCommand {
         return Arrays.stream(Material.values()).map(it -> it.name().toLowerCase()).toList();
     }
 
-    private static class ChunkBiomePacketListener extends PacketAdapter {
-
-        public ChunkBiomePacketListener(@NotNull AdapterParameteters params) {
-            super(new AdapterParameteters().plugin(
-                    LumaItems.getInstance()
-            ).serverSide().types(
-                    PacketType.Play.Server.MAP_CHUNK
-            ).listenerPriority(ListenerPriority.NORMAL));
-        }
-
-        @Override
-        public void onPacketSending(PacketEvent event) {
-            PacketContainer packetContainer = event.getPacket();
-            ClientboundChunksBiomesPacket clientboundChunksBiomesPacket = (ClientboundChunksBiomesPacket) packetContainer.getHandle();
-
-            //clientboundChunksBiomesPacket.chunkBiomeData().get(0).
-        }
-    }
 }

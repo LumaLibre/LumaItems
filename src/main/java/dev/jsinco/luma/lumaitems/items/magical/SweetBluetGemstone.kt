@@ -141,7 +141,7 @@ class SweetBluetGemstone : CustomItem {
                     activeSnowballs.remove(player.uniqueId)
                     if (!snowball.isDead) snowball.remove()
                     return
-                }
+                }//
                 snowball.world.playSound(snowball.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1f)
                 snowball.world.spawnParticle(Particle.DUST, snowball.location, 50, 0.7, 0.7, 0.7, 0.1, DustOptions(Color.WHITE, 1f))
                 snowball.world.spawnParticle(Particle.WAX_OFF, snowball.location, 10, 0.7, 0.7, 0.7, 0.1)
@@ -227,11 +227,7 @@ class SweetBluetGemstone : CustomItem {
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
             cooldownStorm.remove(player.uniqueId)
         }, AbilityType.STORM.cooldown)
-
-
     }
-
-
 
 
     enum class AbilityType(val friendlyName: String, val lapis: Int, val cooldown: Long) {

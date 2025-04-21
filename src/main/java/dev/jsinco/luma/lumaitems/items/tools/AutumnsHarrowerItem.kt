@@ -1,6 +1,5 @@
-package dev.jsinco.luma.lumaitems.items.misc
+package dev.jsinco.luma.lumaitems.items.tools
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem

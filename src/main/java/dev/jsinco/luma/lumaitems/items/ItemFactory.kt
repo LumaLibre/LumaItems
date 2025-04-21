@@ -101,6 +101,11 @@ class ItemFactory(
         return this
     }
 
+    fun addAttributeContainer(attributeContainer: AttributeContainer): ItemFactory {
+        this.attributeModifiers[attributeContainer.attribute] = AttributeModifier(attributeContainer.key, attributeContainer.amount, attributeContainer.operation, attributeContainer.slot)
+        return this
+    }
+
     fun createItem(): ItemStack {
         if (meta == null) return item
 
@@ -188,6 +193,18 @@ class ItemFactory(
         return item
     }
 
+    fun toReturnablePair(): Pair<String, ItemStack> {
+        return this.toReturnablePair(0)
+    }
+
+    fun toReturnablePair(keyIndex: Int): Pair<String, ItemStack> {
+        val key = persistentData.getOrNull(keyIndex) ?: run {
+            LumaItems.log("Error: persistentData must have exactly one value!")
+            return Pair("", ItemStack(Material.AIR))
+        }
+        return Pair(key, this.createItem())
+    }
+
 
     class Builder {
         private var name: String = ""
@@ -221,6 +238,8 @@ class ItemFactory(
         fun persistentData(persistentData: MutableList<String>) = apply { this.persistentData = persistentData }
         @SafeVarargs
         fun persistentData(vararg persistentData: String) = apply { this.persistentData = persistentData.toMutableList() }
+        @SafeVarargs
+        fun persistentData(vararg persistentData: NamespacedKey) = apply { this.persistentData = persistentData.map { it.key }.toMutableList() }
         fun vanillaEnchants(vanillaEnchants: MutableMap<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
         @SafeVarargs
         fun vanillaEnchants(vararg vanillaEnchants: Pair<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants.toMap().toMutableMap() }

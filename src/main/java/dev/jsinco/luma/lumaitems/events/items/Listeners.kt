@@ -36,6 +36,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -43,6 +44,7 @@ import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerShearEntityEvent
@@ -394,12 +396,10 @@ class Listeners : ItemListener() {
         fire(event.item.itemStack.persistentDataContainer, Action.HOPPER_PICKUP_ITEM, null, event)
     }
 
-    //@EventHandler
+    //@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onInventoryClickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
-        val datas: MutableList<PersistentDataContainer> = mutableListOf()
-        event.currentItem?.itemMeta?.persistentDataContainer?.let { datas.add(it) }
-        event.cursor.itemMeta?.persistentDataContainer?.let { datas.add(it) }
+        val datas = Util.getAllEquipmentNBT(player)
 
         fire(datas, Action.INVENTORY_CLICK, player, event)
     }
@@ -421,5 +421,19 @@ class Listeners : ItemListener() {
             else -> return
         } ?: return
         fire(data, Action.EMPTY_BUCKET, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerPickupItem(event: PlayerAttemptPickupItemEvent) {
+        val player = event.player
+        fire(Util.getAllEquipmentNBT(player), Action.PICKUP_ITEM, player, event)
+    }
+
+    @EventHandler // if you modify this event to include previous slot, items that use this need a conditional added to their logic
+    fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
+        val player = event.player
+        val data: PersistentDataContainer = player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.ITEM_HELD, player, event)
     }
 }

@@ -41,7 +41,7 @@ abstract class ItemListener : Listener {
     // Paper added this, just makes it easier to look at the PDC
     fun fire(data: PersistentDataContainerView, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
         for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-            if (!data.has(customItem.key, PersistentDataType.SHORT)) {
+            if (!data.has(customItem.key)) {
                 continue
             }
             val item = customItem.value
@@ -60,7 +60,7 @@ abstract class ItemListener : Listener {
 
     fun fire(data: PersistentDataContainer, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
         for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-            if (!data.has(customItem.key, PersistentDataType.SHORT)) {
+            if (!data.has(customItem.key)) {
                 continue
             }
             val item = customItem.value
@@ -80,7 +80,7 @@ abstract class ItemListener : Listener {
     fun fire(data: List<PersistentDataContainer>, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
         for (itemData: PersistentDataContainer in data) {
             for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
+                if (!itemData.has(customItem.key)) {
                     continue
                 }
                 val item = customItem.value
@@ -101,7 +101,7 @@ abstract class ItemListener : Listener {
     fun fire(data: List<PersistentDataContainer>, action1: Action, action2: Action, player: Player?, event: Any, withContainer: Boolean = false) {
         for (itemData: PersistentDataContainer in data) {
             for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
+                if (!itemData.has(customItem.key)) {
                     continue
                 }
                 val item = customItem.value
@@ -124,7 +124,7 @@ abstract class ItemListener : Listener {
     fun fire(data: List<PersistentDataContainer>, vararg actions: Action, player: Player?, event: Any, withContainer: Boolean = false) {
         for (itemData: PersistentDataContainer in data) {
             for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key, PersistentDataType.SHORT)) {
+                if (!itemData.has(customItem.key)) {
                     continue
                 }
                 val item = customItem.value
