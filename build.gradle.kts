@@ -1,14 +1,13 @@
 import org.apache.commons.io.output.ByteArrayOutputStream
 import org.apache.tools.ant.filters.ReplaceTokens
 import java.nio.charset.Charset
-import java.nio.file.Path
 
 plugins {
     id("java")
     id("maven-publish")
     kotlin("jvm") version "2.0.21"
     id("com.gradleup.shadow") version "8.3.5"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.11"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.16"
     id("dev.jsinco.pterodactyldeploy") version "1.15-SNAPSHOT"
 }
 
@@ -44,7 +43,7 @@ dependencies {
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
 }
 
 tasks {
