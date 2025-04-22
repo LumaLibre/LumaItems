@@ -81,16 +81,22 @@ class BloomingBunnyRakeItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
-        if (block.type != cropOfTheDay || random().nextInt(100) < 75) {
+        if (block.type != cropOfTheDay || random().nextInt(100) < 85) { // TODO: Come back to this
             return
         }
 
         event.isDropItems = false
-        val drops = block.getDrops(player.inventory.itemInMainHand)
+        val drops = block.getDrops(player.inventory.itemInMainHand).toList()
         block.world.spawnParticle(Particle.DUST, block.location, 5, 0.5, 0.5, 0.5, dustOptions)
-        val multiplier = random().nextInt(2, 4)
+
+        // 2x half our drops
+        for (i in 0..drops.size / 2) {
+            val drop = drops[i]
+            drop.amount *= 2
+        }
+
         drops.forEach { drop ->
-            block.world.dropItemNaturally(block.location, drop.asQuantity(drop.amount * multiplier))
+            block.world.dropItemNaturally(block.location, drop)
         }
     }
 }

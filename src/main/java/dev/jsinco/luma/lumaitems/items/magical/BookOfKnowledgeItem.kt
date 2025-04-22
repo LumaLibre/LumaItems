@@ -183,7 +183,7 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
             if (!AbilityUtil.noBuildPermission(player, target.location.block)) {
                 target.world.spawnParticle(Particle.FLAME, target.location, 25, 0.5, 0.5, 0.5, 0.5)
                 target.world.spawnParticle(Particle.EXPLOSION, target.location, 1, 0.0, 0.0, 0.0, 0.0)
-                target.world.createExplosion(target.location, 4.0f, true, false, player)
+                target.world.createExplosion(target.location, 20f, true, false, player)
             }
         })
         Particles.meguminExplosion(instance(), 5.0, particleDisplay)

@@ -41,7 +41,7 @@ class BallisticBunnyNouveauItem : CustomItemFunctions() {
             .tier(Tier.EASTER_2025)
             .persistentData("ballistic-bunny-nouveau")
             .vanillaEnchants(
-                Enchantment.EFFICIENCY to 8,
+                Enchantment.EFFICIENCY to 9,
                 Enchantment.UNBREAKING to 9,
                 Enchantment.FORTUNE to 5,
                 Enchantment.KNOCKBACK to 5,
