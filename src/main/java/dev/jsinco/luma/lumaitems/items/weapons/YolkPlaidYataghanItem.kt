@@ -1,14 +1,15 @@
 package dev.jsinco.luma.lumaitems.items.weapons
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
-import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.manager.FileManager
 import dev.jsinco.luma.lumaitems.manager.GlowManager
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.Util
-import org.bukkit.ChatColor
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
+import io.papermc.paper.event.entity.EntityMoveEvent
+import java.util.UUID
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
@@ -17,7 +18,8 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.event.Cancellable
+import org.bukkit.event.entity.EntityTeleportEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
@@ -25,9 +27,8 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Transformation
 import org.joml.Vector3f
-import java.util.UUID
 
-class YolkPlaidYataghanItem : CustomItem {
+class YolkPlaidYataghanItem : CustomItemFunctions() {
 
     companion object {
         private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
@@ -35,38 +36,48 @@ class YolkPlaidYataghanItem : CustomItem {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        val item = ItemFactory(
-            "&#FDDF86&lY&#FEE290&lo&#FEE59A&ll&#FFE8A4&lk&#FFEBAE&lp&#F6EFAD&ll&#EEF2AB&la&#E5F6AA&li&#DCF9A8&ld &#D2F9A8&lY&#C8F9A8&la&#BDF9A8&lt&#B3F9A8&la&#A0F6A8&lg&#8DF4A8&lh&#7AF1A7&la&#67EEA7&ln",
-            mutableListOf("&#dcf9a8Egg Castor"),
-            mutableListOf("While in range, right-click to encase", "up to 2 entities in eggs for a", "short duration, dealing damage", "", "&cCooldown: 20s per egg"),
-            Material.NETHERITE_SWORD,
-            mutableListOf("yolkplaidyataghan"),
-            mutableMapOf(Enchantment.SHARPNESS to 8, Enchantment.UNBREAKING to 9, Enchantment.SMITE to 6, Enchantment.SWEEPING_EDGE to 5, Enchantment.FIRE_ASPECT to 4, Enchantment.MENDING to 1)
-        )
-        item.tier = "&#FF9A9A&lE&#FFBAA6&la&#FFD9B2&ls&#FFF9BE&lt&#E5FAD4&le&#CAFCE9&lr &#B0FDFF&l2&#C7E8FF&l0&#DED4FF&l2&#F5BFFF&l4"
-        return Pair("yolkplaidyataghan", item.createItem())
+        return ItemFactory.builder()
+            .name("<#FDDF86>Y<#FEE290>o<#FEE59A>l<#FFE8A4>k<#FFEBAE>p<#F6EFAD>l<#EEF2AB>a<#E5F6AA>i<#DCF9A8>d <#D2F9A8>Y<#C8F9A8>a<#BDF9A8>t<#B3F9A8>a<#A0F6A8>g<#8DF4A8>h<#7AF1A7>a<#67EEA7>n")
+            .customEnchants("<#dcf9a8>Egg Castor")
+            .lore(
+                "While in range, right-click to",
+                "encase up to 2 entities in eggs",
+                "for a short duration, dealing",
+                "damage.",
+                "",
+                "<red>Cooldown: 20s per egg"
+            )
+            .material(Material.NETHERITE_SWORD)
+            .persistentData("yolkplaidyataghan")
+            .vanillaEnchants(
+                Enchantment.SHARPNESS to 8,
+                Enchantment.UNBREAKING to 9,
+                Enchantment.SMITE to 6,
+                Enchantment.SWEEPING_EDGE to 5,
+                Enchantment.FIRE_ASPECT to 4,
+                Enchantment.MENDING to 1
+            )
+            .tier(Tier.EASTER_2025)
+            .buildPair()
     }
 
-    override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        when (type) {
-            Action.RIGHT_CLICK -> {
-                val livingEntity: LivingEntity = player.getTargetEntity(35) as? LivingEntity ?: return false
-                if (livingEntity is Player) {
-                    return false
-                } else if (AbilityUtil.noDamagePermission(player, livingEntity)) {
-                    return false
-                }
-                if (cooldownTaskPlayer(player)) {
-                    trapMobInEgg(livingEntity, player)
-                }
-            }
-            Action.ENTITY_MOVE, Action.ENTITY_TELEPORT -> {
-                event as Cancellable
-                event.isCancelled = true
-            }
-            else -> return false
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        val livingEntity: LivingEntity = player.getTargetEntity(35) as? LivingEntity ?: return
+        // todo: add player support
+        if (livingEntity is Player || AbilityUtil.noDamagePermission(player, livingEntity)) {
+            return
         }
-        return true
+        if (cooldownTaskPlayer(player)) {
+            trapMobInEgg(livingEntity, player)
+        }
+    }
+
+    override fun onEntityMove(event: EntityMoveEvent) {
+        event.isCancelled = true
+    }
+
+    override fun onEntityTeleport(event: EntityTeleportEvent) {
+        event.isCancelled = true
     }
 
     private fun trapMobInEgg(livingEntity: LivingEntity, attacker: Player) {
@@ -89,7 +100,7 @@ class YolkPlaidYataghanItem : CustomItem {
         livingEntity.isCollidable = false
         livingEntity.persistentDataContainer.set(NamespacedKey(instance(), "yolkplaidyataghan"), PersistentDataType.SHORT, 1)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
-        GlowManager.addToTeamForTicks(livingEntity, ChatColor.RED, 240)
+        GlowManager.addToTeamForTicks(livingEntity, NamedTextColor.NAMES.values().random(), 240)
         object: BukkitRunnable() {
             var totalTicks = 0
 

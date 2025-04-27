@@ -15,6 +15,7 @@ import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
@@ -24,12 +25,14 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import java.util.concurrent.TimeUnit
 
 class SpringtideScytheItem : CustomItemFunctions() {
 
     companion object {
-        private const val CIRCLE_RADIUS = 3
+        private const val CIRCLE_RADIUS = 3.0
         private val ALT_PARTICLE_COLORS = listOf(
             "#CC96FF",
             "#E88CA6",
@@ -38,6 +41,7 @@ class SpringtideScytheItem : CustomItemFunctions() {
         private val NETHER_STAR = ItemStack(Material.NETHER_STAR)
         private val WHITE_DUST = DustOptions(org.bukkit.Color.WHITE, 1f)
         private val persistentKey = Util.namespacedKey("wooly-scythe")
+        private val DOWNPOUR_SLOWNESS = PotionEffect(PotionEffectType.SLOWNESS, 150, 2, false, false, false)
     }
 
 
@@ -89,14 +93,15 @@ class SpringtideScytheItem : CustomItemFunctions() {
         }
         QuickTasks.addCooldown(this, player.uniqueId, 160L)
 
-        val targetLocation: Location =
-            (player.getTargetEntity(45) as? LivingEntity)?.location
-            ?: player.getTargetBlock(null, 45).location.add(0.5, 1.0, 0.5)
 
         if (player.world.isDayTime) {
+            val targetLocation =
+                (player.getTargetEntity(45) as? LivingEntity)?.location
+                    ?: player.getTargetBlock(null, 45).location.add(0.5, 1.0, 0.5)
             this.downPour(targetLocation, player)
         } else {
-            this.righteousStarCrossers(targetLocation, player)
+            val target = player.getTargetEntity(45) ?: player.getTargetBlock(null, 45).location
+            this.righteousStarCrossers(target, player)
         }
     }
 
@@ -110,8 +115,8 @@ class SpringtideScytheItem : CustomItemFunctions() {
             snowball.world.spawnParticle(Particle.ELECTRIC_SPARK, snowball.location, 30, 0.7, 0.7, 0.7, 0.8)
 
             val hitLocation = snowball.location
-            var damage = 20.0
-            hitLocation.getNearbyLivingEntities(4.0, 4.0, 4.0).forEach {
+            var damage = 25.0
+            hitLocation.getNearbyLivingEntities(3.0).forEach {
                 if (AbilityUtil.noDamagePermission(player, it) || it == player) {
                     return
                 }
@@ -121,28 +126,32 @@ class SpringtideScytheItem : CustomItemFunctions() {
 
         } else {
             event.entity.world.playSound(event.entity.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1f)
-            val hitEntity = event.hitEntity as? LivingEntity ?: return
+            var damage = 20.0
+            val hitEntity = event.hitEntity as? LivingEntity ?: run {
+                val hitBlock = event.hitBlock ?: return
+                return@run hitBlock.location.getNearbyLivingEntities(0.8).firstOrNull() ?: return
+            }.also { damage /= 2 }
             if (!AbilityUtil.noDamagePermission(player, hitEntity) && hitEntity != player) {
-                hitEntity.damage(20.0, player)
+                hitEntity.damage(damage, player)
             }
         }
     }
 
 
-    private fun righteousStarCrossers(loc: Location, player: Player) {
+    private fun righteousStarCrossers(entityOrLocation: Any, player: Player) {
         val snowballs: MutableList<Snowball> = mutableListOf()
-        val radius = 8
+        val radius = 8.0
         var ticksRan = 0
 
         for (i in 0 until 2) {
             val spawnLocation = player.location.clone().add(
-                random().nextInt(-radius, radius).toDouble(),
+                random().nextDouble(-radius, radius),
                 10.0,
-                random().nextInt(-radius, radius).toDouble()
+                random().nextDouble(-radius, radius)
             )
             val snowball = fallingProjectile(spawnLocation, player, SpellType.RIGHTEOUS_STARCROSSERS)
             snowballs.add(snowball)
-            loc.world.addEntity(snowball)
+            player.world.addEntity(snowball)
         }
 
         Bukkit.getAsyncScheduler().runAtFixedRate(instance(), { task ->
@@ -150,11 +159,21 @@ class SpringtideScytheItem : CustomItemFunctions() {
                 task.cancel()
                 return@runAtFixedRate
             }
-
             snowballs.removeIf {
                 if (it.isDead) {
                     return@removeIf true
                 }
+                val loc = if (entityOrLocation is Entity) {
+                    if (snowballs.size > 1)  {
+                        entityOrLocation.boundingBox.center.toLocation(player.world)
+                    } else {
+                        task.cancel()
+                        return@removeIf true
+                    }
+                } else {
+                    entityOrLocation as Location
+                }
+
                 it.velocity = AbilityUtil.getDirectionBetweenLocations(it.location, loc).multiply(0.1).normalize()
                 it.world.spawnParticle(Particle.DUST, it.location, 50, 0.7, 0.7, 0.7, 0.1, WHITE_DUST)
                 it.world.spawnParticle(Particle.WAX_OFF, it.location, 10, 0.7, 0.7, 0.7, 0.1)
@@ -164,6 +183,7 @@ class SpringtideScytheItem : CustomItemFunctions() {
                 })
                 return@removeIf false
             }
+
         }, 0, 50, TimeUnit.MILLISECONDS)
     }
 
@@ -174,12 +194,19 @@ class SpringtideScytheItem : CustomItemFunctions() {
             .withLocation(location)
             .withColor(ALT_PARTICLE_COLORS.random())
 
+        location.getNearbyLivingEntities(CIRCLE_RADIUS).forEach {
+            if (it != player) {
+                it.addPotionEffect(DOWNPOUR_SLOWNESS)
+            }
+        }
+
+
         Bukkit.getAsyncScheduler().runAtFixedRate(instance(), { task ->
             if (ticksRan++ > 150) {
                 task.cancel()
                 return@runAtFixedRate
             }
-            Particles.neopaganPentagram(CIRCLE_RADIUS.toDouble(), 0.05, 0.0, display, display)
+            Particles.neopaganPentagram(CIRCLE_RADIUS, 0.05, 0.0, display, display)
             snowballs.removeIf { projectile ->
                 if (!projectile.isDead) {
                     projectile.world.spawnParticle(Particle.DUST, projectile.location, 1, WHITE_DUST)
@@ -188,10 +215,10 @@ class SpringtideScytheItem : CustomItemFunctions() {
                 return@removeIf true
             }
 
-            val spawnLocation = location.clone().add(
-                random().nextInt(-CIRCLE_RADIUS, CIRCLE_RADIUS).toDouble(),
+            val spawnLocation = location.clone().toCenterLocation().add(
+                random().nextDouble(-CIRCLE_RADIUS, CIRCLE_RADIUS),
                 random().nextInt(9, 12).toDouble(),
-                random().nextInt(-CIRCLE_RADIUS, CIRCLE_RADIUS).toDouble()
+                random().nextDouble(-CIRCLE_RADIUS, CIRCLE_RADIUS)
             )
             val projectile = fallingProjectile(spawnLocation, player, SpellType.NIGHTFALL_DOWNPOUR)
             snowballs.add(projectile)

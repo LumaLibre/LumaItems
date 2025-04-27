@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.api;
 
+import com.google.common.reflect.ClassPath;
 import dev.jsinco.luma.lumaitems.LumaItems;
 import dev.jsinco.luma.lumaitems.items.ItemFactory;
 import dev.jsinco.luma.lumaitems.manager.CustomItem;
@@ -7,11 +8,14 @@ import dev.jsinco.luma.lumaitems.manager.ItemManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 
 /**
@@ -134,7 +138,10 @@ public final class LumaItemsAPI {
      * @throws IllegalAccessException if the method cannot be accessed
      */
     public void registerForPackage(String pack, File file) throws IOException {
-        LumaItems.getItemManagerInstance().registerForPackage(pack, file);
+        try (URLClassLoader classLoader = new URLClassLoader(new URL[]{ file.toURI().toURL() }, this.getClass().getClassLoader())) {
+            ClassPath classPath = ClassPath.from(classLoader);
+            LumaItems.getItemManagerInstance().registerForPackage(pack, classPath);
+        }
     }
 
     /**

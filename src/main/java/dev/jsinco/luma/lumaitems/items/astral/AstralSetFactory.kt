@@ -3,13 +3,14 @@ package dev.jsinco.luma.lumaitems.items.astral
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Rarity
 import dev.jsinco.luma.lumaitems.items.ItemFactory
+import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 
 class AstralSetFactory (val name: String, val customEnchantNames: List<String>?) {
 
@@ -75,7 +76,7 @@ class AstralSetFactory (val name: String, val customEnchantNames: List<String>?)
         }
 
 
-        item.stringPersistentDatas[NamespacedKey(plugin, "relic-rarity")] = Rarity.ASTRAL.name
+        item.persistentDataRecords.add(PersistentDataRecord.create("relic-rarity", PersistentDataType.STRING, Rarity.ASTRAL.name))
         return item.createItem().also { createdAstralItems.add(it) }
     }
 

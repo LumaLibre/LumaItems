@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.magical
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.obj.MagicItemCooldown
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
@@ -60,7 +61,9 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
             .persistentData(STRING_KEY)
             .tier(Tier.CARNIVAL_2024)
             .vanillaEnchants(mutableMapOf(Enchantment.BANE_OF_ARTHROPODS to 5, Enchantment.FIRE_ASPECT to 4, Enchantment.SHARPNESS to 5))
-            .stringPersistentDatas(mutableMapOf(NamespacedKey(instance(), SPELL_KEY) to DEFAULT_SPELL))
+            .persistentDataRecords(
+                PersistentDataRecord.create(SPELL_KEY, PersistentDataType.STRING, DEFAULT_SPELL)
+            )
             .buildPair()
     }
 

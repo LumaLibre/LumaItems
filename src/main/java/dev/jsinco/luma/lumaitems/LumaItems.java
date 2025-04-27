@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.google.common.reflect.ClassPath;
 import dev.jsinco.luma.lumacore.manager.modules.ModuleManager;
 import dev.jsinco.luma.lumacore.reflect.ReflectionUtil;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
@@ -22,9 +23,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public final class LumaItems extends JavaPlugin {
 
@@ -52,7 +58,6 @@ public final class LumaItems extends JavaPlugin {
                 "commands.subcommands",
                 "events",
                 "events.items"
-                //"placeholders"
         );
 
         withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");

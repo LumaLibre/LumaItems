@@ -203,7 +203,7 @@ object Util {
     }
 
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player): Boolean {
-        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT) == true
+        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier)) == true
     }
 
     fun isItemInSlots(identifier: String, slots: List<EquipmentSlot>, player: Player): Boolean {
@@ -304,12 +304,31 @@ object Util {
         return NamespacedKey(plugin, key)
     }
 
+    // todo: setPersistentKey for string instead of just NamespacedKey
+
+    fun removePersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey) {
+        persistentDataHolder.persistentDataContainer.remove(key)
+    }
+
+    fun removePersistentKey(persistentDataHolder: PersistentDataHolder, key: String) {
+        persistentDataHolder.persistentDataContainer.remove(namespacedKey(key))
+    }
+
+
     fun <P, C : Any> setPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey, dataType: PersistentDataType<P, C>, value: C) {
         persistentDataHolder.persistentDataContainer.set(key, dataType, value)
     }
 
+    fun <P : Any, C : Any> getPersistentKey(persistentDataHolder: PersistentDataHolder, key: String, dataType: PersistentDataType<P, C>): C? {
+        return persistentDataHolder.persistentDataContainer.get(namespacedKey(key), dataType)
+    }
+
     fun <P : Any, C : Any> getPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey, dataType: PersistentDataType<P, C>): C? {
         return persistentDataHolder.persistentDataContainer.get(key, dataType)
+    }
+
+    fun <P, C : Any> setPersistentKey(persistentDataHolder: PersistentDataHolder, key: String, dataType: PersistentDataType<P, C>, value: C) {
+        persistentDataHolder.persistentDataContainer.set(namespacedKey(key), dataType, value)
     }
 
     fun <P, C : Any> setPersistentKey(item: ItemStack, key: NamespacedKey, dataType: PersistentDataType<P, C>, value: C) {

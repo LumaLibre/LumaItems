@@ -7,6 +7,7 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import java.awt.Color
@@ -38,5 +39,4 @@ class ParticleTestItem : CustomItemFunctions() {
         //    Particles.sphere(3.0, 30.0, particleDisplayCloud.mixWith(Color.PINK))
         //}
     }
-
 }

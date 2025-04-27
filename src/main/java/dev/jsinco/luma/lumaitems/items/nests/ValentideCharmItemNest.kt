@@ -2,9 +2,11 @@ package dev.jsinco.luma.lumaitems.items.nests
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.persistence.PersistentDataType
 
 // Yes, I'll add functionality to this item someday. Maybe...
 abstract class ValentideCharmItemNest(team: ValentideTeam) : CustomItemFunctions() {
@@ -30,7 +32,7 @@ abstract class ValentideCharmItemNest(team: ValentideTeam) : CustomItemFunctions
         .tier(Tier.VALENTIDE_2025)
         .customEnchants("<gradient:#954381:#ED68B5>Charm</gradient>")
         .material(Material.RED_DYE)
-        .stringPersistentData("valentide-team", team.name)
+        .persistentDataRecords(PersistentDataRecord.create("valentide-team", PersistentDataType.STRING, team.name))
         .persistentData("valentide-charm")
         .vanillaEnchants(Enchantment.UNBREAKING to 10, Enchantment.KNOCKBACK to 4)
 }

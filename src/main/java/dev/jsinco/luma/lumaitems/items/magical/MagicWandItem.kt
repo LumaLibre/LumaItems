@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.magical
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.obj.MagicItemCooldown
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
@@ -57,7 +58,7 @@ class MagicWandItem : CustomItem {
             .persistentData("magicwand")
             .tier(Tier.CARNIVAL_2024)
             .vanillaEnchants(mutableMapOf(Enchantment.BANE_OF_ARTHROPODS to 5, Enchantment.FIRE_ASPECT to 4, Enchantment.SHARPNESS to 5))
-            .stringPersistentDatas(mutableMapOf(NamespacedKey(instance(), SPELL_KEY) to DEFAULT_SPELL))
+            .persistentDataRecords(PersistentDataRecord.create(SPELL_KEY, PersistentDataType.STRING, DEFAULT_SPELL))
             .buildPair()
     }
 

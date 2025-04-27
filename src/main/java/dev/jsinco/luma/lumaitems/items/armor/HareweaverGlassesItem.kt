@@ -51,8 +51,8 @@ class HareweaverGlassesItem : CustomItemFunctions() {
             return
         }
 
-        event.isCancelled = true
         val shulkerBox = asShulkerBox(event.item) ?: return
+        event.isCancelled = true
         val inv = SnapshotShulkerBoxInventory(shulkerBox)
         player.openInventory(inv.inventory)
     }

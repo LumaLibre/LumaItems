@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.magical
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
@@ -49,7 +50,7 @@ class SummertideShellItem : CustomItem {
             mutableMapOf(Enchantment.KNOCKBACK to 3, Enchantment.SHARPNESS to 4, Enchantment.UNBREAKING to 6)
         )
         item.tier = "&#F34848&lS&#E36643&lo&#D3843E&ll&#C3A239&ls&#B3C034&lt&#A3DE2F&li&#93FC2A&lc&#7DE548&le&#66CD66&l &#50B684&l2&#399EA1&l0&#2387BF&l2&#0C6FDD&l4"
-        item.stringPersistentDatas[NamespacedKey(instance(), "ability-type")] = AbilityType.SPEED.name
+        item.persistentDataRecords.add(PersistentDataRecord.create("ability-type", PersistentDataType.STRING, AbilityType.SPEED.name))
         return Pair(ID, item.createItem())
     }
 

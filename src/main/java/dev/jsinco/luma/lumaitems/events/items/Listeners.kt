@@ -116,13 +116,19 @@ class Listeners : ItemListener() {
         fire(data, Action.SWAP_HAND, player, event)
     }
 
+    @FireForAllNBT
     @EventHandler
     fun onEntityDeath(event: EntityDeathEvent) {
-        val player: Player = event.entity.killer ?: return
-        val item = player.inventory.itemInMainHand
-        val data: PersistentDataContainer = item.itemMeta?.persistentDataContainer ?: return
+        val entity = event.entity
 
-        fire(data, Action.ENTITY_DEATH, player, event)
+        entity.killer?.let { player ->
+            val data = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+            fire(data, Action.ENTITY_DEATH, player, event)
+            return // We got a killer, we're done.
+        }
+        // No killer. Let's check the entity's persistent data container.
+        val data: PersistentDataContainer = entity.persistentDataContainer
+        fire(data, Action.ENTITY_DEATH, getDummyPlayer(), event)
     }
 
     @FireForAllNBT

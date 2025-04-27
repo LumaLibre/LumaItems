@@ -26,26 +26,24 @@ class BloomingBunnyRakeItem : CustomItemFunctions() {
             "Harvest some %s!",
         )
 
-        private val CROP_MAP: Map<Material, String> = mapOf(
-            Material.POTATOES to "#c8963a",
-            Material.CARROTS to "#ff8c09",
-            Material.WHEAT to "#dcba65",
-            Material.BEETROOTS to "#a4272b",
-            Material.NETHER_WART to "#a5242f",
-            //Material.COCOA to "#57331a",
-            Material.SUGAR_CANE to "#4b8c2a"
+        private val CROP_LIST: List<CropOfTheDay> = listOf(
+            CropOfTheDay.of(Material.POTATOES, "#c8963a"),
+            CropOfTheDay.of(Material.CARROTS, "#ff8c09"),
+            CropOfTheDay.of(Material.WHEAT, "#dcba65"),
+            CropOfTheDay.of(Material.BEETROOTS, "#a4272b"),
+            CropOfTheDay.of(Material.NETHER_WART, "#a5242f"),
+            CropOfTheDay.of(Material.SUGAR_CANE, "#4b8c2a"),
+            CropOfTheDay.of(listOf(Material.RED_MUSHROOM, Material.BROWN_MUSHROOM), listOf("#FF5858", "#d09c7c"), "Mushrooms"),
         )
     }
 
 
-    private val cropOfTheDay: Material = fun (): Material {
+    private val cropOfTheDay: CropOfTheDay = fun (): CropOfTheDay {
         val today = LocalDate.now()
         val dayOfMonth = today.dayOfMonth // 1 to 31
 
-        val list = CROP_MAP.keys.toList()
-
-        val cropIndex = (dayOfMonth - 1) % list.size
-        return list[cropIndex]
+        val cropIndex = (dayOfMonth - 1) % CROP_LIST.size
+        return CROP_LIST[cropIndex]
     }();
 
     private val dustOptions = Particle.DustOptions(BukkitColor.WHITE, 1f)
@@ -73,15 +71,14 @@ class BloomingBunnyRakeItem : CustomItemFunctions() {
     }
 
     override fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {
-        val cropName = Util.formatMaterialName(cropOfTheDay.toString())
-        val msg = "<${CROP_MAP[cropOfTheDay]}>${MESSAGES.random().format(cropName)}"
+        val msg = "<${cropOfTheDay.color()}>${MESSAGES.random().format(cropOfTheDay.name)}"
         player.sendActionBar(MiniMessageUtil.mm(msg))
     }
 
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
-        if (block.type != cropOfTheDay || random().nextInt(100) < 85) { // TODO: Come back to this
+        if (!cropOfTheDay.materials.contains(block.type) || random().nextInt(100) < 85) { // TODO: Come back to this
             return
         }
 
@@ -97,6 +94,40 @@ class BloomingBunnyRakeItem : CustomItemFunctions() {
 
         drops.forEach { drop ->
             block.world.dropItemNaturally(block.location, drop)
+        }
+    }
+
+    private data class CropOfTheDay(
+        val materials: List<Material>,
+        val hexColors: List<String>,
+        val name: String = run {
+            if (materials.isEmpty()) {
+                return@run "Unknown"
+            }
+            Util.formatMaterialName(materials[0].name)
+        },
+    ) {
+        fun color(): String {
+            if (hexColors.isEmpty()) {
+                return "#FFFFFF"
+            }
+            return hexColors.random()
+        }
+
+        companion object {
+            fun of(material: Material, hexColor: String): CropOfTheDay {
+                return CropOfTheDay(
+                    materials = listOf(material),
+                    hexColors = listOf(hexColor)
+                )
+            }
+            fun of(materials: List<Material>, hexColors: List<String>, name: String): CropOfTheDay {
+                return CropOfTheDay(
+                    materials = materials,
+                    hexColors = hexColors,
+                    name = name
+                )
+            }
         }
     }
 }
