@@ -28,7 +28,7 @@ import org.bukkit.util.Vector
 import kotlin.math.cos
 import kotlin.math.sin
 
-@Disable(value = [WorldName.SPAWN], hard = true)
+@Disable(WorldName.PINATA)
 class DeoriumCutlassItem : CustomItemFunctions() {
 
     companion object {

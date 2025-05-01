@@ -22,7 +22,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 import java.util.function.Consumer
 
-@Disable(WorldName.SPAWN)
+@Disable(WorldName.PINATA)
 class DazzlingHeartsScytheItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {

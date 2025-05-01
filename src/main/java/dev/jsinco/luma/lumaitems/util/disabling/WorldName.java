@@ -19,6 +19,7 @@ public enum WorldName {
     RESOURCE_NETHER("resource_nether"),
     STAFF("staff"),
     INTRODUCTION("introduction"),
+    PINATA("pinata"),
     ;
 
 
