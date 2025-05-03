@@ -44,6 +44,7 @@ import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -441,5 +442,13 @@ class Listeners : ItemListener() {
         val data: PersistentDataContainer = player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.ITEM_HELD, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerItemDamage(event: PlayerItemDamageEvent) {
+        val player = event.player
+        val data: PersistentDataContainer = event.item.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.ITEM_DAMAGE, player, event)
     }
 }

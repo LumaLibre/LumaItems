@@ -71,4 +71,5 @@ public enum Action {
     EMPTY_BUCKET, // When a player empties a bucket with a specific persistent data
     PICKUP_ITEM, // When a player picks up an item
     ITEM_HELD, // When a player holds an item
+    ITEM_DAMAGE, // When an item is damaged
 }

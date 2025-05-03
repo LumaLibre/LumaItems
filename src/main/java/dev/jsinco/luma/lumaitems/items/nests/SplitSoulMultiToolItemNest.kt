@@ -21,6 +21,8 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -183,6 +185,18 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
         if (highestDestroySpeed.first != item.type) {
             @Suppress("DEPRECATION")
             item.type = highestDestroySpeed.first
+        }
+    }
+
+    override fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {
+        val item = event.item
+        if (item.type != Material.SHEARS) return
+
+        // Only damage shears 11.71% of the time to match the health of Netherite gear
+        val chanceToDamage = 238.0 / 2031.0
+
+        if (Math.random() > chanceToDamage) {
+            event.damage = 0
         }
     }
 

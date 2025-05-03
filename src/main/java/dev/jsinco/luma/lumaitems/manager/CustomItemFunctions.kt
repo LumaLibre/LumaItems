@@ -36,6 +36,7 @@ import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -105,6 +106,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.EMPTY_BUCKET -> onPlayerEmptyBucket(player, event as PlayerBucketEmptyEvent)
             Action.PICKUP_ITEM -> onPlayerPickupItem(player, event as PlayerAttemptPickupItemEvent)
             Action.ITEM_HELD -> onPlayerItemHeld(player, event as PlayerItemHeldEvent)
+            Action.ITEM_DAMAGE -> onPlayerItemDamage(player, event as PlayerItemDamageEvent)
         }
         return true
     }
@@ -164,4 +166,5 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {}
     open fun onPlayerPickupItem(player: Player, event: PlayerAttemptPickupItemEvent) {}
     open fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {}
+    open fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {}
 }
