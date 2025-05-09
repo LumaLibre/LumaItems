@@ -170,7 +170,7 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
 
     override fun onLeftClick(player: Player, event: PlayerInteractEvent) {
         val block = event.clickedBlock ?: return
-        val item = player.inventory.itemInMainHand
+        val item = event.item ?: return
         if (!preChecks(player, item, event)) return
 
         var highestDestroySpeed: Pair<Material, Float> = Pair(item.type, block.getDestroySpeed(item))

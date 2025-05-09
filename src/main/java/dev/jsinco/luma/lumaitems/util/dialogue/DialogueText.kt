@@ -2,13 +2,12 @@ package dev.jsinco.luma.lumaitems.util.dialogue
 
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
-import io.papermc.paper.threadedregions.scheduler.ScheduledTask
+import java.util.concurrent.TimeUnit
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
 import org.bukkit.Sound
 import org.bukkit.entity.Player
-import java.util.concurrent.TimeUnit
 
 class DialogueText(
     val player: Player,
