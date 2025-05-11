@@ -41,7 +41,7 @@ class HareweaverGlassesItem : CustomItemFunctions() {
             .lore(
                 "<#f082a1>Sneak</#f082a1> + <#f082a1>right-click</#f082a1> while",
                 "holding a shulker box to",
-                "peer into it's contents.",
+                "peer into its contents.",
             )
             .buildPair()
     }
