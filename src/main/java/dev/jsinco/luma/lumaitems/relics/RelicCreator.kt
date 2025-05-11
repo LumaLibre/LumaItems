@@ -4,11 +4,12 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Rarity
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.FileManager
+import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import kotlin.random.Random
 
 class RelicCreator (
@@ -64,7 +65,7 @@ class RelicCreator (
             mutableListOf("relic-item"),
             enchantments.toMutableMap()
         )
-        itemCreator.stringPersistentDatas[NamespacedKey(plugin, "relic-rarity")] = rarity.name
+        itemCreator.persistentDataRecords.add(PersistentDataRecord.create("relic-rarity", PersistentDataType.STRING, rarity.name))
         itemCreator.tier = rarity.tier
         itemCreator.addSpace = false
     }

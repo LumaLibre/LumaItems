@@ -120,7 +120,7 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
 }
 
 
-@Disable(WorldName.SPAWN)
+@Disable(WorldName.PINATA)
 class StraszLongBow : StraszBowItemNest() {
     override fun createItem() = baseBow
         .name("<b><#A36CA7>S<#B173AF>t<#BE7AB7>r<#CC81BF>a<#CC78AD>s<#CC6E9B>z <#E187A2>L<#EB94A6>o<#F1ADB2>n<#F6C5BD>g<#F6C5BD>b<#F6C5BD>o<#F6C5BD>w")
@@ -135,7 +135,7 @@ class StraszLongBow : StraszBowItemNest() {
         .buildPair()
 }
 
-@Disable(WorldName.SPAWN)
+@Disable(WorldName.PINATA)
 class StraszArcBowItem : StraszBowItemNest() {
     override fun createItem() = baseBow
         .name("<b><#AA68A9>S<#C072B5>t<#D67BC1>r<#DD7CB6>a<#E57EAB>s<#EC7FA0>z <#FAA7AF>A<#FAACB1>r<#FBB1B3>c<#FBB7B5>b<#FCBCB7>o<#FCC1B9>w")

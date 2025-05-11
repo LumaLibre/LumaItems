@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 
-@Disable(value = [WorldName.SPAWN, WorldName.EVENT_NEW], hard = true)
+@Disable(value = [WorldName.PINATA], hard = true)
 class HeartstringHatchetItem : CustomItemFunctions() {
 
     companion object {
