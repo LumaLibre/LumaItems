@@ -6,7 +6,7 @@ import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.obj.QuickTasks
 import io.papermc.paper.datacomponent.DataComponentTypes
-import io.papermc.paper.datacomponent.item.TooltipDisplay
+//import io.papermc.paper.datacomponent.item.TooltipDisplay
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
@@ -61,7 +61,7 @@ class WitchsBrewItem : CustomItem {
         item.tier = "&#c46bfb&lH&#c86eee&la&#cd71e2&ll&#d174d5&ll&#d677c8&lo&#da7abc&lm&#de7daf&la&#e380a2&lr&#e78395&le&#eb8689&ls &#f0897c&l2&#f48c6f&l0&#f98f63&l2&#fd9256&l3"
 
         val potion = item.createItem()
-        potion.setData(DataComponentTypes.TOOLTIP_DISPLAY,  TooltipDisplay.tooltipDisplay().hideTooltip(true).build())
+        //potion.setData(DataComponentTypes.TOOLTIP_DISPLAY,  TooltipDisplay.tooltipDisplay().hideTooltip(true).build())
         potion.editMeta {
             it as PotionMeta
             it.color = Color.PURPLE

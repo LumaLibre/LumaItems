@@ -7,7 +7,7 @@ plugins {
     id("maven-publish")
     kotlin("jvm") version "2.0.21"
     id("com.gradleup.shadow") version "8.3.5"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.16"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
     id("dev.jsinco.pterodactyldeploy") version "1.15-SNAPSHOT"
 }
 
