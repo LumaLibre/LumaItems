@@ -185,7 +185,7 @@ class ItemFactory(
             meta.setDisplayName(Util.colorcode(name))
             meta.lore = Util.colorcodeList(combinedLore)
         } else {
-            combinedLore.addAll(lore.map { "<white>$it" })
+            combinedLore.addAll(lore.map { it })
             combinedLore.addAll(miniMessageTierFormat.map { it.replace("<PLACEHOLDER>", tier) })
 
             meta.displayName(MiniMessageUtil.mm(name).decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.TRUE))
