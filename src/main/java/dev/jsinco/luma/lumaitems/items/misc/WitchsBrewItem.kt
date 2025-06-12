@@ -1,23 +1,20 @@
 package dev.jsinco.luma.lumaitems.items.misc
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
-import dev.jsinco.luma.lumaitems.obj.QuickTasks
-import org.bukkit.Bukkit
+import dev.jsinco.luma.lumaitems.util.QuickTasks
+//import io.papermc.paper.datacomponent.item.TooltipDisplay
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerItemConsumeEvent
-import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.UUID
 import kotlin.random.Random
 
 class WitchsBrewItem : CustomItem {
@@ -59,10 +56,11 @@ class WitchsBrewItem : CustomItem {
         item.tier = "&#c46bfb&lH&#c86eee&la&#cd71e2&ll&#d174d5&ll&#d677c8&lo&#da7abc&lm&#de7daf&la&#e380a2&lr&#e78395&le&#eb8689&ls &#f0897c&l2&#f48c6f&l0&#f98f63&l2&#fd9256&l3"
 
         val potion = item.createItem()
-        val potionMeta = potion.itemMeta as PotionMeta
-        potionMeta.color = Color.PURPLE
-        potionMeta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS)
-        potion.itemMeta = potionMeta
+        //potion.setData(DataComponentTypes.TOOLTIP_DISPLAY,  TooltipDisplay.tooltipDisplay().hideTooltip(true).build())
+        potion.editMeta {
+            it as PotionMeta
+            it.color = Color.PURPLE
+        }
 
         return Pair("witchsbrew", potion)
     }

@@ -3,8 +3,8 @@ package dev.jsinco.luma.lumaitems.items.tools
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
-import dev.jsinco.luma.lumaitems.util.NeedsEdits
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -43,7 +43,7 @@ class FrostbarkChiselItem : CustomItemFunctions() {
             )
             .quotes("<#8A4E4E>\"<#8A5254>C<#8A575A>h<#8A5B60>o<#8A6066>o<#8A646C>s<#8A6973>e <#8A727F>i<#8A7685>t<#8A7B8B>, <#8B8397>c<#8B889D>h<#8B8CA3>i<#8B91A9>s<#8B95AF>e<#8B9AB6>l <#8BA3C2>i<#8BA7C8>t<#8BACCE>.<#8BB0D4>\"")
             .tier(Tier.WINTER_2024)
-            .stringPersistentDatas(mutableMapOf(key to Mode.LOGS.name))
+            .persistentDataRecords(PersistentDataRecord.create(key, PersistentDataType.STRING, Mode.LOGS.name))
             .persistentData("frostbark-chisel")
             .buildPair()
     }

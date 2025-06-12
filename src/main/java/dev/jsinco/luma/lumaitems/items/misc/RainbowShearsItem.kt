@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.misc
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -21,17 +22,22 @@ class RainbowShearsItem : CustomItem {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        val item = ItemFactory(
-            "&#EC6248&lR&#EBBE5F&la&#C5E895&li&#7CE1EA&ln&#668AF0&lb&#745DEC&lo&#A558DD&lw &f&lShears",
-            mutableListOf(),
-            mutableListOf("Sheared mobs will drop extra,", "rainbow colors of wool."),
-            Material.SHEARS,
-            mutableListOf("rainbowshears"),
-            mutableMapOf(Enchantment.UNBREAKING to 6, Enchantment.EFFICIENCY to 7, Enchantment.MENDING to 1)
-        )
-        item.addQuote("&7\"Shear to your heart's content!\"")
-        item.tier = "&#731385&lP&#4332B9&lr&#1351ED&li&#0C6A87&ld&#058221&le &#7FB715&l2&#F9EB08&l0&#EF7A05&l2&#E40902&l4"
-        return Pair("rainbowshears", item.createItem())
+        return ItemFactory.builder()
+            .name("<b><gradient:#ff6666:#ffbd55:#ffff66:#9de24f:#87cefa>Rainbow</gradient></b> <b><white>Shears</white></b>")
+            .lore(
+                "<gray>Sheared mobs will drop extra,",
+                "<gradient:#ff6666:#ffbd55:#ffff66:#9de24f:#87cefa>rainbow</gradient> <gray>colors of wool."
+            )
+            .persistentData("rainbowshears")
+            .vanillaEnchants(
+                Enchantment.UNBREAKING to 6,
+                Enchantment.EFFICIENCY to 7,
+                Enchantment.MENDING to 1
+            )
+            .quotes("<gray>\"Shear to your heart's content!\"")
+            .material(Material.SHEARS)
+            .tier(Tier.PRIDE_2025)
+            .buildPair()
     }
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {

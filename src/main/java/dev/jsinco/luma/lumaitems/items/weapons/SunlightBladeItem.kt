@@ -1,11 +1,10 @@
 package dev.jsinco.luma.lumaitems.items.weapons
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.GlowManager
-import dev.jsinco.luma.lumaitems.obj.QuickTasks
+import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor

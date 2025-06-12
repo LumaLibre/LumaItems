@@ -70,7 +70,8 @@ class ValleySet : AstralSet {
                 if (tool != GenericMCToolType.SHOVEL) return false
                 val targetBlock = player.getTargetBlockExact(45, FluidCollisionMode.ALWAYS) ?: return false
 
-                if (targetBlock.type.name.contains("WATER")) {
+                // .name.contains("WATER")
+                if (targetBlock.type == Material.WATER) {
                     targetBlock.type = Material.AIR
                 }
             }

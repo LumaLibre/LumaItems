@@ -46,16 +46,16 @@ public final class ShapeUtil {
         return blockList;
     }
 
-    public static Set<Location> locationCircle(Location center, int size, int segment) {
+    public static Set<Location> uprightCircle(Location center, double size, double segment) {
         Set<Location> locationList = new HashSet<>();
-        int angleIncrement = 360 / segment;
-        for (int radius = 0; radius < size; radius++) {
-            int i = 0;
+        double angleIncrement = 360 / segment;
+        for (double radius = 0; radius < size; radius += 0.90) {
+            double i = 0;
             while (i < 360) {
                 double angle = i * Math.PI / 180;
                 double x = Math.round(radius * Math.cos(angle));
                 double z = Math.round(radius * Math.sin(angle));
-                locationList.add(center.clone().add(x, 0, z));
+                locationList.add(center.clone().add(x, z, 0));
                 i += angleIncrement;
             }
         }

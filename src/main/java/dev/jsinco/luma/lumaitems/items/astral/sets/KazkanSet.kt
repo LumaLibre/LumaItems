@@ -194,7 +194,7 @@ class KazkanSet : AstralSet {
         val targetEntity = player.getTargetEntity(75)
 
         val direction: Vector = if (targetEntity != null) {
-            val targetLocation = targetEntity.location
+            val targetLocation = targetEntity.boundingBox.center.toLocation(targetEntity.world)
             targetLocation.toVector().subtract(arrow.location.toVector()).normalize()
         } else {
             player.location.direction

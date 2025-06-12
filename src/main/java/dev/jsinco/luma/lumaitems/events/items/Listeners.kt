@@ -36,6 +36,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -43,6 +44,8 @@ import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
+import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerShearEntityEvent
@@ -67,7 +70,7 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onCrossbowLoad(event: EntityLoadCrossbowEvent) {
         val player = event.entity as? Player ?: return
-        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+        val data: PersistentDataContainer = event.crossbow.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.CROSSBOW_LOAD, player, event)
     }
@@ -114,13 +117,19 @@ class Listeners : ItemListener() {
         fire(data, Action.SWAP_HAND, player, event)
     }
 
+    @FireForAllNBT
     @EventHandler
     fun onEntityDeath(event: EntityDeathEvent) {
-        val player: Player = event.entity.killer ?: return
-        val item = player.inventory.itemInMainHand
-        val data: PersistentDataContainer = item.itemMeta?.persistentDataContainer ?: return
+        val entity = event.entity
 
-        fire(data, Action.ENTITY_DEATH, player, event)
+        entity.killer?.let { player ->
+            val data = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+            fire(data, Action.ENTITY_DEATH, player, event)
+            return // We got a killer, we're done.
+        }
+        // No killer. Let's check the entity's persistent data container.
+        val data: PersistentDataContainer = entity.persistentDataContainer
+        fire(data, Action.ENTITY_DEATH, getDummyPlayer(), event)
     }
 
     @FireForAllNBT
@@ -145,9 +154,8 @@ class Listeners : ItemListener() {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPlayerDamagedByEntity(event: EntityDamageByEntityEvent) {
         val player: Player = event.entity as? Player ?: return
-        val action = if (player.isBlocking) Action.PLAYER_DAMAGED_WHILE_BLOCKING else Action.PLAYER_DAMAGED_BY_ENTITY
 
-        fire(Util.getAllEquipmentNBT(player), action, player, event)
+        fire(Util.getAllEquipmentNBT(player), Action.PLAYER_DAMAGED_BY_ENTITY, player, event)
     }
 
     @EventHandler
@@ -394,12 +402,10 @@ class Listeners : ItemListener() {
         fire(event.item.itemStack.persistentDataContainer, Action.HOPPER_PICKUP_ITEM, null, event)
     }
 
-    //@EventHandler
+    //@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onInventoryClickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
-        val datas: MutableList<PersistentDataContainer> = mutableListOf()
-        event.currentItem?.itemMeta?.persistentDataContainer?.let { datas.add(it) }
-        event.cursor.itemMeta?.persistentDataContainer?.let { datas.add(it) }
+        val datas = Util.getAllEquipmentNBT(player)
 
         fire(datas, Action.INVENTORY_CLICK, player, event)
     }
@@ -421,5 +427,27 @@ class Listeners : ItemListener() {
             else -> return
         } ?: return
         fire(data, Action.EMPTY_BUCKET, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerPickupItem(event: PlayerAttemptPickupItemEvent) {
+        val player = event.player
+        fire(Util.getAllEquipmentNBT(player), Action.PICKUP_ITEM, player, event)
+    }
+
+    @EventHandler // if you modify this event to include previous slot, items that use this need a conditional added to their logic
+    fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
+        val player = event.player
+        val data: PersistentDataContainer = player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.ITEM_HELD, player, event)
+    }
+
+    @EventHandler
+    fun onPlayerItemDamage(event: PlayerItemDamageEvent) {
+        val player = event.player
+        val data: PersistentDataContainer = event.item.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.ITEM_DAMAGE, player, event)
     }
 }

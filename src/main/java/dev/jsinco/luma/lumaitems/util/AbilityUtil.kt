@@ -35,6 +35,7 @@ object AbilityUtil {
 
     val plugin: LumaItems = LumaItems.getInstance()
     private val blockedAbility: MutableSet<UUID> = mutableSetOf()
+    private val AIR = ItemStack(Material.AIR)
 
     @Suppress("deprecation", "removal")
     @JvmStatic
@@ -46,9 +47,8 @@ object AbilityUtil {
 
     @JvmStatic
     fun noBuildPermission(player: Player, block: Block): Boolean {
-        val event = BlockPlaceEvent(block, block.state, block.getRelative(BlockFace.DOWN), ItemStack(Material.AIR), player, true, EquipmentSlot.HAND)
-        Bukkit.getPluginManager().callEvent(event)
-        return event.isCancelled
+        val event = BlockPlaceEvent(block, block.state, block.getRelative(BlockFace.DOWN), AIR, player, true, EquipmentSlot.HAND)
+        return !event.callEvent()
     }
 
     @JvmStatic

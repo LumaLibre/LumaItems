@@ -7,7 +7,8 @@ plugins {
     id("maven-publish")
     kotlin("jvm") version "2.0.21"
     id("com.gradleup.shadow") version "8.3.5"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.11"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
+    id("dev.jsinco.pterodactyldeploy") version "1.15-SNAPSHOT"
 }
 
 
@@ -36,13 +37,14 @@ dependencies {
     compileOnly("com.github.Zrips:jobs:v4.17.2")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
-    compileOnly("dev.jsinco.luma.lumacore:LumaCore:4a645c3")
+    implementation("dev.jsinco.luma.lumacore:LumaCore:279f090")
+    implementation("fr.skytasul:glowingentities:1.4.4")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.030")
-
+    
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
 }
 
 tasks {
@@ -62,9 +64,9 @@ tasks {
     }
 
     shadowJar {
-        dependencies {
-            include(dependency("com.iridium:IridiumColorAPI"))
-        }
+        val pack = "dev.jsinco.luma.lumaitems.shaded"
+        relocate("com.iridium.iridiumcolorapi", "$pack.iridiumcolorapi")
+        relocate("fr.skytasul", "$pack.glowingentities")
         archiveClassifier.set("")
     }
 
@@ -86,6 +88,17 @@ tasks {
         dependsOn(shadowJar)
     }
 
+    pterodactylDeploy {
+        url = System.getenv("PTERO_URL") ?: return@pterodactylDeploy
+        apiKey = System.getenv("PTERO_TOKEN")
+        serverId = System.getenv("PTERO_SERVER")
+
+        dropIn {
+            deployDirectory = "plugins"
+            uploadFiles = mutableListOf(file("build/libs/LumaItems.jar"))
+            deployCommands = mutableListOf("plugman reload LumaItems")
+        }
+    }
 }
 
 java {

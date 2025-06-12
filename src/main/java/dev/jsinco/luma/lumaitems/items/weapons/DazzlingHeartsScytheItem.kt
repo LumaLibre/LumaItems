@@ -2,8 +2,7 @@ package dev.jsinco.luma.lumaitems.items.weapons
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.obj.QuickTasks
-import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -23,7 +22,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 import java.util.function.Consumer
 
-@Disable(WorldName.SPAWN)
+@Disable(WorldName.PINATA)
 class DazzlingHeartsScytheItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -63,7 +62,7 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
     private fun dazzlingSolstice(p: Player, loc: Location) {
         val entities: MutableList<LivingEntity> = mutableListOf()
         loc.getWorld().getNearbyEntities(loc, 2.0, 2.5, 2.0).forEach(Consumer { e: Entity ->
-            if (e is LivingEntity && !AbilityUtil.noDamagePermission(p, e) && e != p) {
+            if (e is LivingEntity && e != p) {
                 entities.add(e)
             }
         })
@@ -90,7 +89,7 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
             Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
                 loc.getWorld().getNearbyEntities(loc, 2.0, 2.5, 2.0)
                     .forEach(Consumer { e: Entity ->
-                        if (e is LivingEntity && AbilityUtil.noDamagePermission(p, e) && e != p) {
+                        if (e is LivingEntity && e != p) {
                             entities.add(e)
                         }
                     })

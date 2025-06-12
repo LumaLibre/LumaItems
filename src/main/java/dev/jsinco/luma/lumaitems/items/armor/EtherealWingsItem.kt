@@ -3,7 +3,7 @@ package dev.jsinco.luma.lumaitems.items.armor
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
-import dev.jsinco.luma.lumaitems.obj.QuickTasks
+import dev.jsinco.luma.lumaitems.util.QuickTasks
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment

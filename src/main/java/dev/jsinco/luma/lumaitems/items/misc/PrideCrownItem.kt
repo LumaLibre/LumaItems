@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
@@ -32,20 +33,27 @@ class PrideCrownItem : CustomItem {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        val item = ItemFactory(
-            "&#F49595&lP&#F9EB97&lr&#C6F9AC&li&#A8D9F6&ld&#E2BBFD&le &f&lCrown",
-            mutableListOf(),
-            mutableListOf("&7Legends whisper the &#F49595&lP&#F9EB97&lr&#C6F9AC&li&#A8D9F6&ld&#E2BBFD&le &f&lCrown", "&7reveals unseen beauty within, coaxing", "&7a blossoming of confidence and charm", "&7that captivates all who witness it."),
-            Material.LARGE_AMETHYST_BUD,
-            mutableListOf("pridecrown"),
-            mutableMapOf(Enchantment.PROTECTION to 8)
-        )
-        item.autoHat = true
-        item.tier = "&#731385&lP&#4332B9&lr&#1351ED&li&#0C6A87&ld&#058221&le &#7FB715&l2&#F9EB08&l0&#EF7A05&l2&#E40902&l4"
-        item.attributeModifiers = DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
-            Attribute.MAX_HEALTH, "pridecrown", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD
-        )
-        return Pair("pridecrown", item.createItem())
+        return ItemFactory.builder()
+            .name("<b><gradient:#ff6666:#ffbd55:#ffff66:#9de24f:#87cefa>Pride</gradient></b> <white><b>Crown</b></white>")
+            .lore(
+                "<gray>Legends whisper the <b><gradient:#ff6666:#ffbd55:#ffff66:#9de24f:#87cefa>Pride</gradient></b> <white><b>Crown</b></white>",
+                "<gray>reveals unseen beauty within, coaxing",
+                "<gray>a blossoming of confidence and charm",
+                "<gray>that captivates all who witness it."
+            )
+            .material(Material.LARGE_AMETHYST_BUD)
+            .persistentData("pridecrown")
+            .vanillaEnchants(
+                Enchantment.PROTECTION to 8
+            )
+            .autoHat(true)
+            .tier(Tier.PRIDE_2025)
+            .attributeModifiers(
+                DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
+                    Attribute.MAX_HEALTH, "pridecrown", 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD
+                )
+            )
+            .buildPair()
     }
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {

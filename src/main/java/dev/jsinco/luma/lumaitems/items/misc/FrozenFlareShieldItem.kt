@@ -1,10 +1,9 @@
 package dev.jsinco.luma.lumaitems.items.misc
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
-import dev.jsinco.luma.lumaitems.obj.QuickTasks
+import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -12,7 +11,6 @@ import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
 
 class FrozenFlareShieldItem : CustomItem {
 

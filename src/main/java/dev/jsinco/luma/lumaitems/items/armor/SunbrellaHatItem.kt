@@ -1,9 +1,9 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
-import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
@@ -22,21 +22,8 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.BlockIterator
 import org.bukkit.util.Vector
-import java.util.concurrent.ConcurrentHashMap
 
 class SunbrellaHatItem : CustomItem {
-
-    // Usage:
-    // - Summer 2024
-    // Inspiration:
-    // - Summer sun hats
-    // - VALORANT Jett
-    // Idea:
-    // Movement-based/utility helmet
-    // - Ability to glide down
-    // - Ability to jump higher
-    // - Ability to knockback enemies further
-    // - Slide forward?
 
     companion object {
         private val dustOption = DustOptions(Color.WHITE, 1f)
@@ -91,6 +78,7 @@ class SunbrellaHatItem : CustomItem {
 
                 val multiplier = fallingPlayers[player] ?: 0.5
 
+                // TODO: Glide in the direction the player is moving by reading key input
                 // Good enough I guess. I'd prefer the player to glide in the direction they're actually moving, but I'm not sure how to do that
                 val vec = player.location.direction.multiply(0.25)
                 player.velocity = Vector(vec.x, player.velocity.y * multiplier, vec.z)

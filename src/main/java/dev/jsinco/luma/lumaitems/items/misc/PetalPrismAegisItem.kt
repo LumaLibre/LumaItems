@@ -32,7 +32,7 @@ class PetalPrismAegisItem : CustomItem {
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
-            Action.PLAYER_DAMAGED_WHILE_BLOCKING -> {
+            Action.PLAYER_DAMAGED_BY_ENTITY -> {
                 if (!player.isBlocking) {
                     return false
                 }

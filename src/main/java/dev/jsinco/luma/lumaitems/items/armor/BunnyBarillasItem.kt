@@ -1,9 +1,10 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.jsinco.luma.lumaitems.items.ItemFactory
-import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -12,36 +13,42 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-class BunnyBarillasItem : CustomItem {
-    override fun createItem(): Pair<String, ItemStack> {
-        val item = ItemFactory(
-                "&#E7934F&lB&#EBA454&lu&#EFB658&ln&#F3C75D&ln&#F7D861&ly &#FBEA66&lB&#FFFB6A&la&#E5F461&lr&#CAED58&li&#B0E64F&ll&#95DF45&ll&#7BD83C&la&#60D133&ls",
-                mutableListOf("&#E7934FJump Boost III"),
-                mutableListOf("Jump like a bunny!"),
-                Material.NETHERITE_BOOTS,
-                mutableListOf("bunnybarillas"),
-                mutableMapOf(Enchantment.PROTECTION to 6, Enchantment.PROJECTILE_PROTECTION to 7, Enchantment.FEATHER_FALLING to 5, Enchantment.UNBREAKING to 8, Enchantment.MENDING to 1)
-        )
-        item.tier = "&#FF9A9A&lE&#FFBAA6&la&#FFD9B2&ls&#FFF9BE&lt&#E5FAD4&le&#CAFCE9&lr &#B0FDFF&l2&#C7E8FF&l0&#DED4FF&l2&#F5BFFF&l4"
-        return Pair("bunnybarillas", item.createItem())
+class BunnyBarillasItem : CustomItemFunctions() {
+
+    companion object {
+        private const val ITEM_KEY = "bunnybarillas"
+        private val JUMP_BOOST = PotionEffect(PotionEffectType.JUMP_BOOST, 340, 2, false, false, false)
     }
 
-    override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        when (type) {
-            Action.RUNNABLE -> {
-                if (Util.isItemInSlot("bunnybarillas", EquipmentSlot.FEET, player)) {
-                    player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, 340, 2, false, false, false))
-                }
-            }
-            Action.ARMOR_CHANGE -> {
-                if (!Util.isItemInSlot("bunnybarillas", EquipmentSlot.FEET, player)) {
-                    player.removePotionEffect(PotionEffectType.JUMP_BOOST)
-                } else {
-                    player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, 340, 2, false, false, false))
-                }
-            }
-            else -> return false
+    override fun createItem(): Pair<String, ItemStack> {
+        return ItemFactory.builder()
+            .name("<b><#E7934F>B<#EBA454>u<#EFB658>n<#F3C75D>n<#F7D861>y <#FBEA66>B<#FFFB6A>a<#E5F461>r<#CAED58>i<#B0E64F>l<#95DF45>l<#7BD83C>a<#60D133>s")
+            .customEnchants("<#E7934F>Jump Boost III")
+            .lore("Jump like a bunny!")
+            .material(Material.NETHERITE_BOOTS)
+            .persistentData(ITEM_KEY)
+            .vanillaEnchants(
+                Enchantment.PROTECTION to 7,
+                Enchantment.PROJECTILE_PROTECTION to 6,
+                Enchantment.FEATHER_FALLING to 7,
+                Enchantment.UNBREAKING to 10,
+                Enchantment.MENDING to 1
+            )
+            .tier(Tier.EASTER_2025)
+            .buildPair()
+    }
+
+    override fun onRunnable(player: Player) {
+        if (Util.isItemInSlot(ITEM_KEY, EquipmentSlot.FEET, player)) {
+            player.addPotionEffect(JUMP_BOOST)
         }
-        return true
+    }
+
+    override fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {
+        if (Util.isItemInSlot(ITEM_KEY, EquipmentSlot.FEET, player)) {
+            player.addPotionEffect(JUMP_BOOST)
+        } else {
+            player.removePotionEffect(PotionEffectType.JUMP_BOOST)
+        }
     }
 }

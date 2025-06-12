@@ -4,7 +4,8 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.obj.QuickTasks
+import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
+import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.shapes.Sphere
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
@@ -24,6 +25,9 @@ import java.util.UUID
 
 
 class SoulboundSeeker : CustomItemFunctions() {
+
+    private val parent = SoulboundSeekerItem()
+
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><#7B76D0>S<#8D78C8>o<#9E7BC0>u<#B07DB8>l<#C27FB0>b<#D382A8>o<#E584A0>u<#DC84AA>n<#D384B4>d <#C084C7>S<#B784D1>e<#AE84DB>e<#A584E5>k<#AF80D5>e<#B97BC4>r <#CE72A3>S<#D86E93>e<#E26982>t")
@@ -53,7 +57,6 @@ class SoulboundSeeker : CustomItemFunctions() {
         val item = event.item ?: return
         item.amount -= 1
 
-        val parent = SoulboundSeekerItem()
         player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)
         Util.giveItem(player, parent.create(SoulboundSeekerItem.Style.STYLE_1).createItem())
         Util.giveItem(player, parent.create(SoulboundSeekerItem.Style.STYLE_2).createItem())
@@ -108,7 +111,7 @@ class SoulboundSeekerItem : CustomItemFunctions() {
             .material(Material.NETHERITE_PICKAXE)
             .tier(Tier.VALENTIDE_2025)
             .persistentData(key.key)
-            .stringPersistentDatas(mutableMapOf(secretKey to secret))
+            .persistentDataRecords(PersistentDataRecord.create(secretKey, PersistentDataType.STRING, secret))
             .vanillaEnchants(Enchantment.EFFICIENCY to 7, Enchantment.UNBREAKING to 10, Enchantment.SILK_TOUCH to 1, Enchantment.MENDING to 1)
             .build()
     }

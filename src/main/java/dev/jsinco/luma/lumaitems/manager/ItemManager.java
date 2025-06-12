@@ -37,20 +37,7 @@ public final class ItemManager {
     public final static Map<String, CustomItem> customItemsByName = new HashMap<>();
 
 
-    /**
-     * List of all packages to search for Custom Items
-     */
-    public final static List<String> packages = List.of(
-            "dev.jsinco.luma.lumaitems.items.weapons",
-            "dev.jsinco.luma.lumaitems.items.tools",
-            "dev.jsinco.luma.lumaitems.items.misc",
-            "dev.jsinco.luma.lumaitems.items.armor",
-            "dev.jsinco.luma.lumaitems.items.magical",
-            "dev.jsinco.luma.lumaitems.items.astral",
-            "dev.jsinco.luma.lumaitems.items.astral.sets",
-            "dev.jsinco.luma.lumaitems.items.nests",
-            "dev.jsinco.luma.lumaitems.items.playground"
-    );
+    public final static String BASE_PACKAGE = "dev.jsinco.luma.lumaitems.items";
 
 
     /**
@@ -113,14 +100,19 @@ public final class ItemManager {
      */
     public void registerItems() throws IOException {
         File file = LumaItems.getInstance().getFile();
-        for (String pack: packages) {
-            registerForPackage(pack, file);
+
+        try (URLClassLoader classLoader = new URLClassLoader(new URL[] { file.toURI().toURL() }, this.getClass().getClassLoader())) {
+            ClassPath classPath = ClassPath.from(classLoader);
+            Set<String> packages = getPackages(BASE_PACKAGE, classPath);
+            for (String pack : packages) {
+                registerForPackage(pack, classPath);
+            }
+            LumaItems.log("Registered &6" + customItems.size() + " &2classes through reflection");
         }
-        LumaItems.log("Registered &6" + customItems.size() + " &2classes through reflection");
     }
 
-    public void registerForPackage(String pack, File file) throws IOException {
-        Set<Class<?>> classes = findClasses(pack, file);
+    public void registerForPackage(String pack, ClassPath classPath) {
+        Set<Class<?>> classes = findClasses(pack, classPath);
 
         for (Class<?> clazz : classes) {
             try {
@@ -171,23 +163,34 @@ public final class ItemManager {
         customItemsByName.put(formattedName, item);
     }
 
+
+    /**
+     * Recursively finds all packages in a base package
+     * @param basePackage Base package to search
+     * @param classPath ClassPath to search in
+     * @return Set of packages found
+     */
+    private Set<String> getPackages(String basePackage, ClassPath classPath) {
+        return classPath.getAllClasses().stream()
+                .map(ClassPath.ClassInfo::getPackageName)
+                .filter(packageName -> packageName.startsWith(basePackage))
+                .collect(Collectors.toSet());
+    }
+
     /**
      * Finds all classes in a package
      * @param packageName Package to search
+     * @param classPath ClassPath to search in
      * @return Set of classes in the package
      * Credit: <a href="https://www.spigotmc.org/threads/register-all-listeners-in-package.399219/">...</a>
      */
-    private Set<Class<?>> findClasses(String packageName, File file) throws IOException {
-        URLClassLoader classLoader = new URLClassLoader(
-                new URL[] { file.toURI().toURL() },
-                this.getClass().getClassLoader()
-        );
-        return ClassPath.from(classLoader)
+    private Set<Class<?>> findClasses(String packageName, ClassPath classPath) {
+        return classPath
                 .getAllClasses()
                 .stream()
                 .filter(clazz -> clazz.getPackageName()
                         .equalsIgnoreCase(packageName))
-                .map(clazz -> clazz.load())
+                .map(ClassPath.ClassInfo::load)
                 .collect(Collectors.toSet());
     }
 }

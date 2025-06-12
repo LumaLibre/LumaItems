@@ -7,7 +7,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -1000,9 +999,10 @@ public class ParticleDisplay implements Cloneable {
      * @see #withBlock(BlockData)
      * @since 5.1.0
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true)
     @Nonnull
-    public ParticleDisplay withBlock(@Nonnull MaterialData materialData) {
+    public ParticleDisplay withBlock(@Nonnull org.bukkit.material.MaterialData materialData) {
         this.data = new ParticleMaterialData(materialData);
         return this;
     }
@@ -1186,7 +1186,8 @@ public class ParticleDisplay implements Cloneable {
                 .withCount(count).offset(offset.clone())
                 .forceSpawn(force)
                 .preCalculation(this.preCalculation)
-                .postCalculation(this.postCalculation);
+                .postCalculation(this.postCalculation)
+                .withExtra(extra);
 
         if (location != null) display.location = cloneLocation(location);
         if (!rotations.isEmpty()) {
@@ -1981,11 +1982,11 @@ public class ParticleDisplay implements Cloneable {
         }
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     public static class ParticleMaterialData implements ParticleData {
-        private final MaterialData materialData;
+        private final org.bukkit.material.MaterialData materialData;
 
-        public ParticleMaterialData(MaterialData materialData) {
+        public ParticleMaterialData(org.bukkit.material.MaterialData materialData) {
             this.materialData = materialData;
         }
 

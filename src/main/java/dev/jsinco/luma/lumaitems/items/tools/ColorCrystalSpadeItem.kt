@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.items.tools
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
@@ -12,28 +13,8 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
 @Disable(WorldName.EVENT_NEW)
-class ColorCrystalSpade : CustomItem {
+class ColorCrystalSpadeItem : CustomItem {
 
-    companion object {
-        val glassTypes: List<Material> = listOf(
-                Material.LIGHT_BLUE_STAINED_GLASS,
-                Material.BLACK_STAINED_GLASS,
-                Material.BLUE_STAINED_GLASS,
-                Material.BROWN_STAINED_GLASS,
-                Material.CYAN_STAINED_GLASS,
-                Material.GRAY_STAINED_GLASS,
-                Material.GREEN_STAINED_GLASS,
-                Material.LIGHT_GRAY_STAINED_GLASS,
-                Material.LIME_STAINED_GLASS,
-                Material.MAGENTA_STAINED_GLASS,
-                Material.ORANGE_STAINED_GLASS,
-                Material.PINK_STAINED_GLASS,
-                Material.PURPLE_STAINED_GLASS,
-                Material.RED_STAINED_GLASS,
-                Material.WHITE_STAINED_GLASS,
-                Material.YELLOW_STAINED_GLASS
-        )
-    }
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
             "&#EE9393&lC&#EE9D90&lo&#EDA68C&ll&#EDB089&lo&#EDBC85&lr &#EDC982&lC&#EDD67E&lr&#E0DD7E&ly&#CCE17F&ls&#B7E480&lt&#A8E38E&la&#A3DBAE&ll &#9DD3CE&lS&#9ECAE8&lp&#B8BAE8&la&#D2ABE9&ld&#EC9BE9&le",
@@ -53,7 +34,7 @@ class ColorCrystalSpade : CustomItem {
                 event as BlockBreakEvent
                 val block = event.block
                 if (block.type == Material.SAND || block.type == Material.RED_SAND) {
-                    block.world.dropItemNaturally(block.location, ItemStack(glassTypes.random()))
+                    block.world.dropItemNaturally(block.location, ItemStack(BlockConstants.COLORED_GLASS.materials.random()))
                     event.isDropItems = false
                 }
             }

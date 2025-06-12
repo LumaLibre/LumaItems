@@ -18,10 +18,6 @@ import org.bukkit.persistence.PersistentDataType
 
 class LunarOrbItem : CustomItem {
 
-    companion object {
-        val rarity: Rarity = Rarity.LUNAR
-    }
-
     override fun createItem(): Pair<String, ItemStack> {
         return Pair("lunarorb", RelicCrafting.lunarOrb)
     }
@@ -37,9 +33,9 @@ class LunarOrbItem : CustomItem {
                 val materials = FileManager("relics.yml").getFileYaml().getStringList("relic-materials.lunar")
 
                 val relicCreator = RelicCreator(
-                    rarity.algorithmWeight,
+                    Rarity.LUNAR.algorithmWeight,
                     7,
-                    rarity,
+                    Rarity.LUNAR,
                     Material.valueOf(materials.random())
                 )
                 player.inventory.itemInMainHand.amount -= 1

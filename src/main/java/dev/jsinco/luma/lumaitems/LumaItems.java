@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import dev.jsinco.luma.lumacore.LumaCore;
 import dev.jsinco.luma.lumacore.manager.modules.ModuleManager;
 import dev.jsinco.luma.lumacore.reflect.ReflectionUtil;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
@@ -14,6 +15,8 @@ import dev.jsinco.luma.lumaitems.manager.ItemManager;
 import dev.jsinco.luma.lumaitems.relics.RelicCrafting;
 import dev.jsinco.luma.lumaitems.relics.RelicDisassembler;
 import dev.jsinco.luma.lumaitems.util.Util;
+import fr.skytasul.glowingentities.GlowingBlocks;
+import fr.skytasul.glowingentities.GlowingEntities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -32,6 +35,7 @@ public final class LumaItems extends JavaPlugin {
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManagerInstance;
     private static ModuleManager moduleManager;
+    private static GlowingEntities glowingEntities;
     private static boolean withProtocolLib;
     private static boolean withMythicMobs;
     private static boolean withmcMMO;
@@ -51,9 +55,10 @@ public final class LumaItems extends JavaPlugin {
                 "commands",
                 "commands.subcommands",
                 "events",
-                "events.items",
-                "placeholders"
+                "events.items"
         );
+
+        glowingEntities = new GlowingEntities(this);
 
         withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");
         withMythicMobs = getServer().getPluginManager().isPluginEnabled("MythicMobs");
@@ -68,13 +73,13 @@ public final class LumaItems extends JavaPlugin {
                 initItemManager(itemManagerInstance);
                 Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
                 moduleManager.reflectivelyRegisterModules(classSet);
-                log("Finished asynchronous item registration! " + " Took " + (System.currentTimeMillis() - start) + "ms");
+                log("Finished asynchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {
             initItemManager(itemManagerInstance);
             Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
             moduleManager.reflectivelyRegisterModules(classSet);
-            log("Finished synchronous item registration! " + " Took " + (System.currentTimeMillis() - start) + "ms");
+            log("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
         GlowManager.initGlowTeams();
@@ -108,6 +113,7 @@ public final class LumaItems extends JavaPlugin {
             }
         }
 
+        glowingEntities.disable();
 
         // stupid and unnecessary
         try {
@@ -148,6 +154,10 @@ public final class LumaItems extends JavaPlugin {
 
     public static ItemManager getItemManagerInstance() {
         return itemManagerInstance;
+    }
+
+    public static GlowingEntities getGlowingEntities() {
+        return glowingEntities;
     }
 
     public static void log(String m) {

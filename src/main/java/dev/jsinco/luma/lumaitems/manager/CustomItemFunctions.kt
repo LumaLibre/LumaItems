@@ -28,6 +28,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -35,6 +36,8 @@ import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
+import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerShearEntityEvent
@@ -101,6 +104,9 @@ abstract class CustomItemFunctions : CustomItem {
             Action.INVENTORY_CLICK -> onInventoryClick(player, event as InventoryClickEvent)
             Action.FILL_BUCKET -> onPlayerFillBucket(player, event as PlayerBucketFillEvent)
             Action.EMPTY_BUCKET -> onPlayerEmptyBucket(player, event as PlayerBucketEmptyEvent)
+            Action.PICKUP_ITEM -> onPlayerPickupItem(player, event as PlayerAttemptPickupItemEvent)
+            Action.ITEM_HELD -> onPlayerItemHeld(player, event as PlayerItemHeldEvent)
+            Action.ITEM_DAMAGE -> onPlayerItemDamage(player, event as PlayerItemDamageEvent)
         }
         return true
     }
@@ -158,4 +164,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onInventoryClick(player: Player, event: InventoryClickEvent) {}
     open fun onPlayerFillBucket(player: Player, event: PlayerBucketFillEvent) {}
     open fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {}
+    open fun onPlayerPickupItem(player: Player, event: PlayerAttemptPickupItemEvent) {}
+    open fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {}
+    open fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {}
 }

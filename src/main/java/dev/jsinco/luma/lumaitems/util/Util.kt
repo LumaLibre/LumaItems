@@ -3,13 +3,10 @@ package dev.jsinco.luma.lumaitems.util
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
-import dev.jsinco.luma.lumaitems.manager.CustomItem
-import dev.jsinco.luma.lumaitems.manager.ItemManager
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.Color as BukkitColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
@@ -23,10 +20,12 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
+import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 import kotlin.random.Random
 import net.md_5.bungee.api.ChatColor as BungeeChatColor
+import org.bukkit.Color as BukkitColor
 import java.awt.Color as AwtColor
 
 
@@ -96,27 +95,6 @@ object Util {
         }
     }
 
-
-    fun getColorCodeByChatColor(colorCode: ChatColor): String {
-        return when (colorCode) {
-            ChatColor.AQUA -> "§b"
-            ChatColor.BLACK -> "§0"
-            ChatColor.BLUE -> "§9"
-            ChatColor.DARK_AQUA -> "§3"
-            ChatColor.DARK_BLUE -> "§1"
-            ChatColor.DARK_GRAY -> "§8"
-            ChatColor.DARK_GREEN -> "§2"
-            ChatColor.DARK_PURPLE -> "§5"
-            ChatColor.DARK_RED -> "§4"
-            ChatColor.GOLD -> "§6"
-            ChatColor.GRAY -> "§7"
-            ChatColor.GREEN -> "§a"
-            ChatColor.LIGHT_PURPLE -> "§d"
-            ChatColor.RED -> "§c"
-            ChatColor.YELLOW -> "§e"
-            else -> "§f"
-        }
-    }
 
     fun getAllEquipmentNBT(player: Player): List<PersistentDataContainer> {
         val nbtList: MutableList<PersistentDataContainer> = mutableListOf()
@@ -225,7 +203,7 @@ object Util {
     }
 
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player): Boolean {
-        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT) == true
+        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier)) == true
     }
 
     fun isItemInSlots(identifier: String, slots: List<EquipmentSlot>, player: Player): Boolean {
@@ -324,5 +302,42 @@ object Util {
 
     fun namespacedKey(key: String): NamespacedKey {
         return NamespacedKey(plugin, key)
+    }
+
+    // todo: setPersistentKey for string instead of just NamespacedKey
+
+    fun removePersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey) {
+        persistentDataHolder.persistentDataContainer.remove(key)
+    }
+
+    fun removePersistentKey(persistentDataHolder: PersistentDataHolder, key: String) {
+        persistentDataHolder.persistentDataContainer.remove(namespacedKey(key))
+    }
+
+
+    fun <P, C : Any> setPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey, dataType: PersistentDataType<P, C>, value: C) {
+        persistentDataHolder.persistentDataContainer.set(key, dataType, value)
+    }
+
+    fun <P : Any, C : Any> getPersistentKey(persistentDataHolder: PersistentDataHolder, key: String, dataType: PersistentDataType<P, C>): C? {
+        return persistentDataHolder.persistentDataContainer.get(namespacedKey(key), dataType)
+    }
+
+    fun <P : Any, C : Any> getPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey, dataType: PersistentDataType<P, C>): C? {
+        return persistentDataHolder.persistentDataContainer.get(key, dataType)
+    }
+
+    fun <P, C : Any> setPersistentKey(persistentDataHolder: PersistentDataHolder, key: String, dataType: PersistentDataType<P, C>, value: C) {
+        persistentDataHolder.persistentDataContainer.set(namespacedKey(key), dataType, value)
+    }
+
+    fun <P, C : Any> setPersistentKey(item: ItemStack, key: NamespacedKey, dataType: PersistentDataType<P, C>, value: C) {
+        val meta = item.itemMeta ?: return
+        meta.persistentDataContainer.set(key, dataType, value)
+        item.itemMeta = meta
+    }
+
+    fun <P : Any, C : Any> getPersistentKey(item: ItemStack, key: NamespacedKey, dataType: PersistentDataType<P, C>): C? {
+        return item.itemMeta?.persistentDataContainer?.get(key, dataType)
     }
 }

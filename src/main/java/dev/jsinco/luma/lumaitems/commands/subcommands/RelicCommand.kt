@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender
     name = "relic",
     description = "Obtain a relic item",
     usage = "/<command> relic <player> <shard|core|orb|upgradecore!> <lunar|astral?> <amount?>",
-    permission = "lumaitems.command.upgrade",
+    permission = "lumaitems.command.relic",
     playerOnly = false,
     parent = CommandManager::class
 )

@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
@@ -43,7 +44,9 @@ class BouquetTrousersItem : CustomItemFunctions() {
             .tier(Tier.VALENTIDE_2025)
             .material(Material.NETHERITE_LEGGINGS)
             .attributeModifiers(
-                AttributeContainer.of(key, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.LEGS),
+                DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(
+                    AttributeContainer.of(key, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.LEGS)
+                )
             )
             .buildPair()
     }

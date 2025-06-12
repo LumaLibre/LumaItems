@@ -15,7 +15,8 @@ public enum BlockConstants {
             Material.SPAWNER, Material.COMMAND_BLOCK, Material.BARRIER,
             Material.STRUCTURE_BLOCK, Material.JIGSAW, Material.END_GATEWAY,
             Material.BUDDING_AMETHYST, Material.FARMLAND, Material.DIRT_PATH,
-            Material.END_PORTAL, Material.REINFORCED_DEEPSLATE
+            Material.END_PORTAL, Material.REINFORCED_DEEPSLATE, Material.TRIAL_SPAWNER,
+            Material.VAULT
     ),
     ORES(
             Material.COAL_ORE, Material.DEEPSLATE_COAL_ORE, Material.COPPER_ORE,
@@ -23,11 +24,19 @@ public enum BlockConstants {
             Material.EMERALD_ORE, Material.DEEPSLATE_EMERALD_ORE, Material.GOLD_ORE,
             Material.DEEPSLATE_GOLD_ORE, Material.IRON_ORE, Material.DEEPSLATE_IRON_ORE,
             Material.LAPIS_ORE, Material.DEEPSLATE_LAPIS_ORE, Material.NETHER_GOLD_ORE,
-            Material.NETHER_QUARTZ_ORE, Material.REDSTONE_ORE, Material.DEEPSLATE_REDSTONE_ORE,
-            Material.ANCIENT_DEBRIS
+            Material.NETHER_QUARTZ_ORE, Material.REDSTONE_ORE, Material.DEEPSLATE_REDSTONE_ORE
     ),
-
-
+    COLORED_GLASS(
+            Material.LIGHT_BLUE_STAINED_GLASS, Material.BLACK_STAINED_GLASS, Material.BLUE_STAINED_GLASS,
+            Material.BROWN_STAINED_GLASS, Material.CYAN_STAINED_GLASS, Material.GRAY_STAINED_GLASS,
+            Material.GREEN_STAINED_GLASS, Material.LIGHT_GRAY_STAINED_GLASS, Material.LIME_STAINED_GLASS,
+            Material.MAGENTA_STAINED_GLASS, Material.ORANGE_STAINED_GLASS, Material.PINK_STAINED_GLASS,
+            Material.PURPLE_STAINED_GLASS, Material.RED_STAINED_GLASS, Material.WHITE_STAINED_GLASS,
+            Material.YELLOW_STAINED_GLASS
+    ),
+    GLASS(
+            COLORED_GLASS.materials, Material.GLASS, Material.TINTED_GLASS
+    )
     ;
 
     private final List<Material> materials;
@@ -41,6 +50,11 @@ public enum BlockConstants {
         }
     }
 
+    BlockConstants(List<Material> materialList, Material... materials) {
+        this.materials = new ArrayList<>(materialList);
+        this.materials.addAll(List.of(materials));
+    }
+
     BlockConstants(Material... materials) {
         this.materials = List.of(materials);
     }
@@ -51,5 +65,13 @@ public enum BlockConstants {
 
     public boolean contains(Material material) {
         return materials.contains(material);
+    }
+
+    public List<Material> getButExclude(Material... exclude) {
+        List<Material> materials = new ArrayList<>(this.materials);
+        for (var material : exclude) {
+            materials.remove(material);
+        }
+        return materials;
     }
 }

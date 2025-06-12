@@ -1,16 +1,14 @@
 package dev.jsinco.luma.lumaitems.items.astral.sets
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
-import dev.jsinco.luma.lumaitems.obj.QuickTasks
+import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -23,7 +21,6 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
 
 @Disable(WorldName.EVENT_NEW)
 class MagmaticSet : AstralSet {
