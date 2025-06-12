@@ -2,7 +2,7 @@ package dev.jsinco.luma.lumaitems;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.google.common.reflect.ClassPath;
+import dev.jsinco.luma.lumacore.LumaCore;
 import dev.jsinco.luma.lumacore.manager.modules.ModuleManager;
 import dev.jsinco.luma.lumacore.reflect.ReflectionUtil;
 import dev.jsinco.luma.lumaitems.api.LumaItemsAPI;
@@ -15,6 +15,8 @@ import dev.jsinco.luma.lumaitems.manager.ItemManager;
 import dev.jsinco.luma.lumaitems.relics.RelicCrafting;
 import dev.jsinco.luma.lumaitems.relics.RelicDisassembler;
 import dev.jsinco.luma.lumaitems.util.Util;
+import fr.skytasul.glowingentities.GlowingBlocks;
+import fr.skytasul.glowingentities.GlowingEntities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -23,14 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public final class LumaItems extends JavaPlugin {
 
@@ -38,6 +35,7 @@ public final class LumaItems extends JavaPlugin {
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManagerInstance;
     private static ModuleManager moduleManager;
+    private static GlowingEntities glowingEntities;
     private static boolean withProtocolLib;
     private static boolean withMythicMobs;
     private static boolean withmcMMO;
@@ -59,6 +57,8 @@ public final class LumaItems extends JavaPlugin {
                 "events",
                 "events.items"
         );
+
+        glowingEntities = new GlowingEntities(this);
 
         withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");
         withMythicMobs = getServer().getPluginManager().isPluginEnabled("MythicMobs");
@@ -113,6 +113,7 @@ public final class LumaItems extends JavaPlugin {
             }
         }
 
+        glowingEntities.disable();
 
         // stupid and unnecessary
         try {
@@ -153,6 +154,10 @@ public final class LumaItems extends JavaPlugin {
 
     public static ItemManager getItemManagerInstance() {
         return itemManagerInstance;
+    }
+
+    public static GlowingEntities getGlowingEntities() {
+        return glowingEntities;
     }
 
     public static void log(String m) {

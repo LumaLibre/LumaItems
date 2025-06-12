@@ -90,7 +90,7 @@ import java.util.function.Supplier;
  * @see Vector
  */
 @SuppressWarnings("JavadocLinkAsPlainText")
-public final class Particles {
+public final class  Particles {
     /**
      * A full circle has two PIs.
      * Don't know what the fuck is a PI? You can

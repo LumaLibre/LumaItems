@@ -1,7 +1,8 @@
-package dev.jsinco.luma.lumaitems.obj
+package dev.jsinco.luma.lumaitems.util
 
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.obj.CustomItemCooldown
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable

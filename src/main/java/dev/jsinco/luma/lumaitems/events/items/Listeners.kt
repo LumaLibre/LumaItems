@@ -154,9 +154,8 @@ class Listeners : ItemListener() {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPlayerDamagedByEntity(event: EntityDamageByEntityEvent) {
         val player: Player = event.entity as? Player ?: return
-        val action = if (player.isBlocking) Action.PLAYER_DAMAGED_WHILE_BLOCKING else Action.PLAYER_DAMAGED_BY_ENTITY
 
-        fire(Util.getAllEquipmentNBT(player), action, player, event)
+        fire(Util.getAllEquipmentNBT(player), Action.PLAYER_DAMAGED_BY_ENTITY, player, event)
     }
 
     @EventHandler

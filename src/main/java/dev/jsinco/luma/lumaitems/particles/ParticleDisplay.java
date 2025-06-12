@@ -1186,7 +1186,8 @@ public class ParticleDisplay implements Cloneable {
                 .withCount(count).offset(offset.clone())
                 .forceSpawn(force)
                 .preCalculation(this.preCalculation)
-                .postCalculation(this.postCalculation);
+                .postCalculation(this.postCalculation)
+                .withExtra(extra);
 
         if (location != null) display.location = cloneLocation(location);
         if (!rotations.isEmpty()) {

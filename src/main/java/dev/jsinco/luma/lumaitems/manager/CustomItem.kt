@@ -4,14 +4,14 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.events.items.ItemListener
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
+import fr.skytasul.glowingentities.GlowingEntities
 import io.papermc.paper.persistence.PersistentDataContainerView
-import org.bukkit.Bukkit
+import kotlin.random.Random
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
-import kotlin.random.Random
 
 interface CustomItem {
 
@@ -20,6 +20,9 @@ interface CustomItem {
     }
     fun random(): Random {
         return Random
+    }
+    fun glowingEntities(): GlowingEntities {
+        return LumaItems.getGlowingEntities()
     }
 
     /**
