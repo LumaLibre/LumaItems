@@ -1,6 +1,8 @@
 package dev.jsinco.luma.lumaitems.events
 
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
+import dev.jsinco.luma.lumacore.manager.modules.AutoRegister
+import dev.jsinco.luma.lumacore.manager.modules.RegisterType
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.events.GeneralListeners.Companion.relicFile
 import dev.jsinco.luma.lumaitems.enums.Rarity
@@ -13,7 +15,10 @@ import org.bukkit.event.Listener
 import kotlin.random.Random
 
 // Listeners that belong to external plugins
-class ExternalListeners(val plugin: LumaItems) : Listener {
+@AutoRegister(RegisterType.LISTENER)
+class ExternalListeners : Listener {
+
+    val plugin: LumaItems = LumaItems.getInstance()
 
     @EventHandler
     fun onJobsPrePayment(event: JobsPrePaymentEvent) {

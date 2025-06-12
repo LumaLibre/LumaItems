@@ -121,11 +121,6 @@ class SoulboundSeekerItem : CustomItemFunctions() {
 
     // Functionality
 
-    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        val bondedPlayer = getBondedPlayer(player) ?: return
-        player.sendMessage("You are bonded with ${bondedPlayer.name}")
-    }
-
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
         if (!player.isSneaking) {
             return
@@ -137,10 +132,11 @@ class SoulboundSeekerItem : CustomItemFunctions() {
         }
 
         val bondedPlayer = getBondedPlayer(player) ?: return run {
-            player.sendActionBar(MiniMessageUtil.mm("<red>\uD83D\uDC94 <gray>Couldn't find your partner."))
+            player.sendActionBar(MiniMessageUtil.mm("<red>\uD83D\uDC94 Couldn't find your partner."))
         }
 
         player.teleportAsync(bondedPlayer.location)
+        player.sendActionBar(MiniMessageUtil.mm("<yellow>Teleported to ${bondedPlayer.name}!"))
         QuickTasks.addCooldown(this, player.uniqueId, 30L)
     }
 
