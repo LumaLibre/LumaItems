@@ -6,6 +6,7 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.Executors
+import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
@@ -27,7 +28,8 @@ class SpringloadedMechanicalBootsItem : CustomItemFunctions() {
             .persistentData(key)
             .material(Material.NETHERITE_BOOTS)
             .buildPair()
-        Attribute
+        //DataComponentTypes
+        //Attribute
     }
 
 

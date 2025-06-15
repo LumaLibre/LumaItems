@@ -203,7 +203,11 @@ object Util {
     }
 
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player): Boolean {
-        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(NamespacedKey(plugin, identifier)) == true
+        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(namespacedKey(identifier)) == true
+    }
+
+    fun isItemInSlot(identifier: NamespacedKey, slot: EquipmentSlot, player: Player): Boolean {
+        return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(identifier) == true
     }
 
     fun isItemInSlots(identifier: String, slots: List<EquipmentSlot>, player: Player): Boolean {
@@ -339,5 +343,13 @@ object Util {
 
     fun <P : Any, C : Any> getPersistentKey(item: ItemStack, key: NamespacedKey, dataType: PersistentDataType<P, C>): C? {
         return item.itemMeta?.persistentDataContainer?.get(key, dataType)
+    }
+
+    fun hasPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey): Boolean {
+        return persistentDataHolder.persistentDataContainer.has(key)
+    }
+
+    fun hasPersistentKey(persistentDataHolder: PersistentDataHolder, key: String): Boolean {
+        return persistentDataHolder.persistentDataContainer.has(namespacedKey(key))
     }
 }

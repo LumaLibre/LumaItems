@@ -41,6 +41,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
+import org.bukkit.event.player.PlayerInputEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
@@ -165,7 +166,7 @@ class Listeners : ItemListener() {
 
 
         if (data != null) {
-            fire(data, Action.PLAYER_DAMAGE_GENERIC, entity as? Player ?: return, event)
+            fire(data, Action.PLAYER_DAMAGED, entity as? Player ?: return, event)
         } else {
             fire(entity.persistentDataContainer, Action.ENTITY_DAMAGED_GENERIC, null, event)
         }
@@ -199,19 +200,6 @@ class Listeners : ItemListener() {
             }
         }
     }
-
-
-//    @EventHandler(priority = EventPriority.LOW)
-//    fun onLowPriorityPlayerBreakBlock(event: BlockBreakEvent) {
-//        val player = event.player
-//        val data: PersistentDataContainer? = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
-//
-//        if (data != null) {
-//            fire(data, Action.BREAK_BLOCK, player, event)
-//        }
-//    }
-
-
 
     @EventHandler
     fun onBlockDropItems(event: BlockDropItemEvent) {
@@ -290,6 +278,12 @@ class Listeners : ItemListener() {
         if (!event.hasChangedPosition()) return
 
         fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
+    }
+
+    @FireForAllNBT
+    //@EventHandler
+    fun onPlayerInput(event: PlayerInputEvent) {
+        fire(Util.getAllEquipmentNBT(event.player), Action.INPUT, event.player, event)
     }
 
 

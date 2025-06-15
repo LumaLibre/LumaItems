@@ -34,8 +34,8 @@ public enum Action {
     ENTITY_DEATH, // When a living entity dies and the killer is a player
     ENTITY_DAMAGE, // When a player or a projectile shot by a player damages a living entity
     PLAYER_DAMAGED_BY_ENTITY, // When a player is damaged by a living entity
-    PLAYER_DAMAGED_WHILE_BLOCKING, // When a player is damaged while blocking with a shield
-    PLAYER_DAMAGE_GENERIC, // When a player damages themselves <-- FOR REMOVAL
+    //PLAYER_DAMAGED_WHILE_BLOCKING, // When a player is damaged while blocking with a shield
+    PLAYER_DAMAGED, // When a player damages themselves <-- FOR REMOVAL
     ENTITY_DAMAGED_GENERIC, // When a living entity is damaged from ANYTHING and not just other living entities
     DROP_ITEM, // When a player drops an item
     BREAK_BLOCK, // When a player breaks a block
@@ -48,6 +48,7 @@ public enum Action {
     PLAYER_CROUCH, // When a player toggles their sneak button (crouches or un-crouches)
     ASYNC_CHAT, // When a player sends a chat message (Async)
     MOVE, // When a player moves and their position/location has changed
+    INPUT, // When a key input is received from a player (e.g. pressing a key)
     ENTITY_MOVE, // When a living entity with specific persistent data moves and their position/location has changed
     CONSUME_ITEM, // When a player consumes an item
     JUMP, // When a player jumps (Unused)

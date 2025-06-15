@@ -12,6 +12,8 @@ import dev.jsinco.luma.lumaitems.relics.RelicCreator
 import dev.jsinco.luma.lumaitems.relics.RelicDisassembler
 import dev.jsinco.luma.lumaitems.enums.EntityArmor
 import dev.jsinco.luma.lumaitems.enums.ToolType
+import dev.jsinco.luma.lumaitems.items.ItemFactory
+import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -33,6 +35,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
 import kotlin.random.Random
 
+// TODO: These listeners are a mess
 @AutoRegister(RegisterType.LISTENER)
 class GeneralListeners : Listener {
 
@@ -81,12 +84,28 @@ class GeneralListeners : Listener {
     }
 
     @EventHandler
-    fun onDisassemblerInteract(event: PlayerInteractEvent) {
+    fun onPlayerInteract(event: PlayerInteractEvent) {
+        val player = event.player
+        val item = player.inventory.itemInMainHand
+        if (item.hasItemMeta() && Util.hasPersistentKey(item.itemMeta, ItemFactory.AUTO_HAT_KEY)) { // TODO: Organize
+            if ((event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK)) return
+
+            val currentHelm = player.equipment?.helmet
+            if (currentHelm == null || currentHelm.isEmpty) {
+                player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f)
+                player.equipment?.helmet = item.asOne()
+                item.amount -= 1
+            }
+
+            event.isCancelled = true
+            return
+        }
+
+
         if (!RelicDisassembler.disassemblerBlocks.contains(event.clickedBlock ?: return)) return
 
         event.isCancelled = true
-        val player = event.player
-        val item = player.inventory.itemInMainHand
+
 
         if (event.action == Action.LEFT_CLICK_BLOCK && player.hasPermission("lumaitems.disassemblergui")) {
             val gui = DisassemblerGui()
@@ -109,8 +128,8 @@ class GeneralListeners : Listener {
         }
 
         val player = event.whoClicked as Player
-        val data = player.itemOnCursor.itemMeta?.persistentDataContainer
-        if (data?.has(NamespacedKey(plugin, "autohat"), PersistentDataType.SHORT) == true) { // TODO: Organize
+        val item = player.itemOnCursor
+        if (item.hasItemMeta() && Util.hasPersistentKey(item.itemMeta, ItemFactory.AUTO_HAT_KEY)) { // TODO: Organize
             if (event.inventory.type != InventoryType.CRAFTING || event.slotType != InventoryType.SlotType.ARMOR) return
             val cursorItem = player.itemOnCursor.clone()
             val hatItem = player.inventory.helmet

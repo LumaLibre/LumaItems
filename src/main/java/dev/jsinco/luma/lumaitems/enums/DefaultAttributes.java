@@ -241,6 +241,10 @@ public enum DefaultAttributes {
         this.attributeContainers = List.of(attributeContainers);
     }
 
+    public Map<Attribute, AttributeModifier> get() {
+        return this.getAttributes();
+    }
+
     public Map<Attribute, AttributeModifier> getAttributes() {
         final Map<Attribute, AttributeModifier> attributeModifierMap = new HashMap<>();
         for (AttributeContainer attributeContainer : attributeContainers) {
@@ -270,6 +274,10 @@ public enum DefaultAttributes {
 
     public Map<Attribute, AttributeModifier> appendThenGetAttributes(String key, Attribute attribute, double amount, AttributeModifier.Operation operation, @Nullable EquipmentSlotGroup slot) {
         return appendThenGetAttributes(new AttributeContainer(key, attribute, operation, amount, slot));
+    }
+
+    public Map<Attribute, AttributeModifier> appendThenGetAttributes(NamespacedKey key, Attribute attribute, double amount, AttributeModifier.Operation operation, @Nullable EquipmentSlotGroup slot) {
+        return appendThenGetAttributes(new AttributeContainer(key.getKey(), attribute, operation, amount, slot));
     }
 
     public Map<Attribute, AttributeModifier> appendThenGetAttributes(Attribute attribute, String key, double amount, AttributeModifier.Operation operation, @Nullable EquipmentSlotGroup slot) {

@@ -29,7 +29,8 @@ object GlowManager {
         NamedTextColor.GREEN,
         NamedTextColor.LIGHT_PURPLE,
         NamedTextColor.RED,
-        NamedTextColor.YELLOW
+        NamedTextColor.YELLOW,
+        NamedTextColor.WHITE
     )
 
     private val board = Bukkit.getScoreboardManager().mainScoreboard

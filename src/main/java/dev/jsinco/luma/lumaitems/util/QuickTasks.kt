@@ -107,16 +107,4 @@ object QuickTasks {
         flagged.remove(player)
     }
 
-    fun runTaskAsyncFor(period: Long, forAmount: Long, runnable: Runnable) {
-        object : BukkitRunnable() {
-            var ticksRan = 0L
-            override fun run() {
-                ticksRan += period
-                if (ticksRan >= forAmount) {
-                    cancel()
-                }
-                runnable.run()
-            }
-        }.runTaskTimerAsynchronously(LumaItems.getInstance(), 0L, period)
-    }
 }

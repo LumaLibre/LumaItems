@@ -23,6 +23,10 @@ public record AttributeContainer(String key,
         return new AttributeContainer(key, attribute, operation, amount, slot);
     }
 
+    public static AttributeContainer of(NamespacedKey key, Attribute attribute, AttributeModifier.Operation operation, double amount, @Nullable EquipmentSlotGroup slot) {
+        return new AttributeContainer(key.getKey(), attribute, operation, amount, slot);
+    }
+
     public NamespacedKey getKey() {
         return new NamespacedKey(LumaItems.getInstance(), key);
     }

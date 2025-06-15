@@ -66,7 +66,7 @@ class BouquetTrousersItem : CustomItemFunctions() {
         tracked.remove(player.uniqueId)
     }
 
-    override fun onPlayerDamageGeneric(player: Player, event: EntityDamageEvent) {
+    override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
         if (tracked.contains(player.uniqueId)) {
             event.isCancelled = true
         }

@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.weapons
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
@@ -21,25 +22,31 @@ import java.util.function.Predicate
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
+import org.bukkit.entity.Tameable
+import org.bukkit.entity.Villager
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.util.RayTraceResult
 import org.bukkit.util.Vector
 
-// TODO: Needs to ignore friendlies unless targeted
 @Disable(value = [WorldName.PINATA, WorldName.SPAWN])
-class UnnamedWeaponItem : CustomItemFunctions() {
+class HeavyPrismSickleItem : CustomItemFunctions() {
 
     companion object {
         private const val RANGE = 45.0
@@ -50,7 +57,7 @@ class UnnamedWeaponItem : CustomItemFunctions() {
         private val UP = Vector(0, 1, 0)
         private val STOP = Vector(0, 0, 0)
 
-        private val nameSpace = Util.namespacedKey("unnamed-weapon2")
+        private val nameSpace = Util.namespacedKey("heavy-prism-sickle")
         private val glowLib = LumaItems.getGlowingEntities()
         private val processes: MutableSet<Process> = mutableSetOf()
     }
@@ -58,21 +65,37 @@ class UnnamedWeaponItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         val colorKit = ColorKit.entries.random()
-        val c = colorKit.rgb
+        val rOpen = "<${colorKit.rgb}>"
+        val rClose = "</${colorKit.rgb}>"
         return ItemFactory.builder()
-            .name("<b>${colorKit.gradient}Unnamed Weapon2")
-            .customEnchants("${colorKit.rgb}Glass Cannon")
+            .name("<b>${colorKit.gradient}Heavy Prism Sickle</gradient></b>")
+            .customEnchants("${rOpen}Prism Cannon")
             .material(Material.NETHERITE_HOE)
             .persistentData(nameSpace)
             .lore(
-                "${c}Right-click <white>to summon ${c}6",
-                "glass cannon orbs that will",
-                "track and kill nearby entities.",
+                "${rOpen}Right-click${rClose} to summon",
+                "6 prism orbs that will",
+                "seek out and damage",
+                "nearby entities.",
+                "",
+                "Lock on to an entity",
+                "by directly looking at",
+                "it before firing.",
+                "",
+                "<red>Cooldown: 35s"
             )
-            .vanillaEnchants(Enchantment.MENDING to 1, Enchantment.UNBREAKING to 10, Enchantment.SHARPNESS to 6)
-            .tier(Tier.DEBUG)
+            .vanillaEnchants(
+                Enchantment.SHARPNESS to 10,
+                Enchantment.LOOTING to 5,
+                Enchantment.UNBREAKING to 4,
+                Enchantment.MENDING to 1
+            )
+            .tier(Tier.SUMMER_2025)
             .persistentDataRecords(
                 PersistentDataRecord.create(nameSpace, PersistentDataType.STRING, colorKit.name)
+            )
+            .attributeModifiers(
+                AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-3.3, EquipmentSlotGroup.MAINHAND)
             )
             .buildPair()
     }
@@ -87,10 +110,11 @@ class UnnamedWeaponItem : CustomItemFunctions() {
 
         val process = Process(player)
         val anyOrbsFired = process.start(colorKit)
+        player.world.playSound(player.location, Sound.ENTITY_BREEZE_LAND, 1f, 1f)
 
         QuickTasks.addCooldown(this, player, 100) {
             if (anyOrbsFired.get()) {
-                player.playSound(player.location, Sound.ENTITY_ARROW_HIT_PLAYER, 1f, 1f)
+                player.playSound(player.location, Sound.ENTITY_ARROW_HIT_PLAYER, 0.2f, 0.6f)
                 QuickTasks.addCooldown(this, player, 600)
             }
         }
@@ -108,7 +132,7 @@ class UnnamedWeaponItem : CustomItemFunctions() {
     }
 
 
-    class Process(val player: Player) {
+    private class Process(val player: Player) {
 
         private var scheduledTask: ScheduledTask? = null
         private var orbGroup: OrbGroup? = null
@@ -121,41 +145,59 @@ class UnnamedWeaponItem : CustomItemFunctions() {
 
             val orbGroup = OrbGroup(player, colorKit, CIRCLE_RADIUS, CIRCLE_RATE, targetEntity)
             this.orbGroup = orbGroup
-            orbGroup.create()
-
-            var count: Long = 0
             val anyOrbsFired: AtomicBoolean = AtomicBoolean(false)
-            this.scheduledTask = Executors.asyncTimer(0, 1) { task ->
-                if (count >= 500) {
-                    task.cancel()
-                    Executors.sync { orbGroup.destroy() }
-                    processes.remove(this)
-                    return@asyncTimer
-                }
-
-
-                orbGroup.moveGroup(count)
-                var anyFiring = false
-
-                orbGroup.orbs.forEach { orb ->
-                    if (orb.fireTime < count) {
-                        anyFiring = true
-                        if (!anyOrbsFired.get()) {
-                            anyOrbsFired.set(true)
-                        }
-                        if (orb.target == null || orb.target!!.isDead) {
-                            orb.autoTarget(orbGroup.activeTargets)
-                        }
-
-                        orb.drawLine()
+            orbGroup.create {
+                var count: Long = 0
+                this.scheduledTask = Executors.asyncTimer(0, 1) { task ->
+                    // Prune orbs that are no longer valid
+                    if (count >= 500 || orbGroup.orbs.all { !it.valid }) {
+                        task.cancel()
+                        Executors.sync { orbGroup.destroy() }
+                        processes.remove(this)
+                        return@asyncTimer
                     }
-                }
 
-                if (anyFiring) {
-                    orbGroup.pruneTargets()
+
+                    orbGroup.moveGroup(count)
+
+                    Executors.sync {
+                        orbGroup.orbs.forEach { orb ->
+                            if (orb.fireTime < count) {
+                                if (!orb.autoTarget(orbGroup.activeTargets)) {
+                                    return@forEach
+                                }
+
+
+                                if (!orb.startedFiring) {
+                                    orb.startedFiring = true
+                                    val snowball = orb.snowball
+                                    snowball.world.playSound(
+                                        snowball.location,
+                                        Sound.ENTITY_BREEZE_IDLE_GROUND,
+                                        0.4f,
+                                        0.8f
+                                    )
+                                }
+
+                                if (!anyOrbsFired.get()) {
+                                    anyOrbsFired.set(true)
+                                }
+
+
+                                Executors.async {
+                                    orb.drawLine()
+                                }
+                            }
+                        }
+                    }
+
+                    if (anyOrbsFired.get()) {
+                        orbGroup.pruneTargets()
+                    }
+                    count++
                 }
-                count++
             }
+
             processes.add(this)
             return anyOrbsFired
         }
@@ -168,7 +210,7 @@ class UnnamedWeaponItem : CustomItemFunctions() {
     }
 
 
-    class OrbGroup(
+    private class OrbGroup(
         val player: Player,
         val colorKit: ColorKit,
         val radius: Double,
@@ -188,17 +230,19 @@ class UnnamedWeaponItem : CustomItemFunctions() {
         }
 
 
-        fun create() {
+        fun create(whenFinished: () -> Unit = {}) {
             val location = player.eyeLocation.clone().add(player.eyeLocation.direction.clone().multiply(DIRECTION_FACTOR))
             // Groups of two, so two orbs at a time should have the same fireTime, then add 50
-            calculateLocations(location) { index, loc ->
+
+            val orbDecalList = colorKit.getOrbDecalList()
+            calculateLocations(location, whenFinished) { index, loc ->
                 if (orbs.size >= MAX_ORBS) return@calculateLocations // limit to 6 orbs
                 val fireTime = if (initialTarget == null) {
                     50L + (index / 2) * 15 // every two orbs have the same fireTime
                 } else {
                     15L
                 }
-                val orb = Orb(initialTarget, player, colorKit, loc, fireTime, DIRECTION_FACTOR)
+                val orb = Orb(initialTarget, player, orbDecalList[index], loc, fireTime, DIRECTION_FACTOR)
                 orb.spawn()
                 //orb.autoTarget(activeTargets) // auto-target entities around the orb
                 orb.move()
@@ -237,7 +281,7 @@ class UnnamedWeaponItem : CustomItemFunctions() {
             return true
         }
 
-        private fun calculateLocations(point: Location, consumer: BiConsumer<Int, Location>) {
+        private fun calculateLocations(point: Location, whenFinished: () -> Unit = {}, consumer: BiConsumer<Int, Location>) {
             Executors.async {
                 // basic circle around a point in 3D space, but flipped on the Y axis
                 val rateDiv: Double = Math.PI / abs(this.rate)
@@ -263,15 +307,16 @@ class UnnamedWeaponItem : CustomItemFunctions() {
                     theta += rateDiv
                     index++
                 }
+                whenFinished.invoke()
             }
         }
     }
 
 
-    class Orb(
+    private class Orb(
         var target: LivingEntity?,
         val player: Player,
-        val colorKit: ColorKit,
+        val orbDecals: OrbDecals,
         var position: Location,
         val fireTime: Long = 50,
         val directionFactor: Double
@@ -281,30 +326,45 @@ class UnnamedWeaponItem : CustomItemFunctions() {
             private const val SPEED_MULTIPLIER = 2.5
             private const val SNAP = 0.5
 
-            private fun getPredicate(player: Player): Predicate<Entity> {
-                return Predicate { entity ->
-                    entity is LivingEntity && entity != player
-                            && player.canSee(entity) && !AbilityUtil.noDamagePermission(player, entity)
+            private fun getPredicate(player: Player, autoTargetting: Boolean = false): Predicate<Entity> {
+                return Predicate<Entity> { entity ->
+                    entity is LivingEntity &&
+                            entity != player &&
+                            player.canSee(entity) &&
+                            !AbilityUtil.noDamagePermission(player, entity) &&
+                            (!autoTargetting || (
+                                    entity !is Villager &&
+                                            (entity as? Tameable)?.isTamed != true
+                                            //&& entity !is Player : Leaving this out for now
+                                    ))
                 }
             }
         }
 
-        private val rayTraceParticle = ParticleDisplay.of(colorKit.particleType).withColor(colorKit.color)
-        private val itemStack = ItemStack.of(colorKit.material)
+        private val rayTraceParticle = ParticleDisplay.of(orbDecals.particleType).withColor(orbDecals.color)
+        private val itemStack = ItemStack.of(orbDecals.material)
 
         private val spawnLocation = player.eyeLocation.clone().add(player.eyeLocation.direction.clone().multiply(directionFactor))
 
         lateinit var snowball: Snowball
-        private var valid = true
+        var startedFiring = false
+        var valid = true
+
+        private var timesRespawned = 0
         private var lineCurrentEnd: Location? = null
 
         init {
-            if (target != null) {
-                glowLib.setGlowing(target!!, player, colorKit.chatColor)
+            target?.let {
+                glowLib.setGlowing(it, player, orbDecals.chatColor)
             }
         }
 
         private fun createSnowball(location: Location) {
+            if (timesRespawned >= 50) {
+                return // If we've respawned too many times, we stop trying to create a new snowball
+            }
+            timesRespawned++
+
             this.snowball = player.world.spawn(location, Snowball::class.java)
             snowball.isPersistent = false
             snowball.setGravity(false)
@@ -316,6 +376,7 @@ class UnnamedWeaponItem : CustomItemFunctions() {
             if (!valid) {
                 this.valid = true
             }
+
             Executors.sync {
                 createSnowball(spawnLocation)
             }
@@ -341,7 +402,7 @@ class UnnamedWeaponItem : CustomItemFunctions() {
                         task.cancel()
                         return@syncTimer
                     }
-                } else if (snowball.location.distance(position) <= 0.1) {
+                } else if (snowball.location.world != position.world || snowball.location.distance(position) <= 0.1) {
                     snowball.velocity = STOP
                     task.cancel()
                     return@syncTimer
@@ -357,8 +418,11 @@ class UnnamedWeaponItem : CustomItemFunctions() {
             }
         }
 
-        fun autoTarget(activeTargets: LinkedHashMap<LivingEntity, Int>) {
-            if (!valid) return
+        fun autoTarget(activeTargets: LinkedHashMap<LivingEntity, Int>): Boolean {
+            if (!valid) return false
+            if (this.target != null && !target!!.isDead) {
+                return true // already have a target
+            }
             fun setTarget(entity: LivingEntity) {
                 this.target = entity
                 if (activeTargets.containsKey(entity)) {
@@ -366,26 +430,24 @@ class UnnamedWeaponItem : CustomItemFunctions() {
                 } else {
                     activeTargets[entity] = 1
                 }
-                glowLib.setGlowing(entity, player, colorKit.chatColor)
+                glowLib.setGlowing(entity, player, orbDecals.chatColor)
             }
 
-            Executors.sync {
-                val nearbyEntities = position.getNearbyLivingEntities(RANGE.minus(20.0))
-                    .filter { entity -> getPredicate(player).test(entity) }
-                    .filter { entity -> activeTargets.getOrDefault(entity, 0) < 2 }
-                    .sortedBy { it.location.distance(player.location) }
-                if (nearbyEntities.isEmpty()) {
-                    if (activeTargets.isEmpty()) {
-                        despawn()
-                        return@sync
-                    }
-                    setTarget(activeTargets.keys.first())
-                } else {
-                    setTarget(nearbyEntities.first())
+            val nearbyEntities = position.getNearbyLivingEntities(RANGE.minus(20.0))
+                .filter { entity -> getPredicate(player, true).test(entity) }
+                .filter { entity -> activeTargets.getOrDefault(entity, 0) < 2 }
+                .sortedBy { it.location.distance(player.location) }
+            if (nearbyEntities.isEmpty()) {
+                if (activeTargets.isEmpty()) {
+                    despawn()
+                    return false
                 }
-
+                setTarget(activeTargets.keys.first())
+            } else {
+                setTarget(nearbyEntities.first())
             }
 
+            return true
         }
 
         fun drawLine() {
@@ -430,7 +492,7 @@ class UnnamedWeaponItem : CustomItemFunctions() {
         }
 
         private fun raytrace(start: Location, direction: Vector, reach: Double, predicate: Predicate<Entity>) {
-            val raytraceResult = position.world.rayTraceEntities(start, direction, reach, predicate)
+            val raytraceResult: RayTraceResult? = position.world.rayTraceEntities(start, direction, reach, predicate)
             val hitEntity = raytraceResult?.hitEntity ?: return
             val position = raytraceResult.hitPosition.toLocation(hitEntity.world)
             val newReach = start.distance(position)
@@ -441,42 +503,95 @@ class UnnamedWeaponItem : CustomItemFunctions() {
 
             if (hitEntity is LivingEntity) {
                 hitEntity.damage(8.0, player)
+                if (Random.nextInt(10) == 0) {
+                    hitEntity.world.playSound(hitEntity.location, Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.5f, 0.1f)
+                }
             }
         }
 
     }
 
 
-    enum class ColorKit(
+
+    private enum class ColorKit(
         val gradient: String,
         val rgb: String,
-        val material: Material,
-        val color: Color,
-        val chatColor: ChatColor,
+        val materials: List<Material>,
+        val colors: List<Color>,
+        val chatColors: @Suppress("DEPRECATION") List<ChatColor>,
         val particleType: Particle = Particle.DUST
     ) {
         RED(
-            gradient = "<gradient:#E94A4A:#FF6868:#F54EB3>",
-            rgb = "<#FF6868>",
-            material = Material.RED_DYE,
-            color = Util.hex2AwtColor("#E94A4A"),
-            chatColor = ChatColor.RED,
+            gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
+            rgb = "#d37b99",
+            materials = listOf(Material.RED_DYE),
+            colors = listOf(Util.hex2AwtColor("#E94A4A")),
+            chatColors = @Suppress("DEPRECATION") listOf(ChatColor.RED),
         ),
         WHITE(
-            gradient = "<gradient:#FFFFFF:#F0F0F0:#E0E0E0>",
-            rgb = "<#FFFFFF>",
-            material = Material.NETHER_STAR,
-            color = Color.WHITE /*Util.hex2AwtColor("#FFFFFF")*/,
-            chatColor = ChatColor.WHITE,
+            gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
+            rgb = "#d37b99",
+            materials = listOf(Material.NETHER_STAR),
+            colors = listOf(Color.WHITE) /*Util.hex2AwtColor("#FFFFFF")*/,
+            chatColors = @Suppress("DEPRECATION") listOf(ChatColor.WHITE),
         ),
         PURPLE(
-            gradient = "<gradient:#AD76E3:#BF9BDD:#F56868>",
-            rgb = "<#BF9BDD>",
-            material = Material.LARGE_AMETHYST_BUD,
-            color = Util.hex2AwtColor("#AD76E3"),
-            chatColor = ChatColor.LIGHT_PURPLE,
+            gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
+            rgb = "#d37b99",
+            materials = listOf(Material.LARGE_AMETHYST_BUD),
+            colors = listOf(Util.hex2AwtColor("#AD76E3")),
+            chatColors = @Suppress("DEPRECATION") listOf(ChatColor.LIGHT_PURPLE),
+        ),
+        PRISM(
+            gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
+            rgb = "#d37b99",
+            materials = listOf(Material.RED_DYE, Material.LARGE_AMETHYST_BUD, Material.NETHER_STAR),
+            colors = listOf(Util.hex2AwtColor("#E94A4A"), Util.hex2AwtColor("#AD76E3"), Color.WHITE),
+            chatColors = @Suppress("DEPRECATION") listOf(ChatColor.RED, ChatColor.LIGHT_PURPLE, ChatColor.WHITE),
         )
+
+        ;
+
+        fun getOrbDecalList(): List<OrbDecals> {
+            // Check if the max number of orbs is divisible by the number of materials, colors, and chatColors
+            val maxOrbs = MAX_ORBS
+            val materialCount = materials.size
+            if (maxOrbs % materialCount != 0 || maxOrbs % colors.size != 0 || maxOrbs % chatColors.size != 0) {
+                throw IllegalStateException("Max orbs must be divisible by the number of materials, colors, and chatColors.")
+            }
+
+            // next, check to see if the number of materials, colors, and chatColors are equal
+            if (materials.size != colors.size || materials.size != chatColors.size) {
+                throw IllegalStateException("Materials, colors, and chatColors must have the same size.")
+            }
+
+            // If it's 1, we return a list of 6 OrbColor objects all with the same values
+            // if it's 2, we return a list of 6 OrbColor objects, each with each half having the same values
+            // if it's 3, we return a list of 6 OrbColor objects, each with each third having the same values
+            // if it's 6, we return a list of 6 OrbColor objects, each with different values
+
+            return (0 until maxOrbs).map { index ->
+                val materialIndex = index % materialCount
+                val colorIndex = index % colors.size
+                val chatColorIndex = index % chatColors.size
+
+                OrbDecals(
+                    color = colors[colorIndex],
+                    chatColor = chatColors[chatColorIndex],
+                    material = materials[materialIndex],
+                    particleType = particleType
+                )
+            }
+
+        }
     }
+
+    private class OrbDecals(
+        val color: Color,
+        val chatColor: @Suppress("DEPRECATION") ChatColor,
+        val material: Material,
+        val particleType: Particle = Particle.DUST
+    )
 }
 
 // Other raytracing methods suggested/provided to me by nice users on PaperMC:

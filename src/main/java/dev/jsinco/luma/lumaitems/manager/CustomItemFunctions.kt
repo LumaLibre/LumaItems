@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
+import org.bukkit.event.player.PlayerInputEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
@@ -70,8 +71,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_DEATH -> onEntityDeath(player, event as EntityDeathEvent)
             Action.ENTITY_DAMAGE -> onEntityDamage(player, event as EntityDamageByEntityEvent)
             Action.PLAYER_DAMAGED_BY_ENTITY -> onPlayerDamagedByEntity(player, event as EntityDamageByEntityEvent)
-            Action.PLAYER_DAMAGED_WHILE_BLOCKING -> onPlayerDamagedWhileBlocking(player, event as EntityDamageByEntityEvent)
-            Action.PLAYER_DAMAGE_GENERIC -> onPlayerDamageGeneric(player, event as EntityDamageEvent)
+            Action.PLAYER_DAMAGED -> onPlayerDamaged(player, event as EntityDamageEvent)
             Action.ENTITY_DAMAGED_GENERIC -> onEntityDamageGeneric(player, event as EntityDamageEvent)
             Action.DROP_ITEM -> onPlayerDropItem(player, event as PlayerDropItemEvent)
             Action.BREAK_BLOCK -> onBreakBlock(player, event as BlockBreakEvent)
@@ -84,6 +84,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.PLAYER_CROUCH -> onPlayerCrouch(player, event as PlayerToggleSneakEvent)
             Action.ASYNC_CHAT -> onAsyncChat(player, event as AsyncPlayerChatEvent)
             Action.MOVE -> onMove(player, event as PlayerMoveEvent)
+            Action.INPUT -> onInput(player, event as PlayerInputEvent)
             Action.ENTITY_MOVE -> onEntityMove(event as EntityMoveEvent)
             Action.CONSUME_ITEM -> onConsumeItem(player, event as PlayerItemConsumeEvent)
             Action.JUMP -> onJump(player, event as PlayerJumpEvent)
@@ -130,8 +131,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityDeath(player: Player, event: EntityDeathEvent) {}
     open fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {}
     open fun onPlayerDamagedByEntity(player: Player, event: EntityDamageByEntityEvent) {}
-    open fun onPlayerDamagedWhileBlocking(player: Player, event: EntityDamageByEntityEvent) {}
-    open fun onPlayerDamageGeneric(player: Player, event: EntityDamageEvent) {}
+    open fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {}
     open fun onEntityDamageGeneric(player: Player, event: EntityDamageEvent) {}
     open fun onPlayerDropItem(player: Player, event: PlayerDropItemEvent) {}
     open fun onBreakBlock(player: Player, event: BlockBreakEvent) {}
@@ -144,6 +144,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {}
     open fun onAsyncChat(player: Player, event: AsyncPlayerChatEvent) {}
     open fun onMove(player: Player, event: PlayerMoveEvent) {}
+    open fun onInput(player: Player, event: PlayerInputEvent) {}
     open fun onEntityMove(event: EntityMoveEvent) {}
     open fun onConsumeItem(player: Player, event: PlayerItemConsumeEvent) {}
     open fun onJump(player: Player, event: PlayerJumpEvent) {}

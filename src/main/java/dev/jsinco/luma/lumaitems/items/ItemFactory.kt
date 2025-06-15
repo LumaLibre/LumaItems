@@ -4,10 +4,14 @@ import com.iridium.iridiumcolorapi.IridiumColorAPI
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.enums.RomanNumeral
+import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
+import dev.jsinco.luma.lumaitems.util.PaperDataComponent
+import dev.jsinco.luma.lumaitems.util.UnValuedPaperDataComponent
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.ValuedPaperDataComponent
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentType.Valued
 import net.kyori.adventure.text.format.NamedTextColor
@@ -67,9 +71,12 @@ class ItemFactory(
      * Persistent data records.
      */
     var persistentDataRecords: MutableList<PersistentDataRecord<*, *>> = mutableListOf(),
+
+    var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf()
 ) {
 
     companion object {
+        val AUTO_HAT_KEY = Util.namespacedKey("autohat")
         private val plugin: LumaItems = LumaItems.getInstance()
         @JvmField
         val LUMAITEM = Util.namespacedKey("lumaitem")
@@ -132,6 +139,11 @@ class ItemFactory(
         data: PersistentDataRecord<P, C>
     ) {
         container.set(data.nameSpacedKey, data.persistentDataType, data.value)
+    }
+
+
+    fun <T : Any> addValuedDataComponent(paperDataComponent: ValuedPaperDataComponent<T>) {
+        item.setData(paperDataComponent.dataComponentType, paperDataComponent.value)
     }
 
     fun createItem(): ItemStack {
@@ -211,7 +223,7 @@ class ItemFactory(
         if (hideEnchants) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
 
         if (autoHat) {
-            meta.persistentDataContainer.set(NamespacedKey(plugin, "autohat"), PersistentDataType.SHORT, 1)
+            meta.persistentDataContainer.set(AUTO_HAT_KEY, PersistentDataType.SHORT, 1)
         }
 
         if (b64PHead != null && material == Material.PLAYER_HEAD) {
@@ -219,6 +231,14 @@ class ItemFactory(
         }
 
         item.itemMeta = meta
+
+        for (paperDataComponent in paperDataComponents) {
+            if (paperDataComponent is ValuedPaperDataComponent<*>) {
+                addValuedDataComponent(paperDataComponent)
+            } else if (paperDataComponent is UnValuedPaperDataComponent) {
+                item.setData(paperDataComponent.dataComponentType)
+            }
+        }
         return item
     }
 
@@ -253,6 +273,7 @@ class ItemFactory(
         private var spoofEnchants: Boolean = false
         private var persistentDataValue: Short = 1
         private var persistentDataRecords: MutableList<PersistentDataRecord<*, *>> = mutableListOf()
+        private var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf()
 
         @SafeVarargs
         fun name(name: String) = apply { this.name = name }
@@ -271,6 +292,8 @@ class ItemFactory(
         fun persistentData(vararg persistentData: NamespacedKey) = apply { this.persistentData = persistentData.map { it.key }.toMutableList() }
         @SafeVarargs
         fun persistentDataRecords(vararg persistentData: PersistentDataRecord<*, *>) = apply { this.persistentDataRecords = persistentData.toMutableList() }
+        @SafeVarargs
+        fun paperDataComponents(vararg paperDataComponents: PaperDataComponent) = apply { this.paperDataComponents = paperDataComponents.toMutableList() }
         fun vanillaEnchants(vanillaEnchants: MutableMap<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
         @SafeVarargs
         fun vanillaEnchants(vararg vanillaEnchants: Pair<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants.toMap().toMutableMap() }
@@ -297,13 +320,13 @@ class ItemFactory(
         fun build() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
             tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, quotes, b64PHead,
-            spoofEnchants, persistentDataValue, persistentDataRecords
+            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents
         ).apply { miniMessage() }
 
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
             tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, quotes, b64PHead,
-            spoofEnchants, persistentDataValue, persistentDataRecords
+            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents
         )
 
         fun buildPair(): Pair<String, ItemStack> {

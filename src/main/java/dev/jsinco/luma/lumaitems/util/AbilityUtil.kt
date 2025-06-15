@@ -81,7 +81,7 @@ object AbilityUtil {
     }
 
     fun isOnGround(entity: Entity): Boolean {
-        return !entity.location.add(0.0,-0.1, 0.0).block.type.isAir
+        return entity.location.add(0.0,-0.1, 0.0).block.isSolid
     }
 
     fun isJobsTracked(block: Block): Boolean {

@@ -2,31 +2,41 @@ package dev.jsinco.luma.lumaitems.items.tools
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
+import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import org.bukkit.Color as BukkitColor
+import java.awt.Color
+import kotlin.math.abs
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Enemy
 import org.bukkit.entity.Item
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
 import org.bukkit.entity.Snowball
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.util.BlockIterator
+import org.bukkit.util.Vector
 
-class StormSurgeSpadeItem : CustomItemFunctions() {
+class HailstormSpadeItem : CustomItemFunctions() {
 
     companion object {
+        private val COLORS = listOf("#EEBEC5", "#D9C0EF", "#A6C6EC").map { Util.hex2AwtColor(it) }.plus(Color.WHITE)
+        private val PARTICLE_DISPLAY = ParticleDisplay.of(Particle.DUST)
+        private val WHITE_PARTICLE_DISPLAY = PARTICLE_DISPLAY.clone().withColor(Color.WHITE)
         private val ITEM_STACK = ItemStack(Material.WIND_CHARGE)
-        private val WHITE_DUST = Particle.DustOptions(BukkitColor.WHITE, 1f)
-        private val key = Util.namespacedKey("storm-surge-spade")
+        private val key = Util.namespacedKey("hailstorm-spade")
+        private const val ACTIVATOR = "activator"
     }
 
     private val fallingProjectile = fun(loc: Location, shooter: Player): Snowball {
@@ -40,18 +50,19 @@ class StormSurgeSpadeItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><gradient:#679AA5:#70A9AC:#6e8c96:#45566a>Storm Surge Spade</gradient></b>")
-            .customEnchants("<#679AA5>Hailing Geyser")
+            .name("<b><gradient:#EEBEC5:#D9C0EF:#A6C6EC>Hailstorm Spade</gradient></b>")
+            .customEnchants("<#A6C6EC>Hailing Geyser")
             .material(Material.NETHERITE_SHOVEL)
             .persistentData(key)
-            .tier(Tier.DEBUG)
+            .tier(Tier.SUMMER_2025)
             .lore(
-                "<#679AA5>Right-click</#679AA5> to summon a storm cloud",
-                "that rains down a torrent of hail.",
+                "<#A6C6EC>Right-click</#A6C6EC> to summon a storm",
+                "cloud that rains down a",
+                "torrent of hail.",
                 "",
-                "Hail from the storm will destroy",
-                "blocks in its path and propel items",
-                "towards you.",
+                "Hail from the storm will break",
+                "blocks in its path and propel",
+                "items towards you.",
                 "",
                 "<red>Cooldown: 3m"
             )
@@ -69,14 +80,27 @@ class StormSurgeSpadeItem : CustomItemFunctions() {
             return
         }
         QuickTasks.addCooldown(this, player.uniqueId, 3600) // 3 min
-        starfallRaincloud(player)
+        val snowball = player.launchProjectile(Snowball::class.java)
+        snowball.velocity = snowball.velocity.multiply(0.3)
+        snowball.setMetadata(ACTIVATOR, FixedMetadataValue(instance(), true))
+        snowball.item = ITEM_STACK
+        Util.setPersistentKey(snowball, key, PersistentDataType.SHORT, 1)
+        player.swingMainHand()
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
+        val projectile = event.entity
+        if (projectile.hasMetadata(ACTIVATOR)) {
+            cloudSeed(projectile) {
+                hailStorm(projectile.location, player)
+            }
+            return
+        }
+
         val hitEntity = event.hitEntity
-        if (hitEntity == player) {
+        if (hitEntity is Player) {
             event.isCancelled = true
-        } else if (hitEntity is Enemy) {
+        } else if (hitEntity is LivingEntity) {
             hitEntity.damage(5.0, player)
         }
 
@@ -95,10 +119,46 @@ class StormSurgeSpadeItem : CustomItemFunctions() {
         }
     }
 
-    private fun starfallRaincloud(player: Player) {
-        val loc = player.location.clone()
+    private fun cloudSeed(entity: Projectile, whenDone: () -> Unit) {
+
+        val position = if (!entity.isInWater) {
+            entity.location
+        } else {
+            // keep going up until we find a non-water block
+            val blockIterator = BlockIterator(entity.world, entity.location.toVector(), Vector(0.0, 1.0, 0.0), 0.0, 20)
+            while (blockIterator.hasNext()) {
+                val next = blockIterator.next()
+                if (next.type.isAir) {
+                    next.location
+                }
+            }
+            entity.location // fallback if no block found
+        }
+        val destination = position.clone().add(0.0, 11.0, 0.0)
+
+
+        val lineCurrentEnd: Location = position.clone()
+
+        Executors.asyncTimer(0, 1) { task ->
+
+            val toDestination = destination.clone().subtract(lineCurrentEnd)
+            val distance = toDestination.length()
+
+            if (distance > 1) {
+                val directionStep = toDestination.toVector().normalize().multiply(0.9)
+                lineCurrentEnd.add(directionStep)
+            } else {
+                task.cancel()
+                whenDone()
+            }
+
+            Particles.line(position, lineCurrentEnd, 0.35, WHITE_PARTICLE_DISPLAY)
+        }
+    }
+
+    private fun hailStorm(loc: Location, player: Player) {
         val spawnLocation = loc.add(0.0, 10.0, 0.0)
-        val direction = loc.direction.clone().normalize()
+        val direction = player.location.direction.clone().normalize()
 
 
         val snowballs = mutableListOf<Projectile>()
@@ -119,7 +179,7 @@ class StormSurgeSpadeItem : CustomItemFunctions() {
             spawnLocation.add(stormVector)
 
 
-            player.world.spawnParticle(
+            loc.world.spawnParticle(
                 Particle.CLOUD,
                 spawnLocation,
                 60,
@@ -136,7 +196,16 @@ class StormSurgeSpadeItem : CustomItemFunctions() {
             }
 
             snowballs.forEach { projectile ->
-                projectile.world.spawnParticle(Particle.DUST, projectile.location, 1, WHITE_DUST)
+                // have it determine a random color based on the location
+
+                val x = projectile.location.blockX
+                val z = projectile.location.blockZ
+
+                // Hash the x and z to get a stable pseudo-random index
+                val index = abs((31 * x + z).hashCode()) % COLORS.size
+                val color = COLORS[index]
+                PARTICLE_DISPLAY.withColor(color)
+                    .spawn(projectile.location)
             }
 
 

@@ -20,7 +20,7 @@ import org.bukkit.entity.Player
     playerOnly = true,
     parent = CommandManager::class
 )
-class AddTier : SubCommand {
+class AddTierCommand : SubCommand {
     override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
         sender as Player
         val item = sender.inventory.itemInMainHand

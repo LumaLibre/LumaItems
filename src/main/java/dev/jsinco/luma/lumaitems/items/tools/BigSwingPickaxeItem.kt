@@ -19,22 +19,22 @@ import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
 @Disable(value = [WorldName.PINATA], hard = true)
-class BigSwingHammerItem : CustomItemFunctions() {
+class BigSwingPickaxeItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         val key = "big-swing-hammer"
         return ItemFactory.builder()
-            .name("<b><gradient:#fc8585:#ffc86d:#fbdba2:#86cbd9:#68C3BB>Big Swing Hammer</gradient></b>")
+            .name("<b><gradient:#fc8585:#ffc86d:#fbdba2:#86cbd9:#68C3BB>Big Swing Pickaxe</gradient></b>")
             .customEnchants("<#86cbd9>Destructive", "<#68C3BB>Reach")
             .material(Material.NETHERITE_PICKAXE)
             .tier(Tier.DEBUG)
             .persistentData(key)
             .lore(
                 "With the large motor on this",
-                "<#86cbd9>hammer</#86cbd9>, you'll be able to easily",
+                "pickaxe, you'll be able to easily",
                 "cut through any type of block!",
                 "",
-                "This <#86cbd9>hammer</#86cbd9> breaks blocks in a",
+                "This tool breaks blocks in a",
                 "wide area, at the cost of break",
                 "speed."
             )
@@ -44,8 +44,8 @@ class BigSwingHammerItem : CustomItemFunctions() {
                 Enchantment.MENDING to 1
             )
             .attributeModifiers(
-                AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.79, EquipmentSlotGroup.ANY),
-                AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.8, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.73, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.7, EquipmentSlotGroup.ANY),
                 AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 3.0, EquipmentSlotGroup.MAINHAND),
                 AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 3.0, EquipmentSlotGroup.MAINHAND),
             )
@@ -58,8 +58,8 @@ class BigSwingHammerItem : CustomItemFunctions() {
         val cardinalDirection = CardinalDirection.fromEntityYaw(player)
 
 
-        val xRadius = if (cardinalDirection == CardinalDirection.EAST || cardinalDirection == CardinalDirection.WEST) 2.0 else 4.0
-        val zRadius = if (cardinalDirection == CardinalDirection.NORTH || cardinalDirection == CardinalDirection.SOUTH) 2.0 else 4.0
+        val xRadius = if (cardinalDirection == CardinalDirection.EAST || cardinalDirection == CardinalDirection.WEST) 2.5 else 4.0
+        val zRadius = if (cardinalDirection == CardinalDirection.NORTH || cardinalDirection == CardinalDirection.SOUTH) 2.5 else 4.0
 
         val ellipsoidBlocks = Ellipsoid.getEllipsoid(event.block.location, xRadius, 2.0, zRadius).filter {
             !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid && it != event.block

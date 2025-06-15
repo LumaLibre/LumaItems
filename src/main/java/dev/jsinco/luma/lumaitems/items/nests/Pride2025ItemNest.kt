@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.nests
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.QuickTasks
+import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -84,6 +85,7 @@ class PrideShardLanternItem : PrideItem() {
 
     companion object {
         private val NIGHT_VISION = PotionEffect(PotionEffectType.NIGHT_VISION, 300, 0, true, false, false)
+        private val key = Util.namespacedKey("pride-shard-lantern")
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -96,12 +98,16 @@ class PrideShardLanternItem : PrideItem() {
                 "<gray>colors around it."
             )
             .material(Material.LANTERN)
-            .persistentData("pride-shard-lantern")
+            .persistentData(key)
             .buildPair()
     }
 
     override fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {
-        event.isCancelled = true
+        val item = event.itemInHand
+        if (!item.hasItemMeta()) return
+        if (Util.hasPersistentKey(item.itemMeta, key)) {
+            event.isCancelled = true
+        }
     }
 
     override fun onRunnable(player: Player) {
