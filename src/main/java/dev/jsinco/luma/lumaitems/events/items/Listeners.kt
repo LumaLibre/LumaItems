@@ -213,10 +213,10 @@ class Listeners : ItemListener() {
 
 
     @FireForAllNBT
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerPlaceBlock(event: BlockPlaceEvent) {
         val player = event.player
-        val data: List<PersistentDataContainer> = Util.getAllEquipmentNBT(player)
+        val data = event.itemInHand.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.PLACE_BLOCK, player, event)
     }

@@ -56,8 +56,8 @@ abstract class CustomItemFunctions : CustomItem {
         when(type) {
             Action.RUNNABLE -> onRunnable(player)
             Action.ASYNC_RUNNABLE -> onAsyncRunnable(player)
-            Action.PLUGIN_ENABLE -> onPluginEnable()
-            Action.PLUGIN_DISABLE -> onPluginDisable()
+            Action.PLUGIN_ENABLE -> onPluginEnable(player)
+            Action.PLUGIN_DISABLE -> onPluginDisable(player)
             Action.JOBS_EXP_GAIN -> onJobsExpGain(player, event as JobsExpGainEvent)
             Action.JOBS_PRE_PAYMENT -> onJobsPrePayment(player, event as JobsPrePaymentEvent)
             Action.CROSSBOW_LOAD -> onCrossBowLoad(player, event as EntityLoadCrossbowEvent)
@@ -116,8 +116,8 @@ abstract class CustomItemFunctions : CustomItem {
 
     open fun onRunnable(player: Player) {}
     open fun onAsyncRunnable(player: Player) {}
-    open fun onPluginEnable() {}
-    open fun onPluginDisable() {}
+    open fun onPluginEnable(player: Player) {}
+    open fun onPluginDisable(player: Player) {}
     open fun onJobsExpGain(player: Player, event: JobsExpGainEvent) {}
     open fun onJobsPrePayment(player: Player, event: JobsPrePaymentEvent) {}
     open fun onCrossBowLoad(player: Player, event: EntityLoadCrossbowEvent) {}

@@ -132,7 +132,7 @@ class TrishearRiggerItem : CustomItemFunctions() {
             .material(Material.BOW)
             .tier(Tier.SUMMER_2025)
             .vanillaEnchants(
-                Enchantment.PIERCING to 1,
+                Enchantment.PIERCING to 3,
                 Enchantment.POWER to 4,
                 Enchantment.UNBREAKING to 5,
                 Enchantment.MENDING to 1,

@@ -18,7 +18,7 @@ class InfiniteWaterBucketItem : CustomItemFunctions() {
         )
         .material(Material.WATER_BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)
-        .tier(Tier.VALENTIDE_2025)
+        .tier(Tier.SUMMER_2025)
         .persistentData("infinite-water-bucket")
         .build()
         .createItem()

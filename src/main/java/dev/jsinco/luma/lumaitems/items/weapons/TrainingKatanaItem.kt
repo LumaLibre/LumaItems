@@ -3,6 +3,9 @@ package dev.jsinco.luma.lumaitems.items.weapons
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
+import dev.jsinco.luma.lumaitems.particles.Particles
+import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.NeedsEdits
 import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -10,10 +13,12 @@ import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.Particle
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
+import org.bukkit.entity.Snowball
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
@@ -21,7 +26,6 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 
-@Ignore
 class TrainingKatanaItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         val k = "training-katana"
@@ -43,6 +47,37 @@ class TrainingKatanaItem : CustomItemFunctions() {
 
         return Pair(k, item)
     }
+
+
+    override fun onLeftClick(player: Player, event: PlayerInteractEvent) {
+        val particleDisplay = ParticleDisplay.of(Particle.SWEEP_ATTACK)
+        val snowball = player.launchProjectile(Snowball::class.java)
+        snowball.item = ItemStack(Material.AIR)
+        snowball.setGravity(false)
+        var count = 0
+        Executors.asyncTimer(0, 1) {
+            if (snowball.isDead || count++ > 5) {
+                it.cancel()
+                return@asyncTimer
+            }
+
+
+            particleDisplay.spawn(snowball.location)
+        }
+    }
+
+    //val particleDisplay = ParticleDisplay.of(Particle.SWEEP_ATTACK)
+    //
+    //        // add 4 block in the direction the player is facing and get the loction
+    //        val startLoc = player.location.clone().add(
+    //            player.location.direction.multiply(1)
+    //        )
+    //        val targetLoc = player.location.clone().add(
+    //            player.location.direction.multiply(5)
+    //        )
+    //
+    //
+    //        Particles.line(startLoc, targetLoc, 0.7, particleDisplay)
 
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {

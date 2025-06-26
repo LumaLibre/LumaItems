@@ -83,7 +83,7 @@ public class Cylinder implements Shape3D {
     }
 
 
-    public boolean isInCylinder(Location location) { // AI generated
+    public boolean isInCylinder(Location location) {
         double x = location.getX();
         double z = location.getZ();
         double y = location.getY();
@@ -93,7 +93,7 @@ public class Cylinder implements Shape3D {
         return Math.pow(x - x1, 2) + Math.pow(z - z1, 2) <= Math.pow(radius, 2) && y >= y1 && y <= y1 + height;
     }
 
-    public boolean isInMarge(Location location, double marge) { // AI generated
+    public boolean isInMarge(Location location, double marge) {
         double x = location.getX();
         double z = location.getZ();
         double y = location.getY();

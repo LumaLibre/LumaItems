@@ -1,11 +1,14 @@
 package dev.jsinco.luma.lumaitems.items.armor
 
-import dev.jsinco.luma.lumaitems.enums.Action
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.jsinco.luma.lumaitems.events.items.BlockCacheManager
 import dev.jsinco.luma.lumaitems.items.ItemFactory
-import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.ShapeUtil
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
+import java.util.UUID
+import kotlin.random.Random
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -15,24 +18,16 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
-import kotlin.random.Random
 
-class HellStridersItem : CustomItem {
-
-    // Usage:
-    // - Summer 2024
-    // Inspiration:
-    // - Frost Walker enchantment
-    // Idea:
-    // Movement-based boots
-    // - Ability to walk on lava exactly like frost walker but with obsidian instead of ice
+class HellStridersItem : CustomItemFunctions() {
 
 
     companion object {
-        const val ID = "hellstriders"
+        private const val ID = "hellstriders"
     }
 
     override fun isDisabled(inLocation: Location): Boolean {
@@ -40,121 +35,119 @@ class HellStridersItem : CustomItem {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        val item = ItemFactory(
-            "&#C93907&lH&#D15112&le&#DA691D&ll&#E28128&ll&#E69635&l &#E9AA43&lS&#EDBF50&lt&#E9AA43&lr&#E69635&li&#E28128&ld&#DA691D&le&#D15112&lr&#C93907&ls",
-            mutableListOf("&#E06A41Lava Walker I"),
-            mutableListOf("Allows the wearer to", "walk on lava."),
-            Material.NETHERITE_BOOTS,
-            mutableListOf(ID),
-            mutableMapOf(Enchantment.MENDING to 1, Enchantment.UNBREAKING to 10, Enchantment.PROTECTION to 4, Enchantment.FIRE_PROTECTION to 9, Enchantment.SOUL_SPEED to 3)
-        )
-        item.tier = "&#F34848&lS&#E36643&lo&#D3843E&ll&#C3A239&ls&#B3C034&lt&#A3DE2F&li&#93FC2A&lc&#7DE548&le&#66CD66&l &#50B684&l2&#399EA1&l0&#2387BF&l2&#0C6FDD&l4"
-        return Pair(ID, item.createItem())
+        return ItemFactory.builder()
+            .name("<b><#C93907>H<#D15112>e<#DA691D>l<#E28128>l<#E69635> <#E9AA43>S<#EDBF50>t<#E9AA43>r<#E69635>i<#E28128>d<#DA691D>e<#D15112>r<#C93907>s")
+            .customEnchants("<#E06A41>Lava Walker I")
+            .lore(
+                "Allows the wearer to",
+                "walk on lava."
+            )
+            .material(Material.NETHERITE_BOOTS)
+            .persistentData(ID)
+            .vanillaEnchants(
+                Enchantment.MENDING to 1,
+                Enchantment.UNBREAKING to 10,
+                Enchantment.PROTECTION to 4,
+                Enchantment.FIRE_PROTECTION to 9,
+                Enchantment.SOUL_SPEED to 3
+            )
+            .tier(Tier.SUMMER_2025)
+            .buildPair()
     }
 
-    override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        when (type) {
+    override fun onCachedBlockBreak(player: Player, event: BlockBreakEvent) {
+        event.isCancelled = true
+        event.block.type = Material.LAVA
+        BlockCacheManager.unCacheBlock(player.uniqueId, event.block)
+    }
 
-            Action.CACHED_BLOCK_BREAK -> {
-                event as BlockBreakEvent
-                event.isCancelled = true
-                event.block.type = Material.LAVA
-                BlockCacheManager.unCacheBlock(player.uniqueId, event.block)
-            }
-
-            Action.ARMOR_CHANGE -> {
-                if (!Util.isItemInSlot(ID, EquipmentSlot.FEET, player)) {
-                    delete(player.uniqueId)
-                }
-            }
-
-            Action.PLAYER_TELEPORT -> {
-                delete(player.uniqueId)
-            }
-
-            Action.PLAYER_QUIT -> {
-                delete(player.uniqueId)
-            }
-
-            Action.PLUGIN_DISABLE -> {
-                delete(player.uniqueId)
-            }
-
-            Action.MOVE -> {
-                event as PlayerMoveEvent
-
-                if (!event.hasChangedBlock() || player.isFlying || !player.location.add(0.0, -1.0, 0.0).block.isSolid) {
-                    return false
-                }
-
-                val locBelow = player.location.add(0.0, -1.0, 0.0)
-                if (!checkForAdjacentBlockType(locBelow.block, Material.LAVA)) {
-                    return false
-                }
-
-
-
-                val blockBelow = locBelow.block
-
-
-                for (block in ShapeUtil.circle(blockBelow.location, 3, 13)) {
-                    if ((block.type == Material.LAVA) && (block.blockData as Levelled).level == 0 && block.location.add(0.0, 1.0, 0.0).block.isEmpty) {
-                        block.type = Material.OBSIDIAN
-                        BlockCacheManager.cacheBlock(player.uniqueId, block, ID)
-                    }
-                }
-            }
-
-            Action.ASYNC_RUNNABLE -> { // Write this better
-                val _B: MutableList<Block> = BlockCacheManager.getCachedBlocks(ID).ifEmpty { return false }.toMutableList()
-                val aT: MutableSet<Location> = mutableSetOf()
-
-                if (_B.size >= 40) {
-                    for (index in 0 until _B.size / 4) {
-                        Bukkit.getScheduler().runTask(instance(), Runnable {
-                            val block = _B[index]
-                            if (block.type == Material.OBSIDIAN) {
-                                block.type = Material.CRYING_OBSIDIAN
-                            } else if (block.type == Material.CRYING_OBSIDIAN) {
-                                block.type = Material.LAVA
-                                BlockCacheManager.unCacheBlock(player.uniqueId, block)
-                            }
-                        })
-                    }
-                }
-
-                for (i in 0 until 3) {
-                    Bukkit.getScheduler().runTaskLater(instance(), Runnable {
-                        for (e in 0 until 6) {
-                            val block = _B.random()
-                            if (block.location.distance(player.location) > 10) {
-                                block.type = Material.LAVA
-                                BlockCacheManager.unCacheBlock(player.uniqueId, block)
-                            }
-
-                            if (block.location in aT) continue
-                            when (block.type) {
-                                Material.OBSIDIAN -> {
-                                    block.type = Material.CRYING_OBSIDIAN
-                                    aT.add(block.location)
-                                }
-
-                                Material.CRYING_OBSIDIAN -> {
-                                    block.type = Material.LAVA
-                                    BlockCacheManager.unCacheBlock(player.uniqueId, block)
-                                    aT.add(block.location)
-                                }
-                                else -> continue
-                            }
-                        }
-                    }, Random.nextLong(1, 10))
-                }
-            }
-
-            else -> return false
+    override fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {
+        if (!Util.isItemInSlot(ID, EquipmentSlot.FEET, player)) {
+            delete(player.uniqueId)
         }
-        return true
     }
+
+    override fun onMove(player: Player, event: PlayerMoveEvent) {
+        if (!event.hasChangedBlock() || player.isFlying || !player.location.add(0.0, -1.0, 0.0).block.isSolid) {
+            return
+        }
+
+        val locBelow = player.location.add(0.0, -1.0, 0.0)
+        if (!checkForAdjacentBlockType(locBelow.block, Material.LAVA)) {
+            return
+        }
+
+
+
+        val blockBelow = locBelow.block
+
+
+        for (block in ShapeUtil.circle(blockBelow.location, 3, 13)) {
+            if ((block.type == Material.LAVA) && (block.blockData as Levelled).level == 0 && block.location.add(0.0, 1.0, 0.0).block.isEmpty) {
+                block.type = Material.OBSIDIAN
+                BlockCacheManager.cacheBlock(player.uniqueId, block, ID)
+            }
+        }
+    }
+
+    override fun onAsyncRunnable(player: Player) {
+        val _B: MutableList<Block> = BlockCacheManager.getCachedBlocks(ID).ifEmpty { return }.toMutableList()
+        val aT: MutableSet<Location> = mutableSetOf()
+
+        if (_B.size >= 40) {
+            for (index in 0 until _B.size / 4) {
+                Bukkit.getScheduler().runTask(instance(), Runnable {
+                    val block = _B[index]
+                    if (block.type == Material.OBSIDIAN) {
+                        block.type = Material.CRYING_OBSIDIAN
+                    } else if (block.type == Material.CRYING_OBSIDIAN) {
+                        block.type = Material.LAVA
+                        BlockCacheManager.unCacheBlock(player.uniqueId, block)
+                    }
+                })
+            }
+        }
+
+        for (i in 0 until 3) {
+            Bukkit.getScheduler().runTaskLater(instance(), Runnable {
+                for (e in 0 until 6) {
+                    val block = _B.random()
+                    if (block.location.distance(player.location) > 10) {
+                        block.type = Material.LAVA
+                        BlockCacheManager.unCacheBlock(player.uniqueId, block)
+                    }
+
+                    if (block.location in aT) continue
+                    when (block.type) {
+                        Material.OBSIDIAN -> {
+                            block.type = Material.CRYING_OBSIDIAN
+                            aT.add(block.location)
+                        }
+
+                        Material.CRYING_OBSIDIAN -> {
+                            block.type = Material.LAVA
+                            BlockCacheManager.unCacheBlock(player.uniqueId, block)
+                            aT.add(block.location)
+                        }
+                        else -> continue
+                    }
+                }
+            }, Random.nextLong(1, 10))
+        }
+    }
+
+    override fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {
+        delete(player.uniqueId)
+    }
+
+    override fun onPlayerQuit(player: Player, event: PlayerQuitEvent) {
+        delete(player.uniqueId)
+    }
+
+    override fun onPluginDisable(player: Player) {
+        delete(player.uniqueId)
+    }
+
 
     private fun checkForAdjacentBlockType(center: Block, m: Material): Boolean {
         val loc = center.location
@@ -171,3 +164,14 @@ class HellStridersItem : CustomItem {
     }
 
 }
+
+//val item = ItemFactory(
+//            "&#C93907&lH&#D15112&le&#DA691D&ll&#E28128&ll&#E69635&l &#E9AA43&lS&#EDBF50&lt&#E9AA43&lr&#E69635&li&#E28128&ld&#DA691D&le&#D15112&lr&#C93907&ls",
+//            mutableListOf("&#E06A41Lava Walker I"),
+//            mutableListOf("Allows the wearer to", "walk on lava."),
+//            Material.NETHERITE_BOOTS,
+//            mutableListOf(ID),
+//            mutableMapOf(Enchantment.MENDING to 1, Enchantment.UNBREAKING to 10, Enchantment.PROTECTION to 4, Enchantment.FIRE_PROTECTION to 9, Enchantment.SOUL_SPEED to 3)
+//        )
+//        item.tier = "&#F34848&lS&#E36643&lo&#D3843E&ll&#C3A239&ls&#B3C034&lt&#A3DE2F&li&#93FC2A&lc&#7DE548&le&#66CD66&l &#50B684&l2&#399EA1&l0&#2387BF&l2&#0C6FDD&l4"
+//        return Pair(ID, item.createItem())

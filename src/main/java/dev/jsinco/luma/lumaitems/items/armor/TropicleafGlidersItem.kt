@@ -2,13 +2,9 @@ package dev.jsinco.luma.lumaitems.items.armor
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.util.Util
-import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import java.awt.Color
 import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent

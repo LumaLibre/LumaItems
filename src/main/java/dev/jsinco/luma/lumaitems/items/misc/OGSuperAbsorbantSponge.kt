@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-class SuperAbsorbantSponge : CustomItemFunctions() {
+class OGSuperAbsorbantSponge : CustomItemFunctions() {
 
     private val key = NamespacedKey(instance(), "super-absorbant-sponge")
     private val modeKey = NamespacedKey(instance(), "sponge-mode")
@@ -37,7 +37,7 @@ class SuperAbsorbantSponge : CustomItemFunctions() {
 
         val item = ItemFactory.builder()
             .material(Material.SPONGE)
-            .name("<b><gradient:#E3C565:#C2A05D>Super </gradient><gradient:#C2A05D:#F4E06D>Absor</gradient><gradient:#F4E06D:#C2A05D>bant S</gradient><gradient:#C2A05D:#E3C565>ponge</gradient></b>")
+            .name("OG-<b><gradient:#E3C565:#C2A05D>Super </gradient><gradient:#C2A05D:#F4E06D>Absor</gradient><gradient:#F4E06D:#C2A05D>bant S</gradient><gradient:#C2A05D:#E3C565>ponge</gradient></b>")
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
             .customEnchants("<#E3C565>N<#D8B962>u<#CDAC60>l<#C2A05D>l<#D3B562>i<#E3CB68>f<#F4E06D>y")
             .lore(

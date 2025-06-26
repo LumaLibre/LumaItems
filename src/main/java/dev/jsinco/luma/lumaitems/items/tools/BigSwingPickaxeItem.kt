@@ -27,7 +27,7 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
             .name("<b><gradient:#fc8585:#ffc86d:#fbdba2:#86cbd9:#68C3BB>Big Swing Pickaxe</gradient></b>")
             .customEnchants("<#86cbd9>Destructive", "<#68C3BB>Reach")
             .material(Material.NETHERITE_PICKAXE)
-            .tier(Tier.DEBUG)
+            .tier(Tier.SUMMER_2025)
             .persistentData(key)
             .lore(
                 "With the large motor on this",
@@ -45,7 +45,7 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
             )
             .attributeModifiers(
                 AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.73, EquipmentSlotGroup.ANY),
-                AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.7, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.4, EquipmentSlotGroup.ANY),
                 AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 3.0, EquipmentSlotGroup.MAINHAND),
                 AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 3.0, EquipmentSlotGroup.MAINHAND),
             )

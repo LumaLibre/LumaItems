@@ -125,10 +125,12 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         hitEntity.damage(30.0, player)
     }
 
-    override fun onPluginDisable() {
+    override fun onPluginDisable(player: Player) {
+        if (processes.isEmpty()) return
         processes.forEach {
             it.cleanupAndStop()
         }
+        processes.clear()
     }
 
 
@@ -335,7 +337,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                             (!autoTargetting || (
                                     entity !is Villager &&
                                             (entity as? Tameable)?.isTamed != true
-                                            //&& entity !is Player : Leaving this out for now
+                                            && entity !is Player
                                     ))
                 }
             }

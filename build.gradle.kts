@@ -67,6 +67,8 @@ tasks {
         val pack = "dev.jsinco.luma.lumaitems.shaded"
         relocate("com.iridium.iridiumcolorapi", "$pack.iridiumcolorapi")
         relocate("fr.skytasul", "$pack.glowingentities")
+        exclude("kotlin/**")
+        minimize()
         archiveClassifier.set("")
     }
 
