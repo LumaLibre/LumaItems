@@ -13,8 +13,11 @@ class InfiniteWaterBucketItem : CustomItemFunctions() {
 
     private val infiniteWaterBucket: ItemStack = ItemFactory.builder()
         .name("<b><gradient:#4498DB:#778CF4>Infinite Wa</gradient><gradient:#778CF4:#2E5FD7>ter Bucket</gradient></b>")
+        .customEnchants("<#0098de>Bottomless")
         .lore(
-            "Place water infinitely!"
+            "This bucket never runs",
+            "out of water, place to",
+            "your heart's content!"
         )
         .material(Material.WATER_BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)
@@ -37,12 +40,15 @@ class InfiniteLavaBucketItem : CustomItemFunctions() {
 
     private val infiniteLavaBucket: ItemStack = ItemFactory.builder()
         .name("<b><gradient:#E55F33:#E09738>Infinite L</gradient><gradient:#E09738:#d53e0f>ava Bucket</gradient></b>")
+        .customEnchants("<#FF4500>Bottomless")
         .lore(
-            "Place lava infinitely!"
+            "This bucket never runs",
+            "out of lava, place to",
+            "your heart's content!"
         )
         .material(Material.LAVA_BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)
-        .tier(Tier.VALENTIDE_2025)
+        .tier(Tier.SUMMER_2025)
         .persistentData("infinite-lava-bucket")
         .build()
         .createItem()
