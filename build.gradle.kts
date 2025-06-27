@@ -38,7 +38,6 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
     implementation("dev.jsinco.luma.lumacore:LumaCore:279f090")
-    implementation("fr.skytasul:glowingentities:1.4.4")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.030")
     
     implementation("com.iridium:IridiumColorAPI:1.0.9")
@@ -66,7 +65,6 @@ tasks {
     shadowJar {
         val pack = "dev.jsinco.luma.lumaitems.shaded"
         relocate("com.iridium.iridiumcolorapi", "$pack.iridiumcolorapi")
-        relocate("fr.skytasul", "$pack.glowingentities")
         exclude("kotlin/**")
         minimize()
         archiveClassifier.set("")

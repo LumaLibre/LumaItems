@@ -1,7 +1,15 @@
 @file:Suppress("deprecation")
 package dev.jsinco.luma.lumaitems.manager
 
+import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.ProtocolLibrary
+import com.comphenix.protocol.wrappers.WrappedDataValue
+import com.comphenix.protocol.wrappers.WrappedDataWatcher
+import com.comphenix.protocol.wrappers.WrappedWatchableObject
+import com.google.common.collect.Lists
 import dev.jsinco.luma.lumaitems.LumaItems
+import java.util.Objects
+import java.util.UUID
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
@@ -9,7 +17,7 @@ import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Team
-import java.util.UUID
+
 
 object GlowManager {
 
@@ -128,4 +136,25 @@ object GlowManager {
     fun getGlowColor(player: Entity): TextColor? {
         return board.getEntityTeam(player)?.color()
     }
+
+    // liberally borrowed from: https://www.spigotmc.org/threads/i-want-to-use-protocollib-to-make-fake-entity-glow.589919/
+    fun setProtocolGlowPacket(player: Player, entity: Entity, glow: Boolean) {
+        val protocolManager = LumaItems.getProtocolManager() ?: return
+
+        val packet = protocolManager.createPacket(PacketType.Play.Server.ENTITY_METADATA) // metadata packet
+        packet.integers.write(0, entity.entityId) //Set entity id from packet above
+        val watcher = WrappedDataWatcher() //Create data watcher, the Entity Metadata packet requires this
+        val serializer = WrappedDataWatcher.Registry.get(java.lang.Byte::class.java)
+        watcher.entity = player //Set the new data watcher's target
+        watcher.setObject(0, serializer, (if (glow) 0x40 else 0).toByte()) //Set status to glowing, found on protocol page
+
+        val wrappedDataValueList: MutableList<WrappedDataValue> = Lists.newArrayList()
+        watcher.watchableObjects.filterNotNull().forEach { entry: WrappedWatchableObject ->
+            val dataWatcherObject = entry.watcherObject
+            wrappedDataValueList.add(WrappedDataValue(dataWatcherObject.index, dataWatcherObject.serializer, entry.rawValue))
+        }
+        packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
+        protocolManager.sendServerPacket(player, packet)
+    }
+
 }

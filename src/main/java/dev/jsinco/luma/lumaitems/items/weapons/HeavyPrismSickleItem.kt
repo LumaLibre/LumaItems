@@ -1,8 +1,8 @@
 package dev.jsinco.luma.lumaitems.items.weapons
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.manager.GlowManager
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
@@ -23,7 +23,7 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -49,16 +49,17 @@ import org.bukkit.util.Vector
 class HeavyPrismSickleItem : CustomItemFunctions() {
 
     companion object {
-        private const val RANGE = 45.0
+        private const val RANGE = 35.0
+        private const val AUTO_TARGET_RANGE = 15.0
         private const val CIRCLE_RADIUS = 1.0
         private const val CIRCLE_RATE = 3
         private const val MAX_ORBS = 6
+        private const val FIRE_TIME = 400
 
         private val UP = Vector(0, 1, 0)
         private val STOP = Vector(0, 0, 0)
 
         private val nameSpace = Util.namespacedKey("heavy-prism-sickle")
-        private val glowLib = LumaItems.getGlowingEntities()
         private val processes: MutableSet<Process> = mutableSetOf()
     }
 
@@ -152,7 +153,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 var count: Long = 0
                 this.scheduledTask = Executors.asyncTimer(0, 1) { task ->
                     // Prune orbs that are no longer valid
-                    if (count >= 500 || orbGroup.orbs.all { !it.valid }) {
+                    if (count >= FIRE_TIME || orbGroup.orbs.all { !it.valid }) {
                         task.cancel()
                         Executors.sync { orbGroup.destroy() }
                         processes.remove(this)
@@ -357,7 +358,8 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
         init {
             target?.let {
-                glowLib.setGlowing(it, player, orbDecals.chatColor)
+                GlowManager.setGlowColor(it, orbDecals.chatColor)
+                GlowManager.setProtocolGlowPacket(player, it, true)
             }
         }
 
@@ -390,7 +392,8 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 snowball.setGravity(true)
             }
             if (target != null && target?.isDead == false) {
-                glowLib.unsetGlowing(target!!, player)
+                GlowManager.removeGlowColor(target!!)
+                GlowManager.setProtocolGlowPacket(player, target!!, false)
             }
         }
 
@@ -432,10 +435,11 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 } else {
                     activeTargets[entity] = 1
                 }
-                glowLib.setGlowing(entity, player, orbDecals.chatColor)
+                GlowManager.setGlowColor(entity, orbDecals.chatColor)
+                GlowManager.setProtocolGlowPacket(player, entity, true)
             }
 
-            val nearbyEntities = position.getNearbyLivingEntities(RANGE.minus(20.0))
+            val nearbyEntities = position.getNearbyLivingEntities(AUTO_TARGET_RANGE)
                 .filter { entity -> getPredicate(player, true).test(entity) }
                 .filter { entity -> activeTargets.getOrDefault(entity, 0) < 2 }
                 .sortedBy { it.location.distance(player.location) }
@@ -520,7 +524,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         val rgb: String,
         val materials: List<Material>,
         val colors: List<Color>,
-        val chatColors: @Suppress("DEPRECATION") List<ChatColor>,
+        val chatColors:  List<NamedTextColor>,
         val particleType: Particle = Particle.DUST
     ) {
         RED(
@@ -528,28 +532,28 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             rgb = "#d37b99",
             materials = listOf(Material.RED_DYE),
             colors = listOf(Util.hex2AwtColor("#E94A4A")),
-            chatColors = @Suppress("DEPRECATION") listOf(ChatColor.RED),
+            chatColors =  listOf(NamedTextColor.RED),
         ),
         WHITE(
             gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
             rgb = "#d37b99",
             materials = listOf(Material.NETHER_STAR),
             colors = listOf(Color.WHITE) /*Util.hex2AwtColor("#FFFFFF")*/,
-            chatColors = @Suppress("DEPRECATION") listOf(ChatColor.WHITE),
+            chatColors =  listOf(NamedTextColor.WHITE),
         ),
         PURPLE(
             gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
             rgb = "#d37b99",
             materials = listOf(Material.LARGE_AMETHYST_BUD),
             colors = listOf(Util.hex2AwtColor("#AD76E3")),
-            chatColors = @Suppress("DEPRECATION") listOf(ChatColor.LIGHT_PURPLE),
+            chatColors =  listOf(NamedTextColor.LIGHT_PURPLE),
         ),
         PRISM(
             gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
             rgb = "#d37b99",
             materials = listOf(Material.RED_DYE, Material.LARGE_AMETHYST_BUD, Material.NETHER_STAR),
             colors = listOf(Util.hex2AwtColor("#E94A4A"), Util.hex2AwtColor("#AD76E3"), Color.WHITE),
-            chatColors = @Suppress("DEPRECATION") listOf(ChatColor.RED, ChatColor.LIGHT_PURPLE, ChatColor.WHITE),
+            chatColors =  listOf(NamedTextColor.RED, NamedTextColor.LIGHT_PURPLE, NamedTextColor.WHITE),
         )
 
         ;
@@ -590,7 +594,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
     private class OrbDecals(
         val color: Color,
-        val chatColor: @Suppress("DEPRECATION") ChatColor,
+        val chatColor:  NamedTextColor,
         val material: Material,
         val particleType: Particle = Particle.DUST
     )
