@@ -61,18 +61,16 @@ public final class LumaItems extends JavaPlugin {
         passiveListeners = new PassiveListeners(this);
         itemManagerInstance = new ItemManager(this);
 
+        Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
+        moduleManager.reflectivelyRegisterModules(classSet);
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             log("Players are online, registering items asynchronously");
             Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
                 initItemManager(itemManagerInstance);
-                Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
-                moduleManager.reflectivelyRegisterModules(classSet);
                 log("Finished asynchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {
             initItemManager(itemManagerInstance);
-            Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
-            moduleManager.reflectivelyRegisterModules(classSet);
             log("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 

@@ -56,8 +56,8 @@ class HailstormSpadeItem : CustomItemFunctions() {
             .persistentData(key)
             .tier(Tier.SUMMER_2025)
             .lore(
-                "<#A6C6EC>Right-click</#A6C6EC> to summon a storm",
-                "cloud that rains down a",
+                "<#A6C6EC>Right-click</#A6C6EC> to summon a",
+                "storm cloud that rains down a",
                 "torrent of hail.",
                 "",
                 "Hail from the storm will break",

@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
