@@ -28,6 +28,12 @@ class PassiveListeners(val plugin: LumaItems) {
         }
     }
 
+    private fun fire(action: Action) {
+        for (customItem in ItemManager.customItems) {
+            customItem.value.executeActions(action, ItemListener.getDummyPlayer() ?: return, 0)
+        }
+    }
+
 
     fun getPassiveListener(action: Action): BukkitRunnable {
         return object: BukkitRunnable() {
@@ -53,6 +59,10 @@ class PassiveListeners(val plugin: LumaItems) {
         for (player in Bukkit.getOnlinePlayers()) {
             fire(Util.getAllEquipmentNBT(player), player, action)
         }
+    }
+
+    fun onPluginActionGlobal(action: Action) {
+        fire(action)
     }
 
 }

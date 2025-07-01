@@ -22,10 +22,10 @@ import org.bukkit.inventory.ItemStack
 class BigSwingPickaxeItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
-        val key = "big-swing-hammer"
+        val key = "big-swing-pickaxe"
         return ItemFactory.builder()
             .name("<b><gradient:#fc8585:#ffc86d:#fbdba2:#86cbd9:#68C3BB>Big Swing Pickaxe</gradient></b>")
-            .customEnchants("<#86cbd9>Destructive", "<#68C3BB>Reach")
+            .customEnchants("<#86cbd9>Wide Swing", "<#68C3BB>Reach")
             .material(Material.NETHERITE_PICKAXE)
             .tier(Tier.SUMMER_2025)
             .persistentData(key)
@@ -36,7 +36,11 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
                 "",
                 "This tool breaks blocks in a",
                 "wide area, at the cost of break",
-                "speed."
+                "speed.",
+                "",
+                "While holding this pickaxe, you",
+                "may reach up to <#86cbd9>two</#86cbd9> blocks",
+                "further than normal."
             )
             .vanillaEnchants(
                 Enchantment.UNBREAKING to 4,
@@ -44,10 +48,10 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
                 Enchantment.MENDING to 1
             )
             .attributeModifiers(
-                AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.73, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.75, EquipmentSlotGroup.ANY),
                 AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.4, EquipmentSlotGroup.ANY),
-                AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 3.0, EquipmentSlotGroup.MAINHAND),
-                AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 3.0, EquipmentSlotGroup.MAINHAND),
+                AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND),
+                AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND),
             )
             .buildPair()
     }

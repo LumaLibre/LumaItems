@@ -1,4 +1,4 @@
-package dev.jsinco.luma.lumaitems.items.weapons
+package dev.jsinco.luma.lumaitems.items.nests
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
@@ -37,6 +37,7 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
 import org.bukkit.entity.Tameable
 import org.bukkit.entity.Villager
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlotGroup
@@ -45,16 +46,57 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.RayTraceResult
 import org.bukkit.util.Vector
 
+class HeavyPrismCoreItem : CustomItemFunctions() {
+
+    private val parent = HeavyPrismSickleItem()
+
+    override fun createItem(): Pair<String, ItemStack> {
+        return ItemFactory.builder()
+            .name("<b><#FAEDCB>Heavy Prism Core</#FAEDCB></b>")
+            //.customEnchants("<#FAEDCB>Glass Cannon")
+            .lore(
+                "<#FAEDCB>Right-click to open.",
+                "",
+                "Right-click to summon",
+                "six prism orbs that will",
+                "seek out and damage",
+                "nearby entities.",
+                "",
+                "Lock on to an entity",
+                "by directly looking at",
+                "it before firing.",
+                "",
+                "Taking damage of any",
+                "kind will stop your",
+                "orbs from firing.",
+            )
+            .persistentData("heavy-prism-core")
+            .material(Material.QUARTZ)
+            .vanillaEnchants(Enchantment.UNBREAKING to 10)
+            .tier(Tier.SUMMER_2025)
+            .buildPair()
+    }
+
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        val item = event.item ?: return
+        item.amount -= 1
+
+        player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)
+        Util.giveItem(player, parent.createItem().second)
+    }
+
+}
+
 @Disable(value = [WorldName.PINATA, WorldName.SPAWN])
 class HeavyPrismSickleItem : CustomItemFunctions() {
 
     companion object {
-        private const val RANGE = 35.0
-        private const val AUTO_TARGET_RANGE = 15.0
+        private const val RANGE = 25.0
+        private const val AUTO_TARGET_RANGE = 20.0
         private const val CIRCLE_RADIUS = 1.0
         private const val CIRCLE_RATE = 3
         private const val MAX_ORBS = 6
-        private const val FIRE_TIME = 400
+        private const val FIRE_TIME = 340
 
         private val UP = Vector(0, 1, 0)
         private val STOP = Vector(0, 0, 0)
@@ -69,19 +111,23 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         val rOpen = "<${colorKit.rgb}>"
         val rClose = "</${colorKit.rgb}>"
         return ItemFactory.builder()
-            .name("<b>${colorKit.gradient}Heavy Prism Sickle</gradient></b>")
-            .customEnchants("${rOpen}Prism Cannon")
+            .name("<b><gradient:#ff6666:#ffbd54:#ffff67:#9de24f:#87cefa:#EA87FA:#FAEDCB>Heavy Prism Sickle</gradient></b>")
+            .customEnchants("${rOpen}Glass Cannon")
             .material(Material.NETHERITE_HOE)
             .persistentData(nameSpace)
             .lore(
                 "${rOpen}Right-click${rClose} to summon",
-                "6 prism orbs that will",
+                "${rOpen}six${rClose} prism orbs that will",
                 "seek out and damage",
                 "nearby entities.",
                 "",
                 "Lock on to an entity",
                 "by directly looking at",
                 "it before firing.",
+                "",
+                "Taking damage of any",
+                "kind will stop your",
+                "orbs from firing.",
                 "",
                 "<red>Cooldown: 35s"
             )
@@ -110,15 +156,24 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         val colorKit = colorKitString?.let { Util.enumValueOfOrNull(ColorKit::class.java, it) } ?: ColorKit.RED
 
         val process = Process(player)
-        val anyOrbsFired = process.start(colorKit)
+        processes.add(process)
+        val anyOrbsFired = process.start(colorKit) {
+            processes.remove(process)
+        }
         player.world.playSound(player.location, Sound.ENTITY_BREEZE_LAND, 1f, 1f)
 
         QuickTasks.addCooldown(this, player, 100) {
             if (anyOrbsFired.get()) {
-                player.playSound(player.location, Sound.ENTITY_ARROW_HIT_PLAYER, 0.2f, 0.6f)
+                //player.playSound(player.location, Sound.ENTITY_ARROW_HIT_PLAYER, 0.2f, 0.6f)
                 QuickTasks.addCooldown(this, player, 600)
             }
         }
+    }
+
+
+    override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
+        val process = processes.firstOrNull { it.player == player } ?: return
+        process.cleanupAndStop()
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
@@ -126,7 +181,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         hitEntity.damage(30.0, player)
     }
 
-    override fun onPluginDisable(player: Player) {
+    override fun onPluginDisableGlobal() {
         if (processes.isEmpty()) return
         processes.forEach {
             it.cleanupAndStop()
@@ -138,9 +193,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
     private class Process(val player: Player) {
 
         private var scheduledTask: ScheduledTask? = null
-        private var orbGroup: OrbGroup? = null
+        var orbGroup: OrbGroup? = null
 
-        fun start(colorKit: ColorKit): AtomicBoolean {
+        fun start(colorKit: ColorKit, whenDone: () -> Unit): AtomicBoolean {
             if (scheduledTask != null) {
                 throw IllegalStateException("Process already started or not initialized properly.")
             }
@@ -156,7 +211,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                     if (count >= FIRE_TIME || orbGroup.orbs.all { !it.valid }) {
                         task.cancel()
                         Executors.sync { orbGroup.destroy() }
-                        processes.remove(this)
+                        whenDone()
                         return@asyncTimer
                     }
 
@@ -177,7 +232,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                                     snowball.world.playSound(
                                         snowball.location,
                                         Sound.ENTITY_BREEZE_IDLE_GROUND,
-                                        0.4f,
+                                        0.2f,
                                         0.8f
                                     )
                                 }
@@ -201,14 +256,12 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 }
             }
 
-            processes.add(this)
             return anyOrbsFired
         }
 
         fun cleanupAndStop() {
             orbGroup?.destroy()
             scheduledTask?.cancel()
-            processes.remove(this)
         }
     }
 
@@ -271,7 +324,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
             synchronized(orbs) {
                 val orbsIterator = orbs.iterator()
-                val baseLoc = player.eyeLocation.clone().add(player.eyeLocation.direction.clone().multiply(DIRECTION_FACTOR))
+                val baseLoc = player.eyeLocation.clone().add(player.eyeLocation.direction.clone().multiply(
+                    DIRECTION_FACTOR
+                ))
                 calculateLocations(baseLoc) { _, loc ->
                     if (!orbsIterator.hasNext()) return@calculateLocations
                     val orb = orbsIterator.next()
@@ -358,7 +413,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
         init {
             target?.let {
-                GlowManager.setGlowColor(it, orbDecals.chatColor)
+                if (it !is Player) {
+                    GlowManager.setGlowColor(it, orbDecals.chatColor)
+                }
                 GlowManager.setProtocolGlowPacket(player, it, true)
             }
         }
@@ -390,9 +447,12 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             this.valid = false
             if (!snowball.isDead) {
                 snowball.setGravity(true)
+                //snowball.world.spawnParticle(Particle.WAX_OFF, snowball.location, 4, 0.2, 0.2, 0.2, 0.9)
             }
             if (target != null && target?.isDead == false) {
-                GlowManager.removeGlowColor(target!!)
+                if (target !is Player) {
+                    GlowManager.removeGlowColor(target!!)
+                }
                 GlowManager.setProtocolGlowPacket(player, target!!, false)
             }
         }
@@ -435,7 +495,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 } else {
                     activeTargets[entity] = 1
                 }
-                GlowManager.setGlowColor(entity, orbDecals.chatColor)
+                if (entity !is Player) {
+                    GlowManager.setGlowColor(entity, orbDecals.chatColor)
+                }
                 GlowManager.setProtocolGlowPacket(player, entity, true)
             }
 
@@ -520,7 +582,6 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
 
     private enum class ColorKit(
-        val gradient: String,
         val rgb: String,
         val materials: List<Material>,
         val colors: List<Color>,
@@ -528,35 +589,47 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         val particleType: Particle = Particle.DUST
     ) {
         RED(
-            gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
-            rgb = "#d37b99",
+            rgb = "#ff6666",
             materials = listOf(Material.RED_DYE),
-            colors = listOf(Util.hex2AwtColor("#E94A4A")),
+            colors = listOf(Color.RED),
             chatColors =  listOf(NamedTextColor.RED),
         ),
-        WHITE(
-            gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
-            rgb = "#d37b99",
-            materials = listOf(Material.NETHER_STAR),
-            colors = listOf(Color.WHITE) /*Util.hex2AwtColor("#FFFFFF")*/,
-            chatColors =  listOf(NamedTextColor.WHITE),
+        ORANGE(
+            rgb = "#ffbd54",
+            materials = listOf(Material.ORANGE_DYE),
+            colors = listOf(Util.hex2AwtColor("#ff6666")),
+            chatColors =  listOf(NamedTextColor.GOLD),
+        ),
+        YELLOW(
+            rgb = "#ffff67",
+            materials = listOf(Material.YELLOW_DYE),
+            colors = listOf(Util.hex2AwtColor("#ffbd54")),
+            chatColors =  listOf(NamedTextColor.YELLOW),
+        ),
+        GREEN(
+            rgb = "#9de24f",
+            materials = listOf(Material.LIME_DYE),
+            colors = listOf(Util.hex2AwtColor("#9de24f")),
+            chatColors =  listOf(NamedTextColor.GREEN),
+        ),
+        BLUE(
+            rgb = "#87cefa",
+            materials = listOf(Material.LIGHT_BLUE_DYE),
+            colors = listOf(Util.hex2AwtColor("#87cefa")),
+            chatColors =  listOf(NamedTextColor.BLUE),
         ),
         PURPLE(
-            gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
-            rgb = "#d37b99",
-            materials = listOf(Material.LARGE_AMETHYST_BUD),
-            colors = listOf(Util.hex2AwtColor("#AD76E3")),
+            rgb = "#EA87FA",
+            materials = listOf(Material.PURPLE_DYE),
+            colors = listOf(Util.hex2AwtColor("#EA87FA")),
             chatColors =  listOf(NamedTextColor.LIGHT_PURPLE),
         ),
-        PRISM(
-            gradient = "<gradient:#FA5050:#A25BB5:#DEC4C4>",
-            rgb = "#d37b99",
-            materials = listOf(Material.RED_DYE, Material.LARGE_AMETHYST_BUD, Material.NETHER_STAR),
-            colors = listOf(Util.hex2AwtColor("#E94A4A"), Util.hex2AwtColor("#AD76E3"), Color.WHITE),
-            chatColors =  listOf(NamedTextColor.RED, NamedTextColor.LIGHT_PURPLE, NamedTextColor.WHITE),
-        )
-
-        ;
+        PRISMATIC(
+            rgb = "#FAEDCB",
+            materials = listOf(Material.RED_DYE, Material.ORANGE_DYE, Material.YELLOW_DYE, Material.LIME_DYE, Material.LIGHT_BLUE_DYE, Material.PURPLE_DYE),
+            colors = listOf("#ff6666", "#ffbd54", "#ffff67", "#9de24f", "#87cefa", "#EA87FA").map { Util.hex2AwtColor(it) },
+            chatColors =  listOf(NamedTextColor.RED, NamedTextColor.GOLD, NamedTextColor.YELLOW, NamedTextColor.GREEN, NamedTextColor.BLUE, NamedTextColor.LIGHT_PURPLE),
+        );
 
         fun getOrbDecalList(): List<OrbDecals> {
             // Check if the max number of orbs is divisible by the number of materials, colors, and chatColors

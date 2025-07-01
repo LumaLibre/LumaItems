@@ -29,7 +29,7 @@ class HeartyShroomItem : CustomItemFunctions() {
                 "A mushroom with a rich",
                 "scent. Holding it out will",
                 "boost your number of",
-                "hearts."
+                "<#bd2a2a>hearts</#bd2a2a>."
             )
             .buildPair()
     }

@@ -97,6 +97,7 @@ public final class LumaItems extends JavaPlugin {
         HandlerList.unregisterAll(this); // Immediately disable all listeners to prevent any further events from firing
         moduleManager.unregisterModules();
         passiveListeners.onPluginAction(Action.PLUGIN_DISABLE); // Then fire this for whatever items need to use this
+        passiveListeners.onPluginActionGlobal(Action.PLUGIN_DISABLE_GLOBAL);
 
 
         for (Player player : Bukkit.getOnlinePlayers()) {

@@ -14,7 +14,6 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Enemy
 import org.bukkit.entity.Item
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -28,14 +27,14 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.BlockIterator
 import org.bukkit.util.Vector
 
-class HailstormSpadeItem : CustomItemFunctions() {
+class HailstormShovelItem : CustomItemFunctions() {
 
     companion object {
         private val COLORS = listOf("#EEBEC5", "#D9C0EF", "#A6C6EC").map { Util.hex2AwtColor(it) }.plus(Color.WHITE)
         private val PARTICLE_DISPLAY = ParticleDisplay.of(Particle.DUST)
         private val WHITE_PARTICLE_DISPLAY = PARTICLE_DISPLAY.clone().withColor(Color.WHITE)
         private val ITEM_STACK = ItemStack(Material.WIND_CHARGE)
-        private val key = Util.namespacedKey("hailstorm-spade")
+        private val key = Util.namespacedKey("hailstorm-shovel")
         private const val ACTIVATOR = "activator"
     }
 
@@ -50,19 +49,20 @@ class HailstormSpadeItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><gradient:#EEBEC5:#D9C0EF:#A6C6EC>Hailstorm Spade</gradient></b>")
+            .name("<b><gradient:#EEBEC5:#D9C0EF:#A6C6EC>Hailstorm Shovel</gradient></b>")
             .customEnchants("<#A6C6EC>Hailing Geyser")
             .material(Material.NETHERITE_SHOVEL)
             .persistentData(key)
             .tier(Tier.SUMMER_2025)
             .lore(
                 "<#A6C6EC>Right-click</#A6C6EC> to summon a",
-                "storm cloud that rains down a",
-                "torrent of hail.",
+                "storm cloud that rains",
+                "down a torrent of hail.",
                 "",
-                "Hail from the storm will break",
-                "blocks in its path and propel",
-                "items towards you.",
+                "Hail from the storm will",
+                "break blocks in its path",
+                "and propel dropped",
+                "items toward you.",
                 "",
                 "<red>Cooldown: 3m"
             )

@@ -16,7 +16,7 @@ class InfiniteWaterBucketItem : CustomItemFunctions() {
         .customEnchants("<#0098de>Bottomless")
         .lore(
             "This bucket never runs",
-            "out of water, place to",
+            "out of <#0098de>water</#0098de>, place to",
             "your heart's content!"
         )
         .material(Material.WATER_BUCKET)
@@ -43,7 +43,7 @@ class InfiniteLavaBucketItem : CustomItemFunctions() {
         .customEnchants("<#FF4500>Bottomless")
         .lore(
             "This bucket never runs",
-            "out of lava, place to",
+            "out of <#FF4500>lava</#FF4500>, place to",
             "your heart's content!"
         )
         .material(Material.LAVA_BUCKET)

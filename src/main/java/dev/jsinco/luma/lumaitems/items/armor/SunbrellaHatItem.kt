@@ -40,16 +40,18 @@ class SunbrellaHatItem : CustomItemFunctions() {
             .persistentData("sunbrellahat")
             .tier(Tier.SUMMER_2025)
             .lore(
-                "<#F893AC>Tailwind</#F893AC> <gray>-</gray> When falling, shift to glide",
-                "down and mitigate fall damage.",
+                "<#F893AC>Tailwind</#F893AC> <gray>-</gray> While falling, <#F893AC>sneak",
+                "to glide down slowly, mitigating",
+                "fall damage.",
                 "",
-                "<#AACDF5>Trailblazer</#AACDF5> <gray>-</gray> While wearing, knockback",
-                "attacks will launch enemies further",
-                "and faster.",
+                "<#AACDF5>Trailblazer</#AACDF5> <gray>-</gray> While wearing,",
+                "knockback attacks will launch",
+                "enemies further and faster.",
                 "",
-                "<#AC9EEE>WindTye</#AC9EEE> <gray>-</gray> While wearing, arrows",
-                "fired will be converted to wind",
-                "slashes that glide through the air."
+                "<#AC9EEE>WindTye</#AC9EEE> <gray>-</gray> While wearing,",
+                "arrows fired will be altered",
+                "to wind slashes that glide",
+                "through the air."
             )
             .vanillaEnchants(
                 Enchantment.PROTECTION to 5,
