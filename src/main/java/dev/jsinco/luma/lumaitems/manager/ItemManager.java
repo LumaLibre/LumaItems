@@ -124,6 +124,7 @@ public final class ItemManager {
                 }
             } catch (Exception e) {
                 LumaItems.log("Failed to register class " + clazz.getSimpleName(), e);
+                e.printStackTrace();
             }
         }
     }
