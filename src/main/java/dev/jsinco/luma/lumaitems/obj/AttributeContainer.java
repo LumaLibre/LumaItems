@@ -15,8 +15,10 @@ public record AttributeContainer(String key,
                                  double amount,
                                  @Nullable EquipmentSlotGroup slot) {
 
+    private static final String CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+
     public static AttributeContainer defaultAttributeContainer(Attribute attribute, double amount, @Nullable EquipmentSlotGroup slot) {
-        return new AttributeContainer("defaultattribute", attribute, AttributeModifier.Operation.ADD_NUMBER, getAmountBasedFromPlayer(attribute, amount), slot);
+        return new AttributeContainer("default-" + generateStringKey(9), attribute, AttributeModifier.Operation.ADD_NUMBER, getAmountBasedFromPlayer(attribute, amount), slot);
     }
 
     public static AttributeContainer of(String key, Attribute attribute, AttributeModifier.Operation operation, double amount, @Nullable EquipmentSlotGroup slot) {
@@ -51,5 +53,14 @@ public record AttributeContainer(String key,
             return value - attributeContainer.getSecond();
         }
         return value;
+    }
+
+    public static String generateStringKey(int length) {
+        StringBuilder keyBuilder = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = (int) (Math.random() * CHARS.length());
+            keyBuilder.append(CHARS.charAt(randomIndex));
+        }
+        return keyBuilder.toString();
     }
 }
