@@ -3,7 +3,9 @@ package dev.jsinco.luma.lumaitems.items.nests
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
+import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -17,12 +19,14 @@ import org.bukkit.inventory.ItemStack
 abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItemFunctions() {
 
     override fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {
+        event.isCancelled = true
         if (event.blockReplacedState.type != material) {
-            event.isCancelled = true
             return
         }
 
-        event.block.type = Material.AIR
+        Executors.syncDelayed(1) {
+            event.block.type = Material.AIR
+        }
         removeNearbyBlocks(event.block, 3, material)
     }
 

@@ -82,7 +82,7 @@ class HellStridersItem : CustomItemFunctions() {
         val blockBelow = locBelow.block
 
 
-        for (block in ShapeUtil.circle(blockBelow.location, 3, 13)) {
+        for (block in ShapeUtil.circle(blockBelow.location, 4, 13)) {
             if ((block.type == Material.LAVA) && (block.blockData as Levelled).level == 0 && block.location.add(0.0, 1.0, 0.0).block.isEmpty) {
                 block.type = Material.OBSIDIAN
                 BlockCacheManager.cacheBlock(player.uniqueId, block, ID)
@@ -112,7 +112,7 @@ class HellStridersItem : CustomItemFunctions() {
             Bukkit.getScheduler().runTaskLater(instance(), Runnable {
                 for (e in 0 until 6) {
                     val block = _B.random()
-                    if (block.location.distance(player.location) > 10) {
+                    if (block.world != player.world || block.location.distance(player.location) > 10) {
                         block.type = Material.LAVA
                         BlockCacheManager.unCacheBlock(player.uniqueId, block)
                     }
