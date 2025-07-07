@@ -4,7 +4,6 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -18,7 +17,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.player.PlayerMoveEvent
-import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.BlockIterator
@@ -28,7 +26,7 @@ class SunbrellaHatItem : CustomItemFunctions() {
 
     companion object {
         private val dustOption = DustOptions(Color.WHITE, 1f)
-        private val fallingPlayers: ConcurrentHashMap<Player, Double> = ConcurrentHashMap()
+        private const val FALL_MULTIPLIER = 0.5
     }
 
 
@@ -63,24 +61,6 @@ class SunbrellaHatItem : CustomItemFunctions() {
             .buildPair()
     }
 
-    override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
-        if (!player.isSneaking && player.velocity.y < -0.1) {
-            Executors.syncDelayed(200) {
-                if (!player.isSneaking && player.velocity.y < -0.1) { // Check again
-                    fallingPlayers[player] = 0.77
-                }
-            }
-        }
-    }
-
-    override fun onAsyncRunnable(player: Player) {
-        for (fallingPlayer in fallingPlayers.keys) {
-            if (!player.isSneaking || player.velocity.y > -0.01) {
-                fallingPlayers.remove(fallingPlayer)
-            }
-        }
-    }
-
 
     override fun onMove(player: Player, event: PlayerMoveEvent) {
         if (!player.isSneaking || player.velocity.y > -0.01 || player.fallDistance < 0.1) {
@@ -94,11 +74,9 @@ class SunbrellaHatItem : CustomItemFunctions() {
         }
 
 
-        val multiplier = fallingPlayers[player] ?: 0.5
-
         val vec = player.location.direction.multiply(0.25)
-        player.velocity = Vector(vec.x, player.velocity.y * multiplier, vec.z)
-        player.fallDistance = 0.0f
+        player.velocity = Vector(vec.x, player.velocity.y * FALL_MULTIPLIER, vec.z)
+        player.fallDistance = 0.5f
         player.world.spawnParticle(Particle.DUST, player.location, 4, 0.3, 0.0, 0.3, dustOption)
     }
 
