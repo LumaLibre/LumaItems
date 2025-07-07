@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
+import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
@@ -100,13 +101,13 @@ class HailstormShovelItem : CustomItemFunctions() {
         val hitEntity = event.hitEntity
         if (hitEntity is Player) {
             event.isCancelled = true
-        } else if (hitEntity is LivingEntity) {
+        } else if (hitEntity is LivingEntity && !AbilityUtil.noDamagePermission(player, hitEntity)) {
             hitEntity.damage(5.0, player)
         }
 
         val block = event.hitBlock ?: return
         val item = player.inventory.itemInMainHand
-        if (!block.isPreferredTool(item)) {
+        if (!block.isPreferredTool(item) || AbilityUtil.noBreakPermission(player, block)) {
             return // Only apply if the block is a preferred tool
         }
         //player.breakBlock(block)

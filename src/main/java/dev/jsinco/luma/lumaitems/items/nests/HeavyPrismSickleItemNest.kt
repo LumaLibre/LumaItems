@@ -32,6 +32,7 @@ import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
@@ -387,6 +388,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             private fun getPredicate(player: Player, autoTargetting: Boolean = false): Predicate<Entity> {
                 return Predicate<Entity> { entity ->
                     entity is LivingEntity &&
+                            entity.type != EntityType.ARMOR_STAND &&
+                            entity.type != EntityType.GLOW_ITEM_FRAME &&
+                            entity.type != EntityType.ITEM_FRAME &&
                             entity != player &&
                             player.canSee(entity) &&
                             !AbilityUtil.noDamagePermission(player, entity) &&
@@ -522,6 +526,10 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             if (!valid || target == null) return
 
             val targetLoc = target!!.boundingBox.center.toLocation(target!!.world).clone()
+            if (targetLoc.world != position.world) {
+                this.target = null // Probably a player going to another world
+                return
+            }
             val directionToTarget = targetLoc.clone().subtract(position).toVector().normalize()
             val destination = position.clone().add(directionToTarget.multiply(RANGE))
 
