@@ -80,15 +80,15 @@ class FrostbarkChiselItem : CustomItemFunctions() {
             ?: Mode.LOGS
     }
 
-    private fun setWoodTypeFromMode(mode: Mode, block: ItemStack): ItemStack {
-        var materialName = block.type.name
-        if (!materialName.contains("_LOG") && !materialName.contains("_STEM")) return block
-        else if (mode == Mode.LOGS) return block
+    private fun setWoodTypeFromMode(mode: Mode, item: ItemStack): ItemStack {
+        var materialName = item.type.name
+        if (!materialName.contains("_LOG") && !materialName.contains("_STEM")) return item
+        else if (mode == Mode.LOGS) return item
 
         materialName = materialName.replace("_LOG", "").replace("_STEM", "")
-        val simpleWoodType = Util.enumValueOfOrNull(SimpleWoodType::class.java, materialName) ?: return block
-        block.type = simpleWoodType.asMaterial(mode)
-        return block
+        val simpleWoodType = Util.enumValueOfOrNull(SimpleWoodType::class.java, materialName) ?: return item
+        item.type = simpleWoodType.asMaterial(mode) ?: return item
+        return item
     }
 
     private fun swapMode(axe: ItemStack, player: Player) {
@@ -114,24 +114,24 @@ class FrostbarkChiselItem : CustomItemFunctions() {
         STRIPPED_WOOD
     }
 
-    enum class SimpleWoodType(val logName: String, val woodName: String) {
-        OAK("LOG", "WOOD"),
-        SPRUCE("LOG", "WOOD"),
-        BIRCH("LOG", "WOOD"),
-        JUNGLE("LOG", "WOOD"),
-        ACACIA("LOG", "WOOD"),
-        DARK_OAK("LOG", "WOOD"),
-        MANGROVE("LOG", "WOOD"),
-        CHERRY("LOG", "WOOD"),
-        WARPED("STEM", "HYPHAE"),
-        CRIMSON("STEM", "HYPHAE");
+    enum class SimpleWoodType(val log: Material, val wood: Material) {
+        OAK(Material.OAK_LOG, Material.OAK_WOOD),
+        SPRUCE(Material.SPRUCE_LOG, Material.SPRUCE_WOOD),
+        BIRCH(Material.BIRCH_LOG, Material.BIRCH_WOOD),
+        JUNGLE(Material.JUNGLE_LOG, Material.JUNGLE_WOOD),
+        ACACIA(Material.ACACIA_LOG, Material.ACACIA_WOOD),
+        DARK_OAK(Material.DARK_OAK_LOG, Material.DARK_OAK_WOOD),
+        MANGROVE(Material.MANGROVE_LOG, Material.MANGROVE_WOOD),
+        CHERRY(Material.CHERRY_LOG, Material.CHERRY_WOOD),
+        WARPED(Material.WARPED_STEM, Material.WARPED_HYPHAE),
+        CRIMSON(Material.CRIMSON_STEM, Material.CRIMSON_HYPHAE),;
 
-        fun asMaterial(mode: Mode): Material {
+        fun asMaterial(mode: Mode): Material? {
             return when (mode) {
-                Mode.LOGS -> Material.valueOf("${this.name}_$logName")
-                Mode.STRIPPED_LOGS -> Material.valueOf("STRIPPED_${this.name}_$logName")
-                Mode.WOOD -> Material.valueOf("${this.name}_$woodName")
-                Mode.STRIPPED_WOOD -> Material.valueOf("STRIPPED_${this.name}_$woodName")
+                Mode.LOGS -> this.log
+                Mode.WOOD -> this.wood
+                Mode.STRIPPED_LOGS -> Material.matchMaterial("STRIPPED_${this.log.name}")
+                Mode.STRIPPED_WOOD -> Material.matchMaterial("STRIPPED_${this.wood.name}")
             }
         }
     }

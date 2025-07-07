@@ -82,7 +82,7 @@ class HellStridersItem : CustomItemFunctions() {
         val blockBelow = locBelow.block
 
 
-        for (block in ShapeUtil.circle(blockBelow.location, 4, 13)) {
+        for (block in ShapeUtil.circle(blockBelow.location, 4, 30)) {
             if ((block.type == Material.LAVA) && (block.blockData as Levelled).level == 0 && block.location.add(0.0, 1.0, 0.0).block.isEmpty) {
                 block.type = Material.OBSIDIAN
                 BlockCacheManager.cacheBlock(player.uniqueId, block, ID)
@@ -91,13 +91,13 @@ class HellStridersItem : CustomItemFunctions() {
     }
 
     override fun onAsyncRunnable(player: Player) {
-        val _B: MutableList<Block> = BlockCacheManager.getCachedBlocks(ID).ifEmpty { return }.toMutableList()
-        val aT: MutableSet<Location> = mutableSetOf()
+        val blocks: MutableList<Block> = BlockCacheManager.getCachedBlocks(ID).ifEmpty { return }.toMutableList()
+        val locations: MutableSet<Location> = mutableSetOf()
 
-        if (_B.size >= 40) {
-            for (index in 0 until _B.size / 4) {
+        if (blocks.size >= 40) {
+            for (index in 0 until blocks.size / 4) {
                 Bukkit.getScheduler().runTask(instance(), Runnable {
-                    val block = _B[index]
+                    val block = blocks[index]
                     if (block.type == Material.OBSIDIAN) {
                         block.type = Material.CRYING_OBSIDIAN
                     } else if (block.type == Material.CRYING_OBSIDIAN) {
@@ -111,23 +111,24 @@ class HellStridersItem : CustomItemFunctions() {
         for (i in 0 until 3) {
             Bukkit.getScheduler().runTaskLater(instance(), Runnable {
                 for (e in 0 until 6) {
-                    val block = _B.random()
+                    val block = blocks.random()
                     if (block.world != player.world || block.location.distance(player.location) > 10) {
                         block.type = Material.LAVA
                         BlockCacheManager.unCacheBlock(player.uniqueId, block)
+                        continue
                     }
 
-                    if (block.location in aT) continue
+                    if (block.location in locations) continue
                     when (block.type) {
                         Material.OBSIDIAN -> {
                             block.type = Material.CRYING_OBSIDIAN
-                            aT.add(block.location)
+                            locations.add(block.location)
                         }
 
                         Material.CRYING_OBSIDIAN -> {
                             block.type = Material.LAVA
                             BlockCacheManager.unCacheBlock(player.uniqueId, block)
-                            aT.add(block.location)
+                            locations.add(block.location)
                         }
                         else -> continue
                     }

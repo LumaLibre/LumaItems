@@ -83,7 +83,7 @@ class SunbrellaHatItem : CustomItemFunctions() {
 
 
     override fun onMove(player: Player, event: PlayerMoveEvent) {
-        if (!player.isSneaking || player.velocity.y > -0.01) {
+        if (!player.isSneaking || player.velocity.y > -0.01 || player.fallDistance < 0.1) {
             return
         }
         val blockIterator = BlockIterator(player.world, player.location.toVector(), Vector(0.0, -1.0, 0.0), 0.0, 2)
