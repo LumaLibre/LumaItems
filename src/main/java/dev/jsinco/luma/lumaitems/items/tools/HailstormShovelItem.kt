@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
+import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
@@ -36,6 +37,9 @@ class HailstormShovelItem : CustomItemFunctions() {
         private val WHITE_PARTICLE_DISPLAY = PARTICLE_DISPLAY.clone().withColor(Color.WHITE)
         private val ITEM_STACK = ItemStack(Material.WIND_CHARGE)
         private val key = Util.namespacedKey("hailstorm-shovel")
+        private val SHOVEL_ITEM_STACK = ItemStack(Material.NETHERITE_SHOVEL).apply {
+            addUnsafeEnchantment(Enchantment.SILK_TOUCH, 1)
+        }
         private const val ACTIVATOR = "activator"
     }
 
@@ -106,12 +110,12 @@ class HailstormShovelItem : CustomItemFunctions() {
         }
 
         val block = event.hitBlock ?: return
-        val item = player.inventory.itemInMainHand
-        if (!block.isPreferredTool(item) || AbilityUtil.noBreakPermission(player, block)) {
-            return // Only apply if the block is a preferred tool
+
+        if (!block.isPreferredTool(SHOVEL_ITEM_STACK) || BlockConstants.BLACKLISTED.contains(block.type) || AbilityUtil.noBuildPermission(player, block)) {
+            return
         }
-        //player.breakBlock(block)
-        block.breakNaturally(item)
+
+        block.breakNaturally(SHOVEL_ITEM_STACK)
         Executors.syncDelayed(1) {
             block.location.getNearbyEntitiesByType(Item::class.java, 1.5, 1.0, 1.5)
                 .forEach {

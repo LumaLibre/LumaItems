@@ -48,7 +48,7 @@ object AbilityUtil {
     @JvmStatic
     fun noBuildPermission(player: Player, block: Block): Boolean {
         val event = BlockPlaceEvent(block, block.state, block.getRelative(BlockFace.DOWN), AIR, player, true, EquipmentSlot.HAND)
-        return event.callEvent()
+        return !event.callEvent()
     }
 
     @JvmStatic

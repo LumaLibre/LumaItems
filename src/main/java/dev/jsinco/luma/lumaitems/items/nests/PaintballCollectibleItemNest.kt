@@ -56,16 +56,18 @@ abstract class PaintballCollectibleItem(
     }
 
     override fun onProjectileLaunch(player: Player, event: ProjectileLaunchEvent) {
-        val snowball = event.entity as? Snowball ?: return
+        val entity = event.entity
+        if (Util.hasPersistentKey(entity, nameSpace)) return
+        event.isCancelled = true
+        val snowball = player.world.createEntity(entity.location, Snowball::class.java)
         Util.setPersistentKey(snowball, nameSpace, PersistentDataType.SHORT, 1)
+        snowball.shooter = player
+        snowball.velocity = entity.velocity
         snowball.item = paintballItem
+        snowball.spawnAt(entity.location)
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
-        if (player.gameMode != GameMode.CREATIVE) {
-            Util.giveItem(player, customItem)
-        }
-
         if (event.hitEntity != null) {
             event.isCancelled = true
             return
