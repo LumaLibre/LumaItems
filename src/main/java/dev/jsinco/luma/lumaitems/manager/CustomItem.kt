@@ -3,14 +3,18 @@ package dev.jsinco.luma.lumaitems.manager
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.events.items.ItemListener
+import dev.jsinco.luma.lumaitems.util.Executors
+import dev.jsinco.luma.lumaitems.util.Executors.sync
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import io.papermc.paper.persistence.PersistentDataContainerView
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import kotlin.random.Random
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitTask
 
 interface CustomItem {
 
@@ -19,6 +23,14 @@ interface CustomItem {
     }
     fun random(): Random {
         return Random
+    }
+
+    fun <T> sync(block: () -> T): BukkitTask {
+        return Executors.sync { block() }
+    }
+
+    fun <T> async(block: () -> T): ScheduledTask {
+        return Executors.async { block() }
     }
 
     /**

@@ -28,7 +28,7 @@ import net.md_5.bungee.api.ChatColor as BungeeChatColor
 import org.bukkit.Color as BukkitColor
 import java.awt.Color as AwtColor
 
-
+// TODO: Cleanup
 object Util {
 
     val STATIC_UUID: UUID = UUID.fromString("e9378e48-0e8e-42a9-9df1-7074b00df6a9")

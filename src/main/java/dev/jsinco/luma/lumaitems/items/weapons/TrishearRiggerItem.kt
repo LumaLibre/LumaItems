@@ -7,6 +7,7 @@ import dev.jsinco.luma.lumaitems.manager.GlowManager
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.BukkitVectors
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -33,45 +34,6 @@ class TrishearRiggerItem : CustomItemFunctions() {
     companion object {
         private val nameSpace = Util.namespacedKey("trishear-rigger")
         private val typeNameSpace = Util.namespacedKey("trishear-rigger-type")
-
-        private fun rotateVectorY(vector: Vector, angleRadians: Double): Vector {
-            val x = vector.x
-            val z = vector.z
-            val cos = cos(angleRadians)
-            val sin = sin(angleRadians)
-
-            return Vector(
-                x * cos - z * sin,
-                vector.y,
-                x * sin + z * cos
-            )
-        }
-
-        private fun rotateVectorX(vector: Vector, angleRadians: Double): Vector {
-            val y = vector.y
-            val z = vector.z
-            val cos = cos(angleRadians)
-            val sin = sin(angleRadians)
-
-            return Vector(
-                vector.x,
-                y * cos - z * sin,
-                y * sin + z * cos
-            )
-        }
-
-        private fun rotateVectorZ(vector: Vector, angleRadians: Double): Vector {
-            val x = vector.x
-            val y = vector.y
-            val cos = cos(angleRadians)
-            val sin = sin(angleRadians)
-
-            return Vector(
-                x * cos - y * sin,
-                x * sin + y * cos,
-                vector.z
-            )
-        }
     }
 
     private enum class ArrowCloneType(val color: Color, val glowColor: NamedTextColor, val block: (originalArrow: Arrow, clonedArrow: Arrow) -> Unit) {
@@ -79,14 +41,14 @@ class TrishearRiggerItem : CustomItemFunctions() {
             // shift it's direction to the left just a little bit
             val originalDir = originalArrow.velocity.clone().normalize()
             val speed = originalArrow.velocity.length()
-            val leftDir = rotateVectorY(originalDir, Math.toRadians(-5.0))
+            val leftDir = BukkitVectors.rotateVectorY(originalDir, Math.toRadians(-5.0))
 
             clonedArrow.velocity = leftDir.multiply(speed)
         }),
         RIGHT(Util.hex2AwtColor("#f1b46c"), NamedTextColor.RED, { originalArrow, clonedArrow ->
             val originalDir = originalArrow.velocity.clone().normalize()
             val speed = originalArrow.velocity.length()
-            val leftDir = rotateVectorY(originalDir, Math.toRadians(5.0))
+            val leftDir = BukkitVectors.rotateVectorY(originalDir, Math.toRadians(5.0))
 
             clonedArrow.velocity = leftDir.multiply(speed)
         }),
@@ -98,9 +60,9 @@ class TrishearRiggerItem : CustomItemFunctions() {
             val angle = Math.toRadians(-5.0) // negative angle = up
 
             val upDir = if (cardinalDirection == CardinalDirection.NORTH || cardinalDirection == CardinalDirection.SOUTH) {
-                rotateVectorX(originalDir, angle)
+                BukkitVectors.rotateVectorX(originalDir, angle)
             } else {
-                rotateVectorZ(originalDir, angle)
+                BukkitVectors.rotateVectorZ(originalDir, angle)
             }
 
             clonedArrow.velocity = upDir.multiply(speed)
@@ -112,9 +74,9 @@ class TrishearRiggerItem : CustomItemFunctions() {
 
             val cardinalDirection = CardinalDirection.fromEntityYaw(originalArrow)
             val downDir = if (cardinalDirection == CardinalDirection.NORTH || cardinalDirection == CardinalDirection.SOUTH) {
-                rotateVectorX(originalDir, angle)
+                BukkitVectors.rotateVectorX(originalDir, angle)
             } else {
-                rotateVectorZ(originalDir, angle)
+                BukkitVectors.rotateVectorZ(originalDir, angle)
             }
 
             clonedArrow.velocity = downDir.multiply(speed)

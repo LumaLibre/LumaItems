@@ -26,7 +26,6 @@ repositories {
     maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
     maven("https://jitpack.io")
     maven("https://maven.enginehub.org/repo/")
-    maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://nexus.neetgames.com/repository/maven-releases/")
     maven("https://repo.jsinco.dev/releases")
@@ -34,11 +33,15 @@ repositories {
 
 dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.github.Zrips:jobs:v4.17.2")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly("com.github.Zrips:jobs:v4.17.2") {
+        isTransitive = false
+    }
+    compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
     compileOnly("dev.jsinco.luma.lumacore:LumaCore:279f090")
-    compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.030")
+    compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.040") {
+        isTransitive = false
+    }
     
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 

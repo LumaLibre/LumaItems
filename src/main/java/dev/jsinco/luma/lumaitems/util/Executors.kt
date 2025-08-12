@@ -49,4 +49,13 @@ object Executors {
             runnable.accept(task)
         }, ticksToMillis(delay), ticksToMillis(period), TimeUnit.MILLISECONDS)
     }
+
+
+    fun <T> (() -> T).sync(): BukkitTask {
+        return sync { this() }
+    }
+
+    fun <T> (() -> T).async(): ScheduledTask {
+        return async { this() }
+    }
 }

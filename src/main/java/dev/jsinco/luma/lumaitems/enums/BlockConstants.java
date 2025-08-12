@@ -36,6 +36,11 @@ public enum BlockConstants {
     ),
     GLASS(
             COLORED_GLASS.materials, Material.GLASS, Material.TINTED_GLASS
+    ),
+    CROPS(
+            Material.WHEAT, Material.CARROTS, Material.POTATOES, Material.BEETROOTS,
+            Material.NETHER_WART, Material.COCOA, Material.SWEET_BERRIES, Material.SUGAR_CANE,
+            Material.MELON, Material.PUMPKIN, Material.KELP_PLANT
     )
     ;
 

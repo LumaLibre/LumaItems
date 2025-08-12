@@ -461,7 +461,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             }
         }
 
-        fun move() {
+        fun move() { //
             var smallCount = 40
             Executors.syncTimer(0, 1) { task ->
                 if (snowball.isDead) {
