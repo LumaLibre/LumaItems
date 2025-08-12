@@ -10,6 +10,7 @@ import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import java.awt.Color
+import kotlin.math.min
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -80,7 +81,8 @@ class BlobbleHammerItem : CustomItemFunctions() {
         }
         block.getDrops(HOLDER_PICKAXE_ITEM).ifEmpty { return }
             .forEach { drop ->
-                bubble(block.location.toCenterLocation(), player, drop.type, drop.amount)
+                val amt = min(drop.amount / 2, 5)
+                bubble(block.location.toCenterLocation(), player, drop.type, amt)
             }
     }
 

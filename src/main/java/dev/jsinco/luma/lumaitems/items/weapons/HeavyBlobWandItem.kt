@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
+import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.BukkitVectors
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Util
@@ -47,7 +48,7 @@ class HeavyBlobWandItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gradient:#C9A0DC:#F49AC2:#FFC5D3:#A2BFFE>Heavy Blob Wand</gradient></b>")
-            .customEnchants("<#C9A0DC>Bubble Lobber IV")
+            .customEnchants("<#C9A0DC>Bubble Stream")
             .material(Material.NETHERITE_SWORD)
             .persistentData(nameSpace)
             .attributeModifiers(AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.35, EquipmentSlotGroup.HAND))
@@ -108,6 +109,8 @@ class HeavyBlobWandItem : CustomItemFunctions() {
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
         (event.hitEntity as? LivingEntity)?.let {
+            if (AbilityUtil.noDamagePermission(player, it)) return
+
             it.damage(13.0, player)
             it.velocity = BukkitVectors.ZERO
             it.noDamageTicks = 0
