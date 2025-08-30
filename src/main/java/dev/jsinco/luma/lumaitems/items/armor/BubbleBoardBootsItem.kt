@@ -4,10 +4,8 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import dev.jsinco.luma.lumaitems.util.BukkitVectors
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Util
-import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -21,7 +19,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
-@Ignore // TODO: Until I can look into this.
+
 class BubbleBoardBootsItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         val key = "bubble-board-boots"
@@ -81,9 +79,8 @@ class BubbleBoardBootsItem : CustomItemFunctions() {
 
             if (ticksHeld >= 35 && !player.isSneaking) {
                 sync {
-                    val dir = player.eyeLocation.direction.clone().setY(0).normalize()
-                    player.velocity = BukkitVectors.UP.multiply(1.9)
-                        .add(dir.multiply(0.1))
+                    val vec = player.eyeLocation.direction.clone().multiply(1.5).setY(2.5)
+                    player.velocity = vec
                 }
 
                 task.cancel()

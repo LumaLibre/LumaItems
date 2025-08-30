@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.items.weapons
 
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
@@ -51,7 +52,11 @@ class HeavyBlobWandItem : CustomItemFunctions() {
             .customEnchants("<#C9A0DC>Bubble Stream")
             .material(Material.NETHERITE_SWORD)
             .persistentData(nameSpace)
-            .attributeModifiers(AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.35, EquipmentSlotGroup.HAND))
+            .attributeModifiers(
+                DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
+                    AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.35, EquipmentSlotGroup.HAND)
+                )
+            )
             .tier(Tier.SUMMER_2025)
             .lore(
                 "A sharp wand capable of",

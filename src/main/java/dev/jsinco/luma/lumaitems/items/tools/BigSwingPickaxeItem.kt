@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.items.tools
 
 import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.enums.CardinalDirection
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
@@ -48,10 +49,12 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
                 Enchantment.MENDING to 1
             )
             .attributeModifiers(
-                AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.75, EquipmentSlotGroup.ANY),
-                AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.4, EquipmentSlotGroup.ANY),
-                AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND),
-                AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND),
+                DefaultAttributes.NETHERITE_PICKAXE.appendThenGetAttributes(
+                    AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.75, EquipmentSlotGroup.ANY),
+                    AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.4, EquipmentSlotGroup.ANY),
+                    AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND),
+                    AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND)
+                )
             )
             .buildPair()
     }

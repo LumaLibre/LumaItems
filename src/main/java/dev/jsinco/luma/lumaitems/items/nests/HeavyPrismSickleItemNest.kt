@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.items.nests
 
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.manager.GlowManager
@@ -143,7 +144,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 PersistentDataRecord.create(nameSpace, PersistentDataType.STRING, colorKit.name)
             )
             .attributeModifiers(
-                AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-3.3, EquipmentSlotGroup.MAINHAND)
+                DefaultAttributes.NETHERITE_HOE.appendThenGetAttributes(
+                    AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-3.3, EquipmentSlotGroup.MAINHAND)
+                )
             )
             .buildPair()
     }

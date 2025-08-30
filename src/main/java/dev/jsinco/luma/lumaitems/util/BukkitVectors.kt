@@ -15,13 +15,21 @@ import org.bukkit.util.Vector
 object BukkitVectors {
 
     val UP = Vector(0.0, 1.0, 0.0)
+        get() = field.clone()
     val DOWN = Vector(0.0, -1.0, 0.0)
+        get() = field.clone()
     val NORTH = Vector(0.0, 0.0, -1.0)
+        get() = field.clone()
     val SOUTH = Vector(0.0, 0.0, 1.0)
+        get() = field.clone()
     val EAST = Vector(1.0, 0.0, 0.0)
+        get() = field.clone()
     val WEST = Vector(-1.0, 0.0, 0.0)
+        get() = field.clone()
     val ZERO = Vector(0.0, 0.0, 0.0)
+        get() = field.clone()
     val ONE = Vector(1.0, 1.0, 1.0)
+        get() = field.clone()
 
     fun rotateVectorY(vector: Vector, angleRadians: Double): Vector {
         val x = vector.x

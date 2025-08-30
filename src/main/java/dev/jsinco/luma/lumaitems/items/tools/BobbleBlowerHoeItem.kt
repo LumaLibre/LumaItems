@@ -1,6 +1,7 @@
 package dev.jsinco.luma.lumaitems.items.tools
 
 import dev.jsinco.luma.lumaitems.enums.BlockConstants
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
@@ -60,7 +61,11 @@ class BobbleBlowerHoeItem : CustomItemFunctions() {
             .material(Material.NETHERITE_HOE)
             .persistentData(nameSpace)
             .tier(Tier.SUMMER_2025)
-            .attributeModifiers(AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -2.4, EquipmentSlotGroup.HAND))
+            .attributeModifiers(
+                DefaultAttributes.NETHERITE_HOE.appendThenGetAttributes(
+                    AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -2.4, EquipmentSlotGroup.HAND)
+                )
+            )
             .lore(
                 "A fancy hoe with a bubble",
                 "loop attached to it.",
