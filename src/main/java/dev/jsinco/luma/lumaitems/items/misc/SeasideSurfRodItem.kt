@@ -73,16 +73,16 @@ class SeasideSurfRodItem : CustomItemFunctions() {
 
         } else {
             particle(Particle.DUST, partLoc, DustOptions(Util.hex2BukkitColor("#ff0a0a"), 2f))
-            particle(Particle.WITCH, partLoc, 0.1)
+            particle(Particle.WITCH, partLoc)
             caught.world.playSound(caught.location, Sound.ENTITY_WITCH_CELEBRATE, 0.5f, 1f)
             caught.remove()
         }
     }
 
 
-    private fun particle(particle: Particle, loc: Location, extra: Any) {
+    private fun particle(particle: Particle, loc: Location, data: Any? = null) {
         loc.world?.spawnParticle(
-            particle, loc, 15, 0.5, 0.5, 0.5, 0.1, extra
+            particle, loc, 15, 0.5, 0.5, 0.5, 0.1, data
         )
     }
 }

@@ -69,7 +69,7 @@ class HolidayHamItem : CustomItemFunctions() {
             !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid
         }
         for (block in sphere) {
-            player.breakBlock(block)
+            block.breakNaturally()
         }
         loc.world.spawnParticle(Particle.EXPLOSION, loc, 1, 0.0, 0.0, 0.0, 0.0)
         loc.world.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 0.6f, 1.0f)
