@@ -71,7 +71,8 @@ class ItemFactory(
      */
     var persistentDataRecords: MutableList<PersistentDataRecord<*, *>> = mutableListOf(),
 
-    var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf()
+    var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf(),
+    var amount: Int = 1,
 ) {
 
     companion object {
@@ -95,7 +96,7 @@ class ItemFactory(
         fun builder() = Builder()
     }
 
-    val item = ItemStack(material)
+    val item = ItemStack(material, amount)
     val meta: Damageable? = item.itemMeta as? Damageable
     var miniMessage = false
     var hideDefaultAttributes = true
@@ -273,6 +274,7 @@ class ItemFactory(
         private var persistentDataValue: Short = 1
         private var persistentDataRecords: MutableList<PersistentDataRecord<*, *>> = mutableListOf()
         private var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf()
+        private var amount: Int = 1
 
         @SafeVarargs
         fun name(name: String) = apply { this.name = name }
@@ -315,17 +317,18 @@ class ItemFactory(
         fun b64PHead(b64PHead: String) = apply { this.b64PHead = b64PHead }
         fun spoofEnchants(spoofEnchants: Boolean) = apply { this.spoofEnchants = spoofEnchants }
         fun persistentDataValue(persistentDataValue: Short) = apply { this.persistentDataValue = persistentDataValue }
+        fun amount(amount: Int) = apply { this.amount = amount }
 
         fun build() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
             tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, quotes, b64PHead,
-            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents
+            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount
         ).apply { miniMessage() }
 
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
             tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, quotes, b64PHead,
-            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents
+            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount
         )
 
         fun buildPair(): Pair<String, ItemStack> {
