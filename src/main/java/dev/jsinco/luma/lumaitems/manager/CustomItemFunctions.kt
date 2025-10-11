@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.manager
 
+import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
@@ -109,6 +110,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.PICKUP_ITEM -> onPlayerPickupItem(player, event as PlayerAttemptPickupItemEvent)
             Action.ITEM_HELD -> onPlayerItemHeld(player, event as PlayerItemHeldEvent)
             Action.ITEM_DAMAGE -> onPlayerItemDamage(player, event as PlayerItemDamageEvent)
+            Action.PLAYER_KNOCKBACK_ENTITY -> onPlayerKnockbackEntity(player, event as EntityKnockbackByEntityEvent)
         }
         return true
     }
@@ -170,4 +172,5 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPlayerPickupItem(player: Player, event: PlayerAttemptPickupItemEvent) {}
     open fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {}
     open fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {}
+    open fun onPlayerKnockbackEntity(player: Player, event: EntityKnockbackByEntityEvent) {}
 }

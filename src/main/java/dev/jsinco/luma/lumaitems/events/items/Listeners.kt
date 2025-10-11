@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.events.items
 
+import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
@@ -443,5 +444,13 @@ class Listeners : ItemListener() {
         val data: PersistentDataContainer = event.item.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.ITEM_DAMAGE, player, event)
+    }
+
+    @EventHandler
+    fun onEntityKnockbackByEntity(event: EntityKnockbackByEntityEvent) {
+        val player = event.hitBy as? Player ?: return
+        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.PLAYER_KNOCKBACK_ENTITY, player, event)
     }
 }

@@ -74,4 +74,5 @@ public enum Action {
     PICKUP_ITEM, // When a player picks up an item
     ITEM_HELD, // When a player holds an item
     ITEM_DAMAGE, // When an item is damaged
+    PLAYER_KNOCKBACK_ENTITY
 }
