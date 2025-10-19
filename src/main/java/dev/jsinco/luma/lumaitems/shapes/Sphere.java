@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class Sphere implements Shape3D {
 
@@ -54,8 +55,12 @@ public class Sphere implements Shape3D {
      * @return Set of blocks that make up the sphere.
      */
     public Set<Block> getSphereFast() {
-
         Set<Block> blockList = new HashSet<>();
+        getSphereFast(blockList::add);
+        return blockList;
+    }
+
+    public void getSphereFast(Consumer<Block> blockConsumer) {
         int intRadius = (int) Math.ceil(radius);
         double radiusSquared = radius * radius;
 
@@ -70,12 +75,10 @@ public class Sphere implements Shape3D {
                     if (distanceSquared > radiusSquared) continue;
 
                     Block block = center.getWorld().getBlockAt(centerX + x, centerY + y, centerZ + z);
-                    blockList.add(block);
+                    blockConsumer.accept(block);
                 }
             }
         }
-
-        return blockList;
     }
 
     /**

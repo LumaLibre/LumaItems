@@ -8,10 +8,8 @@ import io.papermc.paper.persistence.PersistentDataContainerView
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
-import org.bukkit.event.Cancellable
 import org.bukkit.event.Listener
 import org.bukkit.persistence.PersistentDataContainer
-import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
 @Suppress("Duplicates")
@@ -38,13 +36,17 @@ abstract class ItemListener : Listener {
         }
     }
 
+
     // Paper added this, just makes it easier to look at the PDC
     fun fire(data: PersistentDataContainerView, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-            if (!data.has(customItem.key)) {
+        for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.CUSTOM_ITEMS) {
+            val item = customItem.value
+            val fireAnyways = item.fireAnyways(action)
+
+            if (!data.has(customItem.key) && !fireAnyways) {
                 continue
             }
-            val item = customItem.value
+
             if (player?.location?.let { item.isDisabled(it) } == true) {
                 item.handleDisabled(player, event)
                 return
@@ -54,16 +56,21 @@ abstract class ItemListener : Listener {
             } else {
                 item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
             }
-            break
+
+//            if (!fireAnyways)
+//                break
         }
     }
 
     fun fire(data: PersistentDataContainer, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-            if (!data.has(customItem.key)) {
+        for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.CUSTOM_ITEMS) {
+            val item = customItem.value
+            val fireAnyways = customItem.value.fireAnyways(action)
+
+            if (!data.has(customItem.key) && !fireAnyways) {
                 continue
             }
-            val item = customItem.value
+
             if (player?.location?.let { item.isDisabled(it) } == true) {
                 item.handleDisabled(player, event)
                 return
@@ -73,16 +80,21 @@ abstract class ItemListener : Listener {
             } else {
                 item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
             }
-            break
+
+//            if (!fireAnyways)
+//                break
         }
     }
 
     fun fire(data: List<PersistentDataContainer>, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (itemData: PersistentDataContainer in data) {
-            for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key)) {
+        for (itemData: PersistentDataContainer? in data.ifEmpty { listOf(null) }) {
+            for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.CUSTOM_ITEMS) {
+                val fireAnyways = customItem.value.fireAnyways(action)
+
+                if (!((itemData != null && itemData.has(customItem.key)) || fireAnyways)) {
                     continue
                 }
+
                 val item = customItem.value
                 if (player?.location?.let { item.isDisabled(it) } == true) {
                     item.handleDisabled(player, event)
@@ -91,61 +103,18 @@ abstract class ItemListener : Listener {
                 if (!withContainer) {
                     item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
                 } else {
-                    item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, itemData)
+                    item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, itemData!!)
                 }
-                break
+
+//                if (!fireAnyways)
+//                    break
             }
         }
     }
 
-    fun fire(data: List<PersistentDataContainer>, action1: Action, action2: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (itemData: PersistentDataContainer in data) {
-            for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key)) {
-                    continue
-                }
-                val item = customItem.value
-                if (player?.location?.let { item.isDisabled(it) } == true) {
-                    item.handleDisabled(player, event)
-                    break
-                }
-                if (!withContainer) {
-                    item.executeActions(action1, player ?: getDummyPlayer() ?: return, event)
-                    item.executeActions(action2, player ?: getDummyPlayer() ?: return, event)
-                } else {
-                    item.executeWithContainer(action1, player ?: getDummyPlayer() ?: return, event, itemData)
-                    item.executeWithContainer(action2, player ?: getDummyPlayer() ?: return, event, itemData)
-                }
-                break
-            }
-        }
-    }
-
-    fun fire(data: List<PersistentDataContainer>, vararg actions: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (itemData: PersistentDataContainer in data) {
-            for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.customItems) {
-                if (!itemData.has(customItem.key)) {
-                    continue
-                }
-                val item = customItem.value
-                if (player?.location?.let { item.isDisabled(it) } == true) {
-                    item.handleDisabled(player, event)
-                    break
-                }
-                for (action in actions) {
-                    if (!withContainer) {
-                        item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-                    } else {
-                        item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, itemData)
-                    }
-                }
-                break
-            }
-        }
-    }
-
+    // TODO: @FireAnyways
     fun fire(key: String, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem in ItemManager.customItems) {
+        for (customItem in ItemManager.CUSTOM_ITEMS) {
             if (key.equals(customItem.key.key, true)) {
                 val item = customItem.value
                 if (player?.location?.let { item.isDisabled(it) } == true) {

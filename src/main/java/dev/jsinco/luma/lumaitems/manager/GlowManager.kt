@@ -1,14 +1,16 @@
-@file:Suppress("deprecation")
 package dev.jsinco.luma.lumaitems.manager
 
 import com.comphenix.protocol.PacketType
-import com.comphenix.protocol.ProtocolLibrary
+import com.comphenix.protocol.wrappers.EnumWrappers
+import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataValue
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
+import com.comphenix.protocol.wrappers.WrappedTeamParameters
 import com.comphenix.protocol.wrappers.WrappedWatchableObject
 import com.google.common.collect.Lists
 import dev.jsinco.luma.lumaitems.LumaItems
-import java.util.Objects
+import java.lang.reflect.Type
+import java.util.Optional
 import java.util.UUID
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
@@ -72,6 +74,7 @@ object GlowManager {
         }
     }
 
+    @Suppress("DEPRECATION")
     fun setGlowColor(entity: Entity, glowColor: ChatColor) {
         val team = board.getTeam(glowColor.name.lowercase())
         if (team == null) {
@@ -108,6 +111,7 @@ object GlowManager {
         }, ticks)
     }
 
+    @Suppress("DEPRECATION")
     fun addToTeamForTicks(entity: Entity, glowColor: ChatColor, ticks: Long) {
         setGlowColor(entity, glowColor)
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
@@ -116,6 +120,7 @@ object GlowManager {
         }, ticks)
     }
 
+    @Suppress("DEPRECATION")
     fun addToTeamForTicks(player: Player, glowColor: ChatColor, ticks: Long) {
         val uuid = player.uniqueId
         if (playerTeamsTasks.contains(uuid)) {
@@ -129,12 +134,53 @@ object GlowManager {
         }, ticks)
     }
 
+    @Suppress("DEPRECATION")
     fun getGlowColorLegacy(entity: Entity): ChatColor? {
         return board.getEntityTeam(entity)?.color
     }
 
     fun getGlowColor(player: Entity): TextColor? {
         return board.getEntityTeam(player)?.color()
+    }
+
+    fun removeProtocolTeam(player: Player, entity: Entity) {
+        val protocolManager = LumaItems.getProtocolManager() ?: return
+        val teamName = "glow_${entity.entityId}"
+
+        val removePacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
+        removePacket.strings.write(0, teamName)
+        removePacket.integers.write(0, 1) // REMOVE = 1
+
+        protocolManager.sendServerPacket(player, removePacket)
+    }
+
+    fun setProtocolTeamColor(player: Player, entity: Entity, color: EnumWrappers.ChatFormatting) {
+        val protocolManager = LumaItems.getProtocolManager() ?: return
+        val teamName = "glow_${entity.entityId}"
+        val entry = if (entity is Player) entity.name else entity.uniqueId.toString()
+        val teamParams = WrappedTeamParameters.newBuilder()
+            .displayName(WrappedChatComponent.fromText(teamName))
+            .prefix(WrappedChatComponent.fromText(""))
+            .suffix(WrappedChatComponent.fromText(""))
+            .color(color)
+            .nametagVisibility(EnumWrappers.TeamVisibility.ALWAYS)
+            .collisionRule(EnumWrappers.TeamCollisionRule.ALWAYS)
+            .build()
+
+
+        // Create team
+        val createPacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
+        createPacket.strings.write(0, teamName)
+        createPacket.integers.write(0, 0) // CREATE/UPDATE = 0, REMOVE = 1
+        createPacket.optionalTeamParameters.write(0, Optional.of(teamParams))
+        protocolManager.sendServerPacket(player, createPacket)
+
+        // Add entity to the team
+        val addPacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
+        addPacket.strings.write(0, teamName)
+        addPacket.integers.write(0, 3) // ADD_PLAYERS
+        addPacket.getSpecificModifier(Collection::class.java).write(0, listOf(entry))
+        protocolManager.sendServerPacket(player, addPacket)
     }
 
     // liberally borrowed from: https://www.spigotmc.org/threads/i-want-to-use-protocollib-to-make-fake-entity-glow.589919/
@@ -144,7 +190,8 @@ object GlowManager {
         val packet = protocolManager.createPacket(PacketType.Play.Server.ENTITY_METADATA) // metadata packet
         packet.integers.write(0, entity.entityId) //Set entity id from packet above
         val watcher = WrappedDataWatcher() //Create data watcher, the Entity Metadata packet requires this
-        val serializer = WrappedDataWatcher.Registry.get(java.lang.Byte::class.java)
+        val type: Type = java.lang.Byte::class.java
+        val serializer = WrappedDataWatcher.Registry.get(type) // java.lang.Byte::class.java
         watcher.entity = player //Set the new data watcher's target
         watcher.setObject(0, serializer, (if (glow) 0x40 else 0).toByte()) //Set status to glowing, found on protocol page
 

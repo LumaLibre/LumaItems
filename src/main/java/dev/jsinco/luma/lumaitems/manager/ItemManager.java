@@ -7,6 +7,7 @@ import dev.jsinco.luma.lumaitems.util.NeedsEdits;
 import dev.jsinco.luma.lumaitems.util.disabling.Ignore;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,10 +32,10 @@ public final class ItemManager {
      * Key: Custom Item NBT Key
      * Value: Custom Item Class
      */
-    public final static Map<NamespacedKey, CustomItem> customItems = new HashMap<>();
+    public final static Map<NamespacedKey, CustomItem> CUSTOM_ITEMS = new HashMap<>();
 
 
-    public final static Map<String, CustomItem> customItemsByName = new HashMap<>();
+    public final static Map<String, CustomItem> CUSTOM_ITEMS_BY_NAME = new HashMap<>();
 
 
     public final static String BASE_PACKAGE = "dev.jsinco.luma.lumaitems.items";
@@ -48,7 +49,7 @@ public final class ItemManager {
      */
     @Nullable
     public static ItemStack getItemByName(String name) {
-        var customItem = customItemsByName.get(name.replace(" ", "_").toLowerCase());
+        var customItem = CUSTOM_ITEMS_BY_NAME.get(name.replace(" ", "_").toLowerCase());
         if (customItem == null) {
             return null;
         }
@@ -57,7 +58,7 @@ public final class ItemManager {
 
     @Nullable
     public static ItemStack getItemByKey(String key) {
-        var customItem = customItems.get(new NamespacedKey(LumaItems.getInstance(), key));
+        var customItem = CUSTOM_ITEMS.get(new NamespacedKey(LumaItems.getInstance(), key));
         if (customItem == null) {
             return null;
         }
@@ -71,7 +72,7 @@ public final class ItemManager {
      */
     @Nullable
     public static CustomItem getCustomItem(String key) {
-        return customItems.get(new NamespacedKey(LumaItems.getInstance(), key));
+        return CUSTOM_ITEMS.get(new NamespacedKey(LumaItems.getInstance(), key));
     }
 
     /**
@@ -79,7 +80,7 @@ public final class ItemManager {
      */
     public static List<ItemStack> getAllItems() {
         List<ItemStack> list = new ArrayList<>();
-        for (CustomItem item : customItems.values()) {
+        for (CustomItem item : CUSTOM_ITEMS.values()) {
             try {
                 list.add(item.createItem().component2());
             } catch (Exception e) {
@@ -107,7 +108,7 @@ public final class ItemManager {
             for (String pack : packages) {
                 registerForPackage(pack, classPath);
             }
-            LumaItems.log("Registered &6" + customItems.size() + " &2classes through reflection");
+            LumaItems.log("Registered &6" + CUSTOM_ITEMS.size() + " &2classes through reflection");
         }
     }
 
@@ -130,7 +131,7 @@ public final class ItemManager {
     }
 
     public void registerItem(CustomItem item) {
-        customItems.put(new NamespacedKey(plugin, item.createItem().component1()), item);
+        CUSTOM_ITEMS.put(new NamespacedKey(plugin, item.createItem().component1()), item);
         registerForName(item);
         Class<?> clazz = item.getClass();
         NeedsEdits edits = clazz.getAnnotation(NeedsEdits.class);
@@ -161,7 +162,7 @@ public final class ItemManager {
                 itemStack.getItemMeta().getDisplayName()
                 )
                 .replace(" ", "_").toLowerCase();
-        customItemsByName.put(formattedName, item);
+        CUSTOM_ITEMS_BY_NAME.put(formattedName, item);
     }
 
 

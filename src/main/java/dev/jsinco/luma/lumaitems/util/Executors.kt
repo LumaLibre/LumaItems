@@ -14,18 +14,35 @@ object Executors {
         return ticks * 50 // 1 tick = 50 milliseconds
     }
 
-    fun sync(runnable: Consumer<BukkitRunnable>): BukkitTask {
-        return object : BukkitRunnable() {
-            override fun run() {
-                runnable.accept(this)
-            }
-        }.runTask(LumaItems.getInstance())
+    fun sync(runnable: Runnable): BukkitTask? {
+        if (Bukkit.isPrimaryThread()) {
+            runnable.run()
+            return null
+        } else {
+            return Bukkit.getScheduler().runTask(LumaItems.getInstance(), runnable)
+        }
     }
+
+//    fun sync(runnable: Consumer<BukkitRunnable>): BukkitTask {
+//        return object : BukkitRunnable() {
+//            override fun run() {
+//                try {
+//                    runnable.accept(this)
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        }.runTask(LumaItems.getInstance())
+//    }
 
     fun syncTimer(delay: Long, period: Long, runnable: Consumer<BukkitRunnable>): BukkitTask {
         return object : BukkitRunnable() {
             override fun run() {
-                runnable.accept(this)
+                try {
+                    runnable.accept(this)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }.runTaskTimer(LumaItems.getInstance(), delay, period)
     }
@@ -33,25 +50,37 @@ object Executors {
     fun syncDelayed(delay: Long, runnable: Consumer<BukkitRunnable>): BukkitTask {
         return object : BukkitRunnable() {
             override fun run() {
-                runnable.accept(this)
+                try {
+                    runnable.accept(this)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }.runTaskLater(LumaItems.getInstance(), delay)
     }
 
     fun async(runnable: Consumer<ScheduledTask>): ScheduledTask {
         return Bukkit.getAsyncScheduler().runNow(LumaItems.getInstance()) { task ->
-            runnable.accept(task)
+            try {
+                runnable.accept(task)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     fun asyncTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
         return Bukkit.getAsyncScheduler().runAtFixedRate(LumaItems.getInstance(), Consumer { task ->
-            runnable.accept(task)
+            try {
+                runnable.accept(task)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }, ticksToMillis(delay), ticksToMillis(period), TimeUnit.MILLISECONDS)
     }
 
 
-    fun <T> (() -> T).sync(): BukkitTask {
+    fun <T> (() -> T).sync(): BukkitTask? {
         return sync { this() }
     }
 

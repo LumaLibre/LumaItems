@@ -12,6 +12,7 @@ softdepend:
 - MythicMobs
 - Jobs
 - mcMMO
+- CoreProtect
 permissions:
   lumaitems.disassemblergui:
     description: Permission to open the disassembler GUI

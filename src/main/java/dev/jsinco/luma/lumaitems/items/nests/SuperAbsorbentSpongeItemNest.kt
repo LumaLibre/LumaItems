@@ -3,9 +3,10 @@ package dev.jsinco.luma.lumaitems.items.nests
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
+import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -27,7 +28,7 @@ abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItem
         Executors.syncDelayed(1) {
             event.block.type = Material.AIR
         }
-        removeNearbyBlocks(event.block, 3, material)
+        removeNearbyBlocks(event.block, 3, material, player)
     }
 
     protected fun baseItem(mate: String): ItemFactory.Builder {
@@ -47,7 +48,7 @@ abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItem
     }
 
 
-    private fun removeNearbyBlocks(sponge: Block, radius: Int, type: Material) {
+    private fun removeNearbyBlocks(sponge: Block, radius: Int, type: Material, player: Player) {
 
         val world = sponge.world
         val location = sponge.location
@@ -57,7 +58,7 @@ abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItem
 
         for (targetBlock in blocksInSphere) {
             if (Material.WATER == type && targetBlock is Waterlogged && targetBlock.isWaterlogged) {
-                targetBlock.breakNaturally()
+                targetBlock.breakNaturallyWithLog(player)
             }
             if (targetBlock.type != type) continue
             targetBlock.type = Material.AIR

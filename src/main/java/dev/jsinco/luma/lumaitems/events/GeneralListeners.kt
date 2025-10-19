@@ -136,7 +136,8 @@ class GeneralListeners : Listener {
 
             if (cursorItem.type == Material.AIR || cursorItem == player.inventory.helmet) return
             event.isCancelled = true
-            player.setItemOnCursor(hatItem);player.inventory.helmet = cursorItem;player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1f, 1f)
+            player.setItemOnCursor(hatItem);
+            player.inventory.helmet = cursorItem;player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1f, 1f)
         }
     }
 
@@ -160,7 +161,7 @@ class GeneralListeners : Listener {
         if (meta.persistentDataContainer.has(NamespacedKey(plugin, "lumaitem"), PersistentDataType.SHORT)) {
             cancelEvent = true
         } else {
-            for (key in ItemManager.customItems.keys) {
+            for (key in ItemManager.CUSTOM_ITEMS.keys) {
                 if (meta.persistentDataContainer.has(key, PersistentDataType.SHORT)) {
                     cancelEvent = true
                     break

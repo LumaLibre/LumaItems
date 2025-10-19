@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.ShapeUtil
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Location
 import org.bukkit.Material
@@ -47,13 +48,14 @@ class GiantInflatableHammerItem : CustomItemFunctions() {
 
         val loc = event.entity.location
         if (!AbilityUtil.noBuildPermission(player, loc.block) && Random.nextInt(10) == 1) {
-            pushThruGround(loc)
+            pushThruGround(loc, player)
         }
     }
 
-    private fun pushThruGround(loc: Location) {
+    private fun pushThruGround(loc: Location, player: Player) {
         for (block in ShapeUtil.circle(loc.subtract(0.0, 1.0, 0.0), 2, 7)) {
-            block.breakNaturally(true, false)
+
+            block.breakNaturallyWithLog(player, true, false)
         }
     }
 

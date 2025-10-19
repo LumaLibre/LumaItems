@@ -63,7 +63,7 @@ class GiveItemCommand : SubCommand {
     override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
         return when (args.size) {
             1 -> {
-                val list: MutableList<String> = ItemManager.customItemsByName.keys.toMutableList()
+                val list: MutableList<String> = ItemManager.CUSTOM_ITEMS_BY_NAME.keys.toMutableList()
                 list.add("all")
                 list
             }

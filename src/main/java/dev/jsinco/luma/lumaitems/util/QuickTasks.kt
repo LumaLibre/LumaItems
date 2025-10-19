@@ -3,11 +3,10 @@ package dev.jsinco.luma.lumaitems.util
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.obj.CustomItemCooldown
-import org.bukkit.Bukkit
-import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
 object QuickTasks {
 

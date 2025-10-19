@@ -11,6 +11,7 @@ public enum Action {
      */
     RUNNABLE, // When the global LumaItems runnable calls. Tick rate is every 70 ticks. This runnable is in sync with the main thread and is thread safe.
     ASYNC_RUNNABLE, // When the global LumaItems runnable calls. Tick rate is every 30 ticks. This runnable is async and is not thread safe.
+    FAST_ASYNC_RUNNABLE, // When the global LumaItems runnable calls. Tick rate is every 5 ticks. This runnable is async and is not thread safe.
     PLUGIN_ENABLE, // When the plugin is enabled
     PLUGIN_DISABLE, // When the plugin is disabled
     PLUGIN_DISABLE_GLOBAL,

@@ -57,6 +57,7 @@ abstract class CustomItemFunctions : CustomItem {
         when(type) {
             Action.RUNNABLE -> onRunnable(player)
             Action.ASYNC_RUNNABLE -> onAsyncRunnable(player)
+            Action.FAST_ASYNC_RUNNABLE -> onFastAsyncRunnable(player)
             Action.PLUGIN_ENABLE -> onPluginEnable(player)
             Action.PLUGIN_DISABLE -> onPluginDisable(player)
             Action.PLUGIN_DISABLE_GLOBAL -> onPluginDisableGlobal()
@@ -119,6 +120,7 @@ abstract class CustomItemFunctions : CustomItem {
 
     open fun onRunnable(player: Player) {}
     open fun onAsyncRunnable(player: Player) {}
+    open fun onFastAsyncRunnable(player: Player) {}
     open fun onPluginEnable(player: Player) {}
     open fun onPluginDisable(player: Player) {}
     open fun onPluginDisableGlobal() {}

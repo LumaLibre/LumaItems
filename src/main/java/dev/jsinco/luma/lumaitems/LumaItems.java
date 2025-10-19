@@ -14,6 +14,8 @@ import dev.jsinco.luma.lumaitems.manager.ItemManager;
 import dev.jsinco.luma.lumaitems.relics.RelicCrafting;
 import dev.jsinco.luma.lumaitems.relics.RelicDisassembler;
 import dev.jsinco.luma.lumaitems.util.Util;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -32,9 +34,12 @@ public final class LumaItems extends JavaPlugin {
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManagerInstance;
     private static ModuleManager moduleManager;
+
+    // TODO: please move this to some kind of actual hook manager/registry
     private static boolean withProtocolLib;
     private static boolean withMythicMobs;
     private static boolean withmcMMO;
+    private static boolean withCoreProtect;
 
     @Override
     public void onLoad() {
@@ -57,6 +62,7 @@ public final class LumaItems extends JavaPlugin {
         withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");
         withMythicMobs = getServer().getPluginManager().isPluginEnabled("MythicMobs");
         withmcMMO = getServer().getPluginManager().isPluginEnabled("mcMMO");
+        withCoreProtect = getServer().getPluginManager().isPluginEnabled("CoreProtect");
 
         passiveListeners = new PassiveListeners(this);
         itemManagerInstance = new ItemManager(this);
@@ -85,6 +91,7 @@ public final class LumaItems extends JavaPlugin {
             passiveListeners.onPluginAction(Action.PLUGIN_ENABLE); // Fire this as soon as we're done registering our items
             passiveListeners.getPassiveListener(Action.RUNNABLE).runTaskTimer(this, 0L, PassiveListeners.DEFAULT_PASSIVE_LISTENER_TICKS);
             passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS);
+            passiveListeners.getPassiveListener(Action.FAST_ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.FAST_ASYNC_PASSIVE_LISTENER_TICKS);
             passiveListeners.getGlobalTask().runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_GLOBAL_TASK_TICKS);
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "An error occurred while registering items", e);
@@ -134,6 +141,11 @@ public final class LumaItems extends JavaPlugin {
     @Nullable
     public static ProtocolManager getProtocolManager() {
         return withProtocolLib ? ProtocolLibrary.getProtocolManager() : null;
+    }
+
+    @Nullable
+    public static CoreProtectAPI getCoreProtectAPI() {
+        return withCoreProtect ? CoreProtect.getInstance().getAPI() : null;
     }
 
     public static boolean isWithMythicMobs() {

@@ -4,6 +4,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
+import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -65,7 +66,7 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
         if (event.isCancelled) return
         val item = player.inventory.itemInMainHand
         val mode = getModeFromItem(item)
-        removeNearbyBlocks(event.block, 6, *mode.materials.toTypedArray())
+        removeNearbyBlocks(event.block, 6, player, *mode.materials.toTypedArray())
         event.isCancelled = true
     }
 
@@ -97,7 +98,7 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
         event.isCancelled = true
     }
 
-    private fun removeNearbyBlocks(sponge: Block, radius: Int, vararg types: Material) {
+    private fun removeNearbyBlocks(sponge: Block, radius: Int, player: Player, vararg types: Material) {
 
         val world = sponge.world
         val location = sponge.location
@@ -106,7 +107,7 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
         val blocksInSphere = sphere.sphereFast
 
         for (targetBlock in blocksInSphere) {
-            if (Material.WATER in types) removeWaterlogged(targetBlock)
+            if (Material.WATER in types) removeWaterlogged(targetBlock, player)
             if (targetBlock.type !in types) continue
             targetBlock.type = Material.AIR
             world.spawnParticle(Particle.CLOUD, targetBlock.location.add(0.5, 0.5, 0.5), 10, 0.2, 0.2, 0.2, 0.02)
@@ -116,16 +117,16 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
         world.playSound(location, Sound.BLOCK_WET_GRASS_BREAK, 1.0f, 1.0f)
 
         Bukkit.getScheduler().runTaskLater(LumaItems.getInstance(), Runnable {
-            if (Material.WATER in types) removeWaterlogged(sponge)
+            if (Material.WATER in types) removeWaterlogged(sponge, player)
             if (sponge.type in types) sponge.type = Material.AIR
         }, 1L)
     }
 
-    private fun removeWaterlogged(block: Block) {
+    private fun removeWaterlogged(block: Block, player: Player) {
         when (block.type) {
             Material.KELP, Material.KELP_PLANT,
             Material.SEAGRASS, Material.TALL_SEAGRASS -> {
-                block.breakNaturally()
+                block.breakNaturallyWithLog(player)
             }
             else -> {
                 val blockData = block.blockData

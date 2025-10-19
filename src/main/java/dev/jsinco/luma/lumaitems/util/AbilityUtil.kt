@@ -2,7 +2,6 @@ package dev.jsinco.luma.lumaitems.util
 
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.manager.FileManager
-import dev.jsinco.luma.lumaitems.shapes.Cuboid
 import io.lumine.mythic.bukkit.MythicBukkit
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -45,7 +44,7 @@ object AbilityUtil {
         return event.isCancelled || isMythicMob(victim)
     }
 
-    @JvmStatic
+    @JvmStatic // TODO: Replace this with proper towny and worldguard integration
     fun noBuildPermission(player: Player, block: Block): Boolean {
         val event = BlockPlaceEvent(block, block.state, block.getRelative(BlockFace.DOWN), AIR, player, true, EquipmentSlot.HAND)
         return !event.callEvent()
@@ -106,7 +105,7 @@ object AbilityUtil {
                 blockedAbility.add(player.uniqueId)
                 player.breakBlock(b)
                 blockedAbility.remove(player.uniqueId)
-                block.breakNaturally(player.inventory.itemInMainHand)
+                block.breakNaturallyWithLog(player, player.inventory.itemInMainHand)
                 if (type == "leaves") {
                     limiter++
                 }
@@ -247,5 +246,14 @@ object AbilityUtil {
             }
         }.runTaskTimer(plugin, 0, 10)
         return hitAmount * 10
+    }
+
+    fun Block.breakNaturallyWithLog(player: Player, itemStack: ItemStack? = null, triggerEffects: Boolean = false, dropExp: Boolean = false) {
+        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.getState(false))
+        itemStack?.let { this.breakNaturally(it, triggerEffects, dropExp) } ?: this.breakNaturally()
+    }
+    fun Block.breakNaturallyWithLog(player: Player, triggerEffects: Boolean, dropExp: Boolean) {
+        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.getState(false))
+        this.breakNaturally(triggerEffects, dropExp)
     }
 }

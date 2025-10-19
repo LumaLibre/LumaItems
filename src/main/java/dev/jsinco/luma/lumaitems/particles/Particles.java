@@ -619,6 +619,19 @@ public final class  Particles {
         }
     }
 
+    public static void flippedCone(double height, double radius, double rate, double circleRate, ParticleDisplay display) {
+        // Our biggest radius / amount of loop times = the amount to subtract from the biggest radius so it wouldn't be negative.
+        double radiusDiv = radius / (height / rate);
+        // We're going spawn circles with different radiuses and rates to make a cone.
+        for (double i = rate; i >= height; i -= rate) {
+            radius -= radiusDiv;
+            // The remainder of radiusDiv division might be not 0
+            // This will happen to the last loop only.
+            if (radius < 0) radius = 0;
+            circle(radius, circleRate - i, display.cloneWithLocation(0, i, 0));
+        }
+    }
+
     /**
      * An example of a shash particle.
      *
@@ -2537,6 +2550,11 @@ public final class  Particles {
         circle(size + 0.5, rate * 1000, circle);
     }
 
+    public static void neopaganPentagram(double size, double rate, double extend, double circleIncrease, double circleRateMulti, ParticleDisplay star, ParticleDisplay circle) {
+        polygon(5, 2, size, rate, extend, star);
+        circle(size + circleIncrease, rate * circleRateMulti, circle);
+    }
+
     /**
      * Spawns an atom with orbits and a nucleus.
      *
@@ -2549,7 +2567,7 @@ public final class  Particles {
     public static void atom(int orbits, double radius, double rate, ParticleDisplay orbit, ParticleDisplay nucleus) {
         double dist = Math.PI / orbits;
         for (double angle = 0; orbits > 0; angle += dist) {
-            orbit.rotate(ParticleDisplay.Rotation.of(angle, ParticleDisplay.Axis.Z));
+            orbit.rotate(dev.jsinco.luma.lumaitems.particles.ParticleDisplay.Rotation.of(angle, dev.jsinco.luma.lumaitems.particles.ParticleDisplay.Axis.Z));
             circle(radius, rate, orbit);
             orbits--;
         }

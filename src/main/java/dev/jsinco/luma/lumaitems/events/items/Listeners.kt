@@ -14,6 +14,7 @@ import dev.jsinco.luma.lumaitems.util.FireForAllNBT
 import dev.jsinco.luma.lumaitems.util.Util
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
@@ -143,7 +144,9 @@ class Listeners : ItemListener() {
             else -> return
         }
 
-        val data: List<PersistentDataContainer> = Util.getAllEquipmentNBT(player)
+        val data = Util.getAllEquipmentNBT(player).toMutableList().apply {
+            (event.damager as? Projectile)?.persistentDataContainer?.let { add(it) }
+        }
 
         // TODO: Add special Ability type for when players are damaging an entity with no permission to damage them
         if (player.inventory.itemInMainHand.type == Material.MACE && player.fallDistance >= 1.5f) {
@@ -233,7 +236,7 @@ class Listeners : ItemListener() {
 
         val data: PersistentDataContainer? = item.itemMeta?.persistentDataContainer
         val offHandData: PersistentDataContainer? = offHandItem.itemMeta?.persistentDataContainer
-        for (customItem in ItemManager.customItems) {
+        for (customItem in ItemManager.CUSTOM_ITEMS) {
             if (data?.has(customItem.key, PersistentDataType.SHORT) == true) {
                 val customItemClass = customItem.value
                 customItemClass.executeActions(Action.FISH, player, event)
@@ -433,9 +436,12 @@ class Listeners : ItemListener() {
     @EventHandler // if you modify this event to include previous slot, items that use this need a conditional added to their logic
     fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
         val player = event.player
-        val data: PersistentDataContainer = player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer ?: return
+        val datas = listOfNotNull(
+            player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer,
+            player.inventory.getItem(event.previousSlot)?.itemMeta?.persistentDataContainer
+        ).ifEmpty { return }
 
-        fire(data, Action.ITEM_HELD, player, event)
+        fire(datas, Action.ITEM_HELD, player, event)
     }
 
     @EventHandler

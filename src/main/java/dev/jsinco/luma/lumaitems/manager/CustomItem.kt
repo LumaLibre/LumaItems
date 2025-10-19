@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.events.items.ItemListener
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Executors.sync
+import dev.jsinco.luma.lumaitems.util.FireAnyways
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import io.papermc.paper.persistence.PersistentDataContainerView
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
@@ -25,7 +26,7 @@ interface CustomItem {
         return Random
     }
 
-    fun <T> sync(block: () -> T): BukkitTask {
+    fun <T> sync(block: () -> T): BukkitTask? {
         return Executors.sync { block() }
     }
 
@@ -78,5 +79,10 @@ interface CustomItem {
             persistNotif = true
         }
         ItemListener.notify(player, persistNotif)
+    }
+
+    fun fireAnyways(action: Action): Boolean {
+        val annotation = this::class.java.getAnnotation(FireAnyways::class.java) ?: return false
+        return annotation.value.contains(action)
     }
 }

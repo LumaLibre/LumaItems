@@ -4,11 +4,13 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 public class Cuboid implements Shape3D {
 
@@ -54,6 +56,16 @@ public class Cuboid implements Shape3D {
             }
         }
         return bL;
+    }
+
+    public void blockListConsumer(Consumer<Block> consumer) {
+        for (int x = this.xMin; x <= this.xMax; ++x) {
+            for (int y = this.yMin; y <= this.yMax; ++y) {
+                for (int z = this.zMin; z <= this.zMax; ++z) {
+                    consumer.accept(this.world.getBlockAt(x, y, z));
+                }
+            }
+        }
     }
 
     public Location getCenter() {
@@ -115,4 +127,11 @@ public class Cuboid implements Shape3D {
     }
 
 
+    public <T extends Entity> List<T> getEntities(Class<T> clazz) {
+        return this.world.getEntitiesByClass(clazz).stream().filter(e -> this.isIn(e.getLocation())).toList();
+    }
+
+    public List<Entity> getEntities() {
+        return this.world.getEntities().stream().filter(e -> this.isIn(e.getLocation())).toList();
+    }
 }

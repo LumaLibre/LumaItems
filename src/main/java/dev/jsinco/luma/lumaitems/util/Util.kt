@@ -3,14 +3,15 @@ package dev.jsinco.luma.lumaitems.util
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
-import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.level.material.MapColor
+import java.awt.Color as AwtColor
+import java.util.UUID
+import kotlin.random.Random
+import net.md_5.bungee.api.ChatColor as BungeeChatColor
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.Color as BukkitColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.block.Block
-import org.bukkit.craftbukkit.block.CraftBlock
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -22,11 +23,6 @@ import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
-import java.util.UUID
-import kotlin.random.Random
-import net.md_5.bungee.api.ChatColor as BungeeChatColor
-import org.bukkit.Color as BukkitColor
-import java.awt.Color as AwtColor
 
 // TODO: Cleanup
 object Util {
@@ -251,12 +247,6 @@ object Util {
         )
     }
 
-    fun getColor(block: Block): AwtColor {
-        val cb: CraftBlock = block as CraftBlock
-        val bs: BlockState = cb.nms
-        val mc: MapColor = bs.getMapColor(cb.craftWorld.handle, cb.position)
-        return AwtColor(mc.col)
-    }
 
     fun javaAwtColorToBukkitColor(color: AwtColor): BukkitColor {
         return BukkitColor.fromARGB(color.alpha, color.red, color.green, color.blue)
@@ -345,11 +335,17 @@ object Util {
         return item.itemMeta?.persistentDataContainer?.get(key, dataType)
     }
 
-    fun hasPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey): Boolean {
+    fun hasPersistentKey(itemStack: ItemStack, key: NamespacedKey): Boolean {
+        return itemStack.itemMeta?.persistentDataContainer?.has(key) == true
+    }
+
+    fun hasPersistentKey(persistentDataHolder: PersistentDataHolder?, key: NamespacedKey): Boolean {
+        if (persistentDataHolder == null) return false
         return persistentDataHolder.persistentDataContainer.has(key)
     }
 
-    fun hasPersistentKey(persistentDataHolder: PersistentDataHolder, key: String): Boolean {
+    fun hasPersistentKey(persistentDataHolder: PersistentDataHolder?, key: String): Boolean {
+        if (persistentDataHolder == null) return false
         return persistentDataHolder.persistentDataContainer.has(namespacedKey(key))
     }
 }

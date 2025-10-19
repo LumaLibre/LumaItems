@@ -8,7 +8,6 @@ import dev.jsinco.luma.lumaitems.manager.ItemManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -84,7 +83,7 @@ public final class LumaItemsAPI {
         if (!itemStack.hasItemMeta()) return null;
         var meta = itemStack.getItemMeta();
 
-        for (var customItem : ItemManager.customItems.entrySet()) {
+        for (var customItem : ItemManager.CUSTOM_ITEMS.entrySet()) {
             if (meta.getPersistentDataContainer().has(customItem.getKey(), PersistentDataType.SHORT)) {
                 return customItem.getValue();
             }

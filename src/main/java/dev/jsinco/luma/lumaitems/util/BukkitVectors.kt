@@ -79,4 +79,58 @@ object BukkitVectors {
         return bounceWithBlockFace(entity, closestFace, magnitude).multiply(7)
     }
 
+
+    // ripped mostly from NMS' trident loyalty implementation
+    fun flyToLivingEntity(living: LivingEntity, otherEntity: Entity, speedFactor: Double, stopDistance: Double = 2.0, currentVelMultiplicity: Double = 0.8): Vector {
+        val otherPos = otherEntity.location.toVector()
+        val eyePos = living.eyeLocation.toVector()
+
+
+        if (eyePos.distanceSquared(otherPos) <= stopDistance * stopDistance) {
+            return BukkitVectors.ZERO
+        }
+
+        val vecToEntity = eyePos.subtract(otherPos) // direction from otherEntity -> entity
+
+        val yNudge = vecToEntity.y * 0.019
+        val speed = 0.05 * speedFactor
+
+        // smooth/dampen current velocity and add homing component
+        val currentVel = otherEntity.velocity
+        val newVel = currentVel.multiply(currentVelMultiplicity).add(vecToEntity.normalize().multiply(speed))
+        newVel.y += yNudge
+
+        return newVel
+    }
+
+
+    fun seizeToAnchor(
+        entity: Entity,
+        anchor: Location,
+        maxDistance: Double = 7.0,
+        stiffness: Double = 0.4,
+        damping: Double = 0.7,
+        slack: Double = 0.5
+    ): Vector? {
+        val entityPos = entity.location.toVector()
+        val anchorPos = anchor.toVector()
+        val delta = entityPos.clone().subtract(anchorPos)
+        val distance = delta.length()
+
+        // Only pull back if stretched past the leash length + slack
+        if (distance <= maxDistance + slack) return null
+
+        val direction = delta.normalize()
+        val excess = distance - maxDistance
+
+        // Calculate spring force toward anchor
+        val force = direction.multiply(excess * stiffness)
+
+        // Pull entity back toward anchor
+        val newVelocity = entity.velocity.subtract(force)
+
+        // Apply damping so it doesn't infinitely oscillate
+        return newVelocity.multiply(damping)
+    }
+
 }
