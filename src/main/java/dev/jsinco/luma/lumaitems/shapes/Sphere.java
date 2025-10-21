@@ -22,6 +22,12 @@ public class Sphere implements Shape3D {
         this.density = density;
     }
 
+    public Sphere(Location center, double radius) {
+        this.center = center;
+        this.radius = radius;
+        this.density = 0.0;
+    }
+
     // Getters
 
     public Location getCenter() {

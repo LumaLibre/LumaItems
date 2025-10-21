@@ -79,6 +79,16 @@ object Executors {
         }, ticksToMillis(delay), ticksToMillis(period), TimeUnit.MILLISECONDS)
     }
 
+    fun asyncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
+        return Bukkit.getAsyncScheduler().runDelayed(LumaItems.getInstance(), Consumer { task ->
+            try {
+                runnable.accept(task)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }, ticksToMillis(delay), TimeUnit.MILLISECONDS)
+    }
+
 
     fun <T> (() -> T).sync(): BukkitTask? {
         return sync { this() }

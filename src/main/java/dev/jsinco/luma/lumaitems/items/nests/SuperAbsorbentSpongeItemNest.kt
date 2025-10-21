@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
+import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakWithLog
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -26,7 +27,7 @@ abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItem
         }
 
         Executors.syncDelayed(1) {
-            event.block.type = Material.AIR
+            event.block.breakWithLog(player)
         }
         removeNearbyBlocks(event.block, 3, material, player)
     }
@@ -61,7 +62,7 @@ abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItem
                 targetBlock.breakNaturallyWithLog(player)
             }
             if (targetBlock.type != type) continue
-            targetBlock.type = Material.AIR
+            targetBlock.breakWithLog(player)
             world.spawnParticle(Particle.CLOUD, targetBlock.location.add(0.5, 0.5, 0.5), 10, 0.2, 0.2, 0.2, 0.02)
         }
 

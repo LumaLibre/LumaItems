@@ -7,6 +7,7 @@ import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.shapes.Sphere
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakWithLog
 import dev.jsinco.luma.lumaitems.util.BukkitVectors
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.QuickTasks
@@ -139,7 +140,7 @@ class EquinoxHatchetItem : CustomItemFunctions() {
             }
             block.world.playSound(block.location, sound, 0.5f, 1f)
 
-            block.type = Material.AIR
+            block.breakWithLog(player)
             player.inventory.itemInMainHand.damage(1, player) // no checks
 
             flyToPlayerExecutor(drops, player)

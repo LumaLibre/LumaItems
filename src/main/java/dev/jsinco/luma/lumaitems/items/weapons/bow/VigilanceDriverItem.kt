@@ -85,8 +85,10 @@ class VigilanceDriverItem : CustomItemFunctions() {
     override fun asyncGlobalTask() {
         referencedEntities.forEach { (playerUUID, entities) ->
             val player = Bukkit.getPlayer(playerUUID) ?: run { referencedEntities.remove(playerUUID); return@forEach }
-            if (!Util.isItemInSlot(KEY, EquipmentSlot.HAND, player)) {
-                this.removePlayer(player, entities)
+            if (!Util.isItemInSlots(KEY, listOf(EquipmentSlot.HAND, EquipmentSlot.OFF_HAND), player)) {
+                Executors.sync {
+                    this.removePlayer(player, entities)
+                }
             }
         }
     }

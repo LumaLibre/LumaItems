@@ -213,6 +213,13 @@ object Util {
         return false
     }
 
+    fun isItemInSlots(identifier: NamespacedKey, slots: List<EquipmentSlot>, player: Player): Boolean {
+        for (slot in slots) {
+            if (isItemInSlot(identifier, slot, player)) return true
+        }
+        return false
+    }
+
     fun playerHeadFromBase64(base64: String, amt: Int): ItemStack {
         val item = ItemStack(Material.PLAYER_HEAD, amt)
         val meta = item.itemMeta as SkullMeta

@@ -249,11 +249,15 @@ object AbilityUtil {
     }
 
     fun Block.breakNaturallyWithLog(player: Player, itemStack: ItemStack? = null, triggerEffects: Boolean = false, dropExp: Boolean = false) {
-        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.getState(false))
+        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
         itemStack?.let { this.breakNaturally(it, triggerEffects, dropExp) } ?: this.breakNaturally()
     }
     fun Block.breakNaturallyWithLog(player: Player, triggerEffects: Boolean, dropExp: Boolean) {
-        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.getState(false))
+        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
         this.breakNaturally(triggerEffects, dropExp)
+    }
+    fun Block.breakWithLog(player: Player) {
+        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
+        this.type = Material.AIR
     }
 }

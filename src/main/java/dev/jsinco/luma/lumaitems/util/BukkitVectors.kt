@@ -123,13 +123,9 @@ object BukkitVectors {
         val direction = delta.normalize()
         val excess = distance - maxDistance
 
-        // Calculate spring force toward anchor
+
         val force = direction.multiply(excess * stiffness)
-
-        // Pull entity back toward anchor
         val newVelocity = entity.velocity.subtract(force)
-
-        // Apply damping so it doesn't infinitely oscillate
         return newVelocity.multiply(damping)
     }
 

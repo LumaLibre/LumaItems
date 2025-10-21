@@ -209,31 +209,3 @@ class SoulboundSeekerItem : CustomItemFunctions() {
     }
 
 }
-
-/*
-rip my poor idea of having drops going into the other player's inventory...
-"NOOO DON'T HAVE THE DROPS GO INTO THE OTHER PLAYERS INV IT'S SO STUPID" - kat
-
-val partner = getBondedPlayer(player) ?: return
-        val blocks = Sphere(event.block.location, 9.0, 20.0).sphere
-        val allDrops: MutableMap<ItemStack, Int> = mutableMapOf()
-        val item = player.inventory.itemInMainHand
-        for (block in blocks) {
-            if (block.type != type) continue
-            val craftBlock = block as CraftBlock
-            val nmsBlock = craftBlock.nms.block
-            val nmsItemStack = (item as CraftItemStack).handle
-            val exp = nmsBlock.getExpDrop(nmsBlock.defaultBlockState(), craftBlock.handle.minecraftWorld, craftBlock.position, nmsItemStack, false)
-
-            allDrops[ItemStack(type)] = exp
-            block.type = Material.AIR
-
-            Util.giveItem(partner, block.getDrops(item).first())
-            partner.giveExp(exp, true)
-            // Add particles + Sound
-        }
-
-        allDrops.forEach { (item, exp) ->
-
-        }
- */
