@@ -7,7 +7,6 @@ import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.EnumWrappers
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
-import dev.jsinco.luma.lumaitems.items.tools.mattock.VigilanceMattockItem
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.manager.GlowManager
 import dev.jsinco.luma.lumaitems.util.Executors
@@ -37,12 +36,13 @@ class VigilanceDriverItem : CustomItemFunctions() {
         private val referencedEntities: ConcurrentHashMap<UUID, List<LivingEntity>> = ConcurrentHashMap()
         private val KEY = Util.namespacedKey("vigilance-driver")
         private val BLINDNESS = PotionEffect(PotionEffectType.BLINDNESS, 300, 0, true, false, false)
+        private val COLORS = GlowManager.PACKET_COLORS.filter { it != EnumWrappers.ChatFormatting.WHITE }
         private const val RANGE = 80.0
 
 
         init {
             LumaItems.getProtocolManager()?.addPacketListener(
-                object: PacketAdapter(LumaItems.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.NAMED_SOUND_EFFECT, PacketType.Play.Server.ENTITY_SOUND) {
+                object: PacketAdapter(LumaItems.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_SOUND_EFFECT, PacketType.Play.Server.ENTITY_SOUND) {
                     override fun onPacketSending(event: PacketEvent) {
                         if (Util.isItemInSlot(KEY, EquipmentSlot.HAND, event.player)) {
                             event.isCancelled = true
@@ -187,7 +187,7 @@ class VigilanceDriverItem : CustomItemFunctions() {
 
 
             if (entity !is Player) {
-                GlowManager.setProtocolTeamColor(player, entity, EnumWrappers.ChatFormatting.DARK_PURPLE)
+                GlowManager.setProtocolTeamColor(player, entity, COLORS.random())
             }
             if (!entity.isGlowing && !entity.hasPotionEffect(PotionEffectType.GLOWING)) {
                 GlowManager.setProtocolGlowPacket(player, entity, true)

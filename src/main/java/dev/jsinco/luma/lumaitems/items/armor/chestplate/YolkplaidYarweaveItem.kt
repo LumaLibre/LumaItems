@@ -33,6 +33,7 @@ class YolkplaidYarweaveItem : CustomItem {
 
     companion object {
         private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
+        private val SLOWNESS = PotionEffect(PotionEffectType.SLOWNESS, 240, 200, false, false, false)
     }
 
 
@@ -69,7 +70,7 @@ class YolkplaidYarweaveItem : CustomItem {
                 }
 
             }
-            Action.ENTITY_MOVE, Action.ENTITY_TELEPORT -> {
+            Action.ENTITY_TELEPORT -> {
                 event as Cancellable
                 event.isCancelled = true
             }
@@ -79,7 +80,6 @@ class YolkplaidYarweaveItem : CustomItem {
     }
 
     private fun shellings(damager: LivingEntity, player: Player) {
-        if (damager.persistentDataContainer.has(NamespacedKey(instance(), "yolkplaidyarweave"), PersistentDataType.SHORT)) return
 
         val loc = player.boundingBox.center.toLocation(player.world)
         val locDamager = damager.boundingBox.center.toLocation(damager.world)
@@ -111,7 +111,7 @@ class YolkplaidYarweaveItem : CustomItem {
 
 
         livingEntity.isCollidable = false
-        livingEntity.persistentDataContainer.set(NamespacedKey(instance(), "yolkplaidyarweave"), PersistentDataType.SHORT, 1)
+        livingEntity.addPotionEffect(SLOWNESS)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
         GlowManager.addToTeamForTicks(livingEntity, ChatColor.RED, 240)
         object: BukkitRunnable() {
@@ -130,7 +130,6 @@ class YolkplaidYarweaveItem : CustomItem {
                 livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 2f, 7.7f)
 
                 if (stop) {
-                    livingEntity.persistentDataContainer.remove(NamespacedKey(instance(), "yolkplaidyarweave"))
                     egg.remove()
                     this.cancel()
                 }

@@ -38,7 +38,7 @@ class PrismaticPrunerItem : CustomItemFunctions() {
     }
 
 
-    override fun onPlayerInteractEntity(player: Player, event: PlayerInteractAtEntityEvent) {
+    override fun onPlayerInteractAtEntity(player: Player, event: PlayerInteractAtEntityEvent) {
         val entity = event.rightClicked as? LivingEntity ?: return
         if (entity.persistentDataContainer.has(nameSpacedKey) || entity.type == EntityType.SHEEP || entity.type == EntityType.PLAYER) {
             return

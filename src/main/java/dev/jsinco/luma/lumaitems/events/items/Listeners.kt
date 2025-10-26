@@ -33,6 +33,7 @@ import org.bukkit.event.entity.EntityPotionEffectEvent
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
+import org.bukkit.event.entity.ItemMergeEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -45,6 +46,7 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInputEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
@@ -111,11 +113,13 @@ class Listeners : ItemListener() {
         fire(dataContainers, action, player, event)
     }
 
+    @FireForAllNBT
     @EventHandler
     fun onPlayerSwapHandItems(event: PlayerSwapHandItemsEvent) {
         val player = event.player
-        val item = event.offHandItem
-        val data: PersistentDataContainer = item.itemMeta?.persistentDataContainer ?: return
+        //val item = event.offHandItem
+        //item.itemMeta?.persistentDataContainer
+        val data = Util.getAllEquipmentNBT(player) //?: return
 
         fire(data, Action.SWAP_HAND, player, event)
     }
@@ -126,7 +130,7 @@ class Listeners : ItemListener() {
         val entity = event.entity
 
         entity.killer?.let { player ->
-            val data = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+            val data = Util.getAllEquipmentNBT(player)
             fire(data, Action.ENTITY_DEATH, player, event)
             return // We got a killer, we're done.
         }
@@ -290,8 +294,8 @@ class Listeners : ItemListener() {
         fire(Util.getAllEquipmentNBT(event.player), Action.INPUT, event.player, event)
     }
 
-
-    @EventHandler
+    // Causes lag, there are better ways of doing entity checks than this.
+    //@EventHandler
     fun onEntityMoveEvent(event: EntityMoveEvent) {
         if (!event.hasChangedPosition()) return
 
@@ -301,7 +305,7 @@ class Listeners : ItemListener() {
         fire(container, Action.ENTITY_MOVE, null, event)
     }
 
-    //@EventHandler
+    @EventHandler
     fun onPlayerJump(event: PlayerJumpEvent) {
         val data = Util.getAllEquipmentNBT(event.player)
         fire(data, Action.JUMP, event.player, event)
@@ -352,6 +356,11 @@ class Listeners : ItemListener() {
 
     @EventHandler
     fun onPlayerInteractAtEntity(event: PlayerInteractAtEntityEvent) {
+        fire(Util.getHandNBT(event.player), Action.PLAYER_INTERACT_AT_ENTITY, event.player, event)
+    }
+
+    //@EventHandler unused
+    fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
         fire(Util.getHandNBT(event.player), Action.PLAYER_INTERACT_ENTITY, event.player, event)
     }
 
@@ -458,5 +467,12 @@ class Listeners : ItemListener() {
         val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.PLAYER_KNOCKBACK_ENTITY, player, event)
+    }
+
+    @EventHandler
+    fun onItemMerge(event: ItemMergeEvent) {
+        val player = event.target.thrower?.let { Bukkit.getPlayer(it) } ?: return
+        val data = event.target.persistentDataContainer
+        fire(data, Action.ITEM_MERGE, player, event)
     }
 }

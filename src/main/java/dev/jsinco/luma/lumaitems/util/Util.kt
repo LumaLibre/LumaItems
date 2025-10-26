@@ -32,7 +32,6 @@ object Util {
 
     private val plugin: LumaItems = LumaItems.getInstance()
     private val armorEquipmentSlots: List<EquipmentSlot> = listOf(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
-    private val gearTypes: List<String> = listOf("Helmet", "Chestplate", "Leggings", "Boots", "Sword", "Pickaxe", "Axe", "Shovel", "Hoe", "Rod", "Elytra", "Shield", "Crossbow", "Bow")
 
     val legacyPrefix: String = colorcode("&#b986f9&lInfo &8»&#E2E2E2")
 
@@ -206,6 +205,10 @@ object Util {
         return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(identifier) == true
     }
 
+    fun Player.isItemInSlot(identifier: NamespacedKey, slot: EquipmentSlot): Boolean {
+        return this.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(identifier) == true
+    }
+
     fun isItemInSlots(identifier: String, slots: List<EquipmentSlot>, player: Player): Boolean {
         for (slot in slots) {
             if (isItemInSlot(identifier, slot, player)) return true
@@ -290,7 +293,6 @@ object Util {
         val luminance = 0.9f;
         return AwtColor.getHSBColor(hue, saturation, luminance);
     }
-
 
     @JvmStatic
     fun <E : Enum<E>> enumValueOfOrNull(enumClass: Class<E>, name: String): E? {

@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.util
 
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.manager.FileManager
+import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import io.lumine.mythic.bukkit.MythicBukkit
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -83,6 +84,19 @@ object AbilityUtil {
         return entity.location.add(0.0,-0.1, 0.0).block.isSolid
     }
 
+    fun Player.isLocationOnGround(): Boolean {
+        return this.location.add(0.0,-0.1, 0.0).block.isSolid
+    }
+
+    fun Player.isLocationOnGround(amt: Double): Boolean {
+        return this.location.add(0.0,-amt, 0.0).block.isSolid
+    }
+
+    fun Player.isLocationOnGround(amt: Double, isAir: Boolean): Boolean {
+        val block = this.location.add(0.0,-amt, 0.0).block
+        return if (isAir) block.isEmpty else block.isSolid
+    }
+
     fun isJobsTracked(block: Block): Boolean {
         return block.state.hasMetadata("BlockOwner") || block.state.hasMetadata("JobsExploit")
     }
@@ -144,15 +158,23 @@ object AbilityUtil {
 
     }
 
-    fun spawnSpell(player: Player, particle: Particle?, meta: String, ticksAlive: Long): Snowball {
-        return spawnSpell(player, particle, meta, ticksAlive, null)
+    fun spawnSpell(player: Player, particle: Particle?, key: NamespacedKey, ticksAlive: Long): Snowball {
+        return spawnSpell(player, particle, key, ticksAlive, null)
     }
 
-    fun spawnSpell(player: Player, particle: Particle?, meta: String, ticksAlive: Long, runnableCallback: EntityCallBack?): Snowball {
+    fun spawnSpell(player: Player, particle: Particle?, key: String, ticksAlive: Long): Snowball {
+        return spawnSpell(player, particle, Util.namespacedKey(key), ticksAlive, null)
+    }
+
+    fun spawnSpell(player: Player, particle: Particle?, key: String, ticksAlive: Long, runnableCallback: EntityCallBack?): Snowball {
+        return spawnSpell(player, particle, Util.namespacedKey(key), ticksAlive, runnableCallback)
+    }
+
+    fun spawnSpell(player: Player, particle: Particle?, key: NamespacedKey, ticksAlive: Long, runnableCallback: EntityCallBack?): Snowball {
         val snowball = player.launchProjectile(Snowball::class.java)
         snowball.setGravity(false)
         snowball.velocity = player.location.direction.multiply(3)
-        snowball.persistentDataContainer.set(NamespacedKey(plugin, meta), PersistentDataType.SHORT, 1)
+        snowball.persistentDataContainer.set(key, PersistentDataType.SHORT, 1)
         player.hideEntity(plugin, snowball)
         for (entity in player.getNearbyEntities(65.0, 65.0, 65.0)) {
             if (entity is Player) {
@@ -181,38 +203,6 @@ object AbilityUtil {
         return snowball
     }
 
-    fun spawnSpell(player: Player, location: Location, particle: Particle?, meta: String, ticksAlive: Long, runnableCallback: EntityCallBack?): Snowball {
-        val snowball = location.world.createEntity(location, Snowball::class.java)
-        snowball.shooter = player
-        snowball.setGravity(false)
-        snowball.persistentDataContainer.set(NamespacedKey(plugin, meta), PersistentDataType.SHORT, 1)
-        for (entity in snowball.getNearbyEntities(65.0, 65.0, 65.0)) {
-            if (entity is Player) {
-                entity.hideEntity(plugin, snowball)
-            }
-        }
-        snowball.spawnAt(location)
-
-        if (particle != null || runnableCallback != null) {
-            object : BukkitRunnable() {
-                override fun run() {
-                    if (snowball.isDead) {
-                        cancel()
-                    }
-                    if (particle != null) {
-                        snowball.world.spawnParticle(particle, snowball.location, 4, 0.1, 0.1, 0.1, 0.0)
-                    }
-                    runnableCallback?.go(snowball)
-                }
-            }.runTaskTimerAsynchronously(plugin, 0, 1)
-        }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
-            if (!snowball.isDead) {
-                snowball.remove()
-            }
-        }, ticksAlive)
-        return snowball
-    }
 
     fun takeSpellLapisCost(player: Player, amount: Int): Boolean {
         if (player.inventory.contains(Material.LAPIS_LAZULI, amount)) {

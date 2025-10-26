@@ -72,7 +72,12 @@ public final class LumaItems extends JavaPlugin {
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             log("Players are online, registering items asynchronously");
             Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-                initItemManager(itemManagerInstance);
+                try {
+                    initItemManager(itemManagerInstance);
+                } catch (Throwable e) {
+                    getLogger().log(Level.SEVERE, "An error occurred while registering items asynchronously", e);
+                    getServer().getPluginManager().disablePlugin(this);
+                }
                 log("Finished asynchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {

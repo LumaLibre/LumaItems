@@ -123,7 +123,7 @@ public final class ItemManager {
                     CustomItem item = (CustomItem) clazz.getDeclaredConstructor().newInstance();
                     registerItem(item);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LumaItems.log("Failed to register class " + clazz.getSimpleName(), e);
                 e.printStackTrace();
             }

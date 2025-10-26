@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityPotionEffectEvent
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
+import org.bukkit.event.entity.ItemMergeEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -36,6 +37,7 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInputEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
@@ -96,7 +98,8 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_TARGET_PLAYER -> onEntityTargetPlayer(player, event as EntityTargetLivingEntityEvent)
             Action.ARMOR_CHANGE -> onArmorChange(player, event as PlayerArmorChangeEvent)
             Action.ENTITY_TELEPORT -> onEntityTeleport(event as EntityTeleportEvent)
-            Action.PLAYER_INTERACT_ENTITY -> onPlayerInteractEntity(player, event as PlayerInteractAtEntityEvent)
+            Action.PLAYER_INTERACT_AT_ENTITY -> onPlayerInteractAtEntity(player, event as PlayerInteractAtEntityEvent)
+            Action.PLAYER_INTERACT_ENTITY -> onPlayerInteractEntity(player, event as PlayerInteractEntityEvent)
             Action.SHEAR_ENTITY -> onShearEntity(player, event as PlayerShearEntityEvent)
             Action.BLOCK_SHEAR_ENTITY -> onBlockShearEntity(event as BlockShearEntityEvent)
             Action.PLAYER_TELEPORT -> onPlayerTeleport(player, event as PlayerTeleportEvent)
@@ -112,6 +115,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ITEM_HELD -> onPlayerItemHeld(player, event as PlayerItemHeldEvent)
             Action.ITEM_DAMAGE -> onPlayerItemDamage(player, event as PlayerItemDamageEvent)
             Action.PLAYER_KNOCKBACK_ENTITY -> onPlayerKnockbackEntity(player, event as EntityKnockbackByEntityEvent)
+            Action.ITEM_MERGE -> onItemMerge(player, event as ItemMergeEvent)
         }
         return true
     }
@@ -159,7 +163,8 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityTargetPlayer(player: Player, event: EntityTargetLivingEntityEvent) {}
     open fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {}
     open fun onEntityTeleport(event: EntityTeleportEvent) {}
-    open fun onPlayerInteractEntity(player: Player, event: PlayerInteractAtEntityEvent) {}
+    open fun onPlayerInteractAtEntity(player: Player, event: PlayerInteractAtEntityEvent) {}
+    open fun onPlayerInteractEntity(player: Player, event: PlayerInteractEntityEvent) {}
     open fun onShearEntity(player: Player, event: PlayerShearEntityEvent) {}
     open fun onBlockShearEntity(event: BlockShearEntityEvent) {}
     open fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {}
@@ -175,4 +180,5 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {}
     open fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {}
     open fun onPlayerKnockbackEntity(player: Player, event: EntityKnockbackByEntityEvent) {}
+    open fun onItemMerge(player: Player, event: ItemMergeEvent) {}
 }

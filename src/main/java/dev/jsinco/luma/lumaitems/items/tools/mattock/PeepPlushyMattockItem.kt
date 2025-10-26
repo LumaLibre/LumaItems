@@ -80,7 +80,6 @@ class PeepPlushyMattockItem : CustomItemFunctions() {
 
             block.world.spawnParticle(Particle.DUST, block.location, 35, 0.5, 0.5, 0.5, 0.1, DustOptions(oreColors[dropMaterial] ?: return, 1f))
         } else {
-            drops.forEach(Consumer { drop: ItemStack -> drop.amount = 0 })
             block.world.playSound(block.location, Sound.BLOCK_END_PORTAL_SPAWN, 0.2f, 1f)
         }
     }

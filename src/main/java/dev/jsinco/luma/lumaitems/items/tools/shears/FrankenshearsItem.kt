@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 
-class FrakenshearsItem : CustomItem {
+class FrankenshearsItem : CustomItem {
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
             "&#79a617&lF&#749d18&lr&#709319&la&#6b8a1a&ln&#66811b&lk&#61771c&le&#5d6e1e&ln&#58651f&ls&#535b20&lh&#4e5221&le&#4a4922&la&#453f23&lr&#403624&ls",

@@ -39,11 +39,11 @@ import org.bukkit.scheduler.BukkitTask
     value = [WorldName.PINATA, WorldName.SPAWN, WorldName.EVENT_NEW],
     hard = true
 )
-class EbbenflowGlaiveItem : CustomItemFunctions() {
+class NightmareGlaiveItem : CustomItemFunctions() {
 
     companion object {
         private val REFERENCES: MutableMap<UUID, SeizeLoc> = mutableMapOf()
-        private val KEY = Util.namespacedKey("ebbenflow-glaive")
+        private val KEY = Util.namespacedKey("nightmare-glaive")
         private val BLINDNESS = PotionEffect(PotionEffectType.BLINDNESS, 200, 0, true, false, false)
         private val COLORS = listOf("#ad7abf", "#d2672d", "#d49662", "#6c3f2e", "#302c2f").map { Color.decode(it) }
     }
@@ -51,7 +51,8 @@ class EbbenflowGlaiveItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><gradient:#ad7abf:#d2672d:#d49662:#6c3f2e:#302c2f>Ebbenflow Glaive</gradient></b>")
+            .name("<b><gradient:#ad7abf:#d2672d:#d49662:#6c3f2e:#302c2f>Nightmare Glaive</gradient></b>")
+            .customEnchants("<#ad7abf>Seize")
             .persistentData(KEY)
             .material(Material.TRIDENT)
             .tier(Tier.HALLOWEEN_2025)
@@ -118,7 +119,7 @@ class EbbenflowGlaiveItem : CustomItemFunctions() {
         val pin: Location,
         val particleDisplay: ParticleDisplay,
         val radius: Double = 14.0,
-        val playersRadius: Double = 7.0,
+        val playersRadius: Double = 5.0,
         val durationTicks: Long = 300L
     ) {
 
@@ -146,7 +147,8 @@ class EbbenflowGlaiveItem : CustomItemFunctions() {
                 .withLocation(pin)
 
             this.entities.filter { it is Player }.forEach {
-                it.world.playSound(player, Sound.AMBIENT_CAVE, 1.5f, 1.2f)
+                it as Player
+                it.playSound(pin, Sound.AMBIENT_CAVE, 1.5f, 1.2f)
             }
             pin.world.playSound(pin, Sound.ITEM_LEAD_BREAK, 2.0f, Random.nextDouble(0.5, 0.8).toFloat())
 

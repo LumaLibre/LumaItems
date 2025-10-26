@@ -9,6 +9,7 @@ import com.comphenix.protocol.wrappers.WrappedTeamParameters
 import com.comphenix.protocol.wrappers.WrappedWatchableObject
 import com.google.common.collect.Lists
 import dev.jsinco.luma.lumaitems.LumaItems
+import dev.jsinco.luma.lumaitems.util.Executors
 import java.lang.reflect.Type
 import java.util.Optional
 import java.util.UUID
@@ -23,8 +24,7 @@ import org.bukkit.scoreboard.Team
 
 object GlowManager {
 
-    private val plugin = LumaItems.getInstance()
-    val glowColors = listOf(
+    val COLORS = listOf(
         NamedTextColor.AQUA,
         NamedTextColor.BLACK,
         NamedTextColor.BLUE,
@@ -42,6 +42,25 @@ object GlowManager {
         NamedTextColor.YELLOW,
         NamedTextColor.WHITE
     )
+    val PACKET_COLORS = listOf(
+        EnumWrappers.ChatFormatting.AQUA,
+        EnumWrappers.ChatFormatting.BLACK,
+        EnumWrappers.ChatFormatting.BLUE,
+        EnumWrappers.ChatFormatting.DARK_AQUA,
+        EnumWrappers.ChatFormatting.DARK_BLUE,
+        EnumWrappers.ChatFormatting.DARK_GRAY,
+        EnumWrappers.ChatFormatting.DARK_GREEN,
+        EnumWrappers.ChatFormatting.DARK_PURPLE,
+        EnumWrappers.ChatFormatting.DARK_RED,
+        EnumWrappers.ChatFormatting.GOLD,
+        EnumWrappers.ChatFormatting.GRAY,
+        EnumWrappers.ChatFormatting.GREEN,
+        EnumWrappers.ChatFormatting.LIGHT_PURPLE,
+        EnumWrappers.ChatFormatting.RED,
+        EnumWrappers.ChatFormatting.YELLOW,
+        EnumWrappers.ChatFormatting.WHITE
+    )
+
 
     private val board = Bukkit.getScoreboardManager().mainScoreboard
     private val teams: MutableList<Team> = mutableListOf()
@@ -50,7 +69,7 @@ object GlowManager {
 
     @JvmStatic
     fun initGlowTeams() {
-        for (glowColor in glowColors) {
+        for (glowColor in COLORS) {
             registerGlowColorTeam(glowColor)
         }
     }
@@ -92,10 +111,10 @@ object GlowManager {
 
     fun addToTeamForTicks(entity: Entity, glowColor: NamedTextColor, ticks: Long) {
         setGlowColor(entity, glowColor)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Executors.syncDelayed(ticks) {
             removeGlowColor(entity)
             board.getEntityTeam(entity)?.addEntry(entity.uniqueId.toString())
-        }, ticks)
+        }
     }
 
     fun addToTeamForTicks(player: Player, glowColor: NamedTextColor, ticks: Long) {
@@ -106,18 +125,18 @@ object GlowManager {
 
         setGlowColor(player, glowColor)
 
-        playerTeamsTasks[uuid] = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        playerTeamsTasks[uuid] = Executors.syncDelayed(ticks) {
             removeGlowColor(player)
-        }, ticks)
+        }.taskId
     }
 
     @Suppress("DEPRECATION")
     fun addToTeamForTicks(entity: Entity, glowColor: ChatColor, ticks: Long) {
         setGlowColor(entity, glowColor)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Executors.syncDelayed(ticks) {
             removeGlowColor(entity)
             board.getEntityTeam(entity)?.addEntry(entity.uniqueId.toString())
-        }, ticks)
+        }
     }
 
     @Suppress("DEPRECATION")
@@ -129,9 +148,9 @@ object GlowManager {
 
         setGlowColor(player, glowColor)
 
-        playerTeamsTasks[uuid] = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        playerTeamsTasks[uuid] = Executors.syncDelayed(ticks) {
             removeGlowColor(player)
-        }, ticks)
+        }.taskId
     }
 
     @Suppress("DEPRECATION")

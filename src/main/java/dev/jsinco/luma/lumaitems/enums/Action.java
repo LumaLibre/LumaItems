@@ -11,7 +11,7 @@ public enum Action {
      */
     RUNNABLE, // When the global LumaItems runnable calls. Tick rate is every 70 ticks. This runnable is in sync with the main thread and is thread safe.
     ASYNC_RUNNABLE, // When the global LumaItems runnable calls. Tick rate is every 30 ticks. This runnable is async and is not thread safe.
-    FAST_ASYNC_RUNNABLE, // When the global LumaItems runnable calls. Tick rate is every 5 ticks. This runnable is async and is not thread safe.
+    FAST_ASYNC_RUNNABLE, // When the global LumaItems runnable calls. Tick rate is every 3 ticks. This runnable is async and is not thread safe.
     PLUGIN_ENABLE, // When the plugin is enabled
     PLUGIN_DISABLE, // When the plugin is disabled
     PLUGIN_DISABLE_GLOBAL,
@@ -59,7 +59,8 @@ public enum Action {
     ENTITY_TARGET_PLAYER, // When a living entity with a specific persistent data targets a player
     ARMOR_CHANGE, // When a player changes their armor
     ENTITY_TELEPORT, // When a living entity with a specific persistent data teleports
-    PLAYER_INTERACT_ENTITY, // When a player interacts at a living entity
+    PLAYER_INTERACT_AT_ENTITY, // When a player interacts at a living entity
+    PLAYER_INTERACT_ENTITY, // When a player right-clicks a entity
     //INVENTORY_CLICK, // When a player clicks in their inventory
     SHEAR_ENTITY, // When a player shears a living entity
     BLOCK_SHEAR_ENTITY, // When a block shears a living entity
@@ -75,5 +76,6 @@ public enum Action {
     PICKUP_ITEM, // When a player picks up an item
     ITEM_HELD, // When a player holds an item
     ITEM_DAMAGE, // When an item is damaged
-    PLAYER_KNOCKBACK_ENTITY
+    PLAYER_KNOCKBACK_ENTITY, // When a player knocks back an entity
+    ITEM_MERGE, // When an item with specific persistent data merges with another item
 }

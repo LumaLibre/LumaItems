@@ -11,7 +11,6 @@ import io.papermc.paper.event.entity.EntityMoveEvent
 import java.util.UUID
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
@@ -21,7 +20,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
@@ -33,6 +31,7 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
     companion object {
         private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
         private val coolingDownEggs: MutableMap<UUID, Int> = mutableMapOf()
+        private val SLOWNESS = PotionEffect(PotionEffectType.SLOWNESS, 240, 150, false, false, false)
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -72,10 +71,6 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
         }
     }
 
-    override fun onEntityMove(event: EntityMoveEvent) {
-        event.isCancelled = true
-    }
-
     override fun onEntityTeleport(event: EntityTeleportEvent) {
         event.isCancelled = true
     }
@@ -98,7 +93,7 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
 
 
         livingEntity.isCollidable = false
-        livingEntity.persistentDataContainer.set(NamespacedKey(instance(), "yolkplaidyataghan"), PersistentDataType.SHORT, 1)
+        livingEntity.addPotionEffect(SLOWNESS)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
         GlowManager.addToTeamForTicks(livingEntity, NamedTextColor.NAMES.values().random(), 240)
         object: BukkitRunnable() {
@@ -117,7 +112,6 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
                 }
 
                 if (stop) {
-                    livingEntity.persistentDataContainer.remove(NamespacedKey(instance(), "yolkplaidyataghan"))
                     egg.remove()
                     this.cancel()
                 }

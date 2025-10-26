@@ -184,7 +184,7 @@ class TahluraHoeItem : CustomItemFunctions() {
 
                 val baseDir = shooter.eyeLocation.direction.clone().normalize()
 
-                val pushVector = baseDir.multiply(0.09).apply {
+                val pushVector = baseDir.multiply(0.075).apply {
                     y = 0.0
                 }
 

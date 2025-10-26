@@ -55,7 +55,7 @@ class RosethornRapierItem : CustomItemFunctions() {
             .buildPair()
     }
 
-    override fun onPlayerInteractEntity(player: Player, event: PlayerInteractAtEntityEvent) {
+    override fun onPlayerInteractAtEntity(player: Player, event: PlayerInteractAtEntityEvent) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
             return
         }

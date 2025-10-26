@@ -10,13 +10,13 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.manager.GlowManager
 import dev.jsinco.luma.lumaitems.shapes.Cuboid
+import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.getOreColor
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Bukkit
-import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
@@ -46,7 +46,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
 
         init {
             LumaItems.getProtocolManager()?.addPacketListener(
-                object: PacketAdapter(LumaItems.getInstance(), ListenerPriority.HIGHEST, PacketType.Play.Server.NAMED_SOUND_EFFECT, PacketType.Play.Server.ENTITY_SOUND) {
+                object: PacketAdapter(LumaItems.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_SOUND_EFFECT, PacketType.Play.Server.ENTITY_SOUND) {
                     override fun onPacketSending(event: PacketEvent) {
                         if (event.player.inventory.itemInMainHand.itemMeta?.persistentDataContainer?.has(KEY) == true) {
                             event.isCancelled = true
@@ -74,8 +74,8 @@ class VigilanceMattockItem : CustomItemFunctions() {
             .vanillaEnchants(
                 Enchantment.SHARPNESS to 7,
                 Enchantment.UNBREAKING to 5,
-                Enchantment.EFFICIENCY to 7,
-                Enchantment.FORTUNE to 5,
+                Enchantment.EFFICIENCY to 8,
+                Enchantment.SILK_TOUCH to 1,
                 Enchantment.MENDING to 1,
             )
             .buildPair()
@@ -173,27 +173,12 @@ class VigilanceMattockItem : CustomItemFunctions() {
         return list
     }
 
-    private fun getOreColor(block: Block): Color? {
-        if (!BlockConstants.ORES.contains(block.type)) {
-            return null
-        }
-        val parts = block.type.name.split('_')
-        val gem = when (parts.size) {
-            3 -> parts[1]
-            2 -> parts[0]
-            else -> return null
-        }
-
-        val mat = Util.enumValueOfOrNull(Material::class.java, "${gem}_BLOCK") ?: return null
-        return mat.createBlockData().mapColor
-    }
-
 
     private fun displayableBlock(block: Block, player: Player): DisplayableBlock {
         val blockData = block.blockData
         val blockDisplay = block.world.spawn(block.location, BlockDisplay::class.java).apply {
             this.block = blockData
-            glowColorOverride = getOreColor(block) ?: blockData.mapColor
+            glowColorOverride = block.getOreColor() ?: blockData.mapColor
             interpolationDelay = -1
             interpolationDuration = 0
             isPersistent = false
