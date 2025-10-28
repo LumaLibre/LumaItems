@@ -4,7 +4,6 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.events.items.ItemListener
 import dev.jsinco.luma.lumaitems.util.Executors
-import dev.jsinco.luma.lumaitems.util.Executors.sync
 import dev.jsinco.luma.lumaitems.util.FireAnyways
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import io.papermc.paper.persistence.PersistentDataContainerView

@@ -35,7 +35,7 @@ class LumineEyeglassesItem : CustomItem {
             Action.ASYNC_RUNNABLE -> {
                 Bukkit.getScheduler().callSyncMethod(LumaItems.getInstance()) {
                     val originLocation = player.eyeLocation
-                    val nearbyItems = player.location.world?.getNearbyEntities(player.location, 7.5, 7.5, 7.5)
+                    val nearbyItems = player.location.world?.getNearbyEntities(player.location, 8.5, 8.5, 8.5)
                         ?.filterIsInstance<Item>() ?: return@callSyncMethod false
 
                     for (item in nearbyItems) {

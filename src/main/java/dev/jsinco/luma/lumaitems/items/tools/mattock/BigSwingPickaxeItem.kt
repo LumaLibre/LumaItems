@@ -66,12 +66,18 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
         val item = player.inventory.itemInMainHand
         val cardinalDirection = CardinalDirection.fromEntityYaw(player)
 
+        val block = event.block
+        if (block.getBreakSpeed(player) >= Float.POSITIVE_INFINITY) {
+            return
+        }
+
 
         val xRadius = if (cardinalDirection == CardinalDirection.EAST || cardinalDirection == CardinalDirection.WEST) 2.5 else 4.0
         val zRadius = if (cardinalDirection == CardinalDirection.NORTH || cardinalDirection == CardinalDirection.SOUTH) 2.5 else 4.0
 
-        val ellipsoidBlocks = Ellipsoid.getEllipsoid(event.block.location, xRadius, 2.0, zRadius).filter {
-            !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid && it != event.block
+
+        val ellipsoidBlocks = Ellipsoid.getEllipsoid(block.location, xRadius, 2.0, zRadius).filter {
+            !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid && it != block
         }
         for (block in ellipsoidBlocks) {
             block.breakNaturallyWithLog(player, item, true)

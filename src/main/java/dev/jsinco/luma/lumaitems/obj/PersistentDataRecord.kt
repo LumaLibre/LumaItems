@@ -1,5 +1,6 @@
-package dev.jsinco.luma.lumaitems.util
+package dev.jsinco.luma.lumaitems.obj
 
+import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.NamespacedKey
 import org.bukkit.persistence.PersistentDataType
 

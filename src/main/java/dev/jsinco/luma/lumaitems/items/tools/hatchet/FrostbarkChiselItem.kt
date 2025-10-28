@@ -3,7 +3,7 @@ package dev.jsinco.luma.lumaitems.items.tools.hatchet
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
+import dev.jsinco.luma.lumaitems.obj.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier

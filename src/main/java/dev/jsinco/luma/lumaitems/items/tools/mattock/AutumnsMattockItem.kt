@@ -1,27 +1,24 @@
 package dev.jsinco.luma.lumaitems.items.tools.mattock
 
-import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.enums.BlockConstants
+import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
-import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.getOreColor
-import dev.jsinco.luma.lumaitems.util.extensions.ColorUtil.toAwtColor
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
+import org.bukkit.Color
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.inventory.ItemStack
-import org.bukkit.Color
-import org.bukkit.Location
 import org.bukkit.event.entity.ItemMergeEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 @Disable(WorldName.EVENT_NEW)
@@ -59,13 +56,13 @@ class AutumnsMattockItem : CustomItemFunctions() {
         if (!BlockConstants.ORES.contains(block.type)) return
 
         val chance = random().nextInt(100)
-        if (chance >= 50) return // 50% chance to not trigger
+        if (chance >= 25) return // 75% chance to not trigger
 
         val loc = block.location.toCenterLocation()
 
         event.isDropItems = false
-        if (chance <= 13) {
-            // 13% chance to drop nothing
+        if (chance <= 12) {
+            // 12% chance to drop nothing
             block.world.playSound(block.location, Sound.BLOCK_END_PORTAL_SPAWN, 0.1f, 1f)
         } else {
 

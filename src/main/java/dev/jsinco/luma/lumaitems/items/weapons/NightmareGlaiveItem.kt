@@ -95,7 +95,7 @@ class NightmareGlaiveItem : CustomItemFunctions() {
         val particleDisplay = ParticleDisplay.of(Particle.DUST)
             .withColor(COLORS.random())
             .withLocation(trident.location)
-        Executors.async {_ ->
+        Executors.async { _ ->
             Particles.neopaganPentagram(1.5, 0.1, 0.0, 0.1, 300.0, particleDisplay, particleDisplay)
         }
 
@@ -119,7 +119,7 @@ class NightmareGlaiveItem : CustomItemFunctions() {
         val pin: Location,
         val particleDisplay: ParticleDisplay,
         val radius: Double = 14.0,
-        val playersRadius: Double = 5.0,
+        val playersRadius: Double = 7.0,
         val durationTicks: Long = 300L
     ) {
 
@@ -131,7 +131,7 @@ class NightmareGlaiveItem : CustomItemFunctions() {
                 addAll(pin.world.getNearbyPlayers(pin, playersRadius))
             }
             .filter {
-                it == player || !AbilityUtil.noDamagePermission(player, it)
+                it == player || !AbilityUtil.noDamagePermission(player, it) || (it is Player && it.isSneaking)
             }
             .toMutableList()
 
@@ -153,7 +153,7 @@ class NightmareGlaiveItem : CustomItemFunctions() {
             pin.world.playSound(pin, Sound.ITEM_LEAD_BREAK, 2.0f, Random.nextDouble(0.5, 0.8).toFloat())
 
             this.task = Executors.syncTimer(0, 1) { task ->
-                this.entities.removeIf { !it.isValid }
+                this.entities.removeIf { !it.isValid || (it is Player && player.isSneaking) }
                 if (++count > durationTicks || this.entities.isEmpty()) {
                     this.stopTicking()
                     return@syncTimer

@@ -436,13 +436,13 @@ class Listeners : ItemListener() {
         fire(data, Action.EMPTY_BUCKET, player, event)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPlayerPickupItem(event: PlayerAttemptPickupItemEvent) {
         val player = event.player
         fire(Util.getAllEquipmentNBT(player), Action.PICKUP_ITEM, player, event)
     }
 
-    @EventHandler // if you modify this event to include previous slot, items that use this need a conditional added to their logic
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) // if you modify this event to include previous slot, items that use this need a conditional added to their logic
     fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
         val player = event.player
         val datas = listOfNotNull(

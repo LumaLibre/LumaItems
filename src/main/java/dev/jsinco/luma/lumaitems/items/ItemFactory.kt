@@ -6,11 +6,11 @@ import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.enums.RomanNumeral
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
-import dev.jsinco.luma.lumaitems.util.PaperDataComponent
-import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
-import dev.jsinco.luma.lumaitems.util.UnValuedPaperDataComponent
+import dev.jsinco.luma.lumaitems.obj.PaperDataComponent
+import dev.jsinco.luma.lumaitems.obj.PersistentDataRecord
+import dev.jsinco.luma.lumaitems.obj.UnValuedPaperDataComponent
 import dev.jsinco.luma.lumaitems.util.Util
-import dev.jsinco.luma.lumaitems.util.ValuedPaperDataComponent
+import dev.jsinco.luma.lumaitems.obj.ValuedPaperDataComponent
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentType.Valued
 import net.kyori.adventure.text.format.NamedTextColor

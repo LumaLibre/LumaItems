@@ -3,7 +3,7 @@ package dev.jsinco.luma.lumaitems.items.misc.magical
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
+import dev.jsinco.luma.lumaitems.obj.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.obj.MagicItemCooldown
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles

@@ -71,7 +71,7 @@ abstract class ItemListener : Listener {
                 continue
             }
 
-            if (player?.location?.let { item.isDisabled(it) } == true) {
+            if (player?.location?.let { item.isDisabled(it) } == true && !fireAnyways) {
                 item.handleDisabled(player, event)
                 return
             }
@@ -96,7 +96,7 @@ abstract class ItemListener : Listener {
                 }
 
                 val item = customItem.value
-                if (player?.location?.let { item.isDisabled(it) } == true) {
+                if (player?.location?.let { item.isDisabled(it) } == true && !fireAnyways) {
                     item.handleDisabled(player, event)
                     break
                 }

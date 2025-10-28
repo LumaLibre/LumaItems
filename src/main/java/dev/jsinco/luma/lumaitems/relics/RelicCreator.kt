@@ -4,7 +4,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Rarity
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.FileManager
-import dev.jsinco.luma.lumaitems.util.PersistentDataRecord
+import dev.jsinco.luma.lumaitems.obj.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

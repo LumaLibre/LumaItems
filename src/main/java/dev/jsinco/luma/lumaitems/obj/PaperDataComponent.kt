@@ -1,4 +1,4 @@
-package dev.jsinco.luma.lumaitems.util
+package dev.jsinco.luma.lumaitems.obj
 
 import io.papermc.paper.datacomponent.DataComponentType
 
