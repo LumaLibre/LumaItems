@@ -35,10 +35,7 @@ import org.bukkit.scheduler.BukkitTask
 
 
 @FireAnyways(Action.ENTITY_DAMAGE)
-@Disable(
-    value = [WorldName.PINATA, WorldName.SPAWN, WorldName.EVENT_NEW],
-    hard = true
-)
+@Disable(WorldName.PINATA, WorldName.SPAWN, WorldName.EVENT_NEW)
 class NightmareGlaiveItem : CustomItemFunctions() {
 
     companion object {

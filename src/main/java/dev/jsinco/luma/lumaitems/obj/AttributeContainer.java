@@ -17,18 +17,6 @@ public record AttributeContainer(String key,
 
     private static final String CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-    public static AttributeContainer defaultAttributeContainer(Attribute attribute, double amount, @Nullable EquipmentSlotGroup slot) {
-        return new AttributeContainer("default-" + generateStringKey(9), attribute, AttributeModifier.Operation.ADD_NUMBER, getAmountBasedFromPlayer(attribute, amount), slot);
-    }
-
-    public static AttributeContainer of(String key, Attribute attribute, AttributeModifier.Operation operation, double amount, @Nullable EquipmentSlotGroup slot) {
-        return new AttributeContainer(key, attribute, operation, amount, slot);
-    }
-
-    public static AttributeContainer of(NamespacedKey key, Attribute attribute, AttributeModifier.Operation operation, double amount, @Nullable EquipmentSlotGroup slot) {
-        return new AttributeContainer(key.getKey(), attribute, operation, amount, slot);
-    }
-
     public NamespacedKey getKey() {
         return new NamespacedKey(LumaItems.getInstance(), key);
     }
@@ -62,5 +50,65 @@ public record AttributeContainer(String key,
             keyBuilder.append(CHARS.charAt(randomIndex));
         }
         return keyBuilder.toString();
+    }
+
+
+    public static AttributeContainer defaultAttributeContainer(Attribute attribute, double amount, @Nullable EquipmentSlotGroup slot) {
+        return new AttributeContainer("default-" + generateStringKey(9), attribute, AttributeModifier.Operation.ADD_NUMBER, getAmountBasedFromPlayer(attribute, amount), slot);
+    }
+
+    public static AttributeContainer of(String key, Attribute attribute, AttributeModifier.Operation operation, double amount, @Nullable EquipmentSlotGroup slot) {
+        return new AttributeContainer(key, attribute, operation, amount, slot);
+    }
+
+    public static AttributeContainer of(NamespacedKey key, Attribute attribute, AttributeModifier.Operation operation, double amount, @Nullable EquipmentSlotGroup slot) {
+        return new AttributeContainer(key.getKey(), attribute, operation, amount, slot);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+
+    public static class Builder {
+        private String key;
+        private Attribute attribute;
+        private AttributeModifier.Operation operation;
+        private double amount;
+        private EquipmentSlotGroup slot;
+
+        public Builder setKey(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public Builder setKey(NamespacedKey key) {
+            this.key = key.getKey();
+            return this;
+        }
+
+        public Builder setAttribute(Attribute attribute) {
+            this.attribute = attribute;
+            return this;
+        }
+
+        public Builder setOperation(AttributeModifier.Operation operation) {
+            this.operation = operation;
+            return this;
+        }
+
+        public Builder setAmount(double amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder setSlot(EquipmentSlotGroup slot) {
+            this.slot = slot;
+            return this;
+        }
+
+        public AttributeContainer build() {
+            return new AttributeContainer(key, attribute, operation, amount, slot);
+        }
     }
 }

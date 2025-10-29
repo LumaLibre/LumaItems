@@ -48,13 +48,16 @@ class MarigoldSunHatItem : CustomItemFunctions() {
             val value = player.eyeLocation.block.lightLevel  / 1.76
             val roundedDown = floor(value * 2) / 2
             val range = roundedDown.coerceAtLeast(5.0)
-            val item = player.location.getNearbyEntitiesByType(Item::class.java, range)
-            if (item.any { it.velocity.lengthSquared() > 0.1 }) return@sync // check if moving
+            val items = player.location.getNearbyEntitiesByType(Item::class.java, range)
+                .filter { player.location.distanceSquared(it.location) > 3.0 * 3.0 } // filter out items that are too close
+            if (items.any { it.velocity.lengthSquared() > 0.1 }) {
+                return@sync
+            } // check if moving
 
             Executors.syncTimer(0,1) { task ->
-                item.forEach { it ->
+                items.forEach { it ->
                     val distance = player.eyeLocation.distanceSquared(it.location)
-                    if (distance > 1.5 * 1.5) {
+                    if (distance > 1.9 * 1.9) {
                         it.velocity = BukkitVectors.flyToLivingEntity(player, it, 2.0)
                     } else {
                         task.cancel()

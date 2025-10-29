@@ -143,7 +143,7 @@ publishing {
 }
 
 fun getGitCommitHashShort(): String = ByteArrayOutputStream().use { stream ->
-    var branch = "none"
+    var hash = "none"
     try {
         project.exec {
             commandLine = listOf("git", "log", "-1", "--format=%h")
@@ -151,9 +151,9 @@ fun getGitCommitHashShort(): String = ByteArrayOutputStream().use { stream ->
         }
     } catch (e: Exception) {
         println("Failed to get git commit hash! (No git repository found?)")
-        return branch
+        return hash
     }
 
-    if (stream.size() > 0) branch = stream.toString(Charset.defaultCharset().name()).trim()
-    return branch
+    if (stream.size() > 0) hash = stream.toString(Charset.defaultCharset().name()).trim()
+    return hash
 }
