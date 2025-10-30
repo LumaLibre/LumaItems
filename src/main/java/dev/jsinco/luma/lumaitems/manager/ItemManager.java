@@ -16,11 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class ItemManager {
@@ -192,7 +188,18 @@ public final class ItemManager {
                 .stream()
                 .filter(clazz -> clazz.getPackageName()
                         .equalsIgnoreCase(packageName))
-                .map(ClassPath.ClassInfo::load)
+                .map(it -> {
+                    try {
+                        return it.load();
+                    } catch (NoClassDefFoundError e) {
+                        LumaItems.log("Failed to load class " + it.getName() + " due to missing dependency: " + e.getMessage());
+                        return null;
+                    } catch (Throwable e) {
+                        LumaItems.log("Failed to load class " + it.getName(), e);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 }

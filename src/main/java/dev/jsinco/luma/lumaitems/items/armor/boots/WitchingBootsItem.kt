@@ -44,8 +44,10 @@ class WitchingBootsItem : CustomItemFunctions() {
             .vanillaEnchants(
                 Enchantment.PROTECTION to 6,
                 Enchantment.FEATHER_FALLING to 7,
-                Enchantment.UNBREAKING to 10,
-                Enchantment.MENDING to 1
+                Enchantment.UNBREAKING to 8,
+                Enchantment.MENDING to 1,
+                Enchantment.SOUL_SPEED to 3,
+                Enchantment.THORNS to 3
             )
             .attributeModifiers(
                 AttributeContainer.builder()

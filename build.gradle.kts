@@ -6,9 +6,10 @@ plugins {
     id("java")
     id("maven-publish")
     kotlin("jvm") version "2.0.21"
-    id("com.gradleup.shadow") version "8.3.5"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
+    id("com.gradleup.shadow") version "9.2.2"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("dev.jsinco.pterodactyldeploy") version "1.15-SNAPSHOT"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 
@@ -48,15 +49,10 @@ dependencies {
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.10-R0.1-SNAPSHOT")
 }
 
 tasks {
-
-    // PaperWeight
-    assemble {
-        dependsOn(reobfJar)
-    }
 
     processResources {
         outputs.upToDateWhen { false }
@@ -84,11 +80,6 @@ tasks {
     }
 
 
-
-    reobfJar {
-        outputJar.set(layout.buildDirectory.file("${projectDir}${File.separator}build${File.separator}libs${File.separator}${project.name}.jar"))
-    }
-
     build {
         dependsOn(shadowJar)
     }
@@ -103,6 +94,10 @@ tasks {
             uploadFiles = mutableListOf(file("build/libs/LumaItems.jar"))
             deployCommands = mutableListOf("plugman reload LumaItems")
         }
+    }
+
+    runServer {
+        minecraftVersion("1.21.8")
     }
 }
 
@@ -142,18 +137,15 @@ publishing {
     }
 }
 
-fun getGitCommitHashShort(): String = ByteArrayOutputStream().use { stream ->
-    var hash = "none"
-    try {
-        project.exec {
-            commandLine = listOf("git", "log", "-1", "--format=%h")
-            standardOutput = stream
-        }
+fun getGitCommitHashShort(): String {
+    return try {
+        val process = ProcessBuilder("git", "log", "-1", "--format=%h")
+            .redirectErrorStream(true)
+            .start()
+        val result = process.inputStream.bufferedReader(Charset.defaultCharset()).readText().trim()
+        result.ifBlank { "none" }
     } catch (e: Exception) {
         println("Failed to get git commit hash! (No git repository found?)")
-        return hash
+        "none"
     }
-
-    if (stream.size() > 0) hash = stream.toString(Charset.defaultCharset().name()).trim()
-    return hash
 }

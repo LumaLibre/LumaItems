@@ -42,24 +42,27 @@ object GlowManager {
         NamedTextColor.YELLOW,
         NamedTextColor.WHITE
     )
-    val PACKET_COLORS = listOf(
-        EnumWrappers.ChatFormatting.AQUA,
-        EnumWrappers.ChatFormatting.BLACK,
-        EnumWrappers.ChatFormatting.BLUE,
-        EnumWrappers.ChatFormatting.DARK_AQUA,
-        EnumWrappers.ChatFormatting.DARK_BLUE,
-        EnumWrappers.ChatFormatting.DARK_GRAY,
-        EnumWrappers.ChatFormatting.DARK_GREEN,
-        EnumWrappers.ChatFormatting.DARK_PURPLE,
-        EnumWrappers.ChatFormatting.DARK_RED,
-        EnumWrappers.ChatFormatting.GOLD,
-        EnumWrappers.ChatFormatting.GRAY,
-        EnumWrappers.ChatFormatting.GREEN,
-        EnumWrappers.ChatFormatting.LIGHT_PURPLE,
-        EnumWrappers.ChatFormatting.RED,
-        EnumWrappers.ChatFormatting.YELLOW,
-        EnumWrappers.ChatFormatting.WHITE
-    )
+
+    val PACKET_COLORS by lazy {
+        listOf(
+            EnumWrappers.ChatFormatting.AQUA,
+            EnumWrappers.ChatFormatting.BLACK,
+            EnumWrappers.ChatFormatting.BLUE,
+            EnumWrappers.ChatFormatting.DARK_AQUA,
+            EnumWrappers.ChatFormatting.DARK_BLUE,
+            EnumWrappers.ChatFormatting.DARK_GRAY,
+            EnumWrappers.ChatFormatting.DARK_GREEN,
+            EnumWrappers.ChatFormatting.DARK_PURPLE,
+            EnumWrappers.ChatFormatting.DARK_RED,
+            EnumWrappers.ChatFormatting.GOLD,
+            EnumWrappers.ChatFormatting.GRAY,
+            EnumWrappers.ChatFormatting.GREEN,
+            EnumWrappers.ChatFormatting.LIGHT_PURPLE,
+            EnumWrappers.ChatFormatting.RED,
+            EnumWrappers.ChatFormatting.YELLOW,
+            EnumWrappers.ChatFormatting.WHITE
+        )
+    }
 
 
     private val board = Bukkit.getScoreboardManager().mainScoreboard

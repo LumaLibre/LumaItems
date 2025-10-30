@@ -22,7 +22,7 @@ class BouquetTrousersItem : CustomItemFunctions() {
 
     companion object {
         // The fastest way to do this is to use a list that's going to be clean most of the time
-        private val tracked: MutableList<UUID> = mutableListOf()
+        private val tracked: MutableSet<UUID> = HashSet()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -67,7 +67,7 @@ class BouquetTrousersItem : CustomItemFunctions() {
     }
 
     override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
-        if (tracked.contains(player.uniqueId)) {
+        if (tracked.contains(player.uniqueId) && event.cause == EntityDamageEvent.DamageCause.FALL && player.fallDistance < 10.0) {
             event.isCancelled = true
         }
     }

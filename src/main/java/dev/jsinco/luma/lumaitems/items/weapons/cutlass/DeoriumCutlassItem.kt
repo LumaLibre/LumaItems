@@ -90,7 +90,7 @@ class DeoriumCutlassItem : CustomItemFunctions() {
                 for (i in 0 until points) {
                     val dx: Double = cos(step + Math.PI * 2 * (i.toDouble() / points))
                     val dz: Double = sin(step + Math.PI * 2 * (i.toDouble() / points))
-                    armorStand.location.world.spawnParticle(Particle.INSTANT_EFFECT, armorStand.location.x + dx, armorStand.location.y, armorStand.location.z + dz, 1, 0.0, 0.0, 0.0, 0.1)
+                    armorStand.location.world.spawnParticle(Particle.INSTANT_EFFECT, armorStand.location.x + dx, armorStand.location.y, armorStand.location.z + dz, 1, 0.0, 0.0, 0.0, 0.1, Particle.Spell(color, 1f))
                     armorStand.location.world.spawnParticle(
                         Particle.DUST, armorStand.location.x + dx, armorStand.location.y, armorStand.location.z + dz, 1, 0.0, 0.0, 0.0, 0.5, Particle.DustOptions(
                             color, 1f))
