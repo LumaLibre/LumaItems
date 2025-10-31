@@ -12,6 +12,7 @@ import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+
 class MarigoldSunHatItem : CustomItemFunctions() {
 
 
@@ -54,7 +55,13 @@ class MarigoldSunHatItem : CustomItemFunctions() {
                 return@sync
             } // check if moving
 
+            var count = 0
             Executors.syncTimer(0,1) { task ->
+                if (items.any { it.world != player.world } || ++count > 150) {
+                    task.cancel()
+                    return@syncTimer
+                }
+
                 items.forEach { it ->
                     val distance = player.eyeLocation.distanceSquared(it.location)
                     if (distance > 1.9 * 1.9) {
