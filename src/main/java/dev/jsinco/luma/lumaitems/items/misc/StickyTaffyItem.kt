@@ -25,17 +25,17 @@ class StickyTaffyItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.Companion.builder()
             .name("<b><gradient:#f9e1f5:#c8d1ff:#d3caff:#dbecb1:#ffd6a5>Sticky Taffy</gradient></b>")
-            .customEnchants("<#d3caff>Sticky")
-            .material(Material.MAGENTA_DYE)
+            .customEnchants("<#d3caff>Sticky Items")
+            .material(Material.LIGHT_BLUE_DYE)
             .persistentData("sticky-taffy")
             .tier(Tier.HALLOWEEN_2025)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
             .lore(
                 "A sticky taffy that can",
                 "be held to store items",
-                "in a singular shulker",
-                "box when your inventory",
-                "is full."
+                "in a single shulker box",
+                "when your inventory is",
+                "too full to pick them up.",
             )
             .buildPair()
     }

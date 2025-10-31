@@ -69,6 +69,7 @@ tasks {
         exclude("kotlin/**")
         minimize()
         archiveClassifier.set("")
+        archiveVersion.set("")
     }
 
     jar {

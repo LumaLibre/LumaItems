@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.PacketEvent
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.items.ItemFactory
+import dev.jsinco.luma.lumaitems.items.weapons.bow.VigilanceDriverItem
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.manager.GlowManager
 import dev.jsinco.luma.lumaitems.shapes.Cuboid
@@ -27,6 +28,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -84,11 +86,14 @@ class VigilanceMattockItem : CustomItemFunctions() {
 
     override fun asyncGlobalTask() {
         for (displayableBlock in DISPLAYABLE_BLOCKS) {
-            val player = displayableBlock.ownerAsPlayer()
+            val player = Bukkit.getPlayer(displayableBlock.owner)
+            if (player == null) {
+                displayableBlock.remove()
+                continue
+            }
 
-            if (player == null || !Util.hasPersistentKey(player.inventory.itemInMainHand, KEY)) {
-
-                player?.let { this.clearPotionEffects(it) }
+            if (!Util.isItemInSlot(KEY, EquipmentSlot.HAND, player)) {
+                this.clearPotionEffects(player)
                 displayableBlock.remove()
             }
         }
