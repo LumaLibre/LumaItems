@@ -11,7 +11,7 @@ import dev.jsinco.luma.lumaitems.enums.Rarity
 import dev.jsinco.luma.lumaitems.relics.RelicCreator
 import dev.jsinco.luma.lumaitems.relics.RelicDisassembler
 import dev.jsinco.luma.lumaitems.enums.EntityArmor
-import dev.jsinco.luma.lumaitems.enums.ToolType
+import dev.jsinco.luma.lumaitems.enums.GenericToolType
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Bukkit
@@ -73,7 +73,7 @@ class GeneralListeners : Listener {
             ).getRelicItem()
 
             Bukkit.getScheduler().runTask(plugin, Runnable {
-                if (ToolType.getToolType(relic.type) == ToolType.ARMOR) {
+                if (GenericToolType.getGenericToolType(relic.type) == GenericToolType.ARMOR) {
                     val entityArmor = EntityArmor.getEquipmentSlotFromType(relic.type)
                     entityArmor?.setEntityArmorSlot(livingEntity, relic)
                 } else {

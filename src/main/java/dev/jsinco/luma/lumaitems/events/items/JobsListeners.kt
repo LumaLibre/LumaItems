@@ -14,13 +14,15 @@ class JobsListeners : ItemListener() {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     fun onJobsExpGain(event: JobsExpGainEvent) {
-        val p = event.player.player ?: return
-        fire(Util.getAllEquipmentNBT(p), Action.JOBS_EXP_GAIN, p, event, true)
+        val player = event.player.player ?: return
+        if (this.isTreeFeller(player)) return
+        fire(Util.getAllEquipmentNBT(player), Action.JOBS_EXP_GAIN, player, event, true)
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     fun onJobsPrePayment(event: JobsPrePaymentEvent) {
-        val p = event.player.player ?: return
-        fire(Util.getAllEquipmentNBT(p), Action.JOBS_PRE_PAYMENT, p, event, true)
+        val player = event.player.player ?: return
+        if (this.isTreeFeller(player)) return
+        fire(Util.getAllEquipmentNBT(player), Action.JOBS_PRE_PAYMENT, player, event, true)
     }
 }

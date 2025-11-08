@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 class ArchaelSet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
-        val astralSetFactory = AstralSetFactory("Archael")
+        val astralSetFactory = AstralSetFactory("archael-set", "Archael")
 
         astralSetFactory.astralSetItem(
             Material.ELYTRA,

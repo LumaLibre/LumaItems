@@ -1,6 +1,5 @@
-package dev.jsinco.luma.lumaitems.items.tools.hatchet
+package dev.jsinco.luma.lumaitems.items.tools.nests
 
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
@@ -12,13 +11,16 @@ import dev.jsinco.luma.lumaitems.util.BukkitVectors
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import java.awt.Color
 import kotlin.random.Random
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Item
@@ -28,55 +30,22 @@ import org.bukkit.entity.Snowball
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 
-class EquinoxHatchetItem : CustomItemFunctions() {
+abstract class EquinoxItemNest : CustomItemFunctions() {
 
     companion object {
-        private val TREE_PATTERN = Regex(".*(LOG|WOOD|STEM|HYPHAE|LEAVES|WART_BLOCK|SHROOM).*")
         private val DYES = Material.entries.filter { it.name.matches(Regex(".*_DYE")) }
         private val COLORS = listOf("#feb17d", "#f9ce90", "#f9f2db", "#b8d1c0", "#af97c7", "#ed9bb0")
             .map { Color.decode(it) }
-        private val FORTUNE_5_AXE = ItemStack(Material.NETHERITE_AXE)
-            .apply { addUnsafeEnchantment(Enchantment.FORTUNE, 5) }
-        private val KEY = Util.namespacedKey("equinox-hatchet")
-
-        private const val ACTIVATOR = "activator"
+        private val ACTIVATOR_KEY = Util.namespacedKey("equinox-nest-activator")
         private const val SPEED_FACTOR = 3.0
         private const val MAX_FLY_TIME = 200 // 10s
     }
 
 
-    override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
-            .name("<b><gradient:#feb17d:#f9ce90:#f9f2db:#b8d1c0:#af97c7:#ed9bb0>Equinox Hatchet</gradient></b>")
-            .customEnchants("<#f9f2db>Pentageyser")
-            .persistentData(KEY)
-            .material(Material.NETHERITE_AXE)
-            .tier(Tier.HALLOWEEN_2025)
-            .vanillaEnchants(
-                Enchantment.FORTUNE to 5,
-                Enchantment.EFFICIENCY to 8,
-                Enchantment.MENDING to 1,
-                Enchantment.UNBREAKING to 9
-            )
-            .lore(
-                "<#f9f2db>Right-click</#f9f2db> to launch",
-                "<#f9f2db>3</#f9f2db> geyser seeds in various",
-                "directions around you.",
-                "",
-                "Geysers launched from this",
-                "tool will pulse, launching",
-                "several destructive balls",
-                "that can break down trees.",
-                "",
-                "<red>Cooldown: 2m"
-            )
-            .buildPair()
-    }
-
-
+    abstract fun delegateBreakBlock(player: Player, block: Block): List<Item>?
+    abstract fun key(): NamespacedKey
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) return
@@ -89,7 +58,7 @@ class EquinoxHatchetItem : CustomItemFunctions() {
         val snowballs = mutableMapOf<Snowball, ParticleDisplay>()
         repeat(amt) {
             val spawnLoc = SnowballGeyser.randomSpawnPoint(player.location)
-            val snowball = SnowballGeyser.snowball(spawnLoc, player, true).also {
+            val snowball = SnowballGeyser.snowball(spawnLoc, player, true, key()).also {
                 snowballs[it] = ParticleDisplay.of(Particle.DUST).withColor(COLORS.random())
             }
             SnowballGeyser.propelAway(player.location, spawnLoc, snowball, 0.25)
@@ -117,33 +86,18 @@ class EquinoxHatchetItem : CustomItemFunctions() {
 
         pin.world.playSound(pin, Sound.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, 0.3f, 2f)
 
-        if (event.entity.hasMetadata(ACTIVATOR)) {
-            val snowballGeyser = SnowballGeyser(player, pin, 7 to 12, 5)
+        if (Util.hasPersistentKey(event.entity, ACTIVATOR_KEY)) {
+            val snowballGeyser = SnowballGeyser(player, pin, 7 to 12, 5, key())
             snowballGeyser.startTicking()
             return
         }
 
         val sphere = Sphere(pin, 1.5, 0.0)
         sphere.getSphereFast { block ->
-            if (!block.type.name.matches(TREE_PATTERN)) {
-                return@getSphereFast
+            val drops = delegateBreakBlock(player, block)
+            if (drops != null) {
+                flyToPlayerExecutor(drops, player)
             }
-            val drops = block.getDrops(FORTUNE_5_AXE).map { itemStack ->
-                block.world.dropItemNaturally(block.location, itemStack)
-            }
-
-            val sound =
-            if (block.type.name.endsWith("_LEAVES")) { // lazy check for sfx
-                Sound.BLOCK_GRASS_BREAK
-            } else {
-                Sound.BLOCK_WOOD_BREAK
-            }
-            block.world.playSound(block.location, sound, 0.5f, 1f)
-
-            block.breakWithLog(player)
-            player.inventory.itemInMainHand.damage(1, player) // no checks
-
-            flyToPlayerExecutor(drops, player)
         }
 
         Executors.async { task ->
@@ -180,7 +134,8 @@ class EquinoxHatchetItem : CustomItemFunctions() {
         val pin: Location,
         val snowballCountRange: Pair<Int, Int>,
         val pulses: Int,
-        val pulseDelay: Long = 20
+        val key: NamespacedKey,
+        val pulseDelay: Long = 20,
     ) {
 
         val snowballs: MutableList<Snowball> = mutableListOf()
@@ -206,7 +161,7 @@ class EquinoxHatchetItem : CustomItemFunctions() {
                 pin.world.playSound(pin, Sound.ENTITY_WARDEN_HEARTBEAT, 0.5f, 7f)
                 repeat(amt) {
                     val loc = randomSpawnPoint(pin)
-                    val snowball = snowball(loc, player, false)
+                    val snowball = snowball(loc, player, false, key)
                     propelAway(pin, loc, snowball)
                     snowballs.add(snowball)
                 }
@@ -236,15 +191,15 @@ class EquinoxHatchetItem : CustomItemFunctions() {
 
         companion object {
 
-            fun snowball(spawnLoc: Location, shooter: Player, seed: Boolean): Snowball {
+            fun snowball(spawnLoc: Location, shooter: Player, seed: Boolean, key: NamespacedKey): Snowball {
                 val ball = spawnLoc.world.spawn(spawnLoc, Snowball::class.java)
                 if (seed) {
-                    ball.setMetadata(ACTIVATOR, FixedMetadataValue(LumaItems.getInstance(), true))
+                    Util.setPersistentKey(ball, ACTIVATOR_KEY, PersistentDataType.BOOLEAN, true)
                 } else {
                     ball.item = ItemStack(DYES.random())
                 }
 
-                Util.setPersistentKey(ball, KEY, PersistentDataType.SHORT, 1)
+                Util.setPersistentKey(ball, key, PersistentDataType.SHORT, 1)
                 ball.shooter = shooter
 
                 return ball
@@ -275,6 +230,85 @@ class EquinoxHatchetItem : CustomItemFunctions() {
             }
         }
     }
+}
+
+class EquinoxHatchetItem : EquinoxItemNest() {
+
+    companion object {
+        private val TREE_PATTERN = Regex(".*(LOG|WOOD|STEM|HYPHAE|LEAVES|WART_BLOCK|SHROOM).*")
+        private val FORTUNE_5_AXE = ItemStack(Material.NETHERITE_AXE)
+            .apply { addUnsafeEnchantment(Enchantment.FORTUNE, 5) }
+        private val KEY = Util.namespacedKey("equinox-hatchet")
+    }
+
+    override fun createItem(): Pair<String, ItemStack> {
+        return ItemFactory.Companion.builder()
+            .name("<b><gradient:#feb17d:#f9ce90:#f9f2db:#b8d1c0:#af97c7:#ed9bb0>Equinox Hatchet</gradient></b>")
+            .customEnchants("<#f9f2db>Pentageyser")
+            .persistentData(KEY)
+            .material(Material.NETHERITE_AXE)
+            .tier(Tier.HALLOWEEN_2025)
+            .vanillaEnchants(
+                Enchantment.FORTUNE to 5,
+                Enchantment.EFFICIENCY to 8,
+                Enchantment.MENDING to 1,
+                Enchantment.UNBREAKING to 9
+            )
+            .lore(
+                "<#f9f2db>Right-click</#f9f2db> to launch",
+                "<#f9f2db>3</#f9f2db> geyser seeds in various",
+                "directions around you.",
+                "",
+                "Geysers launched from this",
+                "tool will pulse, launching",
+                "several destructive balls",
+                "that can break down trees.",
+                "",
+                "<red>Cooldown: 2m"
+            )
+            .buildPair()
+    }
 
 
+    override fun delegateBreakBlock(player: Player, block: Block): List<Item>? {
+        if (!block.type.name.matches(TREE_PATTERN)) {
+            return null
+        }
+        val drops = block.getDrops(FORTUNE_5_AXE).map { itemStack ->
+            block.world.dropItemNaturally(block.location, itemStack)
+        }
+
+        val sound =
+            if (block.type.name.endsWith("_LEAVES")) { // lazy check for sfx
+                Sound.BLOCK_GRASS_BREAK
+            } else {
+                Sound.BLOCK_WOOD_BREAK
+            }
+        block.world.playSound(block.location, sound, 0.5f, 1f)
+
+        block.breakWithLog(player)
+        player.inventory.itemInMainHand.damage(1, player) // no checks
+        return drops
+    }
+
+    override fun key(): NamespacedKey {
+        return KEY
+    }
+
+}
+
+@Ignore
+class EquinoxHarrowerItem : EquinoxItemNest() {
+
+    override fun createItem(): Pair<String, ItemStack> {
+        TODO("Not yet implemented")
+    }
+
+    override fun delegateBreakBlock(player: Player, block: Block): List<Item>? {
+        TODO("Not yet implemented")
+    }
+
+    override fun key(): NamespacedKey {
+        TODO("Not yet implemented")
+    }
 }

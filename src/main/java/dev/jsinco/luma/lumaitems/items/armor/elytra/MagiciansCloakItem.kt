@@ -7,7 +7,7 @@ import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import dev.jsinco.luma.lumaitems.enums.ToolType
+import dev.jsinco.luma.lumaitems.enums.GenericToolType
 import dev.jsinco.luma.lumaitems.util.Util
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
@@ -62,9 +62,9 @@ class MagiciansCloakItem : CustomItem {
 
             Action.RIGHT_CLICK -> {
                 val target = player.getTargetEntity(15) as? LivingEntity ?: return false
-                val itemInHand = ToolType.getToolType(player.inventory.itemInMainHand.type)
+                val itemInHand = GenericToolType.getGenericToolType(player.inventory.itemInMainHand.type)
 
-                if (getTotalDamage(player) < 500 || AbilityUtil.noDamagePermission(player, target) || (itemInHand != ToolType.TOOL && itemInHand != ToolType.WEAPON)) {
+                if (getTotalDamage(player) < 500 || AbilityUtil.noDamagePermission(player, target) || (itemInHand != GenericToolType.TOOL && itemInHand != GenericToolType.WEAPON)) {
                     return false
                 }
 

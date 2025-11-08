@@ -4,7 +4,7 @@ import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.enums.ToolType
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
@@ -34,7 +34,7 @@ class MagmaticSet : AstralSet {
     }
 
     override fun setItems(): List<ItemStack> {
-        val factory = AstralSetFactory("Magmatic", mutableListOf("&#AC87FBVolcanic"))
+        val factory = AstralSetFactory("magmatic-set","Magmatic", mutableListOf("&#AC87FBVolcanic"))
 
         factory.commonEnchants = mutableMapOf(
             Enchantment.PROTECTION to 5, Enchantment.SHARPNESS to 6, Enchantment.UNBREAKING to 6,
@@ -49,11 +49,11 @@ class MagmaticSet : AstralSet {
         )
 
         for (material in materials) {
-            val type = GenericMCToolType.getToolType(material) ?: continue
+            val type = ToolType.getToolType(material) ?: continue
             val lore = when (type) {
-                GenericMCToolType.PICKAXE -> mutableListOf("Breaking ores with this", "tool will automatically", "smelt them")
-                GenericMCToolType.SHOVEL -> mutableListOf("Breaking sand with this", "tool will automatically", "convert it to glass")
-                GenericMCToolType.SWORD -> mutableListOf("Right-click to send out flames", "and ignite entities", "", "&cCooldown: 10s")
+                ToolType.PICKAXE -> mutableListOf("Breaking ores with this", "tool will automatically", "smelt them")
+                ToolType.SHOVEL -> mutableListOf("Breaking sand with this", "tool will automatically", "convert it to glass")
+                ToolType.SWORD -> mutableListOf("Right-click to send out flames", "and ignite entities", "", "&cCooldown: 10s")
                 else -> mutableListOf()
             }
 
@@ -71,11 +71,11 @@ class MagmaticSet : AstralSet {
     }
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        val genericMCToolType = GenericMCToolType.getToolType(player.inventory.itemInMainHand)
+        val genericMCToolType = ToolType.getToolType(player.inventory.itemInMainHand)
         when (type) {
             Action.RIGHT_CLICK -> {
                 // poorly written but im in a rush
-                if ((Util.isItemInSlot("magmatic-set", EquipmentSlot.HAND, player)|| Util.isItemInSlot("magmatic-set", EquipmentSlot.OFF_HAND, player)) && genericMCToolType == GenericMCToolType.SWORD && !QuickTasks.isOnCooldown(this, player)) {
+                if ((Util.isItemInSlot("magmatic-set", EquipmentSlot.HAND, player)|| Util.isItemInSlot("magmatic-set", EquipmentSlot.OFF_HAND, player)) && genericMCToolType == ToolType.SWORD && !QuickTasks.isOnCooldown(this, player)) {
                     AbilityUtil.spawnSpell(player, Particle.FLAME, "magmatic-set", 120L)
                     QuickTasks.addCooldown(this, player.uniqueId, 200L)
                 }
@@ -87,9 +87,9 @@ class MagmaticSet : AstralSet {
             }
             Action.BREAK_BLOCK -> {
                 event as BlockBreakEvent
-                if (genericMCToolType == GenericMCToolType.PICKAXE) {
+                if (genericMCToolType == ToolType.PICKAXE) {
                     if (pickaxeSmelt(event.block, event.block.getDrops(player.inventory.itemInMainHand))) event.isDropItems = false
-                } else if (genericMCToolType == GenericMCToolType.SHOVEL) {
+                } else if (genericMCToolType == ToolType.SHOVEL) {
                     if (shovelSmelt(event.block, event.block.getDrops(player.inventory.itemInMainHand))) event.isDropItems = false
                 }
             }

@@ -200,7 +200,7 @@ class ItemFactory(
             combinedLore.addAll(lore.map { it })
             combinedLore.addAll(miniMessageTierFormat.map { it.replace("<PLACEHOLDER>", tier) })
 
-            meta.displayName(MiniMessageUtil.mm(name).decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.TRUE))
+            meta.displayName(MiniMessageUtil.mm(name)/*.decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.TRUE)*/)
             meta.lore(MiniMessageUtil.mml(combinedLore).map { it.colorIfAbsent(NamedTextColor.WHITE) })
         }
 
@@ -255,7 +255,7 @@ class ItemFactory(
     }
 
 
-    class Builder {
+    open class Builder : Cloneable {
         private var name: String = ""
         private var customEnchants: MutableList<String> = mutableListOf()
         private var lore: MutableList<String> = mutableListOf()
@@ -305,7 +305,6 @@ class ItemFactory(
         fun addSpace(addSpace: Boolean) = apply { this.addSpace = addSpace }
         fun autoHat(autoHat: Boolean) = apply { this.autoHat = autoHat }
         fun attributeModifiers(attributeModifiers: MutableMap<Attribute, AttributeModifier>) = apply { this.attributeModifiers = attributeModifiers }
-        @Suppress("UnstableApiUsage")
         fun attributeModifiers(vararg containers: AttributeContainer) = apply {
             this.attributeModifiers = containers.associate {
                 it.attribute to AttributeModifier(it.key, it.amount, it.operation, it.slot)
@@ -319,17 +318,13 @@ class ItemFactory(
         fun persistentDataValue(persistentDataValue: Short) = apply { this.persistentDataValue = persistentDataValue }
         fun amount(amount: Int) = apply { this.amount = amount }
 
-        fun build() = ItemFactory(
-            name, customEnchants, lore, material, persistentData, vanillaEnchants,
-            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, quotes, b64PHead,
-            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount
-        ).apply { miniMessage() }
-
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
             tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, quotes, b64PHead,
             spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount
         )
+
+        fun build() = buildNoMiniMessage().apply { miniMessage() }
 
         fun buildPair(): Pair<String, ItemStack> {
             if (persistentData.size != 1) {
@@ -339,5 +334,12 @@ class ItemFactory(
             return Pair(persistentData[0], build().createItem())
         }
 
+        fun buildItem(): ItemStack {
+            return build().createItem()
+        }
+
+        override fun clone(): Builder {
+            return super.clone() as Builder
+        }
     }
 }

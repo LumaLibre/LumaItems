@@ -1,8 +1,9 @@
 package dev.jsinco.luma.lumaitems.items.astral.upgrades
 
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
-import dev.jsinco.luma.lumaitems.util.Util
-import org.bukkit.ChatColor
+import dev.jsinco.luma.lumaitems.enums.ToolType
+import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
@@ -39,22 +40,22 @@ class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() 
     private fun updateAstralItemTier(item: ItemStack) {
         val meta = item.itemMeta ?: return
 
-        val currentLore = meta.lore ?: return
+        val currentLore = meta.lore() ?: return
         for ((i, loreLine) in currentLore.withIndex()) {
-            val loreLineStripped = ChatColor.stripColor(loreLine) ?: continue
-            if (loreLineStripped.contains("Tier • Astral")) {
-                currentLore[i] = Util.colorcode("&#EEE1D5Tier • &#AC87FB&lAstral&#CAB5F6+")
+            val loreLineStripped = PlainTextComponentSerializer.plainText().serialize(loreLine)
+            if (loreLineStripped.contains("Tier •")) {
+                currentLore[i] = MiniMessageUtil.mm("<#EEE1D5>Tier • ${Tier.ASTRAL}<#CAB5F6>+")
                 break
             }
         }
 
-        meta.lore = currentLore
+        meta.lore(currentLore)
         item.itemMeta = meta
     }
 
     companion object {
         fun upgradeAstralItem(item: ItemStack, upgradeTier: AstralUpgradeTier) {
-            val genericMCToolType = GenericMCToolType.getToolType(item)
+            val genericMCToolType = ToolType.getToolType(item)
 
             if (modifiableMaterials.contains(genericMCToolType)) {
                 // TODO: Look more into exactly why this is deprecated. Haven't experienced any of the issues mentioned
@@ -78,3 +79,19 @@ class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() 
         }
     }
 }
+
+//    private fun updateAstralItemTier(item: ItemStack) {
+//        val meta = item.itemMeta ?: return
+//
+//        val currentLore = meta.lore ?: return
+//        for ((i, loreLine) in currentLore.withIndex()) {
+//            val loreLineStripped = ChatColor.stripColor(loreLine) ?: continue
+//            if (loreLineStripped.contains("Tier • Astral")) {
+//                currentLore[i] = Util.colorcode("&#EEE1D5Tier • &#AC87FB&lAstral&#CAB5F6+")
+//                break
+//            }
+//        }
+//
+//        meta.lore = currentLore
+//        item.itemMeta = meta
+//    }

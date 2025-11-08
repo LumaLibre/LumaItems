@@ -3,24 +3,23 @@ disassembler:
     '5': 'lumaitems relic %player% core lunar'
     '20': 'csap box rare %player%'
     '29': 'points give %player% 5'
-    '30': 'lumaitems relic %player% shard'
-    '40': 'repairtoken give %player% Repair3 1'
+    '39': 'repairtoken give %player% Repair3 1'
     '41': 'csap box common %player%'
     '60': 'give %player% experience_bottle 16'
     '38': 'give %player% netherite_scrap 1'
     '45': 'repairtoken give %player% Repair2 1'
     '42': 'give %player% diamond 3'
     '48': 'give %player% iron_ingot 5'
-    '52': 'repairtoken give %player% Repair1 1'
+    '47': 'repairtoken give %player% Repair1 1'
     '43': 'give %player% gold_ingot 5'
     '50': 'give %player% coal_block 4'
+    '44': 'lumaitems relic %player% shard 4'
   blocks:
     spawnDec:
-      world: 'world'
+      world: 'spawn'
       x: 199
       y: 61
       z: 215
-
 
 
 relic-materials:
@@ -35,6 +34,15 @@ relic-materials:
     - 'DIAMOND_SHOVEL'
     - 'DIAMOND_HOE'
   nova:
+    - 'COPPER_HELMET'
+    - 'COPPER_CHESTPLATE'
+    - 'COPPER_LEGGINGS'
+    - 'COPPER_BOOTS'
+    - 'COPPER_SWORD'
+    - 'COPPER_PICKAXE'
+    - 'COPPER_AXE'
+    - 'COPPER_SHOVEL'
+    - 'COPPER_HOE'
     - 'GOLDEN_HELMET'
     - 'GOLDEN_CHESTPLATE'
     - 'GOLDEN_LEGGINGS'
@@ -64,6 +72,15 @@ relic-materials:
     - 'STONE_HOE'
     - 'BOW'
   pulsar:
+    - 'COPPER_HELMET'
+    - 'COPPER_CHESTPLATE'
+    - 'COPPER_LEGGINGS'
+    - 'COPPER_BOOTS'
+    - 'COPPER_SWORD'
+    - 'COPPER_PICKAXE'
+    - 'COPPER_AXE'
+    - 'COPPER_SHOVEL'
+    - 'COPPER_HOE'
     - 'GOLDEN_HELMET'
     - 'GOLDEN_CHESTPLATE'
     - 'GOLDEN_LEGGINGS'
@@ -239,6 +256,43 @@ names:
     - "Tree"
     - "Stinky"
     - "Coffee's"
+    - "Krox's"
+    - "Prism's"
+    - "Bailey's"
+    - "Soda's"
+    - "Legit's"
+    - "Brand's"
+    - "Tom's"
+    - "Adora's"
+    - "Oddi's"
+    - "Bubbles'"
+    - "Leah's"
+    - "Tsui's"
+    - "Sunni's"
+    - "Slime's"
+    - "Casper's"
+    - "Autumn's"
+    - "Ara's"
+    - "Syielves'"
+    - "Maddie's"
+    - "Purple's"
+    - "Diverse's"
+    - "Bea's"
+    - "Tisol's"
+    - "Mlien's"
+    - "Duck's"
+    - "Corpes'"
+    - "Daisy's"
+    - "Lee's"
+    - "Saph's"
+    - "Fiellessi's"
+    - "Mush's"
+    - "Seiten's"
+    - "Max's"
+    - "yessir's"
+    - "McArth's"
+    - "Num's"
+    - "WetKetchup's"
   suffixes:
     - "Vortex"
     - "Elegance"
@@ -306,5 +360,13 @@ names:
     - "Power"
     - "Might"
     - "Chance"
-    - "Lumin's"
+    - "Lumin"
     - "Smile"
+    - "Monster"
+    - "Eggs"
+    - "Spider"
+    - "Man"
+    - "Bunny"
+    - "Love"
+    - "Joker"
+    - "Hugs"

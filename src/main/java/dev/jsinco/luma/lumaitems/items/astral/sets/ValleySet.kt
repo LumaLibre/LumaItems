@@ -3,7 +3,7 @@ package dev.jsinco.luma.lumaitems.items.astral.sets
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.enums.ToolType
 import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakWithLog
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Material
@@ -20,7 +20,7 @@ import kotlin.random.Random
 class ValleySet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
-        val astralSetFactory = AstralSetFactory("Valley", mutableListOf("&#AC87FBIlk"))
+        val astralSetFactory = AstralSetFactory("valley-set", "Valley", mutableListOf("&#AC87FBIlk"))
         astralSetFactory.commonEnchants = mutableMapOf(
             Enchantment.MENDING to 1,
             Enchantment.UNBREAKING to 5,
@@ -29,13 +29,13 @@ class ValleySet : AstralSet {
         astralSetFactory.astralSetItem(
             Material.GOLDEN_SHOVEL,
             mutableMapOf(Enchantment.EFFICIENCY to 6, Enchantment.FORTUNE to 5),
-            mutableListOf("Has the ability to remove", "water from the direction the", "user is looking")
+            mutableListOf("Has the ability to remove", "water from the direction the", "user is looking.")
         )
 
         astralSetFactory.astralSetItem(
             Material.GOLDEN_SWORD,
             mutableMapOf(Enchantment.SHARPNESS to 6, Enchantment.SMITE to 6, Enchantment.SWEEPING_EDGE to 4),
-            mutableListOf("Grants the user potion buffs", "upon damaging an enemy")
+            mutableListOf("Grants the user potion buffs", "upon damaging an enemy.")
         )
 
         astralSetFactory.astralSetItem(
@@ -47,7 +47,7 @@ class ValleySet : AstralSet {
         astralSetFactory.astralSetItem(
             Material.GOLDEN_HOE,
             mutableMapOf(Enchantment.EFFICIENCY to 6, Enchantment.FORTUNE to 5),
-            mutableListOf("Has a chance to drop rare", "crops when breaking blocks")
+            mutableListOf("Has a chance to drop rare", "crops when breaking blocks.")
         )
 
         astralSetFactory.astralSetItem(
@@ -64,11 +64,11 @@ class ValleySet : AstralSet {
     }
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        val tool = GenericMCToolType.getToolType(player.inventory.itemInMainHand)
+        val tool = ToolType.getToolType(player.inventory.itemInMainHand)
 
         when (type) {
             Action.LEFT_CLICK, Action.RIGHT_CLICK -> {
-                if (tool != GenericMCToolType.SHOVEL) return false
+                if (tool != ToolType.SHOVEL) return false
                 val targetBlock = player.getTargetBlockExact(45, FluidCollisionMode.ALWAYS) ?: return false
 
                 // .name.contains("WATER")
@@ -78,7 +78,7 @@ class ValleySet : AstralSet {
             }
 
             Action.ENTITY_DAMAGE -> {
-                if (tool != GenericMCToolType.SWORD) return false
+                if (tool != ToolType.SWORD) return false
                 event as EntityDamageByEntityEvent
                 if (event.entity !is Monster) return false
                 player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 100, 0, false, false, false))
@@ -86,7 +86,7 @@ class ValleySet : AstralSet {
             }
 
             Action.BREAK_BLOCK -> {
-                if (tool == GenericMCToolType.HOE && Random.nextInt(100) < 3) {
+                if (tool == ToolType.HOE && Random.nextInt(100) < 3) {
                     event as BlockBreakEvent
                     event.block.world.dropItem(event.block.location,
                         ItemStack(if (Random.nextBoolean()) Material.WHEAT else Material.GOLDEN_CARROT))

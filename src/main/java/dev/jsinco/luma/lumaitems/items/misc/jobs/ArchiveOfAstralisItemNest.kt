@@ -2,7 +2,8 @@ package dev.jsinco.luma.lumaitems.items.misc.jobs
 
 import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
-import com.gmail.nossr50.api.AbilityAPI as mcMMOAbilityAPI
+import com.gmail.nossr50.api.AbilityAPI as MCMMOAbilityAPI
+import dev.jsinco.luma.lumacore.utility.Logging
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.items.ItemFactory
@@ -75,11 +76,15 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
     }
 
     override fun executeWithContainer(type: Action, player: Player, event: Any, container: PersistentDataContainerView): Boolean {
-        if (LumaItems.isWithmcMMO() && mcMMOAbilityAPI.treeFellerEnabled(player)) {
-            // Kroxxis ticket @1/19/25, mcMMO treefeller with multiple books
-            // has way too many variables for me to deal with right now,
-            // just disabling for now.
-            return false
+        try {
+            if (LumaItems.isWithmcMMO() && MCMMOAbilityAPI.treeFellerEnabled(player)) {
+                // Kroxxis ticket @1/19/25, mcMMO treefeller with multiple books
+                // has way too many variables for me to deal with right now,
+                // just disabling for now.
+                return false
+            }
+        } catch (throwable: Throwable) {
+            Logging.errorLog("Error checking mcMMO tree feller state for player ${player.name}", throwable)
         }
 
         val level: Short = container.get(nameSpacedKey, PersistentDataType.SHORT) ?: 2

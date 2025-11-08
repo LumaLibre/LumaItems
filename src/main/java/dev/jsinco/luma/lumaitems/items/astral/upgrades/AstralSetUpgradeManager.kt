@@ -2,15 +2,15 @@ package dev.jsinco.luma.lumaitems.items.astral.upgrades
 
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.manager.FileManager
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.enums.ToolType
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 
 open class AstralSetUpgradeManager {
     companion object {
-        val modifiableMaterials: List<GenericMCToolType> = listOf(
-            GenericMCToolType.HELMET, GenericMCToolType.CHESTPLATE, GenericMCToolType.LEGGINGS, GenericMCToolType.BOOTS,
-            GenericMCToolType.SWORD, GenericMCToolType.PICKAXE, GenericMCToolType.AXE, GenericMCToolType.SHOVEL, GenericMCToolType.HOE
+        val modifiableMaterials: List<ToolType> = listOf(
+            ToolType.HELMET, ToolType.CHESTPLATE, ToolType.LEGGINGS, ToolType.BOOTS,
+            ToolType.SWORD, ToolType.PICKAXE, ToolType.AXE, ToolType.SHOVEL, ToolType.HOE
         )
 
         @JvmStatic val upgrades: MutableMap<String, MutableList<AstralUpgradeTier>> = mutableMapOf()
@@ -54,7 +54,7 @@ open class AstralSetUpgradeManager {
         for (stringEnchant in stringEnchants) {
             val pair = AstralUpgradeEnchantment.deserializeAndRemoveApplyTo(stringEnchant)
 
-            val toolsToApplyTo: List<GenericMCToolType>? = pair.first
+            val toolsToApplyTo: List<ToolType>? = pair.first
             val finalStringEnchant = pair.second
 
             val split = finalStringEnchant.split("/")

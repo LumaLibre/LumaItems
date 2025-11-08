@@ -49,7 +49,7 @@ public final class LumaItems extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        FileManager.generateDefaultFiles();
+        FileManager.generateDefaultFiles(); // TODO: Replace FileManager with Okaeri
         long start = System.currentTimeMillis();
         ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
         reflectionUtil.whitelistPackages(

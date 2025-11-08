@@ -1,12 +1,13 @@
 package dev.jsinco.luma.lumaitems.items.astral.sets
 
-import dev.jsinco.luma.lumaitems.LumaItems
+import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.enums.ToolType
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
-import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
 import dev.jsinco.luma.lumaitems.util.Util
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -23,8 +24,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
 
 class KazkanSet : AstralSet {
 
@@ -34,7 +33,7 @@ class KazkanSet : AstralSet {
     }
 
     override fun setItems(): List<ItemStack> {
-        val factory = AstralSetFactory("Kazkan", mutableListOf("&#AC87FBInvigorated"))
+        val factory = AstralSetFactory("kazkan-set","Kazkan", mutableListOf("&#AC87FBInvigorated"))
 
         factory.commonEnchants = mutableMapOf(
             Enchantment.UNBREAKING to 7,
@@ -86,13 +85,13 @@ class KazkanSet : AstralSet {
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.RIGHT_CLICK -> {
-                val genericMCToolType: GenericMCToolType = GenericMCToolType.getToolType(player.inventory.itemInMainHand) ?: return false
+                val genericMCToolType: ToolType = ToolType.getToolType(player.inventory.itemInMainHand) ?: return false
 
-                if (genericMCToolType == GenericMCToolType.AXE) {
+                if (genericMCToolType == ToolType.AXE) {
                     val holdingPlayer = holdingPlayers.find { it.player.uniqueId == player.uniqueId }
                         ?: ClickHoldingPlayer(player).also { holdingPlayers.add(it) }
                     holdingPlayer.updateClickTime()
-                } else if (genericMCToolType == GenericMCToolType.MAGICAL) {
+                } else if (genericMCToolType == ToolType.MAGICAL) {
                     val entity = player.getTargetEntity(15) as? LivingEntity ?: return false
                     if (entity !is Player && AbilityUtil.takeSpellLapisCost(player, 13)) {
                         entity.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, 200, 30, false, false, false))
@@ -101,10 +100,10 @@ class KazkanSet : AstralSet {
             }
 
             Action.LEFT_CLICK -> {
-                val genericMCToolType: GenericMCToolType = GenericMCToolType.getToolType(player.inventory.itemInMainHand) ?: return false
-                if (genericMCToolType == GenericMCToolType.CROSSBOW) {
+                val genericMCToolType: ToolType = ToolType.getToolType(player.inventory.itemInMainHand) ?: return false
+                if (genericMCToolType == ToolType.CROSSBOW) {
                     handleArrowFiring(player)
-                } else if (genericMCToolType == GenericMCToolType.MAGICAL) {
+                } else if (genericMCToolType == ToolType.MAGICAL) {
                     if (AbilityUtil.takeSpellLapisCost(player, 13)) {
                         AbilityUtil.spawnSpell(player, Particle.WITCH, "kazkan-set", 120L)
                     }
@@ -113,9 +112,9 @@ class KazkanSet : AstralSet {
             }
 
             Action.ENTITY_DAMAGE -> {
-                val genericMCToolType: GenericMCToolType = GenericMCToolType.getToolType(player.inventory.itemInMainHand) ?: return false
+                val genericMCToolType: ToolType = ToolType.getToolType(player.inventory.itemInMainHand) ?: return false
                 event as EntityDamageByEntityEvent
-                if (genericMCToolType != GenericMCToolType.AXE) return false
+                if (genericMCToolType != ToolType.AXE) return false
                 val holdingPlayer = holdingPlayers.find { it.player.uniqueId == player.uniqueId } ?: return false
                 if (!holdingPlayer.isHolding()) return false
 
@@ -216,22 +215,22 @@ class KazkanSet : AstralSet {
         playerLinkedArrows[player] = linkedArrows.drop(1)
     }
 
-}
 
-private class ClickHoldingPlayer(val player: Player) {
-    val initialClickTime: Long = System.currentTimeMillis()
+    private class ClickHoldingPlayer(val player: Player) {
+        val initialClickTime: Long = System.currentTimeMillis()
 
-    var lastClickTime: Long = initialClickTime
-    var totalClickTime: Long = lastClickTime - initialClickTime
-    var totalUpdates = 0
+        var lastClickTime: Long = initialClickTime
+        var totalClickTime: Long = lastClickTime - initialClickTime
+        var totalUpdates = 0
 
-    fun updateClickTime() {
-        lastClickTime = System.currentTimeMillis()
-        totalClickTime = lastClickTime - initialClickTime
-        totalUpdates++
-    }
+        fun updateClickTime() {
+            lastClickTime = System.currentTimeMillis()
+            totalClickTime = lastClickTime - initialClickTime
+            totalUpdates++
+        }
 
-    fun isHolding(): Boolean {
-        return System.currentTimeMillis() - lastClickTime < 300
+        fun isHolding(): Boolean {
+            return System.currentTimeMillis() - lastClickTime < 300
+        }
     }
 }

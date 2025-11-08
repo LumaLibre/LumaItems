@@ -3,7 +3,7 @@ package dev.jsinco.luma.lumaitems.items.astral.sets
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.enums.ToolType
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType
 class BlitzSet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
-        val factory = AstralSetFactory("Blitz", mutableListOf("&#AC87FBSwift"))
+        val factory = AstralSetFactory("blitz-set", "Blitz", mutableListOf("&#AC87FBSwift"))
 
         factory.commonEnchants = mutableMapOf(
             Enchantment.UNBREAKING to 6
@@ -26,13 +26,13 @@ class BlitzSet : AstralSet {
         factory.astralSetItem(
             Material.DIAMOND_AXE,
             mutableMapOf(Enchantment.EFFICIENCY to 5, Enchantment.FORTUNE to 3),
-            mutableListOf("Grants haste while", "being held")
+            mutableListOf("Grants haste while", "being held.")
         )
 
         factory.astralSetItem(
             Material.ELYTRA,
             mutableMapOf(Enchantment.FEATHER_FALLING to 4, Enchantment.BLAST_PROTECTION to 3),
-            mutableListOf("Grants extra speed", "while boosting midair"),
+            mutableListOf("Grants extra speed", "while boosting midair."),
             includeCommonEnchants = true,
             customName = "&#AC87FB&lBlitz &fWings",
             attributeModifiers = null,
@@ -43,11 +43,11 @@ class BlitzSet : AstralSet {
     }
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        val genericMCToolType = GenericMCToolType.getToolType(player.inventory.itemInMainHand)
+        val genericMCToolType = ToolType.getToolType(player.inventory.itemInMainHand)
 
         when (type) {
             Action.RUNNABLE -> {
-                if (genericMCToolType == GenericMCToolType.AXE) {
+                if (genericMCToolType == ToolType.AXE) {
                     player.addPotionEffect(PotionEffect(PotionEffectType.HASTE, 220, 0, false, false, true))
                 }
             }

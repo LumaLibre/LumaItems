@@ -1,59 +1,57 @@
 package dev.jsinco.luma.lumaitems.enums;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-// Enum for generic tooltypes
+/**
+ * Enum for generic Minecraft tool types.
+ * Determine their type without regard for the type of material.
+ */
 public enum ToolType {
-    ARMOR(List.of("HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS")),
-    WEAPON(List.of("SWORD", "AXE", "BOW", "CROSSBOW", "TRIDENT", "SHIELD", "MACE")),
-    TOOL(List.of("PICKAXE", "AXE", "SHOVEL", "HOE", "ROD"));
 
-    private final List<String> gearType;
+    HELMET,
+    CHESTPLATE,
+    LEGGINGS,
+    BOOTS,
+    SWORD,
+    PICKAXE,
+    AXE,
+    SHOVEL,
+    HOE,
+    CROSSBOW,
+    BOW,
+    TRIDENT,
+    SHIELD,
+    ELYTRA,
+    FISHING_ROD,
+    MAGICAL,
+    MACE;
 
-    ToolType(List<String> list) {
-        this.gearType = list;
+    public static final List<String> magicMaterials = List.of("BLAZE_ROD");
+
+    @Nullable
+    public static ToolType getToolType(ItemStack item) {
+        return getToolType(item.getType().toString());
     }
 
-    public List<String> getGearTypes() {
-        return gearType;
-    }
-
-    public static List<String> getArmorStrings() {
-        return ARMOR.getGearTypes();
-    }
-
-    public static List<String> getWeaponStrings() {
-        return WEAPON.getGearTypes();
-    }
-
-    public static List<String> getToolStrings() {
-        return TOOL.getGearTypes();
-    }
-
+    @Nullable
     public static ToolType getToolType(Material material) {
-        for (String string :  ToolType.getArmorStrings()) {
-            if (material.toString().contains(string)) return ToolType.ARMOR;
-        }
-        for (String string :  ToolType.getToolStrings()) {
-            if (material.toString().contains(string)) return ToolType.TOOL;
-        }
-        for (String string :  ToolType.getWeaponStrings()) {
-            if (material.toString().contains(string)) return ToolType.WEAPON;
-        }
-        return null;
+        return getToolType(material.toString());
     }
 
+    @Nullable
+    public static ToolType getToolType(String string) {
+        string = string.toUpperCase();
+        if (magicMaterials.contains(string)) {
+            return MAGICAL;
+        }
 
-    public EquipmentSlot getEquipmentSlot() {
-        switch (this) {
-            case ARMOR -> {
-                return EquipmentSlot.CHEST;
-            }
-            case WEAPON, TOOL -> {
-                return EquipmentSlot.HAND;
+        for (ToolType toolType : ToolType.values()) {
+            if (string.contains(toolType.toString())) {
+                return toolType;
             }
         }
         return null;

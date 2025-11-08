@@ -5,10 +5,9 @@ import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.relics.RelicCrafting
 import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
 import dev.jsinco.luma.lumaitems.enums.ToolType
+import dev.jsinco.luma.lumaitems.enums.GenericToolType
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
@@ -17,12 +16,11 @@ import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.UUID
 
 class MistralSet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
-        val astralSetFactory = AstralSetFactory("Mistral", mutableListOf("&#AC87FBSwift"))
+        val astralSetFactory = AstralSetFactory("mistral-set", "Mistral", mutableListOf("&#AC87FBSwift"))
 
         astralSetFactory.commonEnchants = mutableMapOf(
             Enchantment.PROTECTION to 4, Enchantment.PROJECTILE_PROTECTION to 5, Enchantment.FEATHER_FALLING to 5,
@@ -38,30 +36,30 @@ class MistralSet : AstralSet {
         )
 
         for (material in materials) {
-            val toolType = ToolType.getToolType(material)
-            val genericMCToolType = GenericMCToolType.getToolType(material)
+            val genericToolType = GenericToolType.getGenericToolType(material)
+            val genericMCToolType = ToolType.getToolType(material)
 
             astralSetFactory.astralSetItemGenericEnchantOnly(
                 material,
 
-                if (toolType == ToolType.ARMOR) {
+                if (genericToolType == GenericToolType.ARMOR) {
                     mutableListOf("&6Set Bonus:&7 Speed I")
                 } else {
-                    mutableListOf("Grants extra speed", "while being held")
+                    mutableListOf("Grants extra speed", "while being held.")
                 },
 
                 when (genericMCToolType) {
-                    GenericMCToolType.SWORD -> {
+                    ToolType.SWORD -> {
                         DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
                             Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
                         )
                     }
-                    GenericMCToolType.PICKAXE -> {
+                    ToolType.PICKAXE -> {
                         DefaultAttributes.NETHERITE_PICKAXE.appendThenGetAttributes(
                             Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
                         )
                     }
-                    GenericMCToolType.FISHING_ROD -> {
+                    ToolType.FISHING_ROD -> {
                         DefaultAttributes.of(Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY)
                     }
                     else -> null
@@ -73,7 +71,7 @@ class MistralSet : AstralSet {
     }
 
     override fun identifier(): String {
-        return "swift-set"
+        return "mistral-set"
     }
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {

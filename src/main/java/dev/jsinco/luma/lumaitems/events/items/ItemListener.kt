@@ -1,5 +1,8 @@
 package dev.jsinco.luma.lumaitems.events.items
 
+import com.gmail.nossr50.api.AbilityAPI as mcMMOAbilityAPI
+import dev.jsinco.luma.lumacore.utility.Logging
+import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.ItemManager
@@ -11,6 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.persistence.PersistentDataContainer
 import java.util.UUID
+import org.bukkit.event.block.BlockBreakEvent
 
 @Suppress("Duplicates")
 abstract class ItemListener : Listener {
@@ -39,6 +43,8 @@ abstract class ItemListener : Listener {
 
     // Paper added this, just makes it easier to look at the PDC
     fun fire(data: PersistentDataContainerView, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
+
+
         for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.CUSTOM_ITEMS) {
             val item = customItem.value
             val fireAnyways = item.fireAnyways(action)
@@ -129,5 +135,18 @@ abstract class ItemListener : Listener {
                 break
             }
         }
+    }
+
+    // Handle treefeller
+
+    fun isTreeFeller(player: Player): Boolean {
+        try {
+            if (LumaItems.isWithmcMMO() && mcMMOAbilityAPI.treeFellerEnabled(player)) {
+                return true
+            }
+        } catch (throwable: Throwable) {
+            Logging.errorLog("Error checking mcMMO tree feller state for player ${player.name}", throwable)
+        }
+        return false
     }
 }

@@ -3,7 +3,7 @@ package dev.jsinco.luma.lumaitems.items.astral.sets
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.enums.ToolType
+import dev.jsinco.luma.lumaitems.enums.GenericToolType
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
@@ -16,8 +16,7 @@ import org.bukkit.potion.PotionEffectType
 class VenomSet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
-        val astralSetFactory = AstralSetFactory("Viper", mutableListOf("&#AC87FBVenom"))
-        astralSetFactory.identifier = "venom-set"
+        val astralSetFactory = AstralSetFactory("venom-set", "Viper", mutableListOf("&#AC87FBVenom"))
 
         astralSetFactory.commonEnchants = mutableMapOf(
             Enchantment.PROTECTION to 5, Enchantment.SHARPNESS to 6, Enchantment.UNBREAKING to 5,
@@ -32,7 +31,7 @@ class VenomSet : AstralSet {
         for (material in materials) {
             astralSetFactory.astralSetItemGenericEnchantOnly(
                 material,
-                if (ToolType.getToolType(material) == ToolType.WEAPON) {
+                if (GenericToolType.getGenericToolType(material) == GenericToolType.WEAPON) {
                     mutableListOf("Upon striking an enemy,", "they will be poisoned", "for a short duration.")
                 } else {
                     mutableListOf("Upon being struck, your", "attacker will be poisoned", "for a short duration.")

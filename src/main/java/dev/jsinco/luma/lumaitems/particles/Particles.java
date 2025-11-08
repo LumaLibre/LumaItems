@@ -2973,4 +2973,10 @@ public final class  Particles {
             return image;
         });
     }
+
+
+    @FunctionalInterface
+    public interface LocationRunnable  {
+        Collection<Location> run();
+    }
 }

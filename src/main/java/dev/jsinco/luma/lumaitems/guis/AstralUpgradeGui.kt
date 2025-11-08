@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.guis
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.astral.upgrades.AstralSetUpgradeFactory
 import dev.jsinco.luma.lumaitems.items.astral.upgrades.AstralSetUpgradeManager
+import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -62,7 +63,7 @@ class AstralUpgradeGui : AbstractGui {
     }
 
     override fun getInventory(): Inventory {
-        val inv = Bukkit.createInventory(this, 27, Util.colorcode("&#F670F1&lA&#EB75F3&ls&#DF79F5&lt&#D47EF7&lr&#C882FA&la&#BD87FC&ll &#B28CFE&lU&#A88FFF&lp&#A191FF&lg&#9A93FF&lr&#9394FF&la&#8B96FF&ld&#8498FF&le&#7D9AFF&ls"))
+        val inv = Bukkit.createInventory(this, 27, MiniMessageUtil.mm("<#b986f9><b>Astral Upgrades"))
         for (slot in inv.contents.indices) {
             if (!EMPTY_SLOTS.contains(slot)) inv.setItem(slot, BORDER)
         }

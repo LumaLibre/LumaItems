@@ -3,10 +3,11 @@ package dev.jsinco.luma.lumaitems.items.astral.sets
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.enums.ToolType
+import dev.jsinco.luma.lumaitems.enums.GenericToolType
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
+import dev.jsinco.luma.lumaitems.util.extensions.ItemUtil.isWearing
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -19,7 +20,7 @@ import org.bukkit.potion.PotionEffectType
 class MelukaSet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
-        val astralSetFactory = AstralSetFactory("Meluka", mutableListOf("&#AC87FBMarine"))
+        val astralSetFactory = AstralSetFactory("meluka-set", "Meluka", mutableListOf("&#AC87FBMarine"))
 
         val materials = listOf(
             Material.GOLDEN_HELMET, Material.GOLDEN_CHESTPLATE, Material.GOLDEN_LEGGINGS,
@@ -33,10 +34,10 @@ class MelukaSet : AstralSet {
         )
 
         for (material in materials) {
-            val lore = if (ToolType.getToolType(material) == ToolType.TOOL) {
-                mutableListOf("Breaking blocks underwater will", "automatically teleport them", "to the user's inventory")
+            val lore = if (GenericToolType.getGenericToolType(material) == GenericToolType.TOOL) {
+                mutableListOf("Breaking blocks underwater will", "automatically teleport them", "to the user's inventory.")
             } else {
-                mutableListOf("Grants the wearer dolphin's", "grace while in water")
+                mutableListOf("Grants the wearer dolphin's", "grace while in water.")
             }
 
             astralSetFactory.astralSetItemGenericEnchantOnly(
@@ -52,14 +53,14 @@ class MelukaSet : AstralSet {
         if (!player.isInWater) return false
         when (type) {
             Action.RUNNABLE -> {
-                if (Util.isWearingWithNBT(player, "meluka-set")) {
+                if (player.isWearing("meluka-set")) {
                     player.addPotionEffect(PotionEffect(PotionEffectType.DOLPHINS_GRACE, 240, 0, false, false, false))
                 }
             }
             Action.BREAK_BLOCK -> {
                 event as BlockBreakEvent
                 val item = player.inventory.itemInMainHand
-                if (ToolType.getToolType(item.type) != ToolType.TOOL) return false
+                if (GenericToolType.getGenericToolType(item.type) != GenericToolType.TOOL) return false
 
                 event.isDropItems = false
 

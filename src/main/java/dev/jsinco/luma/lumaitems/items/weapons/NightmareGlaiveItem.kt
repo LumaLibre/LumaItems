@@ -59,7 +59,8 @@ class NightmareGlaiveItem : CustomItemFunctions() {
                 Enchantment.LOYALTY to 4,
                 Enchantment.UNBREAKING to 5,
                 Enchantment.IMPALING to 8,
-                Enchantment.SHARPNESS to 9
+                Enchantment.SHARPNESS to 9,
+                Enchantment.LOOTING to 6
             )
             .lore(
                 "<#ad7abf>Upon landing</#ad7abf>, this",

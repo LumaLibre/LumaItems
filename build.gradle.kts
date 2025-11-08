@@ -1,6 +1,5 @@
-import org.apache.commons.io.output.ByteArrayOutputStream
-import org.apache.tools.ant.filters.ReplaceTokens
 import java.nio.charset.Charset
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("java")
@@ -98,7 +97,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.21.8")
+        minecraftVersion("1.21.10")
     }
 }
 

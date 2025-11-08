@@ -10,6 +10,8 @@ astral-orb-rarities:
   BlitzSet: 10
   ReforgedSet: 20
   KazkanSet: 11
+  HarbingerSet: 8
+  VerdantSet: 25
 
 # All sets, by default, start from tier 1
 astral-upgrades:
@@ -134,3 +136,37 @@ astral-upgrades:
         - 'bane_of_arthropods/7 -apply:axe'
         - 'quick_charge/4 -apply:crossbow'
         - 'piercing/6 -apply:crossbow'
+  harbinger-set:
+    tier-2:
+      material: DIAMOND
+      enchants:
+        - 'mending/1'
+        - 'unbreaking/6'
+        - 'protection/8'
+        - 'respiration/2 -apply:helmet'
+        - 'aqua_affinity/1 -apply:helmet'
+        - 'feather_falling/4 -apply:boots,elytra'
+        - 'swift_sneak/2 -apply:leggings'
+        - 'soul_speed/2 -apply:boots'
+    tier-3:
+      material: NETHERITE
+      enchants:
+        - 'unbreaking/8'
+        - 'protection/10'
+        - 'respiration/3 -apply:helmet'
+        - 'feather_falling/6 -apply:boots,elytra'
+        - 'swift_sneak/3 -apply:leggings'
+        - 'soul_speed/3 -apply:boots'
+  verdant-set:
+    tier-2:
+      material: NETHERITE
+      enchants:
+        - 'mending/1'
+        - 'unbreaking/7'
+        - 'efficiency/6 -apply:axe,pickaxe,hoe,shovel'
+        - 'fortune/3 -apply:axe,pickaxe,hoe,shovel'
+        - 'protection/5 -apply:helmet,chestplate,leggings,boots'
+        - 'fire_protection/4 -apply:helmet,chestplate,leggings,boots'
+        - 'blast_protection/4 -apply:helmet,chestplate,leggings,boots'
+        - 'respiration/3 -apply:helmet'
+        - 'feather_falling/5 -apply:boots'

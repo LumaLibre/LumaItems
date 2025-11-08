@@ -4,7 +4,7 @@ import com.gamingmesh.jobs.Jobs
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.enums.ToolType
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -15,8 +15,8 @@ import org.bukkit.inventory.ItemStack
 class FalterSet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
-        val astralSetFactory = AstralSetFactory("Falter", mutableListOf("&#AC87FBFoster"))
-        val commonLore = mutableListOf("Damage dealt to enemies scales", "with %s Job level")
+        val astralSetFactory = AstralSetFactory("falter-set", "Falter", mutableListOf("&#AC87FBFoster"))
+        val commonLore = mutableListOf("Damage dealt to enemies scales", "with %s Job level.")
 
         astralSetFactory.commonEnchants = mutableMapOf(
             Enchantment.SHARPNESS to 7,
@@ -68,12 +68,12 @@ class FalterSet : AstralSet {
     private fun getJobLevel(material: Material, player: Player): Int {
         val jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player)
 
-        val genericMCToolType = GenericMCToolType.getToolType(material)
+        val genericMCToolType = ToolType.getToolType(material)
         val job = when (genericMCToolType) {
-            GenericMCToolType.PICKAXE -> Jobs.getJob("Miner")
-            GenericMCToolType.HOE -> Jobs.getJob("Farmer")
-            GenericMCToolType.AXE -> Jobs.getJob("Lumberjack")
-            GenericMCToolType.FISHING_ROD -> Jobs.getJob("Fisherman")
+            ToolType.PICKAXE -> Jobs.getJob("Miner")
+            ToolType.HOE -> Jobs.getJob("Farmer")
+            ToolType.AXE -> Jobs.getJob("Lumberjack")
+            ToolType.FISHING_ROD -> Jobs.getJob("Fisherman")
             else -> return 0
         }
         return if (jobsPlayer.isInJob(job)) jobsPlayer.getJobProgression(job).level else 0

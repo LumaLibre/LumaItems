@@ -12,20 +12,16 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-class AstralSetFactory (val name: String, val customEnchantNames: List<String>?) {
+open class AstralSetFactory (val identifier: String, val name: String, val customEnchantNames: List<String>?) {
 
-    constructor(name: String) : this(name, null)
-
-    companion object {
-        private val plugin: LumaItems = LumaItems.getInstance()
-    }
+    constructor(identifier: String, name: String) : this(identifier, name, null)
+    constructor(identifier: String, name: String, vararg customEnchantNames: String) : this(identifier, name, customEnchantNames.toList())
 
     var commonLore: List<String> = listOf()
-    var identifier = "${name.lowercase()}-set"
     val createdAstralItems: MutableList<ItemStack> = mutableListOf()
     var commonEnchants: MutableMap<Enchantment, Int> = mutableMapOf()
 
-    constructor(name: String, customEnchantNames: List<String>?, commonLore: List<String>) : this(name, customEnchantNames) {
+    constructor(identifier: String, name: String, customEnchantNames: List<String>?, commonLore: List<String>) : this(identifier, name, customEnchantNames) {
         this.commonLore = commonLore
     }
 
@@ -45,7 +41,7 @@ class AstralSetFactory (val name: String, val customEnchantNames: List<String>?)
         return astralSetItem(material, vanillaEnchants, lore, includeCommonEnchants, attributeModifiers, null, null)
     }
 
-    fun astralSetItem(
+    open fun astralSetItem(
         material: Material,
         vanillaEnchants: MutableMap<Enchantment, Int>,
         lore: List<String>,

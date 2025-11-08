@@ -2,7 +2,7 @@ package dev.jsinco.luma.lumaitems.util
 
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.jsinco.luma.lumaitems.LumaItems
-import dev.jsinco.luma.lumaitems.enums.GenericMCToolType
+import dev.jsinco.luma.lumaitems.enums.ToolType
 import java.awt.Color as AwtColor
 import java.util.UUID
 import kotlin.random.Random
@@ -31,7 +31,7 @@ object Util {
     const val WITH_DELIMITER = "((?<=%1\$s)|(?=%1\$s))"
 
     private val plugin: LumaItems = LumaItems.getInstance()
-    private val armorEquipmentSlots: List<EquipmentSlot> = listOf(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)
+
 
     val legacyPrefix: String = colorcode("&#b986f9&lInfo &8»&#E2E2E2")
 
@@ -109,16 +109,7 @@ object Util {
         return nbtList
     }
 
-    fun isWearingWithNBT(player: Player, identifier: String): Boolean {
-        val armorDatas: List<PersistentDataContainer?> =
-            armorEquipmentSlots.map { player.equipment?.getItem(it)?.itemMeta?.persistentDataContainer }
 
-        for (data in armorDatas) {
-            if (data != null && data.has(NamespacedKey(plugin, identifier), PersistentDataType.SHORT)) return true
-        }
-
-        return false
-    }
 
 
     fun createBasicItem(
@@ -147,7 +138,7 @@ object Util {
         return getGearType(item.type)
     }
     fun getGearType(material: Material): String? {
-        for (gear in GenericMCToolType.entries.map { it.toString() }) {
+        for (gear in ToolType.entries.map { it.toString() }) {
             if (material.toString().contains(gear, ignoreCase = true)) return formatMaterialName(gear)
         }
         return null
