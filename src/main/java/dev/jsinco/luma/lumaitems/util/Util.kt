@@ -183,10 +183,7 @@ object Util {
         }
     }
 
-    fun isMatchingItem(itemStack: ItemStack, key: String): Boolean {
-        val meta = itemStack.itemMeta ?: return false
-        return meta.persistentDataContainer.has(NamespacedKey(plugin, key))
-    }
+
 
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player): Boolean {
         return player.equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(namespacedKey(identifier)) == true

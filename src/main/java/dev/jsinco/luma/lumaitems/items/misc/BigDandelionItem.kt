@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.items.misc
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
+import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.extensions.ItemUtil.isMatchingItem
@@ -13,34 +14,38 @@ import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
-@Disable(WorldName.EVENT_NEW, hard = true)
-class MiniPoppyItem : CustomItemFunctions() {
+@Disable(WorldName.EVENT_NEW, WorldName.PINATA, hard = true)
+class BigDandelionItem : CustomItemFunctions() {
 
-    private val key = "mini-poppy"
+
+    companion object {
+        private val KEY = Util.namespacedKey("big-dandelion")
+    }
 
     override fun createItem(): Pair<String, ItemStack> {
-
         return ItemFactory.builder()
-            .name("<b><#FF5959>M<#FF6259>i<#FF6B58>n<#FF765F>i <#FE8D6C>P<#FD8A84>o<#FB869C>p<#FC7890>p<#FC6984>y")
+            .name("<b><gradient:#bd6b23:#f19e26:#fed738:#fdec50:#197c05>Big Dandelion</gradient></b>")
+            .customEnchants("<#fed738>Flower Powder")
+            .material(Material.DANDELION)
+            .persistentData(KEY)
+            .tier(Tier.HALLOWEEN_2025)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
-            .customEnchants("<#ff5959>Flower Extract")
             .lore(
-                "A wonderful smelling poppy,",
-                "It's so small and cute!",
+                "A dandelion so big,",
+                "it looks like it could",
+                "blow away an entire",
+                "field of flowers.",
                 "",
                 "I wonder if holding it",
                 "does anything special?"
             )
-            .tier(Tier.VALENTIDE_2025)
-            .persistentData(key)
-            .material(Material.POPPY)
             .attributeModifiers(
-                AttributeContainer.of(key, Attribute.SCALE, AttributeModifier.Operation.ADD_NUMBER, -0.5, EquipmentSlotGroup.ANY),
-                //AttributeContainer.of(key, Attribute.GRAVITY , AttributeModifier.Operation.ADD_NUMBER, -0.05, EquipmentSlotGroup.ANY),
-                //AttributeContainer.of(key, Attribute.SAFE_FALL_DISTANCE, AttributeModifier.Operation.ADD_NUMBER, 6.0, EquipmentSlotGroup.ANY)
+                AttributeContainer.of(KEY, Attribute.SCALE, AttributeModifier.Operation.ADD_NUMBER, 0.3, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(KEY, Attribute.JUMP_STRENGTH , AttributeModifier.Operation.ADD_NUMBER, 0.1, EquipmentSlotGroup.ANY)
             )
             .autoHat(true)
             .buildPair()
@@ -49,7 +54,7 @@ class MiniPoppyItem : CustomItemFunctions() {
 
     override fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {
         val item = event.itemInHand
-        if (!item.isMatchingItem(key)) {
+        if (!item.isMatchingItem(KEY)) {
             return
         }
         event.isCancelled = true

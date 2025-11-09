@@ -9,6 +9,7 @@ import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.tiers.ThanksgivingEventTier
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable
 import io.papermc.paper.datacomponent.item.FoodProperties
@@ -33,7 +34,9 @@ class HolidayHamItem : CustomItemFunctions() {
             .customEnchants("<gray>Consumable", "<#f0bb7f>Leftovers")
             .persistentData("holidayham")
             .material(Material.NETHERITE_PICKAXE)
-            .tier(ThanksgivingEventTier.THANKSGIVING_2024)
+            //.tier(ThanksgivingEventTier.THANKSGIVING_2024)
+            // Halloween re-release
+            .tier(Tier.HALLOWEEN_2025)
             .lore("<#645B82>Consume <white>this item", "to self-destruct and", "clear all blocks within", "a small radius.", "", "<red>Cooldown: 3m")
             .vanillaEnchants(Enchantment.FORTUNE to 5, Enchantment.EFFICIENCY to 9, Enchantment.UNBREAKING to 12, Enchantment.MENDING to 1)
             .spoofEnchants(true)

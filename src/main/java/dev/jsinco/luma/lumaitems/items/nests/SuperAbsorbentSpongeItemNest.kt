@@ -3,9 +3,8 @@ package dev.jsinco.luma.lumaitems.items.nests
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
-import dev.jsinco.luma.lumaitems.util.AbilityUtil
 import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakWithLog
+import dev.jsinco.luma.lumaitems.util.AbilityUtil.setAirWithLog
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -27,7 +26,7 @@ abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItem
         }
 
         Executors.syncDelayed(1) {
-            event.block.breakWithLog(player)
+            event.block.setAirWithLog(player)
         }
         removeNearbyBlocks(event.block, 3, material, player)
     }
@@ -62,7 +61,7 @@ abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItem
                 targetBlock.breakNaturallyWithLog(player)
             }
             if (targetBlock.type != type) continue
-            targetBlock.breakWithLog(player)
+            targetBlock.setAirWithLog(player)
             world.spawnParticle(Particle.CLOUD, targetBlock.location.add(0.5, 0.5, 0.5), 10, 0.2, 0.2, 0.2, 0.02)
         }
 

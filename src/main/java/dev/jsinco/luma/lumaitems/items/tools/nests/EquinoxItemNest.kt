@@ -6,12 +6,11 @@ import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.shapes.Sphere
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakWithLog
+import dev.jsinco.luma.lumaitems.util.AbilityUtil.setAirWithLog
 import dev.jsinco.luma.lumaitems.util.BukkitVectors
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
-import dev.jsinco.luma.lumaitems.util.disabling.Ignore
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import java.awt.Color
 import kotlin.random.Random
@@ -46,10 +45,11 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
 
     abstract fun delegateBreakBlock(player: Player, block: Block): List<Item>?
     abstract fun key(): NamespacedKey
+    abstract fun cooldownTime(): Long
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) return
-        QuickTasks.addCooldown(this, player.uniqueId, 2400L)
+        QuickTasks.addCooldown(this, player.uniqueId, cooldownTime())
 
         seed(player, 3)
     }
@@ -232,6 +232,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
     }
 }
 
+
 class EquinoxHatchetItem : EquinoxItemNest() {
 
     companion object {
@@ -264,7 +265,7 @@ class EquinoxHatchetItem : EquinoxItemNest() {
                 "several destructive balls",
                 "that can break down trees.",
                 "",
-                "<red>Cooldown: 2m"
+                "<red>Cooldown: 3m"
             )
             .buildPair()
     }
@@ -286,7 +287,7 @@ class EquinoxHatchetItem : EquinoxItemNest() {
             }
         block.world.playSound(block.location, sound, 0.5f, 1f)
 
-        block.breakWithLog(player)
+        block.setAirWithLog(player)
         player.inventory.itemInMainHand.damage(1, player) // no checks
         return drops
     }
@@ -295,20 +296,73 @@ class EquinoxHatchetItem : EquinoxItemNest() {
         return KEY
     }
 
+
+    override fun cooldownTime(): Long {
+        return 2400L
+    }
 }
 
-@Ignore
-class EquinoxHarrowerItem : EquinoxItemNest() {
+
+class EquinoxSpadeItem : EquinoxItemNest() {
+
+    companion object {
+        // Based on: https://minecraft.wiki/w/Shovel
+        private val SHOVEL_PATTERN = Regex(
+            ".*CONCRETE_POWDER|.*DIRT.*|FARMLAND|GRASS_BLOCK|.*GRAVEL|MUD|MUDDY_MANGROVE_ROOTS|" +
+                    "MYCELIUM|PODZOL|.*SAND|SNOW.*|SOUL_SOIL")
+        private val FORTUNE_5_SHOVEL = ItemStack(Material.NETHERITE_SHOVEL)
+            .apply { addUnsafeEnchantment(Enchantment.FORTUNE, 5) }
+        private val KEY = Util.namespacedKey("equinox-harrower")
+    }
 
     override fun createItem(): Pair<String, ItemStack> {
-        TODO("Not yet implemented")
+        return ItemFactory.builder()
+            .name("<b><gradient:#feb17d:#f9ce90:#f9f2db:#b8d1c0:#af97c7:#ed9bb0>Equinox Spade</gradient></b>")
+            .customEnchants("<#f9f2db>Pentageyser")
+            .persistentData(KEY)
+            .material(Material.NETHERITE_SHOVEL)
+            .tier(Tier.HALLOWEEN_2025)
+            .vanillaEnchants(
+                Enchantment.FORTUNE to 5,
+                Enchantment.EFFICIENCY to 8,
+                Enchantment.MENDING to 1,
+                Enchantment.UNBREAKING to 9
+            )
+            .lore(
+                "<#f9f2db>Right-click</#f9f2db> to launch",
+                "<#f9f2db>3</#f9f2db> geyser seeds in various",
+                "directions around you.",
+                "",
+                "Geysers launched from this",
+                "tool will pulse, launching",
+                "several destructive balls",
+                "that can break blocks",
+                "suitable for shovelling.",
+                "",
+                "<red>Cooldown: 3m"
+            )
+            .buildPair()
     }
 
     override fun delegateBreakBlock(player: Player, block: Block): List<Item>? {
-        TODO("Not yet implemented")
+        if (!block.type.name.matches(SHOVEL_PATTERN)) {
+            return null
+        }
+
+        val drops = block.getDrops(FORTUNE_5_SHOVEL).map { itemStack ->
+            block.world.dropItemNaturally(block.location, itemStack)
+        }
+        block.world.playSound(block.location, Sound.BLOCK_GRAVEL_BREAK, 0.5f, 1f)
+        block.setAirWithLog(player)
+        player.inventory.itemInMainHand.damage(1, player) // no checks
+        return drops
     }
 
     override fun key(): NamespacedKey {
-        TODO("Not yet implemented")
+        return KEY
+    }
+
+    override fun cooldownTime(): Long {
+        return 3600L
     }
 }

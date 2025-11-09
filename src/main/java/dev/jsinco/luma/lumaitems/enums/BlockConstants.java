@@ -4,6 +4,7 @@ import org.bukkit.Material;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public enum BlockConstants {
 
@@ -49,7 +50,7 @@ public enum BlockConstants {
     BlockConstants(String match, Material... materials) {
         this.materials = new ArrayList<>(List.of(materials));
         for (var material : Material.values()) {
-            if (material.name().contains(match)) {
+            if (Pattern.compile(match).matcher(material.name()).matches()) {
                 this.materials.add(material);
             }
         }

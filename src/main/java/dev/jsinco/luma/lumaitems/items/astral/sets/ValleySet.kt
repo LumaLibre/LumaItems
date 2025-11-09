@@ -4,7 +4,7 @@ import dev.jsinco.luma.lumaitems.items.astral.AstralSet
 import dev.jsinco.luma.lumaitems.items.astral.AstralSetFactory
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.enums.ToolType
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakWithLog
+import dev.jsinco.luma.lumaitems.util.AbilityUtil.setAirWithLog
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -73,7 +73,7 @@ class ValleySet : AstralSet {
 
                 // .name.contains("WATER")
                 if (targetBlock.type == Material.WATER) {
-                    targetBlock.breakWithLog(player)
+                    targetBlock.setAirWithLog(player)
                 }
             }
 

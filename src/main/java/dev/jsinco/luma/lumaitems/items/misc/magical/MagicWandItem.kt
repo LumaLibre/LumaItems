@@ -56,7 +56,9 @@ class MagicWandItem : CustomItem {
                 "<gradient:#C7305D:#ff9ccb>Clear <dark_gray>- <white>Cast a spell", "which clears out an area", "of blocks upon landing. <red>1m</red>")
             .material(Material.BLAZE_ROD)
             .persistentData("magicwand")
-            .tier(Tier.CARNIVAL_2024)
+            //.tier(Tier.CARNIVAL_2024)
+            // Halloween re-release
+            .tier(Tier.HALLOWEEN_2025)
             .vanillaEnchants(mutableMapOf(Enchantment.BANE_OF_ARTHROPODS to 5, Enchantment.FIRE_ASPECT to 4, Enchantment.SHARPNESS to 5))
             .persistentDataRecords(PersistentDataRecord.create(SPELL_KEY, PersistentDataType.STRING, DEFAULT_SPELL))
             .buildPair()

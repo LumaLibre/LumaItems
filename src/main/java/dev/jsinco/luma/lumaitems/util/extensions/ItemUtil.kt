@@ -3,6 +3,7 @@ package dev.jsinco.luma.lumaitems.util.extensions
 import dev.jsinco.luma.lumaitems.LumaItems
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
@@ -23,5 +24,14 @@ object ItemUtil {
         }
 
         return false
+    }
+
+    fun ItemStack.isMatchingItem(key: String): Boolean {
+        return isMatchingItem(NamespacedKey(LumaItems.getInstance(), key))
+    }
+
+    fun ItemStack.isMatchingItem(key: NamespacedKey): Boolean {
+        val meta = this.itemMeta ?: return false
+        return meta.persistentDataContainer.has(key)
     }
 }
