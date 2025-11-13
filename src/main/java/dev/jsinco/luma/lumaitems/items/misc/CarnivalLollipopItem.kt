@@ -2,10 +2,12 @@ package dev.jsinco.luma.lumaitems.items.misc
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.extensions.ItemUtil.isMatchingItem
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -30,5 +32,12 @@ class CarnivalLollipopItem : CustomItemFunctions() {
     override fun onRunnable(player: Player) {
         player.addPotionEffect(haste)
         player.addPotionEffect(speed)
+    }
+
+    override fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {
+        val item = event.itemInHand
+        if (item.isMatchingItem("carnivallollipop")) {
+            event.isCancelled = true
+        }
     }
 }

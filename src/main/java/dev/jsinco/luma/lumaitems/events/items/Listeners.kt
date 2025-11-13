@@ -191,6 +191,7 @@ class Listeners : ItemListener() {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerBreakBlock(event: BlockBreakEvent) {
         val player = event.player
+        if (this.isTreeFeller(player)) return
         val data: PersistentDataContainer? = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
 
         if (data != null) {
