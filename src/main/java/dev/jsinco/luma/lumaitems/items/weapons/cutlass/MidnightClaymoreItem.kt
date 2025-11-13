@@ -4,7 +4,6 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -19,6 +18,8 @@ import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
 class MidnightClaymoreItem : CustomItemFunctions() {
+
+    private val damageGuard = ThreadLocal.withInitial { false }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -53,30 +54,35 @@ class MidnightClaymoreItem : CustomItemFunctions() {
 
 
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
-        if (QuickTasks.isOnCooldown(this, player)) return
-        QuickTasks.addCooldown(this, player, 10L)
-        val hitEntity = event.entity as? LivingEntity ?: return
-        val nearbyEntities = player.location.getNearbyLivingEntities(3.0)
-            .apply { addAll(
-                hitEntity.location.getNearbyLivingEntities(5.0)
-                    .sortedBy { it.location.distanceSquared(hitEntity.location) }
-            ) }
-            .filter { it != player || !it.isValid }
+        if (damageGuard.get()) return
+        damageGuard.set(true)
 
-        // get block under entity
-        val material = hitEntity.location.subtract(0.0, 1.0, 0.0).block.type
+        try {
+            val hitEntity = event.entity as? LivingEntity ?: return
+            val nearbyEntities = player.location.getNearbyLivingEntities(3.0)
+                .apply { addAll(
+                    hitEntity.location.getNearbyLivingEntities(5.0)
+                        .sortedBy { it.location.distanceSquared(hitEntity.location) }
+                ) }
+                .filter { it != player || !it.isValid }
 
-        var factor = nearbyEntities.size.toDouble()
-        nearbyEntities.forEach { entity ->
-            if (!AbilityUtil.noDamagePermission(player, entity)) {
-                entity.damage(event.damage * (1 + factor * 0.19), player)
-                entity.world.playSound(entity.location, Sound.ITEM_AXE_STRIP, 1.5f, 0.9f)
-                entity.world.spawnParticle(Particle.SWEEP_ATTACK, entity.boundingBox.center.toLocation(entity.world),1, 0.7, 0.7, 0.7, 0.1)
-                if (!material.isAir) {
-                    entity.world.spawnParticle(Particle.BLOCK, entity.boundingBox.center.toLocation(entity.world),30, 0.7, 0.7, 0.7, material.createBlockData())
+            // get block under entity
+            val material = hitEntity.location.subtract(0.0, 1.0, 0.0).block.type
+
+            var factor = nearbyEntities.size.toDouble()
+            nearbyEntities.forEach { entity ->
+                if (!AbilityUtil.noDamagePermission(player, entity)) {
+                    entity.damage(event.damage * (1 + factor * 0.19), player)
+                    entity.world.playSound(entity.location, Sound.ITEM_AXE_STRIP, 1.5f, 0.9f)
+                    entity.world.spawnParticle(Particle.SWEEP_ATTACK, entity.boundingBox.center.toLocation(entity.world),1, 0.7, 0.7, 0.7, 0.1)
+                    if (!material.isAir) {
+                        entity.world.spawnParticle(Particle.BLOCK, entity.boundingBox.center.toLocation(entity.world),30, 0.7, 0.7, 0.7, material.createBlockData())
+                    }
+                    factor -= 0.5
                 }
-                factor -= 0.5
             }
+        } finally {
+            damageGuard.set(false)
         }
     }
 }
