@@ -8,13 +8,12 @@ import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.ItemManager
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import io.papermc.paper.persistence.PersistentDataContainerView
+import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.persistence.PersistentDataContainer
-import java.util.UUID
-import org.bukkit.event.block.BlockBreakEvent
 
 @Suppress("Duplicates")
 abstract class ItemListener : Listener {

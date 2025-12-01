@@ -139,7 +139,7 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
         item.itemMeta = item.itemMeta?.apply {
             persistentDataContainer.set(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING, nextSpell.name)
         }
-        MiniMessageUtil.msg(player, "Spell changed to <gradient:#CF9C68:#815531>${Util.formatMaterialName(nextSpell.name)}")
+        MiniMessageUtil.msg(player, "Spell changed to <gradient:#CF9C68:#815531>${Util.formatEnumerator(nextSpell.name)}")
     }
 
 

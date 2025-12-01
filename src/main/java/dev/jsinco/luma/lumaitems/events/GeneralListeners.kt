@@ -76,6 +76,8 @@ class GeneralListeners : Listener {
                 if (GenericToolType.getGenericToolType(relic.type) == GenericToolType.ARMOR) {
                     val entityArmor = EntityArmor.getEquipmentSlotFromType(relic.type)
                     entityArmor?.setEntityArmorSlot(livingEntity, relic)
+                } else if (livingEntity.type == EntityType.WITHER_SKELETON && relic.type == Material.BOW) {
+                    livingEntity.equipment?.setHelmet(relic)
                 } else {
                     livingEntity.equipment?.setItemInOffHand(relic)
                 }

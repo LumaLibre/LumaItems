@@ -7,6 +7,7 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
+import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
 import dev.jsinco.luma.lumaitems.enums.Action
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
@@ -84,6 +85,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.CACHED_BLOCK_BREAK -> onCachedBlockBreak(player, event as BlockBreakEvent)
             Action.BLOCK_DROP_ITEM -> onBlockDropItem(player, event as BlockDropItemEvent)
             Action.PLACE_BLOCK -> onPlaceBlock(player, event as BlockPlaceEvent)
+            Action.BLOCK_DAMAGE -> println("TODO: onBlockDamage")
             Action.FISH -> onFish(player, event as PlayerFishEvent)
             Action.ELYTRA_BOOST -> onElytraBoost(player, event as PlayerElytraBoostEvent)
             Action.PLAYER_CROUCH -> onPlayerCrouch(player, event as PlayerToggleSneakEvent)
@@ -116,6 +118,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ITEM_DAMAGE -> onPlayerItemDamage(player, event as PlayerItemDamageEvent)
             Action.PLAYER_KNOCKBACK_ENTITY -> onPlayerKnockbackEntity(player, event as EntityKnockbackByEntityEvent)
             Action.ITEM_MERGE -> onItemMerge(player, event as ItemMergeEvent)
+            Action.MCMMO_TREE_FELLER_DESTROY_TREE -> onMcMMOTreeFellerDestroyTree(player, event as TreeFellerDestroyTreeEvent)
         }
         return true
     }
@@ -181,4 +184,5 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {}
     open fun onPlayerKnockbackEntity(player: Player, event: EntityKnockbackByEntityEvent) {}
     open fun onItemMerge(player: Player, event: ItemMergeEvent) {}
+    open fun onMcMMOTreeFellerDestroyTree(player: Player, event: TreeFellerDestroyTreeEvent) {}
 }

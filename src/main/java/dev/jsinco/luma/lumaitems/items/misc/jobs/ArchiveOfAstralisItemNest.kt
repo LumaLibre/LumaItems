@@ -47,7 +47,7 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
     private val nameSpacedKey = Util.namespacedKey(jobType.key)
 
     private fun archiveLore(level: Int): MutableList<String> {
-        val job = Util.formatMaterialName(jobType.name)
+        val job = Util.formatEnumerator(jobType.name)
         return mutableListOf(
             "<gray>$job's Archive of Astralis",
             "",

@@ -241,14 +241,15 @@ class TahluraHoeItem : CustomItemFunctions() {
         }
 
         fun growAgeableBlocks(loc: Location, radius: Double = 2.0) {
-            if (AbilityUtil.noBuildPermission(shooter, loc.block)) {
-                return
-            }
 
             val sphere = Sphere(loc, radius)
             sphere.getSphereFast { block ->
                 when (val blockData: BlockData = block.blockData) {
                     is Ageable -> {
+                        if (AbilityUtil.noBuildPermission(shooter, loc.block)) {
+                            return@getSphereFast
+                        }
+
                         if (blockData.material == Material.SUGAR_CANE) {
                             block.randomTick()
                         } else if (blockData.age < blockData.maximumAge) {
@@ -258,6 +259,10 @@ class TahluraHoeItem : CustomItemFunctions() {
                         }
                     }
                     is Sapling -> {
+                        if (AbilityUtil.noBuildPermission(shooter, loc.block)) {
+                            return@getSphereFast
+                        }
+
                         if (blockData.stage < blockData.maximumStage) {
                             blockData.stage++
                         }

@@ -1,4 +1,4 @@
-package dev.jsinco.luma.lumaitems.items.tools.mattock
+package dev.jsinco.luma.lumaitems.items.tools.nests
 
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.items.ItemFactory

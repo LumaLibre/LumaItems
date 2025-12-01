@@ -104,7 +104,7 @@ class FrostbarkChiselItem : CustomItemFunctions() {
         val newMeta = axe.itemMeta?.apply { persistentDataContainer.set(key, PersistentDataType.STRING, newMode.name) }
             ?: return
         axe.itemMeta = newMeta
-        player.sendActionBar(MiniMessageUtil.mm("<#f498f6>${Util.formatMaterialName(newMode.name)}"))
+        player.sendActionBar(MiniMessageUtil.mm("<#f498f6>${Util.formatEnumerator(newMode.name)}"))
     }
 
     enum class Mode {

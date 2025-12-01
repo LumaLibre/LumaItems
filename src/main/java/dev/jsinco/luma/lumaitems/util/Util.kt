@@ -139,21 +139,21 @@ object Util {
     }
     fun getGearType(material: Material): String? {
         for (gear in ToolType.entries.map { it.toString() }) {
-            if (material.toString().contains(gear, ignoreCase = true)) return formatMaterialName(gear)
+            if (material.toString().contains(gear, ignoreCase = true)) return formatEnumerator(gear)
         }
         return null
     }
 
-    fun formatEnchantKey(key: String): String = formatMaterialName(key.replace("minecraft:", ""))
+    fun formatEnchantKey(key: String): String = formatEnumerator(key.replace("minecraft:", ""))
 
 
-    fun formatMaterialName(s: String): String {
+    fun formatEnumerator(s: String): String {
         var name = s.lowercase().replace("_", " ")
-        name = name.substring(0, 1).uppercase() + name.substring(1)
+        name = name.take(1).uppercase() + name.substring(1)
         for (i in name.indices) {
             if (name[i] == ' ') {
                 name =
-                    name.substring(0, i) + " " + name[i + 1].toString().uppercase() + name.substring(
+                    name.take(i) + " " + name[i + 1].toString().uppercase() + name.substring(
                         i + 2
                     ) // Capitalize first letter of each word
             }

@@ -14,6 +14,7 @@ import dev.jsinco.luma.lumaitems.shapes.Cuboid
 import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.getOreColor
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.extensions.ItemUtil.isMatchingItem
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -105,10 +106,12 @@ class VigilanceMattockItem : CustomItemFunctions() {
                 displayableBlock.remove()
             }
         }
-        Executors.sync {
-            getNearbyOreDisplayableBlocks(player)
-                .takeIf { it.isNotEmpty() }
-                ?.apply { DISPLAYABLE_BLOCKS.addAll(this) }
+        if (player.inventory.itemInMainHand.isMatchingItem(KEY)) {
+            Executors.sync {
+                getNearbyOreDisplayableBlocks(player)
+                    .takeIf { it.isNotEmpty() }
+                    ?.apply { DISPLAYABLE_BLOCKS.addAll(this) }
+            }
         }
     }
 
@@ -229,7 +232,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
 
         fun canBeRemoved(): Boolean {
             val player = ownerAsPlayer() ?: return true
-            return blockDisplay.location.distanceSquared(player.location) > range * range || blockDisplay.location.block.isEmpty
+            return player.world != blockDisplay.world || blockDisplay.location.distanceSquared(player.location) > range * range || blockDisplay.location.block.isEmpty
         }
 
         fun isAtBlock(block: Block): Boolean {

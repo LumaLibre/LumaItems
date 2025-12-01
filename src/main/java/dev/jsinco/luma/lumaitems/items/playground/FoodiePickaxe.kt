@@ -21,10 +21,11 @@ class FoodiePickaxe : CustomItem {
             .material(Material.NETHERITE_AXE)
             .tier("<gold>Legendary")
             .vanillaEnchants(Enchantment.LURE to 2)
+            .autoHat(true)
             .build()
             .createItem()
 
-        item.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("discordnitroset", "discordnitro_axe"))
+        item.setData(DataComponentTypes.MAX_DAMAGE, 100)
         return Pair("foodie_pickaxe", item)
     }
 

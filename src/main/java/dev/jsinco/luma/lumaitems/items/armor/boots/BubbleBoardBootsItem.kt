@@ -61,11 +61,14 @@ class BubbleBoardBootsItem : CustomItemFunctions() {
 
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
+        if (!event.isSneaking) {
+            return
+        }
         var ticksHeld = 0
+
         Executors.asyncTimer(0, 1) { task ->
-            if ((!player.isSneaking && ticksHeld < 35) || !AbilityUtil.isOnGround(player)) {
+            if ((ticksHeld > 1 && !player.isSneaking) || !AbilityUtil.isOnGround(player)) {
                 task.cancel()
-                return@asyncTimer
             }
 
             ticksHeld += 1

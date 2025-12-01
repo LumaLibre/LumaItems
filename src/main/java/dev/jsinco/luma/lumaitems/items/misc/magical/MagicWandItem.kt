@@ -140,7 +140,7 @@ class MagicWandItem : CustomItem {
         item.itemMeta = item.itemMeta?.apply {
             persistentDataContainer.set(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING, nextSpell.name)
         }
-        MiniMessageUtil.msg(player, "Spell changed to <gradient:#C7305D:#ff9ccb>${Util.formatMaterialName(nextSpell.name)}")
+        MiniMessageUtil.msg(player, "Spell changed to <gradient:#C7305D:#ff9ccb>${Util.formatEnumerator(nextSpell.name)}")
     }
 
     // Spells

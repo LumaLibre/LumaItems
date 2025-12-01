@@ -11,6 +11,7 @@ import org.bukkit.Sound
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -71,7 +72,7 @@ class MidnightClaymoreItem : CustomItemFunctions() {
 
             var factor = nearbyEntities.size.toDouble()
             nearbyEntities.forEach { entity ->
-                if (!AbilityUtil.noDamagePermission(player, entity)) {
+                if (!AbilityUtil.noDamagePermission(player, entity) || entity.type == EntityType.CREAKING) {
                     entity.damage(event.damage * (1 + factor * 0.19), player)
                     entity.world.playSound(entity.location, Sound.ITEM_AXE_STRIP, 1.5f, 0.9f)
                     entity.world.spawnParticle(Particle.SWEEP_ATTACK, entity.boundingBox.center.toLocation(entity.world),1, 0.7, 0.7, 0.7, 0.1)

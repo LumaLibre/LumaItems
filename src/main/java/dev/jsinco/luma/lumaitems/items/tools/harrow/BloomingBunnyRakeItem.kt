@@ -104,7 +104,7 @@ class BloomingBunnyRakeItem : CustomItemFunctions() {
             if (materials.isEmpty()) {
                 return@run "Unknown"
             }
-            Util.formatMaterialName(materials[0].name)
+            Util.formatEnumerator(materials[0].name)
         },
     ) {
         fun color(): String {

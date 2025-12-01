@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import kotlin.random.Random
 
+// todo: get rid of this shit
 // Listeners that belong to external plugins
 @AutoRegister(RegisterType.LISTENER)
 class ExternalListeners : Listener {

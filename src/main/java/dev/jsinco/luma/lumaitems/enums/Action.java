@@ -21,6 +21,7 @@ public enum Action {
      */
     JOBS_EXP_GAIN, // When a player gains experience from Jobs Reborn
     JOBS_PRE_PAYMENT, // When a player is about to be paid from Jobs Reborn
+    MCMMO_TREE_FELLER_DESTROY_TREE, // When a player destroys a tree with the MCMMO Tree Feller ability
 
     /**
      * Player actions that effect a specific player. Called by a listener.
@@ -45,6 +46,7 @@ public enum Action {
     CACHED_BLOCK_BREAK, // When a player breaks a block and the block is cached <-- Edit description
     BLOCK_DROP_ITEM, // After a player breaks a block, and the block drops item(s)
     PLACE_BLOCK, // When a player places a block
+    BLOCK_DAMAGE, // When a player damages a block (e.g. starts mining it)
     FISH, // When a player fishes in their main or offhand
     ELYTRA_BOOST, // When a player boosts themselves with an item while gliding with an elytra
     PLAYER_CROUCH, // When a player toggles their sneak button (crouches or un-crouches)

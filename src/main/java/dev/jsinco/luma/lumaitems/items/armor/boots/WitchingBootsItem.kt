@@ -1,6 +1,7 @@
 package dev.jsinco.luma.lumaitems.items.armor.boots
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
@@ -50,13 +51,15 @@ class WitchingBootsItem : CustomItemFunctions() {
                 Enchantment.THORNS to 3
             )
             .attributeModifiers(
-                AttributeContainer.builder()
-                    .setKey(KEY)
-                    .setAttribute(Attribute.MOVEMENT_SPEED)
-                    .setSlot(EquipmentSlotGroup.FEET)
-                    .setOperation(AttributeModifier.Operation.ADD_NUMBER)
-                    .setAmount(0.025)
-                    .build()
+                DefaultAttributes.NETHERITE_BOOTS.appendThenGetAttributes(
+                    AttributeContainer.builder()
+                        .setKey(KEY)
+                        .setAttribute(Attribute.MOVEMENT_SPEED)
+                        .setSlot(EquipmentSlotGroup.FEET)
+                        .setOperation(AttributeModifier.Operation.ADD_NUMBER)
+                        .setAmount(0.025)
+                        .build()
+                )
             )
             .buildPair()
     }

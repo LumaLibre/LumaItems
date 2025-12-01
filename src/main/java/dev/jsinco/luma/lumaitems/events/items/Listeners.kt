@@ -21,6 +21,7 @@ import org.bukkit.entity.Projectile
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
@@ -227,6 +228,14 @@ class Listeners : ItemListener() {
         val data = event.itemInHand.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.PLACE_BLOCK, player, event)
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onBlockDamage(event: BlockDamageEvent) {
+        val player = event.player
+        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.BLOCK_DAMAGE, player, event)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

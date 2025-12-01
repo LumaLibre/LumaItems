@@ -82,7 +82,6 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
         }
 
         val pin = event.entity.location
-        if (AbilityUtil.noBuildPermission(player, pin.block)) return
 
         pin.world.playSound(pin, Sound.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, 0.3f, 2f)
 
@@ -272,7 +271,7 @@ class EquinoxHatchetItem : EquinoxItemNest() {
 
 
     override fun delegateBreakBlock(player: Player, block: Block): List<Item>? {
-        if (!block.type.name.matches(TREE_PATTERN)) {
+        if (!block.type.name.matches(TREE_PATTERN) || AbilityUtil.noBuildPermission(player, block)) {
             return null
         }
         val drops = block.getDrops(FORTUNE_5_AXE).map { itemStack ->
@@ -345,7 +344,7 @@ class EquinoxSpadeItem : EquinoxItemNest() {
     }
 
     override fun delegateBreakBlock(player: Player, block: Block): List<Item>? {
-        if (!block.type.name.matches(SHOVEL_PATTERN)) {
+        if (!block.type.name.matches(SHOVEL_PATTERN) || AbilityUtil.noBuildPermission(player, block)) {
             return null
         }
 
