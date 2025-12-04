@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.LumaItems;
 import dev.jsinco.luma.lumaitems.items.astral.AstralSet;
 import dev.jsinco.luma.lumaitems.util.NeedsEdits;
 import dev.jsinco.luma.lumaitems.util.disabling.Ignore;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.Event;
@@ -141,6 +142,12 @@ public final class ItemManager {
     }
 
     public void registerForName(CustomItem item) {
+        String customTabName = item.tabCompleteName();
+        if (customTabName != null) {
+            CUSTOM_ITEMS_BY_NAME.put(customTabName, item);
+            return;
+        }
+
         ItemStack itemStack;
         try {
             itemStack = item.createItem().component2();
@@ -154,9 +161,7 @@ public final class ItemManager {
             LumaItems.log("Item " + itemStack.getType() + " does not have a display name or meta!");
             return;
         }
-        String formattedName = ChatColor.stripColor(
-                itemStack.getItemMeta().getDisplayName()
-                )
+        String formattedName = PlainTextComponentSerializer.plainText().serialize(itemStack.getItemMeta().displayName())
                 .replace(" ", "_").toLowerCase();
         CUSTOM_ITEMS_BY_NAME.put(formattedName, item);
     }

@@ -5,7 +5,7 @@ import dev.jsinco.luma.lumaitems.enums.BlockConstants
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.shapes.ShapeUtil
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
+import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import org.bukkit.Material
@@ -43,8 +43,8 @@ class BlueGarnetMattockItem : CustomItem {
 
 
                 for (block in blocklist) {
-                    block.breakNaturallyWithLog(player, player.inventory.itemInMainHand)
                     block.world.spawnParticle(Particle.BLOCK, block.location.add(0.5, 0.5, 0.5), 10, 0.5, 0.5, 0.5, 0.1, block.blockData)
+                    block.breakNaturallyWithLog(player, player.inventory.itemInMainHand)
                 }
             }
             else -> return false

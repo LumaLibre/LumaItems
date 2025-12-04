@@ -9,7 +9,7 @@ import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.shapes.ShapeUtil
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
+import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.block.Block

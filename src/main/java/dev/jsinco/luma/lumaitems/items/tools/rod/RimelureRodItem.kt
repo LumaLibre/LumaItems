@@ -34,7 +34,7 @@ class RimelureRodItem : CustomItemFunctions() {
                 "",
                 "Caught fish may also",
                 "occasionally come in",
-                "<#9FBFFA>pairs/#9FBFFA>."
+                "<#9FBFFA>pairs</#9FBFFA>."
             )
             .buildPair()
     }

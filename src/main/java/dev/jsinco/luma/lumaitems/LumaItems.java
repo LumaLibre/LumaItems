@@ -40,6 +40,7 @@ public final class LumaItems extends JavaPlugin {
     private static boolean withMythicMobs;
     private static boolean withmcMMO;
     private static boolean withCoreProtect;
+    private static boolean withLumaGlowAPI;
 
     @Override
     public void onLoad() {
@@ -63,6 +64,7 @@ public final class LumaItems extends JavaPlugin {
         withMythicMobs = getServer().getPluginManager().isPluginEnabled("MythicMobs");
         withmcMMO = getServer().getPluginManager().isPluginEnabled("mcMMO");
         withCoreProtect = getServer().getPluginManager().isPluginEnabled("CoreProtect");
+        withLumaGlowAPI = getServer().getPluginManager().isPluginEnabled("LumaGlowAPI");
 
         passiveListeners = new PassiveListeners(this);
         itemManagerInstance = new ItemManager(this);
@@ -159,6 +161,10 @@ public final class LumaItems extends JavaPlugin {
 
     public static boolean isWithmcMMO() {
         return withmcMMO;
+    }
+
+    public static boolean isWithLumaGlowAPI() {
+        return withLumaGlowAPI;
     }
 
     public static ItemManager getItemManagerInstance() {

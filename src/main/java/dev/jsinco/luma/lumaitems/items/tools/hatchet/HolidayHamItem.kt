@@ -6,7 +6,7 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.shapes.Sphere
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
+import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.tiers.ThanksgivingEventTier
 import dev.jsinco.luma.lumaitems.util.tiers.Tier

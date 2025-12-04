@@ -7,7 +7,7 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.shapes.Sphere
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
+import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier

@@ -44,6 +44,7 @@ dependencies {
         isTransitive = false
     }
     compileOnly("net.coreprotect:coreprotect:23.0")
+    compileOnly("dev.jsinco.lumaglowapi:LumaGlowAPI:cbe915d")
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 

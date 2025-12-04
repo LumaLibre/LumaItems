@@ -52,6 +52,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerShearEntityEvent
@@ -230,7 +231,7 @@ class Listeners : ItemListener() {
         fire(data, Action.PLACE_BLOCK, player, event)
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    //@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onBlockDamage(event: BlockDamageEvent) {
         val player = event.player
         val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
@@ -398,6 +399,12 @@ class Listeners : ItemListener() {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerQuit(event: PlayerQuitEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_QUIT, event.player, event)
+    }
+
+    @FireForAllNBT
+    @EventHandler(priority = EventPriority.HIGH)
+    fun onPlayerJoin(event: PlayerJoinEvent) {
+        fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_JOIN, event.player, event)
     }
 
     @FireForAllNBT

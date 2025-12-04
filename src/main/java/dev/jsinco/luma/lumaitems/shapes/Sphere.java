@@ -45,6 +45,7 @@ public class Sphere implements Shape3D {
     /**
      * I have no idea. This was *mostly* taken from the XSeries particle lib.
      * @see Particles#circle(double, double, ParticleDisplay)
+     * @author Jsinco
      * @return Set of blocks that make up the holo sphere.
      */
     public Set<Block> getSphere() {
@@ -58,6 +59,7 @@ public class Sphere implements Shape3D {
 
     /**
      * I do have idea and this should be way faster, but it does not consider density.
+     * @author Mitality
      * @return Set of blocks that make up the sphere.
      */
     public Set<Block> getSphereFast() {

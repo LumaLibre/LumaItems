@@ -29,32 +29,8 @@ class LumberjackArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.LUMBER
 class MinerArchiveOfAstralisItem : ArchiveOfAstralisItemNest(JobType.MINER)
 
 abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomItemFunctions() {
-    enum class JobType {
-        ALCHEMIST,
-        BLACKSMITH,
-        BUILDER,
-        COOK,
-        DIGGER,
-        FARMER,
-        FISHERMAN,
-        HUNTER,
-        LUMBERJACK,
-        MINER;
-
-        val key = "archive-of-astralis-${this.name.lowercase()}"
-    }
 
     private val nameSpacedKey = Util.namespacedKey(jobType.key)
-
-    private fun archiveLore(level: Int): MutableList<String> {
-        val job = Util.formatEnumerator(jobType.name)
-        return mutableListOf(
-            "<gray>$job's Archive of Astralis",
-            "",
-            "<gray>Permanent <#F7FFC9>$level% <gray>$job Job",
-            "<gray>boost while held."
-        )
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         val level = random().nextInt(2, 6)
@@ -62,13 +38,22 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
     }
 
     fun createItem(level: Int): Pair<String, ItemStack> {
+        val jobName = Util.formatEnumerator(jobType.name)
         return ItemFactory.Builder()
-            .name("<b><#f498f6>Archive</#f498f6></b> <!b><#F7FFC9>of Astralis</#F7FFC9></!b>")
+            .name("<b>${jobType.colorize("Archive")}</b> <!b><#F7FFC9>of Astralis</#F7FFC9></!b>")
             .material(Material.BOOK)
-            .tier(Tier.WINTER_2024)
+            .tier(Tier.CHRISTMAS_2025)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
             .persistentData(jobType.key)
-            .lore(archiveLore(level))
+            .lore(
+                "A mysterious book",
+                "inscribed with words",
+                "you can't quite make",
+                "out...",
+                "",
+                "Permanent ${jobType.colorize("$level%")} $jobName",
+                "boost while held."
+            )
             .persistentDataValue(level.toShort())
             .hideEnchants(true)
             .addSpace(false)
@@ -78,9 +63,7 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
     override fun executeWithContainer(type: Action, player: Player, event: Any, container: PersistentDataContainerView): Boolean {
         try {
             if (LumaItems.isWithmcMMO() && MCMMOAbilityAPI.treeFellerEnabled(player)) {
-                // Kroxxis ticket @1/19/25, mcMMO treefeller with multiple books
-                // has way too many variables for me to deal with right now,
-                // just disabling for now.
+                // Patched, but leaving disabled for now.
                 return false
             }
         } catch (throwable: Throwable) {
@@ -105,5 +88,27 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
             else -> return false
         }
         return true
+    }
+
+
+    override fun tabCompleteName(): String {
+        return "archive_of_astralis_${jobType.name.lowercase()}"
+    }
+
+
+    enum class JobType(val color: String) {
+        ALCHEMIST("#7b66fb"),
+        BLACKSMITH("#8B8B8B"),
+        BUILDER("#58d9a3"),
+        COOK("#ffa675"),
+        DIGGER("#fff27f"),
+        FARMER("#8eff99"),
+        FISHERMAN("#6db0ff"),
+        HUNTER("#ff4b3f"),
+        LUMBERJACK("#bcf067"),
+        MINER("#CD8EFF");
+
+        val key = "archive-of-astralis-${this.name.lowercase()}"
+        fun colorize(text: String) = "<${this.color}>$text</${this.color}>"
     }
 }

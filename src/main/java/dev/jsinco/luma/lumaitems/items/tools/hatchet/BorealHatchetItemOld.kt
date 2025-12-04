@@ -11,8 +11,8 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.inventory.ItemStack
 
-
-class BorealHatchet : CustomItemFunctions() {
+@Ignore // TODO: Scrap
+class BorealHatchetItemOld : CustomItemFunctions() {
 
     companion object {
         private val ITEM_BATCHES: MutableMap<UUID, MutableList<Item>> = mutableMapOf()

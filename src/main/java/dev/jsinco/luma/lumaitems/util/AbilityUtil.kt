@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.util
 
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.manager.FileManager
+import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
 import io.lumine.mythic.bukkit.MythicBukkit
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -235,18 +236,5 @@ object AbilityUtil {
             }
         }.runTaskTimer(plugin, 0, 10)
         return hitAmount * 10
-    }
-
-    fun Block.breakNaturallyWithLog(player: Player, itemStack: ItemStack? = null, triggerEffects: Boolean = false, dropExp: Boolean = false) {
-        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
-        itemStack?.let { this.breakNaturally(it, triggerEffects, dropExp) } ?: this.breakNaturally()
-    }
-    fun Block.breakNaturallyWithLog(player: Player, triggerEffects: Boolean, dropExp: Boolean) {
-        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
-        this.breakNaturally(triggerEffects, dropExp)
-    }
-    fun Block.setAirWithLog(player: Player) {
-        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
-        this.type = Material.AIR
     }
 }

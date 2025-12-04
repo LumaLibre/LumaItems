@@ -68,6 +68,7 @@ public enum Action {
     BLOCK_SHEAR_ENTITY, // When a block shears a living entity
     PLAYER_TELEPORT, // When a player teleports
     PLAYER_QUIT, // When a player quits the server
+    PLAYER_JOIN, // When a player joins the server
     PLAYER_PICKUP_EXP, // When a player picks up experience
     MACE_SMASH_ATTACK, // When a player performs a smash attack with a mace
     ENTITY_PICKUP_ITEM, // When a living entity data picks up an item with specific persistent data

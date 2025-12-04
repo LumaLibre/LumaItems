@@ -13,6 +13,7 @@ import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
@@ -43,6 +44,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerShearEntityEvent
@@ -85,7 +87,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.CACHED_BLOCK_BREAK -> onCachedBlockBreak(player, event as BlockBreakEvent)
             Action.BLOCK_DROP_ITEM -> onBlockDropItem(player, event as BlockDropItemEvent)
             Action.PLACE_BLOCK -> onPlaceBlock(player, event as BlockPlaceEvent)
-            Action.BLOCK_DAMAGE -> println("TODO: onBlockDamage")
+            Action.BLOCK_DAMAGE -> onBlockDamage(player, event as BlockDamageEvent)
             Action.FISH -> onFish(player, event as PlayerFishEvent)
             Action.ELYTRA_BOOST -> onElytraBoost(player, event as PlayerElytraBoostEvent)
             Action.PLAYER_CROUCH -> onPlayerCrouch(player, event as PlayerToggleSneakEvent)
@@ -106,6 +108,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.BLOCK_SHEAR_ENTITY -> onBlockShearEntity(event as BlockShearEntityEvent)
             Action.PLAYER_TELEPORT -> onPlayerTeleport(player, event as PlayerTeleportEvent)
             Action.PLAYER_QUIT -> onPlayerQuit(player, event as PlayerQuitEvent)
+            Action.PLAYER_JOIN -> onPlayerJoin(player, event as PlayerJoinEvent)
             Action.PLAYER_PICKUP_EXP -> onPlayerPickupExp(player, event as PlayerPickupExperienceEvent)
             Action.MACE_SMASH_ATTACK -> onMaceSmashAttack(player, event as EntityDamageByEntityEvent)
             Action.ENTITY_PICKUP_ITEM -> onEntityPickupItem(event as EntityPickupItemEvent)
@@ -152,6 +155,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onCachedBlockBreak(player: Player, event: BlockBreakEvent) {}
     open fun onBlockDropItem(player: Player, event: BlockDropItemEvent) {}
     open fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {}
+    open fun onBlockDamage(player: Player, event: BlockDamageEvent) {}
     open fun onFish(player: Player, event: PlayerFishEvent) {}
     open fun onElytraBoost(player: Player, event: PlayerElytraBoostEvent) {}
     open fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {}
@@ -172,6 +176,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onBlockShearEntity(event: BlockShearEntityEvent) {}
     open fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {}
     open fun onPlayerQuit(player: Player, event: PlayerQuitEvent) {}
+    open fun onPlayerJoin(player: Player, event: PlayerJoinEvent) {}
     open fun onPlayerPickupExp(player: Player, event: PlayerPickupExperienceEvent) {}
     open fun onMaceSmashAttack(player: Player, event: EntityDamageByEntityEvent) {}
     open fun onEntityPickupItem(event: EntityPickupItemEvent) {}

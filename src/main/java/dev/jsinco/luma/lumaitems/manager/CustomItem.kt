@@ -84,4 +84,8 @@ interface CustomItem {
         val annotation = this::class.java.getAnnotation(FireAnyways::class.java) ?: return false
         return annotation.value.contains(action)
     }
+
+    fun tabCompleteName(): String? {
+        return null
+    }
 }

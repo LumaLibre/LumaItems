@@ -1,14 +1,16 @@
 package dev.jsinco.luma.lumaitems.items.armor.elytra
 
+import dev.jsinco.luma.lumaitems.enums.GenericToolType
 import dev.jsinco.luma.lumaitems.items.ItemFactory
-import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.manager.CustomItem
+import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.particles.ParticleDisplay
 import dev.jsinco.luma.lumaitems.particles.Particles
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
-import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import dev.jsinco.luma.lumaitems.enums.GenericToolType
+import dev.jsinco.luma.lumaitems.util.BukkitVectors
+import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.extensions.ColorUtil.toColor
+import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Material
@@ -18,82 +20,72 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.util.Vector
 
 
-class MagiciansCloakItem : CustomItem {
+class MagiciansCloakItem : CustomItemFunctions() {
 
-    private val colors = listOf(
-        Util.hex2AwtColor("#8ec4f7"),
-        Util.hex2AwtColor("#ff9ccb"),
-        Util.hex2AwtColor("#d7f58d"),
-        Util.hex2AwtColor("#fffe8a"),
-        Util.hex2AwtColor("#ffd365")
-    )
-    private val vector0 = Vector(0, 0,0)
-    private val key = Util.namespacedKey("magicianscloak")
+    companion object {
+        private const val STAR_WEIGHT = 120
+        private const val MAX_STARS = 5
+        private const val DAMAGE_PER_STAR = 20
+        private val COLORS = listOf("#8ec4f7", "#ff9ccb", "#d7f58d", "#fffe8a", "#ffd365")
+            .map { it.toColor() }
+        private val KEY = Util.namespacedKey("magicianscloak")
+    }
+
+
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><#FFDA80>M<#FFCF6B>a<#FFC457>g<#FFB842>i<#FFAD2D>c<#F6B55A>i<#EDBE87>a<#E4C6B4>n<#DBCEE1>'<#E3DBE7>s <#F4F4F4>C<#CECDE2>l<#A7A7D1>o<#8180BF>a<#5A59AD>k</b>")
-            .customEnchants("<gradient:#FFDA80:#A7A7D1>Pizzazz!")
-            .lore("Damage entities to charge", "up your cloak!", "", "While holding a tool, click", "an entity to release a", "powerful attack spell.")
+            .name("<b><gradient:#a9bd8b:#d5db9b:#fbf1b2:#f0ae97:#a87f85>Magician's Cloak</gradient></b>")
+            .customEnchants("<#a9bd8b>Pizzazz!")
             .material(Material.ELYTRA)
-            .persistentData("magicianscloak")
-            .tier(Tier.CARNIVAL_2024)
-            .vanillaEnchants(mutableMapOf(Enchantment.MENDING to 1, Enchantment.PROTECTION to 6, Enchantment.FEATHER_FALLING to 5, Enchantment.UNBREAKING to 7))
+            .persistentData(KEY)
+            .tier(Tier.CHRISTMAS_2025)
+            .lore(
+                "<#a9bd8b>Damage</#a9bd8b> entities to charge",
+                "up your cloak.",
+                "",
+                "While holding a tool, <#a9bd8b>click</#a9bd8b>",
+                "an entity to release a",
+                "powerful attack spell."
+            )
+            .vanillaEnchants(
+                Enchantment.PROTECTION to 6,
+                Enchantment.FEATHER_FALLING to 5,
+                Enchantment.UNBREAKING to 7,
+                Enchantment.MENDING to 1
+            )
             .buildPair()
     }
 
-    override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        when (type) {
+    override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
+        if (QuickTasks.isOnCooldown(this, player)) return
+        val damage = event.damage.toInt().toShort()
+        if (damage < 1) return
 
-            Action.ENTITY_DAMAGE -> {
-                event as EntityDamageByEntityEvent
-                if (event.isCancelled) return false
-                val damage = event.damage.toInt().toShort()
-                if (damage < 1) return false
-                appendCloakDamage(player, damage)
-            }
+        appendCloakDamage(player, damage)
+    }
 
-            Action.RIGHT_CLICK -> {
-                val target = player.getTargetEntity(15) as? LivingEntity ?: return false
-                val itemInHand = GenericToolType.getGenericToolType(player.inventory.itemInMainHand.type)
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        val target = player.getTargetEntity(50) as? LivingEntity ?: return
+        val totalDamage = getTotalDamage(player)
 
-                if (getTotalDamage(player) < 500 || AbilityUtil.noDamagePermission(player, target) || (itemInHand != GenericToolType.TOOL && itemInHand != GenericToolType.WEAPON)) {
-                    return false
-                }
-
-                val particleDisplay = ParticleDisplay.of(Particle.DUST).withLocation(target.location).withColor(colors.random())
-                Particles.meguminExplosion(instance(), 5.0, particleDisplay)
-                updateCloakDamage(player, 0)
-                showDamageStars(player)
-
-                val ticks = AbilityUtil.damageOverTicks(target, player, target.health / 3, 5) {
-                    target.velocity = vector0
-                    target.world.playSound(target.location, Sound.ITEM_TOTEM_USE, 1.0f, 0.6f)
-                }
-
-
-                target.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, ticks, 3, false, false, false))
-            }
-
-            else -> return false
-        }
-        return true
+        dealDamage(player, target, totalDamage)
     }
 
     private fun appendCloakDamage(player: Player, amt: Short) {
         val item = player.equipment?.chestplate ?: return
         val meta = item.itemMeta ?: return
 
-        val currentDamage = meta.persistentDataContainer.get(key, PersistentDataType.SHORT) ?: 0
-        if (currentDamage >= 500) return
-        meta.persistentDataContainer.set(key, PersistentDataType.SHORT, (currentDamage + amt).toShort())
+        val currentDamage = meta.persistentDataContainer.get(KEY, PersistentDataType.SHORT) ?: 0
+        if (currentDamage >= STAR_WEIGHT * MAX_STARS) return
+        meta.persistentDataContainer.set(KEY, PersistentDataType.SHORT, (currentDamage + amt).toShort())
         item.itemMeta = meta
         showDamageStars(player)
     }
@@ -102,23 +94,52 @@ class MagiciansCloakItem : CustomItem {
         val item = player.equipment?.chestplate ?: return
         val meta = item.itemMeta ?: return
 
-        meta.persistentDataContainer.set(key, PersistentDataType.SHORT, amt)
+        meta.persistentDataContainer.set(KEY, PersistentDataType.SHORT, amt)
         item.itemMeta = meta
     }
 
     private fun getTotalDamage(player: Player): Short {
         val item = player.equipment?.chestplate ?: return 0
         val meta = item.itemMeta ?: return 0
-        return meta.persistentDataContainer.get(key, PersistentDataType.SHORT) ?: 0
+        return meta.persistentDataContainer.get(KEY, PersistentDataType.SHORT) ?: 0
     }
 
     private fun showDamageStars(player: Player) {
         val damage = getTotalDamage(player)
-        val stars = "★".repeat((damage / 100).coerceAtLeast(0)) + "☆".repeat((5 - damage / 100).coerceAtLeast(0))
+        val stars = "★".repeat((damage / STAR_WEIGHT).coerceAtLeast(0)) +
+                "☆".repeat((MAX_STARS - damage / STAR_WEIGHT)
+                    .coerceAtLeast(0))
 
-        val color = colors.random()
+        val color = COLORS.random()
 
 
         player.sendActionBar(Component.text(stars).color(TextColor.color(color.red, color.green, color.blue)))
+    }
+
+    private fun dealDamage(player: Player, target: LivingEntity, totalDamageStored: Short) {
+        val itemInHand = GenericToolType.getGenericToolType(player.inventory.itemInMainHand.type)
+
+        if (totalDamageStored < STAR_WEIGHT || AbilityUtil.noDamagePermission(player, target) || (itemInHand != GenericToolType.TOOL && itemInHand != GenericToolType.WEAPON)) {
+            return
+        }
+        QuickTasks.addCooldown(this, player, 100)
+
+        val particleDisplay = ParticleDisplay.of(Particle.DUST).withLocation(target.location).withColor(COLORS.random())
+        val factor = totalDamageStored / STAR_WEIGHT
+
+        Particles.meguminExplosion(instance(), factor.toDouble(), particleDisplay)
+        showDamageStars(player)
+
+        val damageToDeal = (factor * DAMAGE_PER_STAR).toDouble()
+
+        updateCloakDamage(player, 0)
+
+        val ticks = AbilityUtil.damageOverTicks(target, player, damageToDeal, 5, {
+            target.velocity = BukkitVectors.ZERO
+            target.world.playSound(target.location, Sound.ITEM_TOTEM_USE, 1.0f, 0.6f)
+        }, {
+            target.world.createExplosion(target.location, factor.toFloat(), false, false, player)
+        })
+        target.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, ticks, 3, false, false, false))
     }
 }

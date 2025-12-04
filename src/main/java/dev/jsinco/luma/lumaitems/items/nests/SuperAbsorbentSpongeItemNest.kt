@@ -3,9 +3,9 @@ package dev.jsinco.luma.lumaitems.items.nests
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.shapes.Sphere
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.breakNaturallyWithLog
-import dev.jsinco.luma.lumaitems.util.AbilityUtil.setAirWithLog
+import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.Executors
+import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.setAirWithLog
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
