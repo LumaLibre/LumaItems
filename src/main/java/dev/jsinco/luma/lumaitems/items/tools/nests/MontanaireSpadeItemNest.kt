@@ -20,7 +20,7 @@ class MontanaireSpadeBundleItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><gradient:#EC4D4D:#F69B27:#FAF252:#70F36B:#5780F1>Montanaire Spade Bundle</gradient></b>")
+            .name("<b><gradient:#EC4D4D:#F69B27:#FAF252:#70F36B:#5780F1>Montanaire Spade</gradient></b> <!b><#F7FFC9>Bundle</#F7FFC9></!b>")
             .material(Material.BLACK_BUNDLE)
             .tier(Tier.CHRISTMAS_2025)
             .persistentData("montanaire-spade-bundle")
@@ -30,7 +30,7 @@ class MontanaireSpadeBundleItem : CustomItemFunctions() {
                 Enchantment.MENDING to 1
             )
             .lore(
-                "<gray>Right-click to open.",
+                "<dark_gray>Right-click to open.",
                 "",
                 "A spade great for",
                 "gathering colorful",
@@ -87,7 +87,7 @@ class MontanaireSpadeItem : CustomItemFunctions() {
                 "Breaking sand with",
                 "this spade will yield",
                 "concrete powder of",
-                "the spade's color."
+                "the spade's <${colorBatch.color}>color</${colorBatch.color}>."
             )
             .buildPair()
     }

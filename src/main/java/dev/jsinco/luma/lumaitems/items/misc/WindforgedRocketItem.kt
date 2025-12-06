@@ -1,30 +1,29 @@
 package dev.jsinco.luma.lumaitems.items.misc
 
+import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
+import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.Executors
+import dev.jsinco.luma.lumaitems.util.MiniMessageUtil.mm
+import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
-import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.NamespacedKey
+import java.util.UUID
 import org.bukkit.Material
+import org.bukkit.World.Environment
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.block.Action as BukkitAction
 import org.bukkit.event.player.PlayerInteractEvent
-import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
-import dev.jsinco.luma.lumaitems.enums.Action
-import dev.jsinco.luma.lumaitems.util.MiniMessageUtil.mm
 import org.bukkit.inventory.EquipmentSlot
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.FireworkMeta
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.World.Environment
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-//import java.util.concurrent.ThreadLocalRandom
-import java.util.*
 
-class WindforgedRocket : CustomItemFunctions() {
+class WindforgedRocketItem : CustomItemFunctions() {
 
     companion object {
         private const val CUSTOM_ITEM_KEY = "windforged-rocket"
@@ -32,9 +31,8 @@ class WindforgedRocket : CustomItemFunctions() {
         private const val WINDOW_MS = 30_000L
     }
 
-    private val plugin = JavaPlugin.getProvidingPlugin(this::class.java)
-    private val key = NamespacedKey(plugin, CUSTOM_ITEM_KEY)
-    private val uuid = NamespacedKey(plugin, "uuid")
+    private val key = Util.namespacedKey(CUSTOM_ITEM_KEY)
+    private val uuid = Util.namespacedKey("uuid")
     private val usageTimeStamps = mutableMapOf<UUID, MutableList<Long>>()
 
     private data class CooldownInfo (
@@ -164,10 +162,10 @@ class WindforgedRocket : CustomItemFunctions() {
     }
 
     private fun scheduleRestoreIfConsumed(player: Player, slot: EquipmentSlot) {
-        plugin.server.scheduler.runTaskLater(plugin, Runnable {
+        Executors.syncDelayed(1) {
             if(player.inventory.getItem(slot).isEmpty)
                 player.inventory.setItem(slot, createWindforgedRocket())
-        }, 1L)
+        }
     }
 
     private fun checkCooldown(player: Player, recordUsage: Boolean = false): CooldownInfo {
