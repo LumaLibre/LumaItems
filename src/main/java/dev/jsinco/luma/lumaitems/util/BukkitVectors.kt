@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.util
 
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 import org.bukkit.Location
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Entity
@@ -9,7 +10,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.util.Vector
 
 /**
- * Utility class for vector operations in Bukkit that are
+ * Utility class for vector/location operations in Bukkit that are
  * shared across multiple items.
  */
 object BukkitVectors {
@@ -129,4 +130,31 @@ object BukkitVectors {
         return newVelocity.multiply(damping)
     }
 
+
+    fun propelAway(start: Location, goal: Location, entity: Entity, speed: Double = 0.3, yBias: Double = 1.5) {
+        val playerVec = start.toVector()
+        val pointVec = goal.toVector()
+
+        val direction = pointVec.subtract(playerVec).normalize()
+
+        direction.setY(yBias)
+
+        entity.velocity = direction.multiply(speed)
+    }
+
+    fun randomGoalLocation(
+        center: Location,
+        minDistance: Double = 0.35,
+        maxDistance: Double = 1.0,
+        yRange: Double = 0.0
+    ): Location {
+        val angle = Random.nextDouble(0.0, 2 * Math.PI)
+        val distance = Random.nextDouble(minDistance, maxDistance)
+
+        val xAdd = distance * cos(angle)
+        val zAdd = distance * sin(angle)
+        val yAdd = if (yRange > 0.0) Random.nextDouble(-yRange, yRange) else 0.0
+
+        return center.clone().add(xAdd, yAdd, zAdd)
+    }
 }

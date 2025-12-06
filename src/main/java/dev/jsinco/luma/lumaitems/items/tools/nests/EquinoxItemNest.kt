@@ -57,7 +57,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
     private fun seed(player: Player, amt: Int) {
         val snowballs = mutableMapOf<Snowball, ParticleDisplay>()
         repeat(amt) {
-            val spawnLoc = SnowballGeyser.randomSpawnPoint(player.location)
+            val spawnLoc = BukkitVectors.randomGoalLocation(player.location, 0.35, 1.0, 0.0)
             val snowball = SnowballGeyser.snowball(spawnLoc, player, true, key()).also {
                 snowballs[it] = ParticleDisplay.of(Particle.DUST).withColor(COLORS.random())
             }
@@ -159,9 +159,9 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
             Executors.sync {
                 pin.world.playSound(pin, Sound.ENTITY_WARDEN_HEARTBEAT, 0.5f, 7f)
                 repeat(amt) {
-                    val loc = randomSpawnPoint(pin)
+                    val loc = BukkitVectors.randomGoalLocation(pin, 0.35, 1.0, 0.0)
                     val snowball = snowball(loc, player, false, key)
-                    propelAway(pin, loc, snowball)
+                    BukkitVectors.propelAway(pin, loc, snowball, 0.3, 1.5)
                     snowballs.add(snowball)
                 }
             }
@@ -204,18 +204,6 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
                 return ball
             }
 
-            fun randomSpawnPoint(center: Location): Location {
-                var loc: Location
-
-                do {
-                    val xAdd = Random.Default.nextDouble(-1.0, 1.0)
-                    //val yAdd = random().nextDouble(-0.2, 0.2)
-                    val zAdd = Random.Default.nextDouble(-1.0, 1.0)
-                    loc = center.clone().add(xAdd, 0.0, zAdd)
-                } while (loc.distance(center) < 0.35)
-
-                return loc
-            }
 
             fun propelAway(pin: Location, point: Location, entity: Entity, speed: Double = 0.3, y: Double = 1.5) {
                 val playerVec = pin.toVector()
