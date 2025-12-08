@@ -81,8 +81,7 @@ interface CustomItem {
     }
 
     fun fireAnyways(action: Action): Boolean {
-        val annotation = this::class.java.getAnnotation(FireAnyways::class.java) ?: return false
-        return annotation.value.contains(action)
+        return false
     }
 
     fun tabCompleteName(): String? {

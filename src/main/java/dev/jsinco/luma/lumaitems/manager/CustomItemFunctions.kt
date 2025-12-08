@@ -9,8 +9,10 @@ import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
 import dev.jsinco.luma.lumaitems.enums.Action
+import dev.jsinco.luma.lumaitems.util.FireAnyways
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
+import java.util.EnumSet
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDamageEvent
@@ -56,6 +58,9 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
  * Abstract class which gives a dedicated function for each action at the cost of added overhead.
  */
 abstract class CustomItemFunctions : CustomItem {
+
+    private var fireAnywaysCached: EnumSet<Action>? = null
+    private var fireAnywaysInitialized: Boolean = false
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         // Should always be exhaustive
@@ -190,4 +195,31 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPlayerKnockbackEntity(player: Player, event: EntityKnockbackByEntityEvent) {}
     open fun onItemMerge(player: Player, event: ItemMergeEvent) {}
     open fun onMcMMOTreeFellerDestroyTree(player: Player, event: TreeFellerDestroyTreeEvent) {}
+
+
+    // FIXME: Optimize this with a static map in a companion object?
+    // FIXME: Cleanup
+    override fun fireAnyways(action: Action): Boolean {
+        if (fireAnywaysInitialized) {
+            return fireAnywaysCached?.contains(action) ?: false
+        }
+
+        val annotation = this::class.java.getAnnotation(FireAnyways::class.java)
+        this.fireAnywaysCached = null
+        this.fireAnywaysInitialized = true
+
+        if (annotation != null) {
+            for (action in Action.entries) {
+                if (annotation.value.contains(action)) {
+                    if (fireAnywaysCached == null) {
+                        this.fireAnywaysCached = EnumSet.noneOf(Action::class.java)
+                        this.fireAnywaysCached?.add(action)
+                    } else {
+                        this.fireAnywaysCached?.add(action)
+                    }
+                }
+            }
+        }
+        return fireAnywaysCached?.contains(action) ?: false
+    }
 }

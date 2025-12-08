@@ -10,6 +10,7 @@ import dev.jsinco.luma.lumacore.manager.modules.RegisterType
 import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.ItemManager
+import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.FireForAllNBT
 import dev.jsinco.luma.lumaitems.util.Util
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
@@ -455,7 +456,9 @@ class Listeners : ItemListener() {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPlayerPickupItem(event: PlayerAttemptPickupItemEvent) {
         val player = event.player
-        fire(Util.getAllEquipmentNBT(player), Action.PICKUP_ITEM, player, event)
+        Executors.async {
+            fire(Util.getAllEquipmentNBT(player), Action.PICKUP_ITEM, player, event, true)
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) // if you modify this event to include previous slot, items that use this need a conditional added to their logic

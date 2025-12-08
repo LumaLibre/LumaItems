@@ -10,8 +10,6 @@ import dev.jsinco.luma.lumaitems.util.Util.isItemInSlot
 import dev.jsinco.luma.lumaitems.util.extensions.ColorUtil.toBukkitColor
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import java.util.UUID
-import kotlin.collections.iterator
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment

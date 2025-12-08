@@ -6,6 +6,7 @@ import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.CustomItem
 import dev.jsinco.luma.lumaitems.manager.ItemManager
+import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import io.papermc.paper.persistence.PersistentDataContainerView
 import java.util.UUID
@@ -87,7 +88,7 @@ abstract class ItemListener : Listener {
             }
 
 //            if (!fireAnyways)
-//                break
+             break
         }
     }
 
@@ -105,10 +106,12 @@ abstract class ItemListener : Listener {
                     item.handleDisabled(player, event)
                     break
                 }
-                if (!withContainer) {
-                    item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-                } else {
-                    item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, itemData!!)
+                Executors.sync {
+                    if (!withContainer) {
+                        item.executeActions(action, player ?: getDummyPlayer() ?: return@sync, event)
+                    } else {
+                        item.executeWithContainer(action, player ?: getDummyPlayer() ?: return@sync, event, itemData!!)
+                    }
                 }
 
 //                if (!fireAnyways)
