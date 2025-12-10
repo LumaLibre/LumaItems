@@ -1,5 +1,6 @@
 package dev.jsinco.luma.lumaitems.items.astral.upgrades
 
+import dev.jsinco.luma.lumaitems.enums.DefaultAttributes
 import dev.jsinco.luma.lumaitems.enums.ToolType
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -58,8 +59,8 @@ class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() 
             val genericMCToolType = ToolType.getToolType(item)
 
             if (modifiableMaterials.contains(genericMCToolType)) {
-                // TODO: Look more into exactly why this is deprecated. Haven't experienced any of the issues mentioned
                 val originalGearType = item.type.toString().split("_")[1]
+                // FIXME: Deprecated method usage
                 item.type = Material.valueOf("${upgradeTier.newMaterial}_${originalGearType}")
             }
 
@@ -72,6 +73,15 @@ class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() 
                 } else if (enchantment.canEnchantItem(item)) {
                     meta.addEnchant(enchantment, astralUpgradeEnchant.level, true)
                 }
+            }
+
+            // bad patch for an even worse system, but it works for now
+            val newAttributes = DefaultAttributes.getFromMaterial(item.type)?.attributes ?: return
+            for (entry in newAttributes) {
+                val attribute = entry.key
+                val value = entry.value
+                meta.removeAttributeModifier(attribute)
+                meta.addAttributeModifier(attribute, value)
             }
 
             meta.persistentDataContainer.set(NamespacedKey(plugin, upgradeTier.tierName), PersistentDataType.SHORT, upgradeTier.tierNumber.toShort())
