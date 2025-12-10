@@ -295,8 +295,9 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (!event.hasChangedPosition()) return
-
-        fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
+        Executors.async {
+            fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
+        }
     }
 
     @FireForAllNBT

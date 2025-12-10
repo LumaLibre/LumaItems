@@ -62,9 +62,6 @@ abstract class ItemListener : Listener {
             } else {
                 item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
             }
-
-//            if (!fireAnyways)
-//                break
         }
     }
 
@@ -86,9 +83,6 @@ abstract class ItemListener : Listener {
             } else {
                 item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
             }
-
-//            if (!fireAnyways)
-             break
         }
     }
 
@@ -113,9 +107,6 @@ abstract class ItemListener : Listener {
                         item.executeWithContainer(action, player ?: getDummyPlayer() ?: return@sync, event, itemData!!)
                     }
                 }
-
-//                if (!fireAnyways)
-//                    break
             }
         }
     }
