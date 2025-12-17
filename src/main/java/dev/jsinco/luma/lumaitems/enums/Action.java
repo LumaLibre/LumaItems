@@ -53,10 +53,10 @@ public enum Action {
     ASYNC_CHAT, // When a player sends a chat message (Async)
     MOVE, // When a player moves and their position/location has changed
     INPUT, // When a key input is received from a player (e.g. pressing a key)
-    ENTITY_MOVE, // When a living entity with specific persistent data moves and their position/location has changed
+    ENTITY_MOVE(2), // When a living entity with specific persistent data moves and their position/location has changed
     CONSUME_ITEM, // When a player consumes an item
     JUMP, // When a player jumps (Unused)
-    ENTITY_CHANGE_BLOCK, // When an entity changes a block (Unused)
+    ENTITY_FORM_BLOCK, // When an entity changes a block (Unused)
     POTION_EFFECT, // When a player is affected by a potion effect
     ENTITY_TARGET_PLAYER, // When a living entity with a specific persistent data targets a player
     ARMOR_CHANGE, // When a player changes their armor
@@ -76,9 +76,26 @@ public enum Action {
     INVENTORY_CLICK, // When a player clicks an item in their inventory with a specific persistent data
     FILL_BUCKET, // When a player fills a bucket with a specific persistent data
     EMPTY_BUCKET, // When a player empties a bucket with a specific persistent data
-    PICKUP_ITEM, // When a player picks up an item
+    PICKUP_ITEM(10), // When a player picks up an item
     ITEM_HELD, // When a player holds an item
     ITEM_DAMAGE, // When an item is damaged
     PLAYER_KNOCKBACK_ENTITY, // When a player knocks back an entity
     ITEM_MERGE, // When an item with specific persistent data merges with another item
+
+
+    ;
+
+    private final int callSlowdown;
+
+    Action(int callSlowdown) {
+        this.callSlowdown = callSlowdown;
+    }
+
+    Action() {
+        this.callSlowdown = 0;
+    }
+
+    public int getCallSlowdown() {
+        return callSlowdown;
+    }
 }

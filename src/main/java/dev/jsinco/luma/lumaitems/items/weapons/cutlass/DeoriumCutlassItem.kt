@@ -27,7 +27,7 @@ import org.bukkit.util.Vector
 import kotlin.math.cos
 import kotlin.math.sin
 
-@Disable(WorldName.PINATA)
+@Disable(WorldName.PINATA, WorldName.SPAWN, WorldName.EVENT_NEW)
 class DeoriumCutlassItem : CustomItemFunctions() {
 
     companion object {
@@ -69,8 +69,22 @@ class DeoriumCutlassItem : CustomItemFunctions() {
             var ticksRan = 0
 
             override fun run() {
+                ticksRan += 5
+                if (ticksRan >= 120) {
+                    armorStand.remove()
+                    cancel()
+                }
+
+                val nearbyEntities = armorStand.getNearbyEntities(10.0, 10.0, 10.0)
+
+                if (AbilityUtil.noDamagePermission(p, nearbyEntities.firstOrNull() ?: return)) {
+                    armorStand.remove()
+                    cancel()
+                    return
+                }
+
                 for (entity in armorStand.getNearbyEntities(10.0,10.0,10.0)) {
-                    if (entity.type == EntityType.ARMOR_STAND || entity.type == EntityType.PLAYER || AbilityUtil.noDamagePermission(p, entity)) continue
+                    if (entity.type == EntityType.ARMOR_STAND || entity.type == EntityType.PLAYER) continue
                     val direction: Vector = armorStand.location.subtract(entity.location).toVector()
                     val distance: Double = entity.location.distance(armorStand.location)
 
@@ -97,11 +111,6 @@ class DeoriumCutlassItem : CustomItemFunctions() {
                 }
                 armorStand.location.world.playSound(armorStand.location, Sound.ENTITY_WITHER_AMBIENT, 0.08f, 2f)
 
-                ticksRan += 5
-                if (ticksRan >= 120) {
-                    armorStand.remove()
-                    cancel()
-                }
             }
         }.runTaskTimer(instance(), 0L, 5L)
     }

@@ -161,7 +161,8 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
                 repeat(amt) {
                     val loc = BukkitVectors.randomGoalLocation(pin, 0.35, 1.0, 0.0)
                     val snowball = snowball(loc, player, false, key)
-                    BukkitVectors.propelAway(pin, loc, snowball, 0.3, 1.5)
+                    val vector = BukkitVectors.propelAway(pin, loc, 0.3, 1.5)
+                    snowball.velocity = vector
                     snowballs.add(snowball)
                 }
             }

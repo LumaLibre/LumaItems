@@ -19,7 +19,7 @@ import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
-import org.bukkit.event.entity.EntityChangeBlockEvent
+import org.bukkit.event.block.EntityBlockFormEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
@@ -102,7 +102,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_MOVE -> onEntityMove(event as EntityMoveEvent)
             Action.CONSUME_ITEM -> onConsumeItem(player, event as PlayerItemConsumeEvent)
             Action.JUMP -> onJump(player, event as PlayerJumpEvent)
-            Action.ENTITY_CHANGE_BLOCK -> onEntityChangeBlock(event as EntityChangeBlockEvent)
+            Action.ENTITY_FORM_BLOCK -> onEntityFormBlock(event as EntityBlockFormEvent)
             Action.POTION_EFFECT -> onPotionEffect(player, event as EntityPotionEffectEvent)
             Action.ENTITY_TARGET_PLAYER -> onEntityTargetPlayer(player, event as EntityTargetLivingEntityEvent)
             Action.ARMOR_CHANGE -> onArmorChange(player, event as PlayerArmorChangeEvent)
@@ -170,7 +170,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityMove(event: EntityMoveEvent) {}
     open fun onConsumeItem(player: Player, event: PlayerItemConsumeEvent) {}
     open fun onJump(player: Player, event: PlayerJumpEvent) {}
-    open fun onEntityChangeBlock(event: EntityChangeBlockEvent) {}
+    open fun onEntityFormBlock(event: EntityBlockFormEvent) {}
     open fun onPotionEffect(player: Player, event: EntityPotionEffectEvent) {}
     open fun onEntityTargetPlayer(player: Player, event: EntityTargetLivingEntityEvent) {}
     open fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {}

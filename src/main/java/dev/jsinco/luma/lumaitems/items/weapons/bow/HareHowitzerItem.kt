@@ -2,6 +2,7 @@ package dev.jsinco.luma.lumaitems.items.weapons.bow
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -47,26 +48,29 @@ class HareHowitzerItem : CustomItemFunctions() {
         QuickTasks.addCooldown(this, player, 20)
 
         val rabbit = player.world.spawn(event.projectile.location, Rabbit::class.java) {
+            it.isPersistent = false
             it.velocity = event.projectile.velocity
             it.fallDistance = 100f
             Util.setPersistentKey(it, "hare-howitzer", PersistentDataType.SHORT, 1)
         }
 
         event.projectile = rabbit
+
+        Executors.asyncTimer(0, 1) { task ->
+            if (!rabbit.isValid) {
+                task.cancel()
+            } else if (hasHitBlock(rabbit)) {
+                Executors.sync {
+                    rabbit.world.createExplosion(rabbit.location, 2.4f, false, false)
+                }
+                task.cancel()
+            }
+        }
     }
 
     override fun onEntityDeath(player: Player, event: EntityDeathEvent) {
         event.droppedExp = 0
         event.drops.clear()
-    }
-
-    override fun onEntityMove(event: EntityMoveEvent) {
-        val entity = event.entity
-        val hasHitBlock = hasHitBlock(entity)
-        if (hasHitBlock) {
-            entity.world.createExplosion(entity.location, 2.4f, false, false)
-            Util.removePersistentKey(entity, "hare-howitzer")
-        }
     }
 
     private fun hasHitBlock(entity: Entity): Boolean {

@@ -2,6 +2,8 @@ package dev.jsinco.luma.lumaitems.items.misc
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
+import dev.jsinco.luma.lumaitems.util.disabling.Disable
+import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import java.util.IdentityHashMap
 import org.bukkit.Material
@@ -15,6 +17,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.BlockStateMeta
 
+//@Disable(WorldName.ALL)
 class StickyTaffyItem : CustomItemFunctions() {
 
     companion object {

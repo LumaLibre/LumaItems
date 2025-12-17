@@ -4,6 +4,8 @@ import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.obj.AttributeContainer
 import dev.jsinco.luma.lumaitems.util.AbilityUtil
+import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.Util.isItemInSlot
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -15,10 +17,15 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
 class MidnightClaymoreItem : CustomItemFunctions() {
+
+    companion object {
+        private val KEY = Util.namespacedKey("midnight-claymore")
+    }
 
     private val damageGuard = ThreadLocal.withInitial { false }
 
@@ -27,11 +34,11 @@ class MidnightClaymoreItem : CustomItemFunctions() {
             .name("<b><gradient:#342f6c:#7b75aa:#b58fc9>Midnight Claymore</gradient></b>")
             .customEnchants("<#7b75aa>Heavyweight")
             .material(Material.NETHERITE_SWORD)
-            .persistentData("midnight-claymore")
+            .persistentData(KEY)
             .tier(Tier.HALLOWEEN_2025)
             .attributeModifiers(
-                AttributeContainer.of("midnight-claymore", Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.5, EquipmentSlotGroup.ANY),
-                AttributeContainer.of("midnight-claymore", Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, -0.010, EquipmentSlotGroup.MAINHAND)
+                AttributeContainer.of(KEY, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.5, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(KEY, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, -0.010, EquipmentSlotGroup.MAINHAND)
             )
             .vanillaEnchants(
                 Enchantment.SHARPNESS to 10,
@@ -55,7 +62,7 @@ class MidnightClaymoreItem : CustomItemFunctions() {
 
 
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
-        if (damageGuard.get()) return
+        if (damageGuard.get() || !player.isItemInSlot(KEY, EquipmentSlot.HAND)) return
         damageGuard.set(true)
 
         try {

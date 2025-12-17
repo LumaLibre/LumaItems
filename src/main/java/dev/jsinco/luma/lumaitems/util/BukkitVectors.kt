@@ -131,7 +131,7 @@ object BukkitVectors {
     }
 
 
-    fun propelAway(start: Location, goal: Location, entity: Entity, speed: Double = 0.3, yBias: Double = 1.5) {
+    fun propelAway(start: Location, goal: Location, speed: Double = 0.3, yBias: Double = 1.5): Vector {
         val playerVec = start.toVector()
         val pointVec = goal.toVector()
 
@@ -139,7 +139,7 @@ object BukkitVectors {
 
         direction.setY(yBias)
 
-        entity.velocity = direction.multiply(speed)
+        return direction.multiply(speed)
     }
 
     fun randomGoalLocation(

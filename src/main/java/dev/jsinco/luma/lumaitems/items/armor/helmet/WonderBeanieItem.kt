@@ -20,7 +20,8 @@ import kotlin.random.Random
 class WonderBeanieItem : CustomItemFunctions() {
 
     companion object {
-        private val causeEffectWhiteList: List<EntityPotionEffectEvent.Cause> = listOf(
+        private val KEY = Util.namespacedKey("wonderbeanie")
+        private val CAUSE_WHITE_LIST: Set<EntityPotionEffectEvent.Cause> = setOf(
             EntityPotionEffectEvent.Cause.AREA_EFFECT_CLOUD,
             EntityPotionEffectEvent.Cause.ARROW,
             EntityPotionEffectEvent.Cause.AXOLOTL,
@@ -34,22 +35,28 @@ class WonderBeanieItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><#B9E4F7>W<#C4E4FA>o<#CEE5FC>n<#D9E5FF>d<#E2E3F6>e<#ECE1ED>r <#F5DCE9>B<#F5DAEE>e<#F5D7F3>a<#F1D7F6>n<#ECD7FA>i<#E8D7FD>e")
-            .customEnchants("<gray>Boost I", "<#f5d7f3>Cauldron")
-            .lore("Amplifies all consumable", "potion effects received.")
+            .customEnchants("<#F178A4>Fortitude", "<#f5d7f3>Cauldron")
+            .lore(
+                "Grants <#F178A4>two</#F178A4> extra hearts",
+                "while worn.",
+                "",
+                "<#f5d7f3>Amplifies</#f5d7f3> all consumable",
+                "potion effects received."
+            )
             .material(Material.NETHERITE_HELMET)
-            .persistentData("wonderbeanie")
-            .vanillaEnchants(Enchantment.UNBREAKING to 10, Enchantment.PROTECTION to 7, Enchantment.RESPIRATION to 5, Enchantment.AQUA_AFFINITY to 1, Enchantment.BLAST_PROTECTION to 7, Enchantment.MENDING to 1)
-            .tier(Tier.WINTER_2024)
+            .persistentData(KEY)
+            .vanillaEnchants(Enchantment.UNBREAKING to 10, Enchantment.PROTECTION to 7, Enchantment.BLAST_PROTECTION to 7, Enchantment.MENDING to 1)
+            .tier(Tier.CHRISTMAS_2025)
             .attributeModifiers(
                 DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
-                    "wonderbeanie", Attribute.MAX_HEALTH, 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD
+                    KEY, Attribute.MAX_HEALTH, 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD
                 )
             )
             .buildPair()
     }
 
     override fun onPotionEffect(player: Player, event: EntityPotionEffectEvent) {
-        if (!Util.isItemInSlot("wonderbeanie", EquipmentSlot.HEAD, player) || !causeEffectWhiteList.contains(event.cause)) {
+        if (!Util.isItemInSlot(KEY, EquipmentSlot.HEAD, player) || !CAUSE_WHITE_LIST.contains(event.cause)) {
             return
         }
 

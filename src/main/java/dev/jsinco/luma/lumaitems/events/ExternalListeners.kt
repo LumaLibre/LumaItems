@@ -23,7 +23,7 @@ class ExternalListeners : Listener {
 
     @EventHandler
     fun onJobsPrePayment(event: JobsPrePaymentEvent) {
-        if (Random.nextInt(3000) > 2 || event.job.name == "Hunter") return
+        if (Random.nextInt(10000) > 2 || event.job.name == "Hunter") return
         val player = event.player?.player ?: return
 
 

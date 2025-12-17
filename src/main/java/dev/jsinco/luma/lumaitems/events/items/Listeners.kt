@@ -7,7 +7,6 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.jsinco.luma.lumacore.manager.modules.AutoRegister
 import dev.jsinco.luma.lumacore.manager.modules.RegisterType
-import dev.jsinco.luma.lumaitems.LumaItems
 import dev.jsinco.luma.lumaitems.enums.Action
 import dev.jsinco.luma.lumaitems.manager.ItemManager
 import dev.jsinco.luma.lumaitems.util.Executors
@@ -26,7 +25,7 @@ import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
-import org.bukkit.event.entity.EntityChangeBlockEvent
+import org.bukkit.event.block.EntityBlockFormEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
@@ -72,8 +71,6 @@ import org.bukkit.persistence.PersistentDataType
  */
 @AutoRegister(RegisterType.LISTENER)
 class Listeners : ItemListener() {
-
-    val plugin: LumaItems = LumaItems.getInstance()
 
     @EventHandler
     fun onCrossbowLoad(event: EntityLoadCrossbowEvent) {
@@ -306,15 +303,18 @@ class Listeners : ItemListener() {
         fire(Util.getAllEquipmentNBT(event.player), Action.INPUT, event.player, event)
     }
 
-    // Causes lag, there are better ways of doing entity checks than this.
     //@EventHandler
     fun onEntityMoveEvent(event: EntityMoveEvent) {
-        if (!event.hasChangedPosition()) return
+        if (!event.hasChangedPosition() || !event.entity.hasAI()) return
+        val action = Action.ENTITY_MOVE
+        if (!action.canFireRightNow()) return
 
         val container: PersistentDataContainer = event.entity.persistentDataContainer
         if (container.isEmpty) return
 
-        fire(container, Action.ENTITY_MOVE, null, event)
+        Executors.async {
+            fire(container, action, null, event)
+        }
     }
 
     @EventHandler
@@ -323,12 +323,14 @@ class Listeners : ItemListener() {
         fire(data, Action.JUMP, event.player, event)
     }
 
-    //@EventHandler
-    fun onEntityChangeBlock(event: EntityChangeBlockEvent) {
+    @EventHandler
+    fun onEntityFormBlock(event: EntityBlockFormEvent) {
         val entity = event.entity
 
         val data: PersistentDataContainer = entity.persistentDataContainer
-        fire(data, Action.ENTITY_CHANGE_BLOCK, null, event)
+        if (data.isEmpty) return
+
+        fire(data, Action.ENTITY_FORM_BLOCK, null, event)
     }
 
     @EventHandler
@@ -457,8 +459,11 @@ class Listeners : ItemListener() {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPlayerPickupItem(event: PlayerAttemptPickupItemEvent) {
         val player = event.player
+        val action = Action.PICKUP_ITEM
+        if (!action.canFireRightNow()) return
+
         Executors.async {
-            fire(Util.getAllEquipmentNBT(player), Action.PICKUP_ITEM, player, event, true)
+            fire(Util.getAllEquipmentNBT(player), action, player, event, true)
         }
     }
 

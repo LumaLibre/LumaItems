@@ -9,6 +9,7 @@ import dev.jsinco.luma.lumaitems.manager.ItemManager
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.MiniMessageUtil
 import io.papermc.paper.persistence.PersistentDataContainerView
+import java.util.EnumMap
 import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -20,9 +21,15 @@ import org.bukkit.persistence.PersistentDataContainer
 abstract class ItemListener : Listener {
 
     companion object {
+
         // This exists because Kotlin doesn't allow null values unless the variable is nullable, and I'm not going to edit 75+ classes
         // Maybe replace with a class that implements player sometime?
         private var player: Player? = null
+        // Loosely notify players if they're using a disabled custom item
+        private val notifees: MutableSet<UUID> = mutableSetOf()
+        private val reducedCalls: EnumMap<Action, Int> = EnumMap(Action::class.java)
+
+
         fun getDummyPlayer(): Player? {
             if (player == null && Bukkit.getOnlinePlayers().isNotEmpty()) {
                 player = Bukkit.getOnlinePlayers().random()
@@ -30,9 +37,6 @@ abstract class ItemListener : Listener {
             return player
         }
 
-
-        // Loosely notify players if they're using a disabled custom item
-        private val notifees: MutableSet<UUID> = mutableSetOf()
         fun notify(player: Player, persistentNotification: Boolean) {
             if (notifees.contains(player.uniqueId) && !persistentNotification) return
             player.sendActionBar(MiniMessageUtil.mm("<red>Custom abilities for equipped item(s) are disabled in this world."))
@@ -43,8 +47,6 @@ abstract class ItemListener : Listener {
 
     // Paper added this, just makes it easier to look at the PDC
     fun fire(data: PersistentDataContainerView, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-
-
         for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.CUSTOM_ITEMS) {
             val item = customItem.value
             val fireAnyways = item.fireAnyways(action)
@@ -78,10 +80,12 @@ abstract class ItemListener : Listener {
                 item.handleDisabled(player, event)
                 return
             }
-            if (!withContainer) {
-                item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-            } else {
-                item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
+            Executors.sync {
+                if (!withContainer) {
+                    item.executeActions(action, player ?: getDummyPlayer() ?: return@sync, event)
+                } else {
+                    item.executeWithContainer(action, player ?: getDummyPlayer() ?: return@sync, event, data)
+                }
             }
         }
     }
@@ -130,7 +134,20 @@ abstract class ItemListener : Listener {
         }
     }
 
-    // Handle treefeller
+
+    fun Action.canFireRightNow(): Boolean {
+        if (this.callSlowdown < 1) return true
+
+        // TODO: optimize and/or make this per player?
+        val current = reducedCalls.getOrDefault(this, 0)
+        return if (current >= this.callSlowdown) {
+            reducedCalls[this] = 0
+            true
+        } else {
+            reducedCalls[this] = current + 1
+            false
+        }
+    }
 
     fun isTreeFeller(player: Player): Boolean {
         try {
