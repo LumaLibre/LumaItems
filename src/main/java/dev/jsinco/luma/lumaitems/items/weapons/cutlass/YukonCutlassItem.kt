@@ -5,6 +5,7 @@ import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.BukkitVectors
 import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.Util.isItemInSlot
 import dev.jsinco.luma.lumaitems.util.extensions.ColorUtil.toBukkitColor
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import kotlin.random.asJavaRandom
@@ -22,6 +23,7 @@ import org.bukkit.entity.Snowball
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.loot.LootContext
 import org.bukkit.persistence.PersistentDataType
@@ -79,6 +81,10 @@ class YukonCutlassItem : CustomItemFunctions() {
         val hits = Util.getPersistentKey(entity, KEY, PersistentDataType.INTEGER) ?: 0
 
         if (hits >= MAX_HITS || (entity is Animals && !entity.isAdult)) {
+            return
+        }
+
+        if (!player.isItemInSlot(KEY, EquipmentSlot.HAND)) {
             return
         }
 
@@ -155,7 +161,7 @@ class YukonCutlassItem : CustomItemFunctions() {
                 if (snowball.isDead || !snowball.isValid) {
                     iterator.remove()
                 } else if (snowball.isInWater || snowball.isInLava) {
-                    snowball.dropAndRemove()
+                    sync { snowball.dropAndRemove() }
                     iterator.remove()
                     continue
                 }
@@ -170,7 +176,7 @@ class YukonCutlassItem : CustomItemFunctions() {
                 task.cancel()
                 return@asyncTimer
             } else if (this.isInWater || this.isInLava) {
-                this.dropAndRemove()
+                sync { this.dropAndRemove() }
                 task.cancel()
                 return@asyncTimer
             }

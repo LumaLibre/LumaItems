@@ -71,6 +71,7 @@ class AbominableHowitzerItem : CustomItemFunctions() {
             } else if (snowman.hasHitBlock()) {
                 Executors.sync {
                     snowman.world.createExplosion(snowman.location, 2.4f, false, false)
+                    snowman.remove()
                 }
                 task.cancel()
             }
@@ -86,6 +87,7 @@ class AbominableHowitzerItem : CustomItemFunctions() {
         event.isCancelled = true
         if (!event.entity.isDead) {
             event.entity.world.createExplosion(event.entity.location, 2.4f, false, false)
+            event.entity.remove()
         }
     }
 

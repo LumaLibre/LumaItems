@@ -365,7 +365,10 @@ class Listeners : ItemListener() {
 
     @EventHandler
     fun onEntityTeleport(event: EntityTeleportEvent) {
-        fire(event.entity.persistentDataContainer, Action.ENTITY_TELEPORT, null, event)
+        val container = event.entity.persistentDataContainer
+        if (container.isEmpty) return
+
+        fire(container, Action.ENTITY_TELEPORT, null, event)
     }
 
     @EventHandler

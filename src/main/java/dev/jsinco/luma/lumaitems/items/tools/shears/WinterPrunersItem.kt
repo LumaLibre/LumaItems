@@ -2,8 +2,6 @@ package dev.jsinco.luma.lumaitems.items.tools.shears
 
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
-import dev.jsinco.luma.lumaitems.util.disabling.Ignore
-import dev.jsinco.luma.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -14,7 +12,7 @@ import org.bukkit.inventory.ItemStack
 class WinterPrunersItem : CustomItemFunctions() {
 
     companion object {
-        private val PATTERN = Regex(".*(GLASS|_HEAD)")
+        private val PATTERN = Regex(".*(GLASS|_HEAD|_WALL_HEAD)")
     }
 
     override fun createItem(): Pair<String, ItemStack> {

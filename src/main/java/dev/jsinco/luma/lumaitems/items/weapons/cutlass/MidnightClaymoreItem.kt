@@ -72,7 +72,7 @@ class MidnightClaymoreItem : CustomItemFunctions() {
                     hitEntity.location.getNearbyLivingEntities(5.0)
                         .sortedBy { it.location.distanceSquared(hitEntity.location) }
                 ) }
-                .filter { it != player || !it.isValid }
+                .filter { (it != player || !it.isValid) && it is LivingEntity }
 
             // get block under entity
             val material = hitEntity.location.subtract(0.0, 1.0, 0.0).block.type

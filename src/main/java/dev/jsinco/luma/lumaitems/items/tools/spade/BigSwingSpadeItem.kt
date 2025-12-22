@@ -18,6 +18,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
+import org.bukkit.potion.PotionEffectType
 
 // TODO: create item nest
 class BigSwingSpadeItem : CustomItemFunctions() {
@@ -71,6 +72,10 @@ class BigSwingSpadeItem : CustomItemFunctions() {
         }
         for (block in ellipsoidBlocks) {
             block.breakNaturallyWithLog(player, item, true)
+        }
+
+        if (player.hasPotionEffect(PotionEffectType.HASTE)) {
+            player.removePotionEffect(PotionEffectType.HASTE)
         }
     }
 }

@@ -3,6 +3,8 @@ package dev.jsinco.luma.lumaitems.items.weapons.scythe
 import dev.jsinco.luma.lumaitems.items.ItemFactory
 import dev.jsinco.luma.lumaitems.manager.CustomItemFunctions
 import dev.jsinco.luma.lumaitems.util.QuickTasks
+import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.Util.isItemInSlot
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -21,16 +23,21 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 import java.util.function.Consumer
+import org.bukkit.inventory.EquipmentSlot
 
 @Disable(WorldName.PINATA)
 class DazzlingHeartsScytheItem : CustomItemFunctions() {
+
+    companion object {
+        private val KEY = Util.namespacedKey("dazzling-hearts-scythe")
+    }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gradient:#f848b6:#f848b6>Dazz</gradient><gradient:#f848b6:#ffa5e3>ling </gradient><gradient:#ffa5e3:#ffdef8>Hear</gradient><gradient:#ffdef8:#ddb8ff>ts Sc</gradient><gradient:#ddb8ff:#ab8df7>ythe</gradient></b>")
             .customEnchants("<#ffa5e3>Dazzling Barrage")
             .material(Material.NETHERITE_HOE)
-            .persistentData("dazzling-hearts-scythe")
+            .persistentData(KEY)
             .tier(Tier.VALENTIDE_2025)
             .lore(
                 "<#ddb8ff>Right-click<white> to unleash a",
@@ -50,6 +57,12 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) return
+
+        if (!player.isItemInSlot(KEY, EquipmentSlot.HAND)) {
+            return
+        }
+
+
         val loc = (player.getTargetEntity(50) as? LivingEntity)?.location
             ?: player.getTargetBlockExact(10)?.location
             ?: player.location.add(player.location.direction.multiply(10))
