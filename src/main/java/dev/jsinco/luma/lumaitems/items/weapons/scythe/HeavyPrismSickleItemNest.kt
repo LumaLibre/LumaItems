@@ -12,6 +12,7 @@ import dev.jsinco.luma.lumaitems.util.Executors
 import dev.jsinco.luma.lumaitems.obj.PersistentDataRecord
 import dev.jsinco.luma.lumaitems.util.QuickTasks
 import dev.jsinco.luma.lumaitems.util.Util
+import dev.jsinco.luma.lumaitems.util.Util.isItemInSlot
 import dev.jsinco.luma.lumaitems.util.disabling.Disable
 import dev.jsinco.luma.lumaitems.util.disabling.WorldName
 import dev.jsinco.luma.lumaitems.util.tiers.Tier
@@ -42,6 +43,7 @@ import org.bukkit.entity.Villager
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -153,7 +155,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (QuickTasks.isOnCooldown(this, player)) return
+        if (QuickTasks.isOnCooldown(this, player) || !player.isItemInSlot(nameSpace, EquipmentSlot.HAND)) return
 
         val item = event.item ?: return
         val colorKitString = item.persistentDataContainer.get(nameSpace, PersistentDataType.STRING)
@@ -387,6 +389,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             private const val SPEED = 0.45
             private const val SPEED_MULTIPLIER = 2.5
             private const val SNAP = 0.5
+            private const val MAX_RECURSION = 8
 
             private fun getPredicate(player: Player, autoTargetting: Boolean = false): Predicate<Entity> {
                 return Predicate<Entity> { entity ->
@@ -396,7 +399,6 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                             entity.type != EntityType.ITEM_FRAME &&
                             entity != player &&
                             player.canSee(entity) &&
-                            !AbilityUtil.noDamagePermission(player, entity) &&
                             (!autoTargetting || (
                                     entity !is Villager &&
                                             (entity as? Tameable)?.isTamed != true
@@ -510,6 +512,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
             val nearbyEntities = position.getNearbyLivingEntities(AUTO_TARGET_RANGE)
                 .filter { entity -> getPredicate(player, true).test(entity) }
+                .filter { !AbilityUtil.noDamagePermission(player, it) }
                 .filter { entity -> activeTargets.getOrDefault(entity, 0) < 2 }
                 .sortedBy { it.location.distanceSquared(player.location) }
             if (nearbyEntities.isEmpty()) {
@@ -570,21 +573,29 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             }
         }
 
-        private fun raytrace(start: Location, direction: Vector, reach: Double, predicate: Predicate<Entity>) {
+        private fun raytrace(start: Location, direction: Vector, reach: Double, predicate: Predicate<Entity>, recursionDepth: Int = 0) {
+            if (recursionDepth >= MAX_RECURSION) return
+
             val raytraceResult: RayTraceResult? = position.world.rayTraceEntities(start, direction, reach, predicate)
             val hitEntity = raytraceResult?.hitEntity ?: return
             val position = raytraceResult.hitPosition.toLocation(hitEntity.world)
             val newReach = start.distance(position)
-            if (newReach > 1) {
-                // recursively raytrace until we have no more entities in the way
-                raytrace(position, direction, newReach, predicate.and { it != hitEntity })
-            }
+
 
             if (hitEntity is LivingEntity) {
+                if (!AbilityUtil.noDamagePermission(player, hitEntity)) {
+                    this.despawn()
+                    return
+                }
                 hitEntity.damage(8.0, player)
                 if (Random.nextInt(10) == 0) {
                     hitEntity.world.playSound(hitEntity.location, Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.5f, 0.1f)
                 }
+            }
+
+            if (newReach > 1) {
+                // recursively raytrace until we have no more entities in the way
+                raytrace(position, direction, newReach, predicate.and { it != hitEntity }, recursionDepth + 1)
             }
         }
 
