@@ -79,15 +79,13 @@ class MidnightClaymoreItem : CustomItemFunctions() {
 
             var factor = nearbyEntities.size.toDouble()
             nearbyEntities.forEach { entity ->
-                if (!AbilityUtil.noDamagePermission(player, entity) || entity.type == EntityType.CREAKING) {
-                    entity.damage(event.damage * (1 + factor * 0.19), player)
-                    entity.world.playSound(entity.location, Sound.ITEM_AXE_STRIP, 1.5f, 0.9f)
-                    entity.world.spawnParticle(Particle.SWEEP_ATTACK, entity.boundingBox.center.toLocation(entity.world),1, 0.7, 0.7, 0.7, 0.1)
-                    if (!material.isAir) {
-                        entity.world.spawnParticle(Particle.BLOCK, entity.boundingBox.center.toLocation(entity.world),30, 0.7, 0.7, 0.7, material.createBlockData())
-                    }
-                    factor -= 0.5
+                entity.damage(event.damage * (1 + factor * 0.19), player)
+                entity.world.playSound(entity.location, Sound.ITEM_AXE_STRIP, 1.5f, 0.9f)
+                entity.world.spawnParticle(Particle.SWEEP_ATTACK, entity.boundingBox.center.toLocation(entity.world),1, 0.7, 0.7, 0.7, 0.1)
+                if (!material.isAir) {
+                    entity.world.spawnParticle(Particle.BLOCK, entity.boundingBox.center.toLocation(entity.world),30, 0.7, 0.7, 0.7, material.createBlockData())
                 }
+                factor -= 0.5
             }
         } finally {
             damageGuard.set(false)
