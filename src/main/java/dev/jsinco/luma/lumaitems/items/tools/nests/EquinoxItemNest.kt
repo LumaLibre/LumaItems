@@ -124,6 +124,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
     }
 
     private fun isWithinDistance(item: Item, player: Player, distance: Double): Boolean {
+        if (item.world != player.world) return true
         return item.location.distanceSquared(player.location) <= distance * distance
     }
 
