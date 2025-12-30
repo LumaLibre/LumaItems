@@ -12,7 +12,7 @@ plugins {
 }
 
 
-group = "dev.jsinco.luma.lumaitems"
+group = "dev.lumas.lumaitems"
 version = getGitCommitHashShort()
 
 val jdkVersion = 21
@@ -39,12 +39,12 @@ dependencies {
     }
     compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
-    compileOnly("dev.jsinco.luma.lumacore:LumaCore:279f090")
+    compileOnly("dev.lumas.lumacore:LumaCore:d56563b")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.047-CUSTOM") {
         isTransitive = false
     }
     compileOnly("net.coreprotect:coreprotect:23.0")
-    compileOnly("dev.jsinco.lumaglowapi:LumaGlowAPI:cbe915d")
+    compileOnly("dev.lumas.glowapi:LumaGlowAPI:c57567c")
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 
@@ -64,7 +64,7 @@ tasks {
     }
 
     shadowJar {
-        val pack = "dev.jsinco.luma.lumaitems.shaded"
+        val pack = "dev.lumas.lumaitems.shaded"
         relocate("com.iridium.iridiumcolorapi", "$pack.iridiumcolorapi")
         exclude("kotlin/**")
         minimize()
@@ -118,8 +118,8 @@ publishing {
             url = uri("https://repo.jsinco.dev/releases")
             credentials(PasswordCredentials::class) {
                 // get from environment
-                username = System.getenv("repo_username")
-                password = System.getenv("repo_secret")
+                username = System.getenv("REPO_USERNAME")
+                password = System.getenv("REPO_PASSWORD")
             }
             authentication {
                 create<BasicAuthentication>("basic")

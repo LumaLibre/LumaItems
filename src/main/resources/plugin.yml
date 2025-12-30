@@ -1,6 +1,6 @@
 name: LumaItems
 version: '${version}'
-main: dev.jsinco.luma.lumaitems.LumaItems
+main: dev.lumas.lumaitems.LumaItems
 api-version: '1.21'
 author: 'Jsinco'
 depend:
