@@ -76,12 +76,13 @@ class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() 
             }
 
             // bad patch for an even worse system, but it works for now
-            val newAttributes = DefaultAttributes.getFromMaterial(item.type)?.attributes ?: return
-            for (entry in newAttributes) {
-                val attribute = entry.key
-                val value = entry.value
-                meta.removeAttributeModifier(attribute)
-                meta.addAttributeModifier(attribute, value)
+            DefaultAttributes.getFromMaterial(item.type)?.attributes?.let { newAttributes ->
+                for (entry in newAttributes) {
+                    val attribute = entry.key
+                    val value = entry.value
+                    meta.removeAttributeModifier(attribute)
+                    meta.addAttributeModifier(attribute, value)
+                }
             }
 
             meta.persistentDataContainer.set(NamespacedKey(plugin, upgradeTier.tierName), PersistentDataType.SHORT, upgradeTier.tierNumber.toShort())
