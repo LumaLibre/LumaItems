@@ -59,11 +59,7 @@ abstract class ItemListener : Listener {
                 item.handleDisabled(player, event)
                 return
             }
-            if (!withContainer) {
-                item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-            } else {
-                item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, data)
-            }
+            item.fireVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) data else null)
         }
     }
 
@@ -81,11 +77,7 @@ abstract class ItemListener : Listener {
                 return
             }
             Executors.sync {
-                if (!withContainer) {
-                    item.executeActions(action, player ?: getDummyPlayer() ?: return@sync, event)
-                } else {
-                    item.executeWithContainer(action, player ?: getDummyPlayer() ?: return@sync, event, data)
-                }
+                item.fireVerbosely(action, player ?: getDummyPlayer() ?: return@sync, event, if (withContainer) data else null)
             }
         }
     }
@@ -105,11 +97,7 @@ abstract class ItemListener : Listener {
                     break
                 }
                 Executors.sync {
-                    if (!withContainer) {
-                        item.executeActions(action, player ?: getDummyPlayer() ?: return@sync, event)
-                    } else {
-                        item.executeWithContainer(action, player ?: getDummyPlayer() ?: return@sync, event, itemData!!)
-                    }
+                    item.fireVerbosely(action, player ?: getDummyPlayer() ?: return@sync, event, if (withContainer) itemData else null)
                 }
             }
         }
@@ -124,11 +112,8 @@ abstract class ItemListener : Listener {
                     item.handleDisabled(player, event)
                     return
                 }
-                if (!withContainer) {
-                    item.executeActions(action, player ?: getDummyPlayer() ?: return, event)
-                } else {
-                    item.executeWithContainer(action, player ?: getDummyPlayer() ?: return, event, player?.persistentDataContainer ?: return)
-                }
+
+                item.fireVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) player?.persistentDataContainer else null)
                 break
             }
         }
@@ -158,5 +143,31 @@ abstract class ItemListener : Listener {
             Logging.errorLog("Error checking mcMMO tree feller state for player ${player.name}", throwable)
         }
         return false
+    }
+
+    private fun CustomItem.fireVerbosely(action: Action, player: Player, event: Any, container: PersistentDataContainer? = null) {
+        try {
+            if (container == null) {
+                executeActions(action, player, event)
+            } else {
+                executeWithContainer(action, player, event, container)
+            }
+        } catch (throwable: Throwable) {
+            Logging.errorLog("An error occurred while firing custom item '${this.javaClass.simpleName}' for player ${player.name} on action $action")
+            throwable.printStackTrace()
+        }
+    }
+
+    private fun CustomItem.fireVerbosely(action: Action, player: Player, event: Any, container: PersistentDataContainerView? = null) {
+        try {
+            if (container == null) {
+                executeActions(action, player, event)
+            } else {
+                executeWithContainer(action, player, event, container)
+            }
+        } catch (throwable: Throwable) {
+            Logging.errorLog("An error occurred while firing custom item '${this.javaClass.simpleName}' for player ${player.name} on action $action")
+            throwable.printStackTrace()
+        }
     }
 }
