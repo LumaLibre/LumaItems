@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.relics
 
+import dev.lumas.lumacore.utility.Logging
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.manager.FileManager
@@ -27,9 +28,14 @@ object RelicDisassembler {
             plugin.logger.warning("disassembler.blocks config section is null!")
             return
         }
-        for (key in file.getConfigurationSection("disassembler.blocks")?.getKeys(false)!!) {
+        for (key in file.getConfigurationSection("disassembler.blocks")?.getKeys(false) ?: return) {
+            val world = Bukkit.getWorld(file.getString("disassembler.blocks.$key.world") ?: continue)
+            if (world == null) {
+                Logging.warningLog("World for disassembler block $key is null!")
+                continue
+            }
             val loc = Location(
-                Bukkit.getWorld(file.getString("disassembler.blocks.$key.world")!!),
+                world,
                 file.getDouble("disassembler.blocks.$key.x"),
                 file.getDouble("disassembler.blocks.$key.y"),
                 file.getDouble("disassembler.blocks.$key.z")
