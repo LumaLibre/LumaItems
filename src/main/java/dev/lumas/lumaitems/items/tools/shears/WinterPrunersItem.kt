@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack
 class WinterPrunersItem : CustomItemFunctions() {
 
     companion object {
-        private val PATTERN = Regex(".*(GLASS|_HEAD|_WALL_HEAD)")
+        private val PATTERN = Regex(".*(GLASS|_HEAD|_WALL_HEAD|SKELETON_SKULL)")
     }
 
     override fun createItem(): Pair<String, ItemStack> {
