@@ -97,7 +97,12 @@ class WindforgedRocketItem : CustomItemFunctions() {
     }
 
     private fun isRightClick(event: Any): Boolean = when (event) {
-        is PlayerInteractEvent -> event.action in listOf(BukkitAction.RIGHT_CLICK_AIR, BukkitAction.RIGHT_CLICK_BLOCK)
+        is PlayerInteractEvent -> {
+            val validActions = event.action in listOf(BukkitAction.RIGHT_CLICK_AIR, BukkitAction.RIGHT_CLICK_BLOCK)
+            val isShelf = event.clickedBlock?.type?.name?.endsWith("_SHELF") == true
+
+            validActions && !isShelf
+        }
         else -> true
     }
 
