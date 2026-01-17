@@ -49,7 +49,7 @@ dependencies {
     implementation("com.iridium:IridiumColorAPI:1.0.9")
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.10-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
 
 tasks {
