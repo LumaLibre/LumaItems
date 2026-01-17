@@ -56,9 +56,7 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (QuickTasks.isOnCooldown(this, player.uniqueId)) return
-
-        if (!player.isItemInSlot(KEY, EquipmentSlot.HAND)) {
+        if (QuickTasks.isOnCooldown(this, player.uniqueId) || !player.isItemInSlot(KEY, EquipmentSlot.HAND)) {
             return
         }
 

@@ -129,7 +129,7 @@ class HeavyBloblobScytheItem : CustomItemFunctions() {
             return
         }
 
-        if (snowball.location.distance(player.location) > 30 || snowball.velocity.length() <= 0.2) {
+        if (snowball.world != player.world || snowball.location.distance(player.location) > 30 || snowball.velocity.length() <= 0.2) {
             snowball.remove()
             return
         }
