@@ -89,6 +89,7 @@ class AstralYml : OkaeriFile() {
             tier(3) {
                 material(AstralMaterial.DIAMOND)
                 enchants(
+                    PairedEnchantment(Enchantment.EFFICIENCY, 6),
                     PairedEnchantment(Enchantment.MENDING, 1),
                     PairedEnchantment(Enchantment.UNBREAKING, 6),
                     PairedEnchantment(Enchantment.RESPIRATION, 5)
@@ -97,6 +98,7 @@ class AstralYml : OkaeriFile() {
             tier(4) {
                 material(AstralMaterial.NETHERITE)
                 enchants(
+                    PairedEnchantment(Enchantment.EFFICIENCY, 7),
                     PairedEnchantment(Enchantment.UNBREAKING, 7),
                     PairedEnchantment(Enchantment.RESPIRATION, 6),
                     PairedEnchantment(Enchantment.PROTECTION, 7)

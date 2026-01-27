@@ -121,32 +121,6 @@ object AbilityUtil {
         }
     }
 
-    // Usage: Stellaris' Set
-    fun pinataAbility(block: Block) {
-        if (Random.nextInt(32000) >= 14) return
-
-        val pinataFile = FileManager("saves/pinata.yml").getFileYaml()
-        val items = pinataFile.getConfigurationSection("items")!!.getKeys(false)
-        val rareItems = pinataFile.getConfigurationSection("rare-items")!!.getKeys(false)
-
-        val item = if (Random.nextInt(20) <= 5) {
-            val item = rareItems.random()
-            val itemStack = pinataFile.getItemStack("rare-items.$item")
-            itemStack
-        } else {
-            val item = items.random()
-            val itemStack = pinataFile.getItemStack("items.$item")
-            itemStack
-        }
-
-        if (item != null) {
-            block.world.dropItemNaturally(block.location, item)
-        }
-        block.world.spawnParticle(Particle.DUST, block.location, 50, 0.5, 0.5, 0.5, 0.1, DustOptions(Color.fromRGB(106, 219, 255), 2f))
-        block.world.spawnParticle(Particle.DUST, block.location, 50, 0.5, 0.5, 0.5, 0.1, DustOptions(Color.fromRGB(255, 121, 209), 2f))
-        block.world.playSound(block.location, Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1f, 1f)
-
-    }
 
     fun spawnSpell(player: Player, particle: Particle?, key: NamespacedKey, ticksAlive: Long): Snowball {
         return spawnSpell(player, particle, key, ticksAlive, null)
