@@ -47,6 +47,7 @@ object Executors {
         }.runTaskTimer(LumaItems.getInstance(), delay, period)
     }
 
+    @JvmStatic
     fun syncDelayed(delay: Long, runnable: Consumer<BukkitRunnable>): BukkitTask {
         return object : BukkitRunnable() {
             override fun run() {
@@ -59,6 +60,7 @@ object Executors {
         }.runTaskLater(LumaItems.getInstance(), delay)
     }
 
+    @JvmStatic
     fun async(runnable: Consumer<ScheduledTask>): ScheduledTask {
         return Bukkit.getAsyncScheduler().runNow(LumaItems.getInstance()) { task ->
             try {

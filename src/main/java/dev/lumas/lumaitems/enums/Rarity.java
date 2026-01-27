@@ -1,6 +1,9 @@
 package dev.lumas.lumaitems.enums;
 
+import dev.lumas.lumaitems.configuration.files.RelicsYml;
+import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.util.Util;
+import org.bukkit.Material;
 
 import java.util.List;
 
@@ -40,5 +43,18 @@ public enum Rarity {
 
     public String getTier() {
         return Util.colorcode(this.getRgb() + "&l" + this.getFriendlyName());
+    }
+
+
+    public List<Material> getMaterials() {
+        RelicsYml.RelicMaterialsSection relicMaterialsSection = Registry.CONFIG_REGISTRY.getOrThrow(RelicsYml.class).getRelicMaterials();
+
+        return switch (this) {
+            case ASTRAL -> List.of();
+            case LUNAR -> relicMaterialsSection.getLunar();
+            case NOVA -> relicMaterialsSection.getNova();
+            case PULSAR -> relicMaterialsSection.getPulsar();
+            case SOLAR -> relicMaterialsSection.getSolar();
+        };
     }
 }

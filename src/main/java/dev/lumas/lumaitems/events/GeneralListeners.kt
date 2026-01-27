@@ -2,21 +2,21 @@ package dev.lumas.lumaitems.events
 
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
-import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.guis.AbstractGui
-import dev.lumas.lumaitems.guis.DisassemblerGui
-import dev.lumas.lumaitems.manager.FileManager
-import dev.lumas.lumaitems.manager.ItemManager
-import dev.lumas.lumaitems.enums.Rarity
-import dev.lumas.lumaitems.relics.RelicCreator
-import dev.lumas.lumaitems.relics.RelicDisassembler
 import dev.lumas.lumaitems.enums.EntityArmor
 import dev.lumas.lumaitems.enums.GenericToolType
+import dev.lumas.lumaitems.enums.Rarity
+import dev.lumas.lumaitems.guis.AbstractGui
+import dev.lumas.lumaitems.guis.DisassemblerGui
 import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.registry.NamespacedIdentifier
+import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.relics.RelicCreator
+import dev.lumas.lumaitems.relics.RelicDisassembler
+import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
+import kotlin.random.Random
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.entity.Enemy
 import org.bukkit.entity.EntityType
@@ -33,17 +33,14 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
-import kotlin.random.Random
 
 // TODO: These listeners are a mess
 @AutoRegister(RegisterType.LISTENER)
 class GeneralListeners : Listener {
 
-    val plugin: LumaItems = LumaItems.getInstance()
-
     companion object {
-        val relicFile = FileManager("relics.yml").generateYamlFile()
-        private val bosses: List<EntityType> = listOf(
+        private val LUMA_ITEM_KEY = Util.namespacedKey("lumaitem")
+        private val BOSSES: List<EntityType> = listOf(
             EntityType.ENDER_DRAGON,
             EntityType.WITHER,
             EntityType.ELDER_GUARDIAN,
@@ -54,16 +51,15 @@ class GeneralListeners : Listener {
     @EventHandler
     fun onEntitySpawn(event: EntitySpawnEvent) {
         val livingEntity = event.entity as? LivingEntity ?: return
-        val isBoss = bosses.contains(livingEntity.type)
+        val isBoss = BOSSES.contains(livingEntity.type)
 
-        if (Random.nextInt(100) > 8 || livingEntity !is Enemy) return // 8% chance to spawn a relic
+        if (Random.nextInt(101) > 8 || livingEntity !is Enemy) return // 8% chance to spawn a relic
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, Runnable {
-            if (livingEntity.hasMetadata("NO_RELIC")) return@Runnable
+        Executors.asyncDelayed(1) {
+            if (livingEntity.hasMetadata("NO_RELIC")) return@asyncDelayed
 
             val rarity: Rarity = if (isBoss) Rarity.bossRarities[0] else Rarity.genericRarities.random()
-            val material: Material =
-                Material.valueOf(relicFile.getStringList("relic-materials.${rarity.name.lowercase()}").random())
+            val material = rarity.materials.random()
 
             val relic = RelicCreator(
                 rarity.algorithmWeight,
@@ -72,7 +68,7 @@ class GeneralListeners : Listener {
                 material
             ).getRelicItem()
 
-            Bukkit.getScheduler().runTask(plugin, Runnable {
+            Executors.sync {
                 if (GenericToolType.getGenericToolType(relic.type) == GenericToolType.ARMOR) {
                     val entityArmor = EntityArmor.getEquipmentSlotFromType(relic.type)
                     entityArmor?.setEntityArmorSlot(livingEntity, relic)
@@ -81,8 +77,10 @@ class GeneralListeners : Listener {
                 } else {
                     livingEntity.equipment?.setItemInOffHand(relic)
                 }
-            })
-        }, 1L)
+            }
+
+        }
+
     }
 
     @EventHandler
@@ -104,7 +102,7 @@ class GeneralListeners : Listener {
         }
 
 
-        if (!RelicDisassembler.disassemblerBlocks.contains(event.clickedBlock ?: return)) return
+        if (!RelicDisassembler.DISASSEMBLER_BLOCKS.contains(event.clickedBlock ?: return)) return
 
         event.isCancelled = true
 
@@ -160,11 +158,11 @@ class GeneralListeners : Listener {
         val meta = event.result!!.itemMeta
         var cancelEvent = false
 
-        if (meta.persistentDataContainer.has(NamespacedKey(plugin, "lumaitem"), PersistentDataType.SHORT)) {
+        if (meta.persistentDataContainer.has(LUMA_ITEM_KEY, PersistentDataType.SHORT)) {
             cancelEvent = true
         } else {
-            for (key in ItemManager.CUSTOM_ITEMS.keys) {
-                if (meta.persistentDataContainer.has(key, PersistentDataType.SHORT)) {
+            for (key in Registry.CUSTOM_ITEM_REGISTRY.keySet(NamespacedIdentifier::class)) {
+                if (meta.persistentDataContainer.has(key.key(), PersistentDataType.SHORT)) {
                     cancelEvent = true
                     break
                 }

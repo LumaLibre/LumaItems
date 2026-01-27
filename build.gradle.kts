@@ -30,11 +30,12 @@ repositories {
     maven("https://nexus.neetgames.com/repository/maven-releases/")
     maven("https://repo.jsinco.dev/releases")
     maven("https://maven.playpro.com/")
+    maven("https://repo.okaeri.cloud/releases")
 }
 
 dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.github.Zrips:jobs:v4.17.2") {
+    compileOnly("com.github.Zrips:Jobs:v5.2.6.2") {
         isTransitive = false
     }
     compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
@@ -47,9 +48,10 @@ dependencies {
     compileOnly("dev.lumas.glowapi:LumaGlowAPI:c57567c")
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
+    implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.10-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
 
 tasks {

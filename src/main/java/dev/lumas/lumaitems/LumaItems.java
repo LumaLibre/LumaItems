@@ -4,7 +4,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import dev.lumas.lumacore.manager.modules.ModuleManager;
 import dev.lumas.lumacore.reflect.ReflectionUtil;
-import dev.lumas.lumaitems.api.LumaItemsAPI;
 import dev.lumas.lumaitems.events.items.PassiveListeners;
 import dev.lumas.lumaitems.guis.AbstractGui;
 import dev.lumas.lumaitems.enums.Action;
@@ -13,6 +12,7 @@ import dev.lumas.lumaitems.manager.GlowManager;
 import dev.lumas.lumaitems.manager.ItemManager;
 import dev.lumas.lumaitems.relics.RelicCrafting;
 import dev.lumas.lumaitems.relics.RelicDisassembler;
+import dev.lumas.lumaitems.util.Executors;
 import dev.lumas.lumaitems.util.Util;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -50,8 +49,8 @@ public final class LumaItems extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        FileManager.generateDefaultFiles(); // TODO: Replace FileManager with Okaeri
         long start = System.currentTimeMillis();
+        FileManager.generateDefaultFiles(); // TODO: Replace FileManager with Okaeri
         ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
         reflectionUtil.whitelistPackages(
                 "commands",
@@ -73,7 +72,7 @@ public final class LumaItems extends JavaPlugin {
         moduleManager.reflectivelyRegisterModules(classSet);
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             log("Players are online, registering items asynchronously");
-            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            Executors.async(task -> {
                 try {
                     initItemManager(itemManagerInstance);
                 } catch (Throwable e) {
@@ -118,20 +117,6 @@ public final class LumaItems extends JavaPlugin {
             if (player.getOpenInventory().getTopInventory().getHolder(false) instanceof AbstractGui) {
                 player.closeInventory();
             }
-        }
-
-
-        // stupid and unnecessary
-        try {
-            Field singleTonField = LumaItemsAPI.class.getDeclaredField("singleton");
-            singleTonField.setAccessible(true);
-            if (singleTonField.get(LumaItemsAPI.class) == null) {
-                return;
-            }
-            singleTonField.set(null, null);
-            LumaItems.log("API Singleton instance has been reset!");
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            LumaItems.log("Failed to reset API Singleton instance!", e);
         }
     }
 
