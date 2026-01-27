@@ -5,15 +5,12 @@ api-version: '1.21'
 author: 'Jsinco'
 depend:
   - LumaCore
-  - ProtocolLib
 softdepend:
-- PlaceHolderAPI
-- EvenMoreFish # Softdepending EMF to register listeners after it
-- MythicMobs
-- Jobs
-- mcMMO
-- CoreProtect
-- LumaGlowAPI
+  - ProtocolLib
+  - EvenMoreFish # Softdepending EMF to register listeners after it
+  - Jobs
+  - CoreProtect
+  - LumaGlowAPI
 permissions:
   lumaitems.disassemblergui:
     description: Permission to open the disassembler GUI

@@ -1,11 +1,17 @@
 package dev.lumas.lumaitems.configuration.model
 
-class AstralSetClass<T>(
-    val setClass: Class<T>
+import dev.lumas.lumaitems.items.astral.AstralSet
+import kotlin.reflect.KClass
+
+class AstralSetClass(
+    var setClass: Class<*>
 ) {
-    companion object {
-        fun <T> of(setClass: Class<T>): AstralSetClass<T> {
-            return AstralSetClass(setClass)
-        }
+
+    constructor(setClass: KClass<*>) : this(setClass.java)
+    //dev.lumas.lumaitems.items.astral.sets.MistralSet
+    //dev.lumas.lumaitems.astral.sets.MistralSet
+
+    fun getAstralSetClass(): Class<out AstralSet> {
+        return this.setClass as Class<out AstralSet>
     }
 }

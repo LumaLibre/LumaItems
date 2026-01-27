@@ -32,7 +32,7 @@ class ArchaelSet : AstralSet {
         return false
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "archael-set"
     }
 }

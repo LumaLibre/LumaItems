@@ -2,7 +2,6 @@ package dev.lumas.lumaitems.guis
 
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.astral.upgrades.AstralSetUpgradeFactory
-import dev.lumas.lumaitems.items.astral.upgrades.AstralSetUpgradeManager
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.Bukkit
@@ -25,7 +24,7 @@ class AstralUpgradeGui : AbstractGui {
     }
 
     init {
-        AstralSetUpgradeManager().reloadUpgrades()
+        //AstralSetUpgradeManager().reloadUpgrades()
     }
 
     override fun onInventoryClick(event: InventoryClickEvent) {

@@ -59,7 +59,7 @@ class ValleySet : AstralSet {
         return astralSetFactory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "valley-set"
     }
 

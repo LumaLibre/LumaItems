@@ -1,18 +1,13 @@
 package dev.lumas.lumaitems.items.astral
 
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.manager.FileManager
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCrafting
 import dev.lumas.lumaitems.relics.RelicCreator
 import dev.lumas.lumaitems.util.Util
-import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
@@ -30,11 +25,11 @@ class LunarOrbItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (!player.inventory.itemInMainHand.itemMeta.persistentDataContainer.has(LUNAR_ORB_KEY, PersistentDataType.SHORT)) return false
+        if (!player.inventory.itemInMainHand.itemMeta.persistentDataContainer.has(LUNAR_ORB_KEY, PersistentDataType.SHORT)) return
 
         event.isCancelled = true
 
-        val materials = Registry.CONFIG_REGISTRY.getOrThrow(RelicsYml::class).relicMaterials.lunar
+        val materials = Registry.CONFIGS.getOrThrow(RelicsYml::class).relicMaterials.lunar
 
         val relicCreator = RelicCreator(
             Rarity.LUNAR.algorithmWeight,

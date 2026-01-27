@@ -16,6 +16,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
+
 object RelicDisassembler {
 
     val RELIC_RARITY_KEY = Util.namespacedKey("relic-rarity")
@@ -25,7 +26,7 @@ object RelicDisassembler {
 
     @JvmStatic
     fun setupDisassemblerBlocks() {
-        Registry.CONFIG_REGISTRY.getOrThrow(RelicsYml::class).disassembler.blocks.entries
+        Registry.CONFIGS.getOrThrow(RelicsYml::class).disassembler.blocks.entries
             .forEach {
                 val key = it.key
                 val location = it.value
@@ -51,7 +52,7 @@ object RelicDisassembler {
             ) ?: return null
         )
 
-        val commands: MutableMap<Int, String> = Registry.CONFIG_REGISTRY.getOrThrow(RelicsYml::class).disassembler.commands.toMutableMap()
+        val commands: MutableMap<Int, String> = Registry.CONFIGS.getOrThrow(RelicsYml::class).disassembler.commands.toMutableMap()
 
         if (rarity == Rarity.ASTRAL) {
             commands[100] = "lumaitems relic %player% core astral"

@@ -42,7 +42,7 @@ class VenomSet : AstralSet {
         return astralSetFactory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "venom-set"
     }
 

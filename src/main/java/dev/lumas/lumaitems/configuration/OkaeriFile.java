@@ -4,9 +4,11 @@ import dev.lumas.lumaitems.registry.Identifier;
 import dev.lumas.lumaitems.registry.RegistryItem;
 import dev.lumas.lumaitems.registry.StringIdentifier;
 import eu.okaeri.configs.OkaeriConfig;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class OkaeriFile extends OkaeriConfig implements RegistryItem {
 
+    @NotNull
     @Override
     public Identifier identifier() {
         File annotation = getClass().getAnnotation(File.class);

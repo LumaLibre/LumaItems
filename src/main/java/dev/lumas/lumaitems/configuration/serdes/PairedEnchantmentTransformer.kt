@@ -23,7 +23,7 @@ class PairedEnchantmentTransformer : BidirectionalTransformer<String, PairedEnch
         val levelString = parts[1]
         val enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(NamespacedKey.minecraft(enchantmentString))
             ?: throw IllegalArgumentException("Enchantment with key $enchantmentString not found")
-        val level = levelString.toIntOrNull() ?: throw IllegalArgumentException("Invalid level: $levelString")
+        val level = levelString.filter { it.isDigit() }.toIntOrNull() ?: throw IllegalArgumentException("Invalid level: $levelString")
 
         if (data.contains("-apply:", true)) {
             val toolTypes: MutableList<ToolType> = mutableListOf()

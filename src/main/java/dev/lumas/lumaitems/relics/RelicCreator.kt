@@ -37,7 +37,7 @@ class RelicCreator (
         )
     }
 
-    private val file = Registry.CONFIG_REGISTRY.getOrThrow(RelicsYml::class)
+    private val file = Registry.CONFIGS.getOrThrow(RelicsYml::class)
     private val relicPrefixes: List<String> = file.names.prefixes
     private val relicSuffixes: List<String> = file.names.suffixes
     private val compatibleEnchants: MutableList<Enchantment> = mutableListOf()

@@ -47,7 +47,7 @@ public enum Rarity {
 
 
     public List<Material> getMaterials() {
-        RelicsYml.RelicMaterialsSection relicMaterialsSection = Registry.CONFIG_REGISTRY.getOrThrow(RelicsYml.class).getRelicMaterials();
+        RelicsYml.RelicMaterialsSection relicMaterialsSection = Registry.CONFIGS.getOrThrow(RelicsYml.class).getRelicMaterials();
 
         return switch (this) {
             case ASTRAL -> List.of();

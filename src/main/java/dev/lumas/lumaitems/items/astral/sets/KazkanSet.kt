@@ -78,7 +78,7 @@ class KazkanSet : AstralSet {
         return factory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "kazkan-set"
     }
 

@@ -51,16 +51,16 @@ class MistralSet : AstralSet {
                 when (genericMCToolType) {
                     ToolType.SWORD -> {
                         DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
-                            Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
+                            Attribute.MOVEMENT_SPEED, setIdentifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
                         )
                     }
                     ToolType.PICKAXE -> {
                         DefaultAttributes.NETHERITE_PICKAXE.appendThenGetAttributes(
-                            Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
+                            Attribute.MOVEMENT_SPEED, setIdentifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
                         )
                     }
                     ToolType.FISHING_ROD -> {
-                        DefaultAttributes.of(Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY)
+                        DefaultAttributes.of(Attribute.MOVEMENT_SPEED, setIdentifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY)
                     }
                     else -> null
                 }
@@ -70,7 +70,7 @@ class MistralSet : AstralSet {
         return astralSetFactory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "mistral-set"
     }
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {

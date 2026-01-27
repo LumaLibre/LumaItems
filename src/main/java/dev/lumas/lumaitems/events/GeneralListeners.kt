@@ -161,7 +161,7 @@ class GeneralListeners : Listener {
         if (meta.persistentDataContainer.has(LUMA_ITEM_KEY, PersistentDataType.SHORT)) {
             cancelEvent = true
         } else {
-            for (key in Registry.CUSTOM_ITEM_REGISTRY.keySet(NamespacedIdentifier::class)) {
+            for (key in Registry.CUSTOM_ITEMS.keySet(NamespacedIdentifier::class)) {
                 if (meta.persistentDataContainer.has(key.key(), PersistentDataType.SHORT)) {
                     cancelEvent = true
                     break

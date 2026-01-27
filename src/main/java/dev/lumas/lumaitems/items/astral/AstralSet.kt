@@ -15,7 +15,7 @@ interface AstralSet : CustomItem {
      * @see setItems
      */
     override fun createItem(): Pair<String, ItemStack> {
-        return Pair(identifier(), BLANK_ITEMSTACK)
+        return Pair(setIdentifier(), BLANK_ITEMSTACK)
     }
 
     /**
@@ -28,6 +28,6 @@ interface AstralSet : CustomItem {
      * Set the identifier for the set
      * @return A string identifier
      */
-    fun identifier(): String
+    fun setIdentifier(): String
 
 }

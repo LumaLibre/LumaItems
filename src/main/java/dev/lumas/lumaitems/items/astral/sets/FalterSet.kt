@@ -49,7 +49,7 @@ class FalterSet : AstralSet {
         return astralSetFactory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "falter-set"
     }
 

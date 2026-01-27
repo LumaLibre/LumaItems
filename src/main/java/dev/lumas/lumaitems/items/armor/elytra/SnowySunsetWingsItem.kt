@@ -9,6 +9,8 @@ import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.Util.isItemInSlot
 import dev.lumas.lumaitems.util.tiers.Tier
 import dev.lumas.glowapi.colormanagers.ColorManager
+import dev.lumas.lumaitems.hooks.McMMOHook
+import dev.lumas.lumaitems.registry.Registry
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -73,13 +75,13 @@ class SnowySunsetWingsItem : CustomItemFunctions() {
     }
 
     fun addColor(player: Player) {
-        if (LumaItems.isWithLumaGlowAPI()) {
+        if (Registry.HOOKS.getOrThrow(McMMOHook::class).isWith()) {
             ColorManager.setTempPlayerColor(player, ChatColor.BLACK)
         }
     }
 
     fun removeColor(player: Player) {
-        if (LumaItems.isWithLumaGlowAPI()) {
+        if (Registry.HOOKS.getOrThrow(McMMOHook::class).isWith()) {
             ColorManager.updatePlayersColor(player)
         }
     }

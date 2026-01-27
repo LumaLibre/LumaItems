@@ -246,19 +246,8 @@ class Listeners : ItemListener() {
 
         if (!item.hasItemMeta() && !offHandItem.hasItemMeta()) return
 
-        val data: PersistentDataContainer? = item.itemMeta?.persistentDataContainer
-        val offHandData: PersistentDataContainer? = offHandItem.itemMeta?.persistentDataContainer
-        for (customItem in ItemManager.CUSTOM_ITEMS) {
-            if (data?.has(customItem.key, PersistentDataType.SHORT) == true) {
-                val customItemClass = customItem.value
-                customItemClass.executeActions(Action.FISH, player, event)
-                break
-            } else if (offHandData?.has(customItem.key, PersistentDataType.SHORT) == true) {
-                val customItemClass = customItem.value
-                customItemClass.executeActions(Action.FISH, player, event)
-                break
-            }
-        }
+        val data = Util.getHandNBT(player)
+        fire(data, Action.FISH, player, event)
     }
 
     @EventHandler

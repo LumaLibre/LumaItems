@@ -103,6 +103,7 @@ object RelicCrafting {
         Bukkit.addRecipe(upgradeCoreRecipe)
     }
 
+    //TODO
     fun getItemsFromClass(className: String): List<ItemStack> {
         val clazz = try {
             Class.forName("dev.lumas.lumaitems.items.astral.sets.$className")
@@ -119,6 +120,11 @@ object RelicCrafting {
             val item = clazz.getDeclaredConstructor().newInstance() as CustomItem
             listOf(item.createItem().second)
         }
+    }
+
+    fun <T : AstralSet> getItemsFromClass(clazz: Class<T>): List<ItemStack> {
+        val astralSet = clazz.getDeclaredConstructor().newInstance() as AstralSet
+        return astralSet.setItems()
     }
 
     fun hasFullSet(key: String, player: Player): Boolean {

@@ -7,6 +7,8 @@ import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -22,7 +24,7 @@ import org.bukkit.entity.Player
 class SwapHandsCommand : AbstractCommand() {
 
     override fun handle(sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val protocolManager = LumaItems.getProtocolManager() ?: run {
+        val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: run {
             MiniMessageUtil.msg(sender, "Couldn't find ProtocolLib!")
             return true
         }

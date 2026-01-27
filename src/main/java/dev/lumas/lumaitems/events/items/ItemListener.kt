@@ -4,15 +4,15 @@ import com.gmail.nossr50.api.AbilityAPI as mcMMOAbilityAPI
 import dev.lumas.lumacore.utility.Logging
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.manager.ItemManager
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import io.papermc.paper.persistence.PersistentDataContainerView
 import java.util.EnumMap
 import java.util.UUID
 import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.persistence.PersistentDataContainer
@@ -47,11 +47,11 @@ abstract class ItemListener : Listener {
 
     // Paper added this, just makes it easier to look at the PDC
     fun fire(data: PersistentDataContainerView, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.CUSTOM_ITEMS) {
+        for (customItem in Registry.CUSTOM_ITEMS) {
             val item = customItem.value
             val fireAnyways = item.fireAnyways(action)
 
-            if (!data.has(customItem.key) && !fireAnyways) {
+            if (!data.has(customItem.key.asNameSpacedKey()) && !fireAnyways) {
                 continue
             }
 
@@ -64,11 +64,11 @@ abstract class ItemListener : Listener {
     }
 
     fun fire(data: PersistentDataContainer, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.CUSTOM_ITEMS) {
+        for (customItem in Registry.CUSTOM_ITEMS) {
             val item = customItem.value
             val fireAnyways = customItem.value.fireAnyways(action)
 
-            if (!data.has(customItem.key) && !fireAnyways) {
+            if (!data.has(customItem.key.asNameSpacedKey()) && !fireAnyways) {
                 continue
             }
 
@@ -84,10 +84,10 @@ abstract class ItemListener : Listener {
 
     fun fire(data: List<PersistentDataContainer>, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
         for (itemData: PersistentDataContainer? in data.ifEmpty { listOf(null) }) {
-            for (customItem: MutableMap.MutableEntry<NamespacedKey, CustomItem> in ItemManager.CUSTOM_ITEMS) {
+            for (customItem in Registry.CUSTOM_ITEMS) {
                 val fireAnyways = customItem.value.fireAnyways(action)
 
-                if (!((itemData != null && itemData.has(customItem.key)) || fireAnyways)) {
+                if (!((itemData != null && itemData.has(customItem.key.asNameSpacedKey())) || fireAnyways)) {
                     continue
                 }
 
@@ -105,8 +105,8 @@ abstract class ItemListener : Listener {
 
     // TODO: @FireAnyways
     fun fire(key: String, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem in ItemManager.CUSTOM_ITEMS) {
-            if (key.equals(customItem.key.key, true)) {
+        for (customItem in Registry.CUSTOM_ITEMS) {
+            if (key.equals(customItem.key.asSimpleString(), true)) {
                 val item = customItem.value
                 if (player?.location?.let { item.isDisabled(it) } == true) {
                     item.handleDisabled(player, event)
@@ -136,7 +136,7 @@ abstract class ItemListener : Listener {
 
     fun isTreeFeller(player: Player): Boolean {
         try {
-            if (LumaItems.isWithmcMMO() && mcMMOAbilityAPI.treeFellerEnabled(player)) {
+            if (Registry.HOOKS.getOrThrow(McMMOHook::class).isWith() && mcMMOAbilityAPI.treeFellerEnabled(player)) {
                 return true
             }
         } catch (throwable: Throwable) {

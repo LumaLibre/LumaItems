@@ -22,7 +22,6 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
     maven("https://jitpack.io")
     maven("https://maven.enginehub.org/repo/")
@@ -34,7 +33,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.Zrips:Jobs:v5.2.6.2") {
         isTransitive = false
     }
@@ -68,6 +66,7 @@ tasks {
     shadowJar {
         val pack = "dev.lumas.lumaitems.shaded"
         relocate("com.iridium.iridiumcolorapi", "$pack.iridiumcolorapi")
+        relocate("eu.okaeri", "$pack.okaeri")
         exclude("kotlin/**")
         minimize()
         archiveClassifier.set("")

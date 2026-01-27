@@ -13,7 +13,7 @@ import org.bukkit.persistence.PersistentDataType
 
 class ModernAstralSetFactory(val identifier: String) {
 
-    constructor(caller: AstralSet) : this(caller.identifier())
+    constructor(caller: AstralSet) : this(caller.setIdentifier())
 
     companion object {
         private val ASTRAL_PDC = PersistentDataRecord.create("relic-rarity", PersistentDataType.STRING, Rarity.ASTRAL.name)

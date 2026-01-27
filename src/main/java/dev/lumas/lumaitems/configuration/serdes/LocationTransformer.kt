@@ -5,6 +5,7 @@ import eu.okaeri.configs.serdes.BidirectionalTransformer
 import eu.okaeri.configs.serdes.SerdesContext
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.World
 
 class LocationTransformer : BidirectionalTransformer<String, Location>() {
     override fun getPair(): GenericsPair<String, Location> {
@@ -27,9 +28,14 @@ class LocationTransformer : BidirectionalTransformer<String, Location>() {
     }
 
     override fun rightToLeft(data: Location, serdesContext: SerdesContext): String {
-        if (data.yaw == 0f && data.pitch == 0f) {
-            return data.getWorld().name + "," + data.blockX + "," + data.blockY + "," + data.blockZ
+        val world: World = if (data.world == null) {
+            Bukkit.getWorlds()[0]
+        } else {
+            data.world!!
         }
-        return data.getWorld().name + "," + data.blockX + "," + data.blockY + "," + data.blockZ + "," + data.yaw + "," + data.pitch
+        if (data.yaw == 0f && data.pitch == 0f) {
+            return world.name + "," + data.blockX + "," + data.blockY + "," + data.blockZ
+        }
+        return world.name + "," + data.blockX + "," + data.blockY + "," + data.blockZ + "," + data.yaw + "," + data.pitch
     }
 }

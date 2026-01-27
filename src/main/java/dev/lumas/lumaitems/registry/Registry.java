@@ -2,7 +2,15 @@ package dev.lumas.lumaitems.registry;
 
 import dev.lumas.lumaitems.configuration.ConfigManager;
 import dev.lumas.lumaitems.configuration.OkaeriFile;
+import dev.lumas.lumaitems.configuration.files.AstralYml;
+import dev.lumas.lumaitems.configuration.files.HeadsYml;
 import dev.lumas.lumaitems.configuration.files.RelicsYml;
+import dev.lumas.lumaitems.hooks.CoreProtectHook;
+import dev.lumas.lumaitems.hooks.Hook;
+import dev.lumas.lumaitems.hooks.LumaGlowAPIHook;
+import dev.lumas.lumaitems.hooks.McMMOHook;
+import dev.lumas.lumaitems.hooks.MythicMobsHook;
+import dev.lumas.lumaitems.hooks.ProtocolLibHook;
 import dev.lumas.lumaitems.manager.CustomItem;
 import dev.lumas.lumaitems.manager.NamedCustomItem;
 import kotlin.jvm.JvmClassMappingKt;
@@ -22,10 +30,10 @@ import java.util.stream.Stream;
 
 public final class Registry<T extends RegistryItem> implements Iterable<Map.Entry<Identifier, T>> {
 
-    public static final Registry<CustomItem> CUSTOM_ITEM_REGISTRY = new Registry<>();
-    public static final Registry<NamedCustomItem> NAMED_CUSTOM_ITEM_REGISTRY = new Registry<>();
-    public static final Registry<OkaeriFile> CONFIG_REGISTRY = fromClassesWithCrafter(new ConfigManager(), RelicsYml.class);
-
+    public static final Registry<CustomItem> CUSTOM_ITEMS = new Registry<>();
+    public static final Registry<NamedCustomItem> NAMED_CUSTOM_ITEMS = new Registry<>();
+    public static final Registry<OkaeriFile> CONFIGS = fromClassesWithCrafter(new ConfigManager(), RelicsYml.class, AstralYml.class, HeadsYml.class);
+    public static final Registry<Hook> HOOKS = fromClasses(ProtocolLibHook.class, MythicMobsHook.class, McMMOHook.class, CoreProtectHook.class, LumaGlowAPIHook.class);
 
     private final Map<Identifier, T> map;
 
@@ -110,6 +118,31 @@ public final class Registry<T extends RegistryItem> implements Iterable<Map.Entr
     @Override
     public @NotNull Iterator<Map.Entry<Identifier, T>> iterator() {
         return map.entrySet().iterator();
+    }
+
+    public <K extends Identifier> @NotNull Iterator<Map.Entry<K, T>> iterator(Class<K> clazz) {
+        List<Map.Entry<K, T>> entries = new ArrayList<>();
+        for (Map.Entry<Identifier, T> entry : map.entrySet()) {
+            if (clazz.isInstance(entry.getKey())) {
+                entries.add(Map.entry(clazz.cast(entry.getKey()), entry.getValue()));
+            }
+        }
+        return entries.iterator();
+    }
+
+    public boolean exists(Identifier identifier) {
+        return map.containsKey(identifier);
+    }
+
+    public boolean exists(T item) {
+        return exists(item, true);
+    }
+
+    public boolean exists(T item, boolean useIdentity) {
+        if (useIdentity) {
+            return map.containsKey(item.identifier());
+        }
+        return map.containsValue(item);
     }
 
     @SuppressWarnings({"unchecked", "RedundantCast"})

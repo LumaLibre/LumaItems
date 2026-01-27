@@ -6,7 +6,6 @@ import dev.lumas.lumaitems.items.astral.AstralSet;
 import dev.lumas.lumaitems.registry.NamespacedIdentifier;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.registry.StringIdentifier;
-import dev.lumas.lumaitems.util.NeedsEdits;
 import dev.lumas.lumaitems.util.disabling.Ignore;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +47,7 @@ public final class ItemManager {
      */
     @Nullable
     public static ItemStack getItemByName(String name) {
-        var customItem = Registry.NAMED_CUSTOM_ITEM_REGISTRY.get(StringIdentifier.normalized(name));
+        var customItem = Registry.NAMED_CUSTOM_ITEMS.get(StringIdentifier.normalized(name));
         if (customItem == null) {
             return null;
         }
@@ -57,7 +56,7 @@ public final class ItemManager {
 
     @Nullable
     public static ItemStack getItemByKey(String key) {
-        var customItem = Registry.CUSTOM_ITEM_REGISTRY.get(NamespacedIdentifier.lumaitems(key));
+        var customItem = Registry.CUSTOM_ITEMS.get(NamespacedIdentifier.lumaitems(key));
         if (customItem == null) {
             return null;
         }
@@ -71,7 +70,7 @@ public final class ItemManager {
      */
     @Nullable
     public static CustomItem getCustomItem(String key) {
-        return Registry.CUSTOM_ITEM_REGISTRY.get(NamespacedIdentifier.lumaitems(key));
+        return Registry.CUSTOM_ITEMS.get(NamespacedIdentifier.lumaitems(key));
     }
 
     /**
@@ -79,7 +78,7 @@ public final class ItemManager {
      */
     public static List<ItemStack> getAllItems() {
         List<ItemStack> list = new ArrayList<>();
-        for (CustomItem item : Registry.CUSTOM_ITEM_REGISTRY.values()) {
+        for (CustomItem item : Registry.CUSTOM_ITEMS.values()) {
             try {
                 list.add(item.createItem().component2());
             } catch (Exception e) {
@@ -107,7 +106,7 @@ public final class ItemManager {
             for (String pack : packages) {
                 registerForPackage(pack, classPath);
             }
-            LumaItems.log("Registered &6" + Registry.CUSTOM_ITEM_REGISTRY.size() + " &2classes through reflection");
+            LumaItems.log("Registered &6" + Registry.CUSTOM_ITEMS.size() + " &2classes through reflection");
         }
     }
 
@@ -130,29 +129,15 @@ public final class ItemManager {
     }
 
     public void registerItem(CustomItem item) {
-        Registry.CUSTOM_ITEM_REGISTRY.put(item);
-        //CUSTOM_ITEMS.put(new NamespacedKey(plugin, item.createItem().component1()), item);
-        registerForName(item);
-        Class<?> clazz = item.getClass();
-        NeedsEdits edits = clazz.getAnnotation(NeedsEdits.class);
-        if (edits != null) {
-            if (!edits.review()) {
-                LumaItems.log("&cClass &6" + clazz.getSimpleName() + " &cneeds edits!");
-            } else {
-                LumaItems.log("&aClass &6" + clazz.getSimpleName() + " &ais ready for review!");
-            }
+        Registry.CUSTOM_ITEMS.put(item);
+
+        if (!AstralSet.class.isAssignableFrom(item.getClass())) {
+            String customTabName = item.tabCompleteName();
+            NamedCustomItem namedCustomItem = new NamedCustomItem(item, customTabName);
+            Registry.NAMED_CUSTOM_ITEMS.put(namedCustomItem);
         }
     }
 
-    public void registerForName(CustomItem item) {
-        if (AstralSet.class.isAssignableFrom(item.getClass())) {
-            return;
-        }
-
-        String customTabName = item.tabCompleteName();
-        NamedCustomItem namedCustomItem = new NamedCustomItem(item, customTabName);
-        Registry.NAMED_CUSTOM_ITEM_REGISTRY.put(namedCustomItem);
-    }
 
 
     /**

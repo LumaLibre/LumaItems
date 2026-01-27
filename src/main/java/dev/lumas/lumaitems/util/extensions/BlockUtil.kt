@@ -2,6 +2,9 @@ package dev.lumas.lumaitems.util.extensions
 
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.BlockConstants
+import dev.lumas.lumaitems.hooks.CoreProtectHook
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.Color
 import org.bukkit.Material
@@ -31,20 +34,20 @@ object BlockUtil {
     }
 
     fun Block.breakNaturallyWithLog(player: Player, itemStack: ItemStack? = null, triggerEffects: Boolean = false, dropExp: Boolean = false) {
-        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
+        Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
         itemStack?.let { this.breakNaturally(it, triggerEffects, dropExp) } ?: this.breakNaturally()
     }
     fun Block.breakNaturallyWithLog(player: Player, triggerEffects: Boolean, dropExp: Boolean) {
-        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
+        Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
         this.breakNaturally(triggerEffects, dropExp)
     }
     fun Block.setAirWithLog(player: Player) {
-        LumaItems.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
+        Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
         this.type = Material.AIR
     }
 
     fun Block.setBlockDataWithLog(player: Player, material: Material) {
-        LumaItems.getCoreProtectAPI()?.logPlacement(player.name, this.location, material, material.createBlockData())
+        Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()?.logPlacement(player.name, this.location, material, material.createBlockData())
         this.blockData = material.createBlockData()
     }
 

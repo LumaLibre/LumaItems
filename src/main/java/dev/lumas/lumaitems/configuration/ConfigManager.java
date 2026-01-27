@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.configuration;
 
 import com.google.common.base.Preconditions;
 import dev.lumas.lumaitems.LumaItems;
+import dev.lumas.lumaitems.configuration.serdes.AstralSetClassTransformer;
 import dev.lumas.lumaitems.configuration.serdes.EnchantmentTransformer;
 import dev.lumas.lumaitems.configuration.serdes.LocationTransformer;
 import dev.lumas.lumaitems.configuration.serdes.PairedEnchantmentTransformer;
@@ -38,6 +39,7 @@ public class ConfigManager implements RegistryCrafter.Extension<OkaeriConfig> {
                     serdes.add(new LocationTransformer());
                     serdes.add(new EnchantmentTransformer());
                     serdes.add(new PairedEnchantmentTransformer());
+                    serdes.add(new AstralSetClassTransformer());
                 });
             });
 
@@ -48,7 +50,7 @@ public class ConfigManager implements RegistryCrafter.Extension<OkaeriConfig> {
 
 
     public static <T extends OkaeriFile> T get(Class<T> clazz) {
-        return Registry.CONFIG_REGISTRY.values().stream()
+        return Registry.CONFIGS.values().stream()
                 .filter(it -> it.getClass().equals(clazz))
                 .map(it -> (T) it)
                 .findFirst()

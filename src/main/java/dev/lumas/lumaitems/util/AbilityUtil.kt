@@ -1,7 +1,6 @@
 package dev.lumas.lumaitems.util
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.manager.FileManager
 import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
 import io.lumine.mythic.bukkit.MythicBukkit
 import org.bukkit.Bukkit
@@ -42,7 +41,7 @@ object AbilityUtil {
     fun noDamagePermission(attacker: Player, victim: Entity): Boolean {
         val event = EntityDamageByEntityEvent(attacker, victim, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 0.1)
         Bukkit.getPluginManager().callEvent(event)
-        return event.isCancelled || isMythicMob(victim)
+        return event.isCancelled
     }
 
     @JvmStatic // TODO: Replace this with proper towny and worldguard integration
@@ -57,15 +56,6 @@ object AbilityUtil {
         Bukkit.getPluginManager().callEvent(event)
         return event.isCancelled
     }
-
-    @JvmStatic
-    fun isMythicMob(bukkitEntity: Entity): Boolean {
-        if (!LumaItems.isWithMythicMobs()) {
-            return false
-        }
-        return MythicBukkit.inst().mobManager.isMythicMob(bukkitEntity)
-    }
-
 
     fun getDirectionBetweenLocations(start: Location, end: Location): Vector {
         val from = start.toVector()

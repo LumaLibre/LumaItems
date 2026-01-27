@@ -11,13 +11,13 @@ import org.bukkit.Material
 @File("relics.yml")
 class RelicsYml : OkaeriFile() {
 
-    val disassembler = DisassemblerSection()
+    var disassembler = DisassemblerSection()
     @CustomKey("relic-materials")
-    val relicMaterials = RelicMaterialsSection()
-    val names = NamesSection()
+    var relicMaterials = RelicMaterialsSection()
+    var names = NamesSection()
 
     class DisassemblerSection : OkaeriConfig() {
-        val commands: Map<Int, String> = mapOf(
+        var commands: Map<Int, String> = mapOf(
             5 to "lumaitems relic %player% core lunar",
             20 to "csap box rare %player%",
             29 to "points give %player% 5",
@@ -34,13 +34,13 @@ class RelicsYml : OkaeriFile() {
             44 to "lumaitems relic %player% shard 4"
         )
 
-        val blocks: Map<String, Location> = mapOf(
-            "spawnDev" to Location(Bukkit.getWorld("spawn"), 199.0, 61.0, 215.0)
+        var blocks: Map<String, Location> = mapOf(
+            "spawnDec" to Location(Bukkit.getWorld("spawn"), 199.0, 61.0, 215.0)
         )
     }
 
     class RelicMaterialsSection : OkaeriConfig() {
-        val lunar: List<Material> = listOf(
+        var lunar: List<Material> = listOf(
             Material.DIAMOND_HELMET,
             Material.DIAMOND_CHESTPLATE,
             Material.DIAMOND_LEGGINGS,
@@ -52,7 +52,7 @@ class RelicsYml : OkaeriFile() {
             Material.DIAMOND_HOE
         )
 
-        val nova: List<Material> = listOf(
+        var nova: List<Material> = listOf(
             Material.COPPER_HELMET,
             Material.COPPER_CHESTPLATE,
             Material.COPPER_LEGGINGS,
@@ -92,7 +92,7 @@ class RelicsYml : OkaeriFile() {
             Material.BOW
         )
 
-        val pulsar: List<Material> = listOf(
+        var pulsar: List<Material> = listOf(
             Material.COPPER_HELMET,
             Material.COPPER_CHESTPLATE,
             Material.COPPER_LEGGINGS,
@@ -134,7 +134,7 @@ class RelicsYml : OkaeriFile() {
             Material.BOW
         )
 
-        val solar: List<Material> = listOf(
+        var solar: List<Material> = listOf(
             Material.CHAINMAIL_HELMET,
             Material.CHAINMAIL_CHESTPLATE,
             Material.CHAINMAIL_LEGGINGS,
@@ -158,7 +158,7 @@ class RelicsYml : OkaeriFile() {
 
 
     class NamesSection : OkaeriConfig() {
-        val prefixes: List<String> = listOf(
+        var prefixes: List<String> = listOf(
             "Bleak",
             "Spotlight",
             "Liar's",
@@ -315,10 +315,10 @@ class RelicsYml : OkaeriFile() {
             "yessir's",
             "McArth's",
             "Num's",
-            "WetKetchup's"
+            "Wetketchup's"
         )
 
-        val suffixes: List<String> = listOf(
+        var suffixes: List<String> = listOf(
             "Vortex",
             "Elegance",
             "Apex",

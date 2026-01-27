@@ -6,9 +6,11 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.BlockConstants
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.extensions.BlockUtil.getOreColor
 import dev.lumas.lumaitems.util.Executors
@@ -47,7 +49,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
 
 
         init {
-            LumaItems.getProtocolManager()?.addPacketListener(
+            Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager()?.addPacketListener(
                 object: PacketAdapter(LumaItems.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_SOUND_EFFECT, PacketType.Play.Server.ENTITY_SOUND) {
                     override fun onPacketSending(event: PacketEvent) {
                         if (event.player.inventory.itemInMainHand.itemMeta?.persistentDataContainer?.has(KEY) == true) {

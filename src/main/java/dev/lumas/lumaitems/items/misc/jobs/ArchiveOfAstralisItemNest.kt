@@ -6,8 +6,10 @@ import com.gmail.nossr50.api.AbilityAPI as MCMMOAbilityAPI
 import dev.lumas.lumacore.utility.Logging
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.persistence.PersistentDataContainerView
@@ -62,7 +64,7 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
 
     override fun executeWithContainer(type: Action, player: Player, event: Any, container: PersistentDataContainerView): Boolean {
         try {
-            if (LumaItems.isWithmcMMO() && MCMMOAbilityAPI.treeFellerEnabled(player)) {
+            if (Registry.HOOKS.getOrThrow(McMMOHook::class).isWith() && MCMMOAbilityAPI.treeFellerEnabled(player)) {
                 // Patched, but leaving disabled for now.
                 return false
             }
