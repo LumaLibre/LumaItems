@@ -36,7 +36,7 @@ class VigilanceDriverItem : CustomItemFunctions() {
         private val referencedEntities: ConcurrentHashMap<UUID, List<LivingEntity>> = ConcurrentHashMap()
         private val KEY = Util.namespacedKey("vigilance-driver")
         private val BLINDNESS = PotionEffect(PotionEffectType.BLINDNESS, 300, 0, true, false, false)
-        private val COLORS = GlowManager.PACKET_COLORS.filter { it != EnumWrappers.ChatFormatting.WHITE }
+        private val COLORS by lazy { GlowManager.PACKET_COLORS.filter { it != EnumWrappers.ChatFormatting.WHITE } }
         private const val RANGE = 80.0
 
 

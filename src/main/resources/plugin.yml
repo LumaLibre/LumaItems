@@ -5,10 +5,10 @@ api-version: '1.21'
 author: 'Jsinco'
 depend:
   - LumaCore
+  - ProtocolLib
 softdepend:
 - PlaceHolderAPI
 - EvenMoreFish # Softdepending EMF to register listeners after it
-- ProtocolLib
 - MythicMobs
 - Jobs
 - mcMMO
