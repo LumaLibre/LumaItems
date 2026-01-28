@@ -9,6 +9,7 @@ import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.ItemManager
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.FireForAllNBT
 import dev.lumas.lumaitems.util.Util
@@ -246,8 +247,19 @@ class Listeners : ItemListener() {
 
         if (!item.hasItemMeta() && !offHandItem.hasItemMeta()) return
 
-        val data = Util.getHandNBT(player)
-        fire(data, Action.FISH, player, event)
+        // TODO: Look into why this listener is written this way instead of using Util.getHandNBT()
+        val data: PersistentDataContainer? = item.itemMeta?.persistentDataContainer
+        val offHandData: PersistentDataContainer? = offHandItem.itemMeta?.persistentDataContainer
+        for (entry in Registry.CUSTOM_ITEMS) {
+            val key = entry.key.asNameSpacedKey()
+            if (data?.has(key) == true) {
+                entry.value.executeActions(Action.FISH, player, event)
+                break
+            } else if (offHandData?.has(key) == true) {
+                entry.value.executeActions(Action.FISH, player, event)
+                break
+            }
+        }
     }
 
     @EventHandler
