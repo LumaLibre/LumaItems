@@ -1,22 +1,25 @@
 package dev.lumas.lumaitems.items.astral.upgrades
 
+import dev.lumas.lumaitems.configuration.files.AstralYml
 import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.enums.ToolType
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 // Notes:
 // Upgrade tier names should be the set's identifiers (e.g. mistral-set) and should have a short value of the actual tier.
 
-class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() {
+class AstralSetUpgradeFactory (val item: ItemStack) {
+
 
     fun upgrade(): Boolean {
-        val upgradeTier: AstralUpgradeTier = determineUpgradeTier() ?: return false
+        val upgradeTier: WrappedAstralUpgradeTier = determineUpgradeTier() ?: return false
         upgradeAstralItem(item, upgradeTier)
         if (upgradeTier.maxTier) {
             updateAstralItemTier(item)
@@ -25,16 +28,23 @@ class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() 
     }
     
 
-    private fun determineUpgradeTier(): AstralUpgradeTier? {
+    private fun determineUpgradeTier(): WrappedAstralUpgradeTier? {
         val dataContainer = item.itemMeta?.persistentDataContainer ?: return null
-        for (upgrade in upgrades) {
-            val tierNumber = dataContainer.get(NamespacedKey(plugin, upgrade.key), PersistentDataType.SHORT) ?: continue
-            for (upgradeTier: AstralUpgradeTier in upgrade.value) {
-                if (upgradeTier.tierNumber == tierNumber.toInt() + 1) {
-                    return upgradeTier
+        val upgradeTiers = Registry.CONFIGS.getOrThrow(AstralYml::class).astralUpgrades
+        for (entry in upgradeTiers) {
+            val setId = entry.key
+            val upgrades = entry.value
+            val currentTier = dataContainer.get(Util.namespacedKey(setId), PersistentDataType.SHORT) ?: continue
+
+            for (upgradeTier: AstralYml.OkaeriAstralUpgradeTier in upgrades) {
+                val canUpgrade = upgradeTier.tier == currentTier.toInt() + 1
+                if (canUpgrade) {
+                    val isMaxTier = upgradeTier.tier >= upgrades.maxOf { it.tier }
+                    return WrappedAstralUpgradeTier(setId, upgradeTier, isMaxTier)
                 }
             }
         }
+
         return null
     }
 
@@ -55,20 +65,26 @@ class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() 
     }
 
     companion object {
-        fun upgradeAstralItem(item: ItemStack, upgradeTier: AstralUpgradeTier) {
+        val MODIFIABLE_MATERIALS: List<ToolType> = listOf(
+            ToolType.HELMET, ToolType.CHESTPLATE, ToolType.LEGGINGS, ToolType.BOOTS,
+            ToolType.SWORD, ToolType.PICKAXE, ToolType.AXE, ToolType.SHOVEL, ToolType.HOE
+        )
+
+        fun upgradeAstralItem(item: ItemStack, upgradeTier: WrappedAstralUpgradeTier) {
             val genericMCToolType = ToolType.getToolType(item)
 
-            if (modifiableMaterials.contains(genericMCToolType)) {
+            // TODO: Needs better logic
+            if (MODIFIABLE_MATERIALS.contains(genericMCToolType)) {
                 val originalGearType = item.type.toString().split("_")[1]
                 // FIXME: Deprecated method usage
-                item.type = Material.valueOf("${upgradeTier.newMaterial}_${originalGearType}")
+                item.type = Material.valueOf("${upgradeTier.material}_${originalGearType}")
             }
 
             val meta = item.itemMeta ?: return
 
-            for (astralUpgradeEnchant in upgradeTier.newEnchantments) {
+            for (astralUpgradeEnchant in upgradeTier.enchants) {
                 val enchantment = astralUpgradeEnchant.enchantment
-                if (astralUpgradeEnchant.applyTo != null && astralUpgradeEnchant.applyTo.contains(genericMCToolType)) {
+                if (astralUpgradeEnchant.apply.isNotEmpty() && astralUpgradeEnchant.apply.contains(genericMCToolType)) {
                     meta.addEnchant(enchantment, astralUpgradeEnchant.level, true)
                 } else if (enchantment.canEnchantItem(item)) {
                     meta.addEnchant(enchantment, astralUpgradeEnchant.level, true)
@@ -85,7 +101,7 @@ class AstralSetUpgradeFactory (val item: ItemStack) : AstralSetUpgradeManager() 
                 }
             }
 
-            meta.persistentDataContainer.set(NamespacedKey(plugin, upgradeTier.tierName), PersistentDataType.SHORT, upgradeTier.tierNumber.toShort())
+            meta.persistentDataContainer.set(Util.namespacedKey(upgradeTier.setId), PersistentDataType.SHORT, upgradeTier.tier.toShort())
             item.itemMeta = meta
         }
     }

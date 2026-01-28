@@ -5,7 +5,9 @@ import com.comphenix.protocol.events.PacketContainer
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.registry.Registry
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -37,7 +39,7 @@ class LoversAlluringItem : CustomItem {
                 when (event.state) {
                     PlayerFishEvent.State.BITE -> {
                         Bukkit.getScheduler().runTaskLaterAsynchronously(instance(), Runnable {
-                            LumaItems.getProtocolManager()?.receiveClientPacket(player, PacketContainer(PacketType.Play.Client.USE_ITEM))
+                            Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager()?.receiveClientPacket(player, PacketContainer(PacketType.Play.Client.USE_ITEM))
                         }, 1L)
                     }
                     PlayerFishEvent.State.CAUGHT_FISH -> {

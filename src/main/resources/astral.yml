@@ -1,3 +1,4 @@
+# TODO: Remove, unused
 astral-orb-rarities:
   # Class name and then chance of item
   MistralSet: 35
@@ -47,12 +48,14 @@ astral-upgrades:
     tier-3:
       material: DIAMOND
       enchants:
+        - 'efficiency/6'
         - 'mending/1'
         - 'unbreaking/6'
         - 'respiration/5'
     tier-4:
       material: NETHERITE
       enchants:
+        - 'efficiency/7'
         - 'unbreaking/7'
         - 'respiration/6'
         - 'protection/7'

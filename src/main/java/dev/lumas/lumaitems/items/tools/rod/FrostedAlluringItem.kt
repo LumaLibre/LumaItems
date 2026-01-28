@@ -3,8 +3,10 @@ package dev.lumas.lumaitems.items.tools.rod
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.wrappers.EnumWrappers
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
@@ -37,7 +39,7 @@ class FrostedAlluringItem : CustomItemFunctions() {
         }
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(instance(), Runnable {
-            val protocolManager = LumaItems.getProtocolManager() ?: return@Runnable
+            val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return@Runnable
 
             val hand = if (Util.isItemInSlot("frosted-alluring", EquipmentSlot.OFF_HAND, player)) {
                 EnumWrappers.Hand.OFF_HAND

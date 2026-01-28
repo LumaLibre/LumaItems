@@ -1,11 +1,13 @@
 package dev.lumas.lumaitems.items.astral
 
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.configuration.files.AstralYml
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.manager.FileManager
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCrafting
 import dev.lumas.lumaitems.util.Util
+import kotlin.random.Random
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
@@ -13,7 +15,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import kotlin.random.Random
 
 class AstralOrbItem : CustomItem {
 
@@ -36,33 +37,22 @@ class AstralOrbItem : CustomItem {
                     globalPlayer.sendMessage(Util.colorcode("${Util.legacyPrefix} &#F7FFC9${player.name}&#E2E2E2 has revealed a relic inside of a &#AC87FB&lAstral &#F7FFC9Orb&#E2E2E2!"))
                 }
 
-                Util.giveItem(player, getAstralItem() ?: return false)
+                Util.giveItem(player, getAstralItem())
             }
 
             else -> return false
         }
         return true
     }
-    private fun getAstralItem(): ItemStack? {
-        val file = FileManager("astral.yml").generateYamlFile()
+    private fun getAstralItem(): ItemStack {
+        val setsWithWeights = Registry.CONFIGS.getOrThrow(AstralYml::class).astralOrbRarities
 
-        val itemClasses = file.getConfigurationSection("astral-orb-rarities")?.getKeys(true)
-        val setsAndWeight: MutableMap<List<ItemStack>, Int> = mutableMapOf()
-
-        if (itemClasses == null) {
-            return null
+        var selectedSet = setsWithWeights.entries.random()
+        while (selectedSet.value < Random.nextInt(101)) {
+            selectedSet = setsWithWeights.entries.random()
         }
 
-        for (itemClass in itemClasses) {
-            val items = RelicCrafting.getItemsFromClass(itemClass)
-            val weight = file.getInt("astral-orb-rarities.$itemClass")
-            setsAndWeight[items] = weight
-        }
-
-        var selectedSet = setsAndWeight.keys.toList().random()
-        while (setsAndWeight[selectedSet]!! < Random.nextInt(1, 100)) {
-            selectedSet = setsAndWeight.keys.toList().random()
-        }
-        return selectedSet.random()
+        val items = RelicCrafting.getItemsFromClass(selectedSet.key.getAstralSetClass())
+        return items.random()
     }
 }

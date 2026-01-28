@@ -3,6 +3,9 @@ package dev.lumas.lumaitems.manager
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.events.items.ItemListener
+import dev.lumas.lumaitems.registry.Identifier
+import dev.lumas.lumaitems.registry.NamespacedIdentifier
+import dev.lumas.lumaitems.registry.RegistryItem
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.disabling.Disable
 import io.papermc.paper.persistence.PersistentDataContainerView
@@ -15,7 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitTask
 
-interface CustomItem {
+interface CustomItem : RegistryItem {
 
     fun instance(): LumaItems {
         return LumaItems.getInstance()
@@ -85,5 +88,9 @@ interface CustomItem {
 
     fun tabCompleteName(): String? {
         return null
+    }
+
+    override fun identifier(): NamespacedIdentifier {
+        return NamespacedIdentifier.lumaitems(this.createItem().first)
     }
 }

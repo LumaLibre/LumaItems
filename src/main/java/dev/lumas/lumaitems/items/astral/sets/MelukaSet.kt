@@ -74,7 +74,7 @@ class MelukaSet : AstralSet {
         return true
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "meluka-set"
     }
 }

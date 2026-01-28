@@ -9,6 +9,8 @@ import com.comphenix.protocol.wrappers.WrappedTeamParameters
 import com.comphenix.protocol.wrappers.WrappedWatchableObject
 import com.google.common.collect.Lists
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Executors
 import java.lang.reflect.Type
 import java.util.Optional
@@ -166,7 +168,7 @@ object GlowManager {
     }
 
     fun removeProtocolTeam(player: Player, entity: Entity) {
-        val protocolManager = LumaItems.getProtocolManager() ?: return
+        val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return
         val teamName = "glow_${entity.entityId}"
 
         val removePacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
@@ -177,7 +179,7 @@ object GlowManager {
     }
 
     fun setProtocolTeamColor(player: Player, entity: Entity, color: EnumWrappers.ChatFormatting) {
-        val protocolManager = LumaItems.getProtocolManager() ?: return
+        val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return
         val teamName = "glow_${entity.entityId}"
         val entry = if (entity is Player) entity.name else entity.uniqueId.toString()
         val teamParams = WrappedTeamParameters.newBuilder()
@@ -207,7 +209,7 @@ object GlowManager {
 
     // liberally borrowed from: https://www.spigotmc.org/threads/i-want-to-use-protocollib-to-make-fake-entity-glow.589919/
     fun setProtocolGlowPacket(player: Player, entity: Entity, glow: Boolean) {
-        val protocolManager = LumaItems.getProtocolManager() ?: return
+        val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return
 
         val packet = protocolManager.createPacket(PacketType.Play.Server.ENTITY_METADATA) // metadata packet
         packet.integers.write(0, entity.entityId) //Set entity id from packet above

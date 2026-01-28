@@ -27,14 +27,6 @@ class StellarisSpadeItem : CustomItem {
     }
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        val blockBreakEvent: BlockBreakEvent? = event as? BlockBreakEvent
-        when (type) {
-            Action.BREAK_BLOCK -> {
-                AbilityUtil.pinataAbility(blockBreakEvent!!.block)
-            }
-
-            else -> return false
-        }
         return true
     }
 }

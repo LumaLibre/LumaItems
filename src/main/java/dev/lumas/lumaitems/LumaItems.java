@@ -1,30 +1,23 @@
 package dev.lumas.lumaitems;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import dev.lumas.lumacore.manager.modules.ModuleManager;
 import dev.lumas.lumacore.reflect.ReflectionUtil;
-import dev.lumas.lumaitems.api.LumaItemsAPI;
 import dev.lumas.lumaitems.events.items.PassiveListeners;
 import dev.lumas.lumaitems.guis.AbstractGui;
 import dev.lumas.lumaitems.enums.Action;
-import dev.lumas.lumaitems.manager.FileManager;
 import dev.lumas.lumaitems.manager.GlowManager;
 import dev.lumas.lumaitems.manager.ItemManager;
 import dev.lumas.lumaitems.relics.RelicCrafting;
 import dev.lumas.lumaitems.relics.RelicDisassembler;
+import dev.lumas.lumaitems.util.Executors;
 import dev.lumas.lumaitems.util.Util;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -32,25 +25,19 @@ public final class LumaItems extends JavaPlugin {
 
     private static LumaItems instance;
     private static PassiveListeners passiveListeners;
-    private static ItemManager itemManagerInstance;
+    private static ItemManager itemManager;
     private static ModuleManager moduleManager;
-
-    // TODO: please move this to some kind of actual hook manager/registry
-    private static boolean withProtocolLib;
-    private static boolean withMythicMobs;
-    private static boolean withmcMMO;
-    private static boolean withCoreProtect;
-    private static boolean withLumaGlowAPI;
 
     @Override
     public void onLoad() {
         instance = this;
+        passiveListeners = new PassiveListeners(this);
+        itemManager = new ItemManager();
         moduleManager = new ModuleManager(this);
     }
 
     @Override
     public void onEnable() {
-        FileManager.generateDefaultFiles(); // TODO: Replace FileManager with Okaeri
         long start = System.currentTimeMillis();
         ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
         reflectionUtil.whitelistPackages(
@@ -60,22 +47,13 @@ public final class LumaItems extends JavaPlugin {
                 "events.items"
         );
 
-        withProtocolLib = getServer().getPluginManager().isPluginEnabled("ProtocolLib");
-        withMythicMobs = getServer().getPluginManager().isPluginEnabled("MythicMobs");
-        withmcMMO = getServer().getPluginManager().isPluginEnabled("mcMMO");
-        withCoreProtect = getServer().getPluginManager().isPluginEnabled("CoreProtect");
-        withLumaGlowAPI = getServer().getPluginManager().isPluginEnabled("LumaGlowAPI");
-
-        passiveListeners = new PassiveListeners(this);
-        itemManagerInstance = new ItemManager(this);
-
         Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
         moduleManager.reflectivelyRegisterModules(classSet);
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             log("Players are online, registering items asynchronously");
-            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            Executors.async(task -> {
                 try {
-                    initItemManager(itemManagerInstance);
+                    initItemManager(itemManager);
                 } catch (Throwable e) {
                     getLogger().log(Level.SEVERE, "An error occurred while registering items asynchronously", e);
                     getServer().getPluginManager().disablePlugin(this);
@@ -83,7 +61,7 @@ public final class LumaItems extends JavaPlugin {
                 log("Finished asynchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {
-            initItemManager(itemManagerInstance);
+            initItemManager(itemManager);
             log("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
@@ -119,20 +97,6 @@ public final class LumaItems extends JavaPlugin {
                 player.closeInventory();
             }
         }
-
-
-        // stupid and unnecessary
-        try {
-            Field singleTonField = LumaItemsAPI.class.getDeclaredField("singleton");
-            singleTonField.setAccessible(true);
-            if (singleTonField.get(LumaItemsAPI.class) == null) {
-                return;
-            }
-            singleTonField.set(null, null);
-            LumaItems.log("API Singleton instance has been reset!");
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            LumaItems.log("Failed to reset API Singleton instance!", e);
-        }
     }
 
     @NotNull
@@ -145,30 +109,8 @@ public final class LumaItems extends JavaPlugin {
         return instance;
     }
 
-    @Nullable
-    public static ProtocolManager getProtocolManager() {
-        return withProtocolLib ? ProtocolLibrary.getProtocolManager() : null;
-    }
-
-    @Nullable
-    public static CoreProtectAPI getCoreProtectAPI() {
-        return withCoreProtect ? CoreProtect.getInstance().getAPI() : null;
-    }
-
-    public static boolean isWithMythicMobs() {
-        return withMythicMobs;
-    }
-
-    public static boolean isWithmcMMO() {
-        return withmcMMO;
-    }
-
-    public static boolean isWithLumaGlowAPI() {
-        return withLumaGlowAPI;
-    }
-
-    public static ItemManager getItemManagerInstance() {
-        return itemManagerInstance;
+    public static ItemManager getItemManager() {
+        return itemManager;
     }
 
     public static void log(String m) {

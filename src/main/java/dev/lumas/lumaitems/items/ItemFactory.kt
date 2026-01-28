@@ -30,13 +30,14 @@ import org.bukkit.persistence.PersistentDataType
 // - Our constructor takes in the parameters that generally most custom items always have and builds an item based off of them.
 // - Some other options are available outside the constructor.
 
+//TODO clean up this disaster
 class ItemFactory(
     private val name: String,
-    private val customEnchants: MutableList<String>,
-    private val lore: MutableList<String>,
+    private val customEnchants: List<String>,
+    private val lore: List<String>,
     private val material: Material,
-    private val persistentData: MutableList<String>,
-    private val vanillaEnchants: MutableMap<Enchantment, Int>,
+    private val persistentData: List<String>,
+    private val vanillaEnchants: Map<Enchantment, Int>,
 
     var tier: String = "&#AC87FB&lAstral",
 
@@ -82,13 +83,13 @@ class ItemFactory(
         private val tierFormat = listOf(
             "",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
-            "&#EEE1D5Tier • <PLACEHOLDER>",
+            "&#EEE1D5Tier • %s",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "
         )
         private val miniMessageTierFormat = listOf(
             "",
             "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>",
-            "<#EEE1D5>Tier •</#EEE1D5> <PLACEHOLDER>",
+            "<#EEE1D5>Tier •</#EEE1D5> %s",
             "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>"
         )
         @JvmStatic
@@ -189,17 +190,18 @@ class ItemFactory(
         }
 
 
+
         if (!miniMessage) {
             combinedLore.addAll(lore.map { "&f$it" })
-            combinedLore.addAll(tierFormat.map { it.replace("<PLACEHOLDER>", tier) })
+            if (tier.isNotEmpty()) combinedLore.addAll(tierFormat.map { it.format(tier) })
 
             meta.setDisplayName(Util.colorcode(name))
             meta.lore = Util.colorcodeList(combinedLore)
         } else {
             combinedLore.addAll(lore.map { it })
-            combinedLore.addAll(miniMessageTierFormat.map { it.replace("<PLACEHOLDER>", tier) })
+            if (tier.isNotEmpty()) combinedLore.addAll(miniMessageTierFormat.map { it.format(tier) })
 
-            meta.displayName(MiniMessageUtil.mm(name)/*.decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.TRUE)*/)
+            meta.displayName(MiniMessageUtil.mm(name))
             meta.lore(MiniMessageUtil.mml(combinedLore).map { it.colorIfAbsent(NamedTextColor.WHITE) })
         }
 
@@ -260,7 +262,7 @@ class ItemFactory(
         private var lore: MutableList<String> = mutableListOf()
         private var material: Material = Material.AIR
         private var persistentData: MutableList<String> = mutableListOf()
-        private var vanillaEnchants: MutableMap<Enchantment, Int> = mutableMapOf()
+        private var vanillaEnchants: Map<Enchantment, Int> = mutableMapOf()
         private var tier: String = Tier.ASTRAL.toString()
         private var unbreakable: Boolean = false
         private var hideEnchants: Boolean = false
@@ -294,7 +296,7 @@ class ItemFactory(
         fun persistentDataRecords(vararg persistentData: PersistentDataRecord<*, *>) = apply { this.persistentDataRecords = persistentData.toMutableList() }
         @SafeVarargs
         fun paperDataComponents(vararg paperDataComponents: PaperDataComponent) = apply { this.paperDataComponents = paperDataComponents.toMutableList() }
-        fun vanillaEnchants(vanillaEnchants: MutableMap<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
+        fun vanillaEnchants(vanillaEnchants: Map<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
         @SafeVarargs
         fun vanillaEnchants(vararg vanillaEnchants: Pair<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants.toMap().toMutableMap() }
         fun tier(tier: String) = apply { this.tier = tier }

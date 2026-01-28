@@ -66,7 +66,7 @@ class MagmaticSet : AstralSet {
         return factory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "magmatic-set"
     }
 

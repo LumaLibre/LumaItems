@@ -6,9 +6,11 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.EnumWrappers
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -36,12 +38,12 @@ class VigilanceDriverItem : CustomItemFunctions() {
         private val referencedEntities: ConcurrentHashMap<UUID, List<LivingEntity>> = ConcurrentHashMap()
         private val KEY = Util.namespacedKey("vigilance-driver")
         private val BLINDNESS = PotionEffect(PotionEffectType.BLINDNESS, 300, 0, true, false, false)
-        private val COLORS = GlowManager.PACKET_COLORS.filter { it != EnumWrappers.ChatFormatting.WHITE }
+        private val COLORS by lazy { GlowManager.PACKET_COLORS.filter { it != EnumWrappers.ChatFormatting.WHITE } }
         private const val RANGE = 80.0
 
 
         init {
-            LumaItems.getProtocolManager()?.addPacketListener(
+            Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager()?.addPacketListener(
                 object: PacketAdapter(LumaItems.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_SOUND_EFFECT, PacketType.Play.Server.ENTITY_SOUND) {
                     override fun onPacketSending(event: PacketEvent) {
                         if (Util.isItemInSlot(KEY, EquipmentSlot.HAND, event.player)) {

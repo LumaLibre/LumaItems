@@ -1,9 +1,10 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.lumaitems.configuration.files.HeadsYml
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.manager.FileManager
 import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -28,7 +29,6 @@ import org.joml.Vector3f
 class YolkPlaidYataghanItem : CustomItemFunctions() {
 
     companion object {
-        private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
         private val coolingDownEggs: MutableMap<UUID, Int> = mutableMapOf()
         private val SLOWNESS = PotionEffect(PotionEffectType.SLOWNESS, 240, 150, false, false, false)
     }
@@ -75,6 +75,7 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
     }
 
     private fun trapMobInEgg(livingEntity: LivingEntity, attacker: Player) {
+        val eggTextures = Registry.CONFIGS.getOrThrow(HeadsYml::class).easterEgg
         val loc = livingEntity.eyeLocation.add(0.0, 0.5, 0.0); loc.yaw = 0.0f; loc.pitch = 0.0f
         val boundingBox = livingEntity.boundingBox
         val egg = livingEntity.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay

@@ -32,7 +32,7 @@ class InfiniteWaterBucketItem : CustomItemFunctions() {
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
         event.itemStack = infiniteWaterBucket
-        player.updateInventory()
+        //player.updateInventory() Currently unnecessary - any reports on this?
     }
 
 }
@@ -60,7 +60,7 @@ class InfiniteLavaBucketItem : CustomItemFunctions() {
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
         event.itemStack = infiniteLavaBucket
-        player.updateInventory()
+        //player.updateInventory() Currently unnecessary - any reports on this?
     }
 
 }

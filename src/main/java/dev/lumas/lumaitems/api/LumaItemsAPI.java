@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.LumaItems;
 import dev.lumas.lumaitems.items.ItemFactory;
 import dev.lumas.lumaitems.manager.CustomItem;
 import dev.lumas.lumaitems.manager.ItemManager;
+import dev.lumas.lumaitems.registry.Registry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -83,8 +84,8 @@ public final class LumaItemsAPI {
         if (!itemStack.hasItemMeta()) return null;
         var meta = itemStack.getItemMeta();
 
-        for (var customItem : ItemManager.CUSTOM_ITEMS.entrySet()) {
-            if (meta.getPersistentDataContainer().has(customItem.getKey(), PersistentDataType.SHORT)) {
+        for (var customItem : Registry.CUSTOM_ITEMS) {
+            if (meta.getPersistentDataContainer().has(customItem.getKey().asNameSpacedKey(), PersistentDataType.SHORT)) {
                 return customItem.getValue();
             }
         }
@@ -124,7 +125,7 @@ public final class LumaItemsAPI {
      * @param customItem CustomItem to register
      */
     public void registerCustomItem(CustomItem customItem) {
-        LumaItems.getItemManagerInstance().registerItem(customItem);
+        LumaItems.getItemManager().registerItem(customItem);
     }
 
     /**
@@ -139,7 +140,7 @@ public final class LumaItemsAPI {
     public void registerForPackage(String pack, File file) throws IOException {
         try (URLClassLoader classLoader = new URLClassLoader(new URL[]{ file.toURI().toURL() }, this.getClass().getClassLoader())) {
             ClassPath classPath = ClassPath.from(classLoader);
-            LumaItems.getItemManagerInstance().registerForPackage(pack, classPath);
+            LumaItems.getItemManager().registerForPackage(pack, classPath);
         }
     }
 

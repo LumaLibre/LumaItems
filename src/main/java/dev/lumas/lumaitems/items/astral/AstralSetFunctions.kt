@@ -28,7 +28,7 @@ abstract class AstralSetFunctions(val identifier: String) : CustomItemFunctions(
         return "<#AC87FB>$this</#AC87FB>"
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return identifier
     }
 
@@ -38,6 +38,6 @@ abstract class AstralSetFunctions(val identifier: String) : CustomItemFunctions(
      * @see setItems
      */
     override fun createItem(): Pair<String, ItemStack> {
-        return Pair(identifier(), AstralSet.BLANK_ITEMSTACK)
+        return Pair(setIdentifier(), AstralSet.BLANK_ITEMSTACK)
     }
 }

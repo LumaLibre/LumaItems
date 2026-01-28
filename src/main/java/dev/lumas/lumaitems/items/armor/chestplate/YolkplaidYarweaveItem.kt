@@ -1,10 +1,12 @@
 package dev.lumas.lumaitems.items.armor.chestplate
 
+import dev.lumas.lumaitems.configuration.files.HeadsYml
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.hooks.MythicMobsHook
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.manager.FileManager
 import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.ChatColor
@@ -30,7 +32,6 @@ import kotlin.random.Random
 class YolkplaidYarweaveItem : CustomItem {
 
     companion object {
-        private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
         private val SLOWNESS = PotionEffect(PotionEffectType.SLOWNESS, 240, 200, false, false, false)
     }
 
@@ -90,7 +91,8 @@ class YolkplaidYarweaveItem : CustomItem {
     }
 
     private fun encase(livingEntity: LivingEntity, attacker: Player) {
-        if (AbilityUtil.isMythicMob(livingEntity)) return
+        if (Registry.HOOKS.getOrThrow(MythicMobsHook::class).isMythicMob(livingEntity)) return
+        val eggTextures = Registry.CONFIGS.getOrThrow(HeadsYml::class).easterEgg
 
         val loc = livingEntity.eyeLocation.add(0.0, 0.5, 0.0); loc.yaw = 0.0f; loc.pitch = 0.0f
         val egg = livingEntity.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
