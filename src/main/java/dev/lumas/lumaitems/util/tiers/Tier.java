@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 
 public class Tier {
 
+    public static final Tier BLANK = new Tier("");
     public static final Tier DEPRECATED = new Tier("<b><yellow>Deprecated</yellow></b>");
     public static final Tier DEBUG = new Tier("<b><green>Debug</green></b>");
     public static final Tier ASTRAL = new Tier("<b><#AC87FB>Astral</#AC87FB></b>");

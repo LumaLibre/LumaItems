@@ -58,7 +58,7 @@ class GeneralListeners : Listener {
         Executors.asyncDelayed(1) {
             if (livingEntity.hasMetadata("NO_RELIC")) return@asyncDelayed
 
-            val rarity: Rarity = if (isBoss) Rarity.bossRarities[0] else Rarity.genericRarities.random()
+            val rarity: Rarity = if (isBoss) Rarity.BOSS[0] else Rarity.GENERIC.random()
             val material = rarity.materials.random()
 
             val relic = RelicCreator(

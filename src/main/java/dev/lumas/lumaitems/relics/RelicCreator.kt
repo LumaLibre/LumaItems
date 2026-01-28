@@ -5,7 +5,8 @@ import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.obj.PersistentDataRecord
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Util
+import io.papermc.paper.registry.RegistryAccess
+import io.papermc.paper.registry.RegistryKey
 import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -19,7 +20,6 @@ class RelicCreator (
     private val material: Material
 ) {
     companion object {
-        private const val RELIC_SUFFIX_RGB = "&f"
         private val blackListedEnchants: List<Enchantment> = listOf(Enchantment.BINDING_CURSE,  Enchantment.VANISHING_CURSE, Enchantment.FROST_WALKER, Enchantment.SWIFT_SNEAK, Enchantment.SOUL_SPEED, Enchantment.LUCK_OF_THE_SEA, Enchantment.LURE,
             Enchantment.IMPALING, Enchantment.RIPTIDE, Enchantment.CHANNELING, Enchantment.LOYALTY, Enchantment.MULTISHOT, Enchantment.PIERCING, Enchantment.QUICK_CHARGE, Enchantment.PUNCH, Enchantment.FLAME, Enchantment.INFINITY,
             Enchantment.POWER)
@@ -41,13 +41,13 @@ class RelicCreator (
     private val relicPrefixes: List<String> = file.names.prefixes
     private val relicSuffixes: List<String> = file.names.suffixes
     private val compatibleEnchants: MutableList<Enchantment> = mutableListOf()
-    private val itemCreator: ItemFactory
+    private val itemFactory: ItemFactory
 
     init {
         if (forcedMaxEnchantLevel < 1) forcedMaxEnchantLevel = algorithmWeight
 
         val itemMaterial = ItemStack(material)
-        for (enchantment in Enchantment.values()) {
+        for (enchantment in RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)) {
             if (enchantment.canEnchantItem(itemMaterial) && !blackListedEnchants.contains(enchantment)) {
                 compatibleEnchants.add(enchantment)
             }
@@ -56,17 +56,20 @@ class RelicCreator (
         val enchantments: Map<Enchantment, Int> = determineEnchants()
         val name: String = determineName()
 
-        itemCreator = ItemFactory(
-            name,
-            if (rarity != Rarity.LUNAR) mutableListOf("&7Relic I") else mutableListOf(),
-            mutableListOf(),
-            material,
-            mutableListOf("relic-item"),
-            enchantments.toMutableMap()
-        )
-        itemCreator.persistentDataRecords.add(PersistentDataRecord.create("relic-rarity", PersistentDataType.STRING, rarity.name))
-        itemCreator.tier = rarity.tier
-        itemCreator.addSpace = false
+        this.itemFactory = ItemFactory.builder()
+            .name(name)
+            .material(material)
+            .persistentData("relic-item")
+            .vanillaEnchants(enchantments)
+            .persistentDataRecords(PersistentDataRecord.create("relic-rarity", PersistentDataType.STRING, rarity.name))
+            .tier(rarity.tier)
+            .addSpace(false)
+            .apply {
+                if (rarity != Rarity.LUNAR) {
+                    lore("<gray>Relic I")
+                }
+            }
+            .build()
     }
 
 
@@ -113,12 +116,13 @@ class RelicCreator (
         return enchantments
     }
 
+
     private fun determineName(): String {
-        return Util.colorcode("${rarity.getRgb()}&l${relicPrefixes.random()} $RELIC_SUFFIX_RGB${relicSuffixes.random()}")
+        return "<${rarity.getRgb()}><b>${relicPrefixes.random()}</b> <white>${relicSuffixes.random()}"
     }
 
     fun getRelicItem(): ItemStack {
-        return itemCreator.createItem()
+        return itemFactory.createItem()
     }
 }
 

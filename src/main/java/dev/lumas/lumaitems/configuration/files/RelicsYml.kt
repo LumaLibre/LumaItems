@@ -154,6 +154,31 @@ class RelicsYml : OkaeriFile() {
             Material.WOODEN_HOE,
             Material.BOW
         )
+
+        var delta: List<Material> = listOf(
+            Material.WOODEN_SPEAR,
+            Material.STONE_SPEAR,
+            Material.COPPER_SPEAR,
+            Material.LEATHER,
+            Material.CROSSBOW,
+            Material.CHAINMAIL_HELMET,
+            Material.CHAINMAIL_CHESTPLATE,
+            Material.CHAINMAIL_LEGGINGS,
+            Material.CHAINMAIL_BOOTS,
+            Material.LEATHER_HELMET,
+            Material.LEATHER_CHESTPLATE,
+            Material.LEATHER_LEGGINGS,
+            Material.LEATHER_BOOTS,
+            Material.STONE_SWORD,
+            Material.STONE_PICKAXE,
+            Material.STONE_AXE,
+            Material.STONE_SHOVEL,
+            Material.STONE_HOE,
+            Material.WOODEN_PICKAXE,
+            Material.WOODEN_AXE,
+            Material.WOODEN_SHOVEL,
+            Material.WOODEN_HOE
+        )
     }
 
 
