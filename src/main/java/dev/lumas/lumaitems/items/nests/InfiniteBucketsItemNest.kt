@@ -32,6 +32,7 @@ class InfiniteWaterBucketItem : CustomItemFunctions() {
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
         event.itemStack = infiniteWaterBucket
+        player.updateInventory()
     }
 
 }
@@ -59,6 +60,7 @@ class InfiniteLavaBucketItem : CustomItemFunctions() {
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
         event.itemStack = infiniteLavaBucket
+        player.updateInventory()
     }
 
 }
