@@ -1,6 +1,7 @@
 package dev.lumas.lumaitems.api;
 
 import com.google.common.reflect.ClassPath;
+import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
 import dev.lumas.lumaitems.items.ItemFactory;
 import dev.lumas.lumaitems.manager.CustomItem;
@@ -24,6 +25,8 @@ import java.util.List;
  */
 public final class LumaItemsAPI {
 
+    private static final ContextLogger LOGGER = ContextLogger.getLogger(true);
+
     /**
      * Singleton instance of the LumaItemsAPI
      */
@@ -44,7 +47,7 @@ public final class LumaItemsAPI {
     public static synchronized LumaItemsAPI getInstance() {
         if (singleton == null) {
             singleton = new LumaItemsAPI();
-            LumaItems.log("A plugin is accessing the LumaItems API. Creating a new instance! &7(Hash: " + singleton.hashCode() + ")");
+            LOGGER.info("A plugin is accessing the LumaItems API. Creating a new instance! <gray>(Hash: " + singleton.hashCode() + ")");
         }
         return singleton;
     }

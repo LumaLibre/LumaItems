@@ -1,12 +1,14 @@
 package dev.lumas.lumaitems.manager;
 
 import com.google.common.reflect.ClassPath;
+import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
 import dev.lumas.lumaitems.items.astral.AstralSet;
 import dev.lumas.lumaitems.registry.NamespacedIdentifier;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.registry.StringIdentifier;
 import dev.lumas.lumaitems.util.disabling.Ignore;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,20 +25,10 @@ import java.util.stream.Collectors;
 
 public final class ItemManager {
 
-    //private final LumaItems plugin;
-
-    /**
-     * Map of all LumaItems Custom Items
-     * Key: Custom Item NBT Key
-     * Value: Custom Item Class
-     */
-    //public final static Map<NamespacedKey, CustomItem> CUSTOM_ITEMS = new HashMap<>();
 
 
-    //public final static Map<String, CustomItem> CUSTOM_ITEMS_BY_NAME = new HashMap<>();
-
-
-    public final static String BASE_PACKAGE = "dev.lumas.lumaitems.items";
+    private static final ContextLogger LOGGER = ContextLogger.getLogger(true);
+    private static final String BASE_PACKAGE = "dev.lumas.lumaitems.items";
 
 
     /**
@@ -82,7 +74,7 @@ public final class ItemManager {
             try {
                 list.add(item.createItem().component2());
             } catch (Exception e) {
-                LumaItems.log("Failed to create item for " + item.getClass().getSimpleName(), e);
+                LOGGER.error("Failed to create item for " + item.getClass().getSimpleName(), e);
             }
         }
         return list;
@@ -97,7 +89,7 @@ public final class ItemManager {
     /**
      * Registers all Custom Items in the packages list
      */
-    public void registerItems() throws IOException {
+    public void registerItems(Runnable callback) throws IOException {
         File file = LumaItems.getInstance().getFile();
 
         try (URLClassLoader classLoader = new URLClassLoader(new URL[] { file.toURI().toURL() }, this.getClass().getClassLoader())) {
@@ -106,7 +98,7 @@ public final class ItemManager {
             for (String pack : packages) {
                 registerForPackage(pack, classPath);
             }
-            LumaItems.log("Registered <gold>" + Registry.CUSTOM_ITEMS.size() + "</gold> classes through reflection");
+            callback.run();
         }
     }
 
@@ -122,8 +114,7 @@ public final class ItemManager {
                     registerItem(item);
                 }
             } catch (Throwable e) {
-                LumaItems.log("Failed to register class " + clazz.getSimpleName(), e);
-                e.printStackTrace();
+                LOGGER.error("Failed to register class " + clazz.getSimpleName(), e);
             }
         }
     }
@@ -170,10 +161,10 @@ public final class ItemManager {
                     try {
                         return it.load();
                     } catch (NoClassDefFoundError e) {
-                        LumaItems.log("Failed to load class " + it.getName() + " due to missing dependency: " + e.getMessage());
+                        LOGGER.warning("Failed to load class " + it.getName() + " due to missing dependency: " + e.getMessage());
                         return null;
                     } catch (Throwable e) {
-                        LumaItems.log("Failed to load class " + it.getName(), e);
+                        LOGGER.error("Failed to load class " + it.getName(), e);
                         return null;
                     }
                 })

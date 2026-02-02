@@ -8,6 +8,7 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import com.comphenix.protocol.wrappers.WrappedTeamParameters
 import com.comphenix.protocol.wrappers.WrappedWatchableObject
 import com.google.common.collect.Lists
+import dev.lumas.lumacore.utility.ContextLogger
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.registry.Registry
@@ -66,6 +67,7 @@ object GlowManager {
         )
     }
 
+    private val LOGGER: ContextLogger = ContextLogger.getLogger(true)
 
     private val board = Bukkit.getScoreboardManager().mainScoreboard
     private val teams: MutableList<Team> = mutableListOf()
@@ -92,7 +94,7 @@ object GlowManager {
     fun setGlowColor(entity: Entity, glowColor: NamedTextColor) {
         val team = board.getTeam(glowColor.toString().lowercase())
         if (team == null) {
-            LumaItems.log("Could not find team for color $glowColor")
+            LOGGER.error("Could not find team for color $glowColor")
         } else {
             team.addEntry(entity.uniqueId.toString())
         }
@@ -102,7 +104,7 @@ object GlowManager {
     fun setGlowColor(entity: Entity, glowColor: ChatColor) {
         val team = board.getTeam(glowColor.name.lowercase())
         if (team == null) {
-            LumaItems.log("Could not find team for color ${glowColor.name.lowercase()}")
+            LOGGER.error("Could not find team for color ${glowColor.name.lowercase()}")
         } else {
             team.addEntry(entity.uniqueId.toString())
         }

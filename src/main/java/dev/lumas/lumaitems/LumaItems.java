@@ -6,8 +6,10 @@ import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.events.items.PassiveListeners;
 import dev.lumas.lumaitems.guis.AbstractGui;
 import dev.lumas.lumaitems.enums.Action;
+import dev.lumas.lumaitems.hooks.Hook;
 import dev.lumas.lumaitems.manager.GlowManager;
 import dev.lumas.lumaitems.manager.ItemManager;
+import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.relics.RelicCrafting;
 import dev.lumas.lumaitems.relics.RelicDisassembler;
 import dev.lumas.lumaitems.util.Executors;
@@ -19,12 +21,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 public final class LumaItems extends JavaPlugin {
 
-    private static final ContextLogger LOGGER = ContextLogger.getLogger(NamedTextColor.DARK_GREEN);
+    public static final ContextLogger LOGGER = ContextLogger.getLogger(NamedTextColor.DARK_GREEN);
 
     private static LumaItems instance;
     private static PassiveListeners passiveListeners;
@@ -48,37 +50,43 @@ public final class LumaItems extends JavaPlugin {
         Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
         moduleManager.reflectivelyRegisterModules(classSet);
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
-            log("Players are online, registering items asynchronously");
+            LOGGER.info("Players are online, registering items asynchronously");
             Executors.async(task -> {
                 try {
                     initItemManager(itemManager);
                 } catch (Throwable e) {
-                    getLogger().log(Level.SEVERE, "An error occurred while registering items asynchronously", e);
+                    LOGGER.error("An error occurred while registering items asynchronously");
                     getServer().getPluginManager().disablePlugin(this);
                 }
-                log("Finished asynchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
+                LOGGER.info("Finished asynchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {
             initItemManager(itemManager);
-            log("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
+            LOGGER.info("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
         GlowManager.initGlowTeams();
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();
+
+        List<String> enabledHooks = Registry.HOOKS.values()
+                .stream().filter(Hook::isWith)
+                .map(hook -> hook.identifier().asSimpleString())
+                .toList();
+        LOGGER.info("Enabled Hooks: <gold>" + String.join(", ", enabledHooks));
     }
 
     private void initItemManager(ItemManager itemManager) {
         try {
-            itemManager.registerItems();
+            itemManager.registerItems(() -> LOGGER.info("Registered <gold>" + Registry.CUSTOM_ITEMS.size() + "</gold> classes through reflection"));
             passiveListeners.onPluginAction(Action.PLUGIN_ENABLE); // Fire this as soon as we're done registering our items
             passiveListeners.getPassiveListener(Action.RUNNABLE).runTaskTimer(this, 0L, PassiveListeners.DEFAULT_PASSIVE_LISTENER_TICKS);
             passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS);
             passiveListeners.getPassiveListener(Action.FAST_ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.FAST_ASYNC_PASSIVE_LISTENER_TICKS);
             passiveListeners.getGlobalTask().runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_GLOBAL_TASK_TICKS);
         } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "An error occurred while registering items", e);
-            Bukkit.getPluginManager().disablePlugin(this);
+            LOGGER.error("An error occurred while registering items");
+            getServer().getPluginManager().disablePlugin(this);
         }
     }
 
@@ -111,11 +119,4 @@ public final class LumaItems extends JavaPlugin {
         return itemManager;
     }
 
-    public static void log(String m) {
-        LOGGER.info(m);
-    }
-
-    public static void log(String m, Throwable throwable) {
-        LOGGER.error(m, throwable);
-    }
 }

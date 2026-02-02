@@ -1,5 +1,8 @@
 package dev.lumas.lumaitems.enums
 
+/**
+ * Represents a boolean that may have more than one state.
+ */
 enum class TriState {
     TRUE,
     FALSE,

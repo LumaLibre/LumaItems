@@ -1,6 +1,8 @@
 package dev.lumas.lumaitems.particles;
 
+import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -118,6 +120,8 @@ public final class  Particles {
             PII = 2 * Math.PI,
             R270 = Math.toRadians(270),
             R90 = Math.PI / 2;
+
+    private static final ContextLogger LOGGER = ContextLogger.getLogger(true);
 
     private Particles() {
     }
@@ -2695,7 +2699,7 @@ public final class  Particles {
         try {
             return ImageIO.read(Files.newInputStream(path, StandardOpenOption.READ));
         } catch (IOException e) {
-            LumaItems.log("Failed to read image from path: " + path, e);
+            LOGGER.error("Failed to read image from path: " + path, e);
             return null;
         }
     }
@@ -2821,7 +2825,7 @@ public final class  Particles {
                 try {
                     displayRenderedImage(render, location.call(), quality, speed, size);
                 } catch (Exception e) {
-                    LumaItems.log("Failed to display rendered image.", e);
+                    LOGGER.error("Failed to display rendered image.", e);
                 }
 
                 if (times-- <= 0) {
@@ -2928,7 +2932,7 @@ public final class  Particles {
         try {
             ImageIO.write(image, "png", Files.newOutputStream(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE));
         } catch (IOException e) {
-            LumaItems.log("Failed to save image to path: " + path, e);
+            LOGGER.error("Failed to save image to path: " + path, e);
         }
     }
 

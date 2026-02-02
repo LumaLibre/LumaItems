@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.manager
 
+import dev.lumas.lumacore.utility.ContextLogger
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.registry.RegistryItem
 import dev.lumas.lumaitems.registry.StringIdentifier
@@ -11,6 +12,10 @@ class NamedCustomItem(
 ) : RegistryItem {
 
     constructor(customItem: CustomItem) : this(customItem, null)
+
+    private companion object {
+        val LOGGER: ContextLogger = ContextLogger.getLogger(true)
+    }
 
     override fun identifier(): StringIdentifier {
         return if (forcedIdentifier != null) {
@@ -24,12 +29,12 @@ class NamedCustomItem(
         val itemStack = try {
             customItem.createItem().second
         } catch (e: Exception) {
-            LumaItems.log("Failed to create item for " + customItem.javaClass.getSimpleName(), e)
+            LOGGER.error("Failed to create item for " + customItem.javaClass.getSimpleName(), e)
             return null
         }
         val meta = itemStack.itemMeta
         if (!meta.hasCustomName()) {
-            LumaItems.log("Item " + itemStack.type + " does not have a display name or meta!")
+            LOGGER.error("Item " + itemStack.type + " does not have a display name or meta!")
             return "${itemStack.type}-${randomString(3)}"
         }
         return PlainTextComponentSerializer.plainText().serialize(meta.customName()!!)

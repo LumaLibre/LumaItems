@@ -1,6 +1,7 @@
 package dev.lumas.lumaitems.items
 
 import com.iridium.iridiumcolorapi.IridiumColorAPI
+import dev.lumas.lumacore.utility.ContextLogger
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.enums.RomanNumeral
@@ -77,9 +78,9 @@ class ItemFactory(
 
     companion object {
         val AUTO_HAT_KEY = Util.namespacedKey("autohat")
-        private val plugin: LumaItems = LumaItems.getInstance()
         @JvmField
         val LUMAITEM = Util.namespacedKey("lumaitem")
+        private val LOGGER: ContextLogger = ContextLogger.getLogger(true)
         private val tierFormat = listOf(
             "",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
@@ -151,7 +152,7 @@ class ItemFactory(
 
         meta.persistentDataContainer.set(LUMAITEM, PersistentDataType.SHORT, 1)
         for (name in persistentData) {
-            meta.persistentDataContainer.set(NamespacedKey(plugin, name), PersistentDataType.SHORT, persistentDataValue)
+            meta.persistentDataContainer.set(NamespacedKey(LumaItems.getInstance(), name), PersistentDataType.SHORT, persistentDataValue)
         }
 
 
@@ -249,7 +250,7 @@ class ItemFactory(
 
     fun toReturnablePair(keyIndex: Int): Pair<String, ItemStack> {
         val key = persistentData.getOrNull(keyIndex) ?: run {
-            LumaItems.log("Error: persistentData must have exactly one value!")
+            LOGGER.error("persistentData must have exactly one value!")
             return Pair("", ItemStack(Material.AIR))
         }
         return Pair(key, this.createItem())
@@ -331,7 +332,7 @@ class ItemFactory(
 
         fun buildPair(): Pair<String, ItemStack> {
             if (persistentData.size != 1) {
-                LumaItems.log("Error: persistentData must have exactly one value!")
+                LOGGER.error("persistentData must have exactly one value!")
                 return Pair("", ItemStack(Material.AIR))
             }
             return Pair(persistentData[0], build().createItem())

@@ -64,8 +64,6 @@ class FrostbarkChiselItem : CustomItemFunctions() {
         val drops = event.block.getDrops(axe).ifEmpty { return }
 
         if (drops.size > 1) {
-            LumaItems.log("Frostbark Chisel: Unsupported drop amount.")
-            LumaItems.log("Drops: ${drops.joinToString { "${it.type.name}x${it.amount}" }}")
             return
         }
 

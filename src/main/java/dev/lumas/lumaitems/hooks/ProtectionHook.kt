@@ -11,5 +11,4 @@ interface ProtectionHook : Hook {
 
     fun canBuild(player: Player, location: Location): TriState
 
-
 }
