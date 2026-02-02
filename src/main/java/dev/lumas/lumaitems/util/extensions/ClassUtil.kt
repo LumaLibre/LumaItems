@@ -5,7 +5,7 @@ fun classExists(className: String): Boolean {
     return try {
         Class.forName(className)
         true
-    } catch (e: ClassNotFoundException) {
+    } catch (_: ClassNotFoundException) {
         false
     }
 }
@@ -13,7 +13,7 @@ fun classExists(className: String): Boolean {
 fun String.asClassOrNull(): Class<*>? {
     return try {
         Class.forName(this)
-    } catch (e: ClassNotFoundException) {
+    } catch (_: ClassNotFoundException) {
         null
     }
 }
@@ -27,7 +27,7 @@ fun <T> String.asClassOfOrNull(clazz: Class<T>): Class<out T>? {
         } else {
             null
         }
-    } catch (e: ClassNotFoundException) {
+    } catch (_: ClassNotFoundException) {
         null
     }
 }

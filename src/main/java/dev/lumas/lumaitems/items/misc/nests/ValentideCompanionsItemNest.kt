@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.nests
+package dev.lumas.lumaitems.items.misc.nests
 
 enum class Reward(val finley: EncapsulatedReward, val axie: EncapsulatedReward) {
 
