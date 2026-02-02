@@ -10,7 +10,7 @@ import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.BlockUtil.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
 import kotlin.random.Random

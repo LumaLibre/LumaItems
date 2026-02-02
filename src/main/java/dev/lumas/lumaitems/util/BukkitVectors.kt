@@ -57,6 +57,11 @@ object BukkitVectors {
     }
 
 
+    fun direction(from: Location, to: Location): Vector {
+        return to.toVector().subtract(from.toVector()).normalize()
+    }
+
+
     fun bounceWithBlockFace(entity: Entity, surface: BlockFace, magnitude: Double = 2.0): Vector {
         val velocity = entity.velocity
         val normal = Vector(surface.modX.toDouble(), surface.modY.toDouble(), surface.modZ.toDouble()).normalize()

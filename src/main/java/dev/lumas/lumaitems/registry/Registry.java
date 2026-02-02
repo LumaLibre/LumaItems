@@ -11,21 +11,26 @@ import dev.lumas.lumaitems.hooks.LumaGlowAPIHook;
 import dev.lumas.lumaitems.hooks.McMMOHook;
 import dev.lumas.lumaitems.hooks.MythicMobsHook;
 import dev.lumas.lumaitems.hooks.ProtocolLibHook;
+import dev.lumas.lumaitems.hooks.TownyHook;
+import dev.lumas.lumaitems.hooks.WorldGuardHook;
 import dev.lumas.lumaitems.manager.CustomItem;
 import dev.lumas.lumaitems.manager.NamedCustomItem;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public final class Registry<T extends RegistryItem> implements Iterable<Map.Entry<Identifier, T>> {
@@ -33,7 +38,7 @@ public final class Registry<T extends RegistryItem> implements Iterable<Map.Entr
     public static final Registry<CustomItem> CUSTOM_ITEMS = new Registry<>();
     public static final Registry<NamedCustomItem> NAMED_CUSTOM_ITEMS = new Registry<>();
     public static final Registry<OkaeriFile> CONFIGS = fromClassesWithCrafter(new ConfigManager(), RelicsYml.class, AstralYml.class, HeadsYml.class);
-    public static final Registry<Hook> HOOKS = fromClasses(ProtocolLibHook.class, MythicMobsHook.class, McMMOHook.class, CoreProtectHook.class, LumaGlowAPIHook.class);
+    public static final Registry<Hook> HOOKS = fromClasses(ProtocolLibHook.class, MythicMobsHook.class, McMMOHook.class, CoreProtectHook.class, LumaGlowAPIHook.class, WorldGuardHook.class, TownyHook.class);
 
     private final Map<Identifier, T> map;
 
@@ -79,6 +84,21 @@ public final class Registry<T extends RegistryItem> implements Iterable<Map.Entr
             throw new IllegalStateException("No registry item found for class " + clazz.getName());
         }
         return item;
+    }
+
+    @SafeVarargs
+    public final Set<T> getOrThrow(Class<? extends T>... classes) {
+        Set<T> items = HashSet.newHashSet(classes.length);
+        for (Class<? extends T> clazz : classes) {
+            T item = get(clazz);
+            if (item == null) {
+                throw new IllegalStateException(
+                        "No registry item found for class " + clazz.getName()
+                );
+            }
+            items.add(item);
+        }
+        return items;
     }
 
     public T put(T item) {

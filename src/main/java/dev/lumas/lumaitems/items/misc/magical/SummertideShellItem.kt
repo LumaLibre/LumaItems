@@ -1,13 +1,15 @@
 package dev.lumas.lumaitems.items.misc.magical
 
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.obj.PersistentDataRecord
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -28,9 +30,9 @@ import org.bukkit.potion.PotionEffectType
 class SummertideShellItem : CustomItem {
 
     private enum class AbilityType(val fName: String) {
-        SPEED("&#2CD7ABFastBreak"),
-        SPELL("&#F67A67Pacifier"),
-        NOURISH("&#83DA56Nourish")
+        SPEED("<#2CD7AB>FastBreak</#2CD7AB>"),
+        SPELL("<#F67A67>Pacifier</#F67A67>"),
+        NOURISH("<#83DA56>Nourish</#83DA56>")
     }
 
     companion object {
@@ -77,7 +79,7 @@ class SummertideShellItem : CustomItem {
                     meta.persistentDataContainer.set(NamespacedKey(instance(), "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
-                    player.sendMessage(Util.colorcode("${Util.legacyPrefix} Changed to ${newAbilityType.fName} &#E2E2E2spell."))
+                    player.sendFormatted("Changed to ${newAbilityType.fName} spell.")
                 } else {
                     when (activeAbilityType) {
                         AbilityType.SPEED -> speedAbility(player)

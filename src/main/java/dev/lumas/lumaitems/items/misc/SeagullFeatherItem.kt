@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.misc
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.obj.AttributeContainer
+import dev.lumas.lumaitems.model.AttributeContainer
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier

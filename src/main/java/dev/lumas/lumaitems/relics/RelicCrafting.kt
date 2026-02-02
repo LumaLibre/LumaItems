@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.persistence.PersistentDataType
 
+// todo: cleanup
 object RelicCrafting {
 
     private val plugin: LumaItems = LumaItems.getInstance()

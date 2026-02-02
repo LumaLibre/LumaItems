@@ -9,8 +9,7 @@ softdepend:
   - ProtocolLib
   - EvenMoreFish # Softdepending EMF to register listeners after it
   - Jobs
-  - CoreProtect
-  - LumaGlowAPI
+  - mcMMO
 permissions:
   lumaitems.disassemblergui:
     description: Permission to open the disassembler GUI

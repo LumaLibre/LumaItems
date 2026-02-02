@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.obj
+package dev.lumas.lumaitems.model
 
 import java.util.UUID
 

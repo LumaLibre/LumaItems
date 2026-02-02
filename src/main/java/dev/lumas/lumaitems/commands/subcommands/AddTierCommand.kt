@@ -3,11 +3,11 @@ package dev.lumas.lumaitems.commands.subcommands
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
-import dev.lumas.lumacore.utility.Text
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -25,7 +25,7 @@ class AddTierCommand : SubCommand {
         sender as Player
         val item = sender.inventory.itemInMainHand
         if (item.type.isAir) {
-            Text.msg(sender, "You must be holding an item to add a tier")
+            sender.sendFormatted("You must be holding an item to add a tier")
             return false
         }
 
@@ -43,7 +43,7 @@ class AddTierCommand : SubCommand {
         lore.add(Util.colorcode("&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "))
         meta?.lore = lore
         item.itemMeta = meta
-        Text.msg(sender, "Successfully added tier to item")
+        sender.sendFormatted("Successfully added tier to item")
         return true
     }
 

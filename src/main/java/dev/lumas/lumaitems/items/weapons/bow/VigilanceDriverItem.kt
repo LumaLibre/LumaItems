@@ -13,6 +13,7 @@ import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.isItemInSlots
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -87,7 +88,7 @@ class VigilanceDriverItem : CustomItemFunctions() {
     override fun asyncGlobalTask() {
         referencedEntities.forEach { (playerUUID, entities) ->
             val player = Bukkit.getPlayer(playerUUID) ?: run { referencedEntities.remove(playerUUID); return@forEach }
-            if (!Util.isItemInSlots(KEY, listOf(EquipmentSlot.HAND, EquipmentSlot.OFF_HAND), player)) {
+            if (!player.isItemInSlots(KEY, EquipmentSlot.HAND, EquipmentSlot.OFF_HAND)) {
                 Executors.sync {
                     this.removePlayer(player, entities)
                 }

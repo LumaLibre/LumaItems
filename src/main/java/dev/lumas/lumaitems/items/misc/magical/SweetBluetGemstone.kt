@@ -4,9 +4,12 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.obj.PersistentDataRecord
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
@@ -78,7 +81,7 @@ class SweetBluetGemstone : CustomItem {
                     meta.persistentDataContainer.set(NamespacedKey(plugin, "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
-                    player.sendMessage(Util.colorcode("${Util.legacyPrefix} Changed to ${newAbilityType.friendlyName} &#E2E2E2spell"))
+                    player.sendFormatted("Changed to ${MiniMessageUtil.convertLegacyToMiniMesssageString(newAbilityType.friendlyName)} <reset>spell.")
                 } else if (player.inventory.containsAtLeast(ItemStack(Material.LAPIS_LAZULI), 4)) {
 
                     runAbilityType(activeAbilityType, player)
@@ -126,7 +129,7 @@ class SweetBluetGemstone : CustomItem {
         for (watcher in player.getNearbyEntities(80.0, 80.0, 80.0).mapNotNull { it as? Player }) {
             watcher.hideEntity(plugin, snowball)
         }
-        val vector: Vector = AbilityUtil.getDirectionBetweenLocations(snowball.location, targetBlock.location)
+        val vector: Vector = BukkitVectors.direction(snowball.location, targetBlock.location)
 
         snowball.velocity = vector.multiply(0.1).normalize()
         snowball.setMetadata("MAGIC_DOWNFALL", FixedMetadataValue(plugin, "MAGIC_DOWNFALL"))

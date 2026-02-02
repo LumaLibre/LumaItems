@@ -106,7 +106,7 @@ public final class ItemManager {
             for (String pack : packages) {
                 registerForPackage(pack, classPath);
             }
-            LumaItems.log("Registered &6" + Registry.CUSTOM_ITEMS.size() + " &2classes through reflection");
+            LumaItems.log("Registered <gold>" + Registry.CUSTOM_ITEMS.size() + "</gold> classes through reflection");
         }
     }
 

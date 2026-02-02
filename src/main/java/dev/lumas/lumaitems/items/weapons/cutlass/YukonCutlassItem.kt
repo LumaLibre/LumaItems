@@ -5,8 +5,8 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.Util.isItemInSlot
-import dev.lumas.lumaitems.util.extensions.ColorUtil.toBukkitColor
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.random.asJavaRandom
 import org.bukkit.Location

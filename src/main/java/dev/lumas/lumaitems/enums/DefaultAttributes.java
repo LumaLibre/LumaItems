@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.enums;
 
 import dev.lumas.lumaitems.LumaItems;
-import dev.lumas.lumaitems.obj.AttributeContainer;
+import dev.lumas.lumaitems.model.AttributeContainer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;

@@ -3,11 +3,11 @@ package dev.lumas.lumaitems.commands.subcommands
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
-import dev.lumas.lumacore.utility.Text
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.command.CommandSender
 
 @AutoRegister(RegisterType.SUBCOMMAND)
@@ -25,7 +25,7 @@ class ReloadFilesCommand : SubCommand {
         Registry.CONFIGS
             .map { it.value }
             .forEach { it.load(true) }
-        Text.msg(sender, "Reloaded okaeri files.")
+        sender.sendFormatted("Reloaded okaeri files.")
         return true
     }
 

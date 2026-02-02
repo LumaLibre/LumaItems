@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
@@ -57,7 +57,7 @@ class BlobbleHammerItem : CustomItemFunctions() {
             .material(Material.NETHERITE_PICKAXE)
             .persistentData(nameSpace)
             .tier(Tier.SUMMER_2025)
-            .quotes("<gradient:#A2BFFE:#D1FEB8:#FFEE8C:#FFC067:#FF746C>\"What the h*ll is a blobble?!\"</gradient>")
+            .tagline("<gradient:#A2BFFE:#D1FEB8:#FFEE8C:#FFC067:#FF746C>\"What the h*ll is a blobble?!\"</gradient>")
             .lore(
                 "The latest sensation of",
                 "the bubble revolution, the",

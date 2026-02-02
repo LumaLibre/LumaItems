@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.astral.sets
 
 import dev.lumas.lumaitems.items.astral.AstralSetFunctions
 import dev.lumas.lumaitems.items.astral.ModernAstralSetFactory
-import dev.lumas.lumaitems.util.extensions.ItemUtil.isWearing
+import dev.lumas.lumaitems.util.extensions.isWearing
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player

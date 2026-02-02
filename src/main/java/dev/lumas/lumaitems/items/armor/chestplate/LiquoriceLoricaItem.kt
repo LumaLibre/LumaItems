@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.armor.chestplate
 import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.AttributeContainer
+import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -18,7 +18,7 @@ class LiquoriceLoricaItem : CustomItemFunctions() {
         return ItemFactory.builder()
             .name("<b><gradient:#251a2b:#51588b:#c46fb0:#b8c7f9:#e1c2eb>Liquorice Lorica</gradient></b>")
             .customEnchants("<#e1c2eb>Sugar Rush")
-            .quotes("<gradient:#b8c7f9:#c46fb0>\"A sweet and sticky lorica!\"</gradient>")
+            .tagline("<gradient:#b8c7f9:#c46fb0>\"A sweet and sticky lorica!\"</gradient>")
             .material(Material.NETHERITE_CHESTPLATE)
             .persistentData(k)
             .tier(Tier.EASTER_2025)

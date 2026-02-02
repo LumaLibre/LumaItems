@@ -2,6 +2,7 @@ package dev.lumas.lumaitems;
 
 import dev.lumas.lumacore.manager.modules.ModuleManager;
 import dev.lumas.lumacore.reflect.ReflectionUtil;
+import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.events.items.PassiveListeners;
 import dev.lumas.lumaitems.guis.AbstractGui;
 import dev.lumas.lumaitems.enums.Action;
@@ -10,7 +11,7 @@ import dev.lumas.lumaitems.manager.ItemManager;
 import dev.lumas.lumaitems.relics.RelicCrafting;
 import dev.lumas.lumaitems.relics.RelicDisassembler;
 import dev.lumas.lumaitems.util.Executors;
-import dev.lumas.lumaitems.util.Util;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -22,6 +23,8 @@ import java.util.Set;
 import java.util.logging.Level;
 
 public final class LumaItems extends JavaPlugin {
+
+    private static final ContextLogger LOGGER = ContextLogger.getLogger(NamedTextColor.DARK_GREEN);
 
     private static LumaItems instance;
     private static PassiveListeners passiveListeners;
@@ -40,12 +43,7 @@ public final class LumaItems extends JavaPlugin {
     public void onEnable() {
         long start = System.currentTimeMillis();
         ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
-        reflectionUtil.whitelistPackages(
-                "commands",
-                "commands.subcommands",
-                "events",
-                "events.items"
-        );
+        reflectionUtil.whitelistPackages("commands", "commands.subcommands", "events", "events.items");
 
         Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
         moduleManager.reflectivelyRegisterModules(classSet);
@@ -114,14 +112,10 @@ public final class LumaItems extends JavaPlugin {
     }
 
     public static void log(String m) {
-        Bukkit.getConsoleSender().sendMessage(Util.colorcode("&2[LumaItems] " + m)); // &#f498f6
+        LOGGER.info(m);
     }
 
     public static void log(String m, Throwable throwable) {
-        log("&#a7d9ff" + m);
-        log("&6" + throwable.getMessage());
-        for (StackTraceElement ste : throwable.getStackTrace()) {
-            log("&#a7d9ff" + ste.toString());
-        }
+        LOGGER.error(m, throwable);
     }
 }

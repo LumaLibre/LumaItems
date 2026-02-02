@@ -3,8 +3,8 @@ package dev.lumas.lumaitems.items.misc.magical
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.obj.MagicItemCooldown
+import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.MagicItemCooldown
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil

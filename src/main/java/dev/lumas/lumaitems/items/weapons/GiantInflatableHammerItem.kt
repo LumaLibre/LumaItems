@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.Location
 import org.bukkit.Material

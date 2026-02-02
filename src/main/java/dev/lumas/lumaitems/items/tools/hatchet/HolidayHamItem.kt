@@ -6,7 +6,7 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
 import dev.lumas.lumaitems.util.tiers.Tier

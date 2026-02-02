@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
@@ -178,7 +179,7 @@ class SpringtideScytheItem : CustomItemFunctions() {
                     entityOrLocation as Location
                 }
 
-                it.velocity = AbilityUtil.getDirectionBetweenLocations(it.location, loc).multiply(0.1).normalize()
+                it.velocity = BukkitVectors.direction(it.location, loc).multiply(0.1).normalize()
                 it.world.spawnParticle(Particle.DUST, it.location, 50, 0.7, 0.7, 0.7, 0.1, WHITE_DUST)
                 it.world.spawnParticle(Particle.WAX_OFF, it.location, 10, 0.7, 0.7, 0.7, 0.1)
 

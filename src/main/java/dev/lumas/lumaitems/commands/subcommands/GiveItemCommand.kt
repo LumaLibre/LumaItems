@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.commands.subcommands
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
@@ -11,6 +12,7 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.registry.StringIdentifier
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -57,7 +59,7 @@ class GiveItemCommand : SubCommand {
             for (customItem in ItemManager.getAllItems()) {
                 Util.giveItem(player, customItem)
             }
-            player.sendMessage("${Util.legacyPrefix} You have been given all custom items!")
+            player.sendFormatted("You have been given all custom items!")
         }
         return true
     }

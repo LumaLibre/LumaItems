@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.util
 
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.obj.CustomItemCooldown
+import dev.lumas.lumaitems.model.CustomItemCooldown
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.entity.Player

@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.relics
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.obj.PersistentDataRecord
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.registry.Registry
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey

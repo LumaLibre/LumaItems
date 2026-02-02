@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.shapes.ShapeUtil
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import org.bukkit.Material

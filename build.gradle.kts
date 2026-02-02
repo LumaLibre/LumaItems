@@ -24,12 +24,13 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
     maven("https://jitpack.io")
-    maven("https://maven.enginehub.org/repo/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://nexus.neetgames.com/repository/maven-releases/")
     maven("https://repo.jsinco.dev/releases")
     maven("https://maven.playpro.com/")
     maven("https://repo.okaeri.cloud/releases")
+    maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.glaremasters.me/repository/towny/")
 }
 
 dependencies {
@@ -38,12 +39,16 @@ dependencies {
     }
     compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
-    compileOnly("dev.lumas.lumacore:LumaCore:d56563b")
+    compileOnly("dev.lumas.lumacore:LumaCore:ea7a81e")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.047-CUSTOM") {
         isTransitive = false
     }
-    compileOnly("net.coreprotect:coreprotect:23.0")
+    compileOnly("net.coreprotect:coreprotect:23.0") {
+        isTransitive = false
+    }
     compileOnly("dev.lumas.glowapi:LumaGlowAPI:c57567c")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9-beta1")
+    compileOnly("com.palmergames.bukkit.towny:towny:0.102.0.0")
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")

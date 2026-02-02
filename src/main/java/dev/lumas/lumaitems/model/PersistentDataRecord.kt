@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.obj
+package dev.lumas.lumaitems.model
 
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.NamespacedKey

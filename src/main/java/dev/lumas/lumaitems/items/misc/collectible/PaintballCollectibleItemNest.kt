@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.items.misc.collectible
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.AttributeContainer
-import dev.lumas.lumaitems.obj.PaperDataComponent
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.PaperDataComponent
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName

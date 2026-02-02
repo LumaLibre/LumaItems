@@ -4,7 +4,7 @@ import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.ToolType
-import dev.lumas.lumaitems.util.extensions.BlockUtil.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

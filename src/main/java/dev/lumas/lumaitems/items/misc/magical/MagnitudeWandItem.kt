@@ -4,7 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.ColorUtil.toBukkitColor
+import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
 import org.bukkit.Material

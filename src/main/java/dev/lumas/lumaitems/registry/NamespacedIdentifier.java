@@ -11,6 +11,10 @@ public record NamespacedIdentifier(NamespacedKey key) implements Identifier {
         return new NamespacedIdentifier(new NamespacedKey(LumaItems.getInstance(), key));
     }
 
+    public static NamespacedIdentifier of(@NotNull String namespace, @NotNull String key) {
+        return new NamespacedIdentifier(new NamespacedKey(namespace, key));
+    }
+
     @NotNull
     @Override
     public NamespacedKey asNameSpacedKey() {

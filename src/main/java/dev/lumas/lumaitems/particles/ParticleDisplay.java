@@ -1,6 +1,6 @@
 package dev.lumas.lumaitems.particles;
 
-import dev.lumas.lumaitems.util.Util;
+import dev.lumas.lumaitems.util.extensions.ColorUtil;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
@@ -886,7 +886,7 @@ public class ParticleDisplay implements Cloneable {
         if (data == null || !(data instanceof RGBParticleColor rgbParticleColor)) {
             return withColor(color);
         }
-        this.data = new RGBParticleColor(Util.blend(rgbParticleColor.getColor(), color));
+        this.data = new RGBParticleColor(ColorUtil.blend(rgbParticleColor.getColor(), color));
         return this;
     }
 

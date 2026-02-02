@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.tools.hatchet
 import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.AttributeContainer
+import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute

@@ -8,7 +8,6 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.ItemManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.FireForAllNBT
@@ -62,7 +61,6 @@ import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataContainer
-import org.bukkit.persistence.PersistentDataType
 
 /**
  * Main listeners class for LumaItems

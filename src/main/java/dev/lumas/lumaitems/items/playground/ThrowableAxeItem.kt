@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.playground
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.PaperDataComponent
+import dev.lumas.lumaitems.model.PaperDataComponent
 import dev.lumas.lumaitems.util.disabling.Ignore
 import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.NamespacedKey

@@ -3,9 +3,9 @@ package dev.lumas.lumaitems.items.nests
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.extensions.BlockUtil.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle

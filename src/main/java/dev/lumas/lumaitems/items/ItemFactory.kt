@@ -4,13 +4,13 @@ import com.iridium.iridiumcolorapi.IridiumColorAPI
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.enums.RomanNumeral
-import dev.lumas.lumaitems.obj.AttributeContainer
+import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.obj.PaperDataComponent
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.obj.UnValuedPaperDataComponent
+import dev.lumas.lumaitems.model.PaperDataComponent
+import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.UnValuedPaperDataComponent
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.obj.ValuedPaperDataComponent
+import dev.lumas.lumaitems.model.ValuedPaperDataComponent
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentType.Valued
 import net.kyori.adventure.text.format.NamedTextColor
@@ -269,7 +269,7 @@ class ItemFactory(
         private var addSpace: Boolean = true
         private var autoHat: Boolean = false
         private var attributeModifiers: MutableMap<Attribute, AttributeModifier> = mutableMapOf()
-        private var quotes: MutableList<String> = mutableListOf()
+        private var taglines: MutableList<String> = mutableListOf()
         private var b64PHead: String? = null
         private var spoofEnchants: Boolean = false
         private var persistentDataValue: Short = 1
@@ -311,9 +311,11 @@ class ItemFactory(
                 it.attribute to AttributeModifier(it.key, it.amount, it.operation, it.slot)
             }.toMutableMap()
         }
-        fun quotes(quotes: MutableList<String>) = apply { this.quotes = quotes }
+        fun tagline(quotes: MutableList<String>) = apply { this.taglines = quotes }
         @SafeVarargs
-        fun quotes(vararg quotes: String) = apply { this.quotes = quotes.toMutableList() }
+        fun tagline(tagline: String) = apply { this.taglines = mutableListOf(tagline) }
+        fun tagline(hex: String, tagline: String) = apply { this.taglines = mutableListOf("<${hex}>\"$tagline\"") }
+
         fun b64PHead(b64PHead: String) = apply { this.b64PHead = b64PHead }
         fun spoofEnchants(spoofEnchants: Boolean) = apply { this.spoofEnchants = spoofEnchants }
         fun persistentDataValue(persistentDataValue: Short) = apply { this.persistentDataValue = persistentDataValue }
@@ -321,7 +323,7 @@ class ItemFactory(
 
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
-            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, quotes, b64PHead,
+            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, taglines, b64PHead,
             spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount
         )
 

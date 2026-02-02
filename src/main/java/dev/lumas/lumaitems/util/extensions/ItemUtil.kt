@@ -1,37 +1,54 @@
+@file:JvmName("ItemUtil")
 package dev.lumas.lumaitems.util.extensions
 
+import com.destroystokyo.paper.profile.ProfileProperty
 import dev.lumas.lumaitems.LumaItems
+import java.util.UUID
+import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataContainer
-import org.bukkit.persistence.PersistentDataType
+import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.meta.SkullMeta
 
-object ItemUtil {
+private val STATIC_UUID by lazy { UUID.fromString("e9378e48-0e8e-42a9-9df1-7074b00df6a9") }
 
-    fun Player.isWearing(identifier: String): Boolean {
-        return isWearing(NamespacedKey(LumaItems.getInstance(), identifier))
+fun ItemStack.isMatchingItem(key: String): Boolean {
+    return isMatchingItem(NamespacedKey(LumaItems.getInstance(), key))
+}
+
+fun ItemStack.isMatchingItem(key: NamespacedKey): Boolean {
+    val meta = this.itemMeta ?: return false
+    return meta.persistentDataContainer.has(key)
+}
+
+fun ItemMeta.setBase64Texture(base64: String?) {
+    if (this !is SkullMeta || base64 == null) return
+    val profile = Bukkit.createProfile(STATIC_UUID)
+    profile.properties.add(ProfileProperty("textures", base64))
+    playerProfile = profile
+}
+
+fun ItemStack.withMeta(editMeta: (ItemMeta) -> Unit): ItemStack {
+    val meta = itemMeta ?: return this
+    editMeta(meta)
+    itemMeta = meta
+    return this
+}
+
+fun Collection<ItemStack>.determineMostCommon(): ItemStack {
+    return this.groupingBy { it }
+        .eachCount()
+        .maxBy { it.value }
+        .key
+}
+
+fun Material.itemStack(amount: Int = 1, editMeta: ((ItemMeta) -> Unit)? = null): ItemStack {
+    val itemStack = ItemStack(this, amount)
+    if (editMeta != null) {
+        val itemMeta = itemStack.itemMeta ?: return itemStack
+        editMeta(itemMeta)
+        itemStack.itemMeta = itemMeta
     }
-
-    fun Player.isWearing(identifier: NamespacedKey): Boolean {
-        val armorDatas: List<PersistentDataContainer?> = this.inventory.armorContents
-            .map { it?.itemMeta?.persistentDataContainer }
-
-        for (data in armorDatas) {
-            if (data != null && data.has(identifier, PersistentDataType.SHORT)) {
-                return true
-            }
-        }
-
-        return false
-    }
-
-    fun ItemStack.isMatchingItem(key: String): Boolean {
-        return isMatchingItem(NamespacedKey(LumaItems.getInstance(), key))
-    }
-
-    fun ItemStack.isMatchingItem(key: NamespacedKey): Boolean {
-        val meta = this.itemMeta ?: return false
-        return meta.persistentDataContainer.has(key)
-    }
+    return itemStack
 }

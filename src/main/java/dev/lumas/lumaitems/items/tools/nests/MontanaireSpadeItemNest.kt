@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.tools.nests
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.PersistentDataRecord
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material

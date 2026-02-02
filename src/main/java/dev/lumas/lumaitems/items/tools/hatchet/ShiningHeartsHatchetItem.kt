@@ -76,7 +76,7 @@ class ShiningHeartsHatchetItem : CustomItem {
                 entity.world.playSound(entity.location, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.7f, 0.9f)
 
                 blockAbility.add(player.uniqueId)
-                for (entity1: LivingEntity in Util.splitRandomList(entities, entities.size / 2) as List<LivingEntity>) {
+                for (entity1: LivingEntity in splitRandomList(entities, entities.size / 2) as List<LivingEntity>) {
                     if (entity1 == player || AbilityUtil.noDamagePermission(player, entity1)) continue
                     entity1.world.spawnParticle(Particle.SWEEP_ATTACK, entity.location, 3, 0.5, 0.5, 0.5, 0.1)
                     entity1.damage(6.0, player)
@@ -87,5 +87,15 @@ class ShiningHeartsHatchetItem : CustomItem {
             else -> return false
         }
         return true
+    }
+
+    private fun splitRandomList(list: MutableList<*>, retain: Int): MutableList<*> {
+        val newList: MutableList<Any> = mutableListOf()
+        for (i in 0 until retain) {
+            val random = list.indices.random()
+            list[random]?.let { newList.add(it) }
+            list.removeAt(random)
+        }
+        return newList
     }
 }

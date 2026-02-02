@@ -17,6 +17,7 @@ public class Tier {
     public static final Tier SUMMER_2025 = new Tier("<b><gradient:#ff4e50:#fc913a:#f9d62e:#eae374:#97c753>Lumalympics 2025</gradient></b>");
     public static final Tier HALLOWEEN_2025 = new Tier("<b><gradient:#602749:#b14623:#f6921d>Lumaween 2025</gradient></b>");
     public static final Tier CHRISTMAS_2025 = new Tier("<b><gradient:#1d7240:#5e9f52:#e4ba58:#f2b054:#f06f3f:#ee4631:#e4352b:#a61e20>Christmas 2025</gradient></b>");
+    public static final Tier VALENTINES_2026 = new Tier("<red><b>Valentines 2026</b></red>");
 
 
     private final String mmTierString;

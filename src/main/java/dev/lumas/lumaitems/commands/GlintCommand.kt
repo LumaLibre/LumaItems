@@ -4,7 +4,7 @@ import dev.lumas.lumacore.manager.commands.AbstractCommand
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
-import dev.lumas.lumacore.utility.Text
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -23,7 +23,7 @@ class GlintCommand : AbstractCommand() {
         val player = sender as? Player ?: return false
         val item = player.inventory.itemInMainHand
         if (!item.hasItemMeta() || item.itemMeta?.hasEnchants() == false) {
-            Text.msg(player, "<red>This item cannot have its glint toggled.")
+            player.sendFormatted("<red>This item cannot have its glint toggled.")
             return true
         }
 

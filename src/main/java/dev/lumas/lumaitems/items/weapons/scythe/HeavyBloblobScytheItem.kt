@@ -3,15 +3,16 @@ package dev.lumas.lumaitems.items.weapons.scythe
 import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.AttributeContainer
+import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.ColorUtil.toBukkitColor
-import dev.lumas.lumaitems.util.extensions.ItemUtil.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.toBukkitColor
+import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.tiers.Tier
+import kotlin.random.asJavaRandom
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -30,6 +31,8 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
+import org.bukkit.loot.LootContext
+import org.bukkit.loot.LootTable
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 
@@ -95,11 +98,19 @@ class HeavyBloblobScytheItem : CustomItemFunctions() {
     }
 
     override fun onEntityDeath(player: Player, event: EntityDeathEvent) {
-        if (!event.entity.fromMobSpawner() && player.inventory.itemInMainHand.isMatchingItem(KEY)) {
-            event.drops.forEach { itemStack ->
-                if (itemStack.maxStackSize > 1 && random().nextBoolean()) {
-                    itemStack.amount += 1
-                }
+        val entity = event.entity
+        if (entity.fromMobSpawner() || random().nextInt(100) < 10 || entity !is LootTable || !player.inventory.itemInMainHand.isMatchingItem(KEY)) {
+            return
+        }
+
+        val lootContext = LootContext.Builder(entity.location)
+            .killer(player)
+            .lootedEntity(entity)
+            .build()
+
+        entity.populateLoot(random().asJavaRandom(), lootContext).forEach { itemStack ->
+            if (itemStack.maxStackSize > 1 && random().nextBoolean()) {
+                itemStack.amount += 1
             }
         }
     }

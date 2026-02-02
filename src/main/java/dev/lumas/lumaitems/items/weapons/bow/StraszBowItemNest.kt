@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -83,7 +84,7 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
         hitLivingEntity.getNearbyEntities(20.0, 20.0, 20.0).forEach {
             if (it !is LivingEntity || it is Player || !hitLivingEntity.hasLineOfSight(it)) return@forEach
             else if (i++ > MAX_DUPLICATE_ARROWS) return
-            val vector: Vector = AbilityUtil.getDirectionBetweenLocations(hitLivingEntity.eyeLocation, it.eyeLocation)
+            val vector: Vector = BukkitVectors.direction(hitLivingEntity.eyeLocation, it.eyeLocation)
             spawnProjectile(vector.multiply(0.5), hitLivingEntity.eyeLocation.add(0.0,0.4,0.0), true, player, true)
         }
     }

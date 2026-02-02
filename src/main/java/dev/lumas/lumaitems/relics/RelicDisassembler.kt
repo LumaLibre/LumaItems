@@ -1,12 +1,12 @@
 package dev.lumas.lumaitems.relics
 
 import dev.lumas.lumacore.utility.Logging
-import dev.lumas.lumacore.utility.Text
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import java.util.UUID
 import kotlin.random.Random
 import org.bukkit.Bukkit
@@ -76,7 +76,7 @@ object RelicDisassembler {
         if (!rescheduleCooldownTask(player)) {
             return null
         } else if (rarity == Rarity.ASTRAL && action.isLeftClick) {
-            Text.msg(player, "You must left click to disassemble <#F7FFC9>Astral</#F7FFC9> relics")
+            player.sendFormatted("You must left click to disassemble <#F7FFC9>Astral</#F7FFC9> relics")
             return null
         }
 
@@ -90,7 +90,7 @@ object RelicDisassembler {
             Bukkit.getScheduler().cancelTask(confirmCooldownTasks[player.uniqueId]!!)
             returnValue = true
         } else {
-            player.sendMessage("${Util.legacyPrefix} Are you sure you want to disassemble this item? Click again to confirm.")
+            player.sendFormatted("Are you sure you want to disassemble this item? Click again to confirm.")
         }
 
         confirmCooldownTasks[player.uniqueId] = Bukkit.getScheduler().scheduleSyncDelayedTask(LumaItems.getInstance(), {

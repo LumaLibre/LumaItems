@@ -42,15 +42,4 @@ class LunarOrbItem : CustomItemFunctions() {
         player.playSound(player.location, Sound.ENTITY_EVOKER_CAST_SPELL, 1f, 1f)
     }
 
-    override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        when (type) {
-            Action.RIGHT_CLICK -> {
-
-            }
-            else -> {
-                return false
-            }
-        }
-        return true
-    }
 }

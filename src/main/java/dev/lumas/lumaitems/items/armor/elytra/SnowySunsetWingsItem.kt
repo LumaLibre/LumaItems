@@ -2,15 +2,14 @@
 package dev.lumas.lumaitems.items.armor.elytra
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
-import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.Util.isItemInSlot
-import dev.lumas.lumaitems.util.tiers.Tier
 import dev.lumas.glowapi.colormanagers.ColorManager
 import dev.lumas.lumaitems.hooks.McMMOHook
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

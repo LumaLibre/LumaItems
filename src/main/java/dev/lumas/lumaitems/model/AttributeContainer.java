@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.obj;
+package dev.lumas.lumaitems.model;
 
 import dev.lumas.lumaitems.LumaItems;
 import dev.lumas.lumaitems.enums.EntityAttributes;

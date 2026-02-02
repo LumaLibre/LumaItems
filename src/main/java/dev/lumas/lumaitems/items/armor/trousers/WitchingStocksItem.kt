@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.items.armor.trousers
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.AttributeContainer
-import dev.lumas.lumaitems.util.AbilityUtil.isLocationOnGround
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.util.extensions.isLocationOnGround
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import org.bukkit.Material

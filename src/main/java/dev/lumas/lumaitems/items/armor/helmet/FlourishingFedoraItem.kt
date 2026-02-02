@@ -21,7 +21,7 @@ class FlourishingFedoraItem : CustomItemFunctions() {
             )
             .material(Material.NETHERITE_HELMET)
             .tier(Tier.WINTER_2024)
-            .quotes("<#90C3EC>\"<#8EC4E1>I<#8CC5D5>t <#89C6BE>g<#87C7B3>r<#85C8A8>o<#83C99C>w<#82C991>s <#7ECB7A>o<#8CC888>n <#A8C1A3>y<#B6BEB0>o<#C5BABE>u<#D3B7CB>.<#E1B4D9>.<#EFB0E6>.<#FDADF4>\"")
+            .tagline("<#90C3EC>\"<#8EC4E1>I<#8CC5D5>t <#89C6BE>g<#87C7B3>r<#85C8A8>o<#83C99C>w<#82C991>s <#7ECB7A>o<#8CC888>n <#A8C1A3>y<#B6BEB0>o<#C5BABE>u<#D3B7CB>.<#E1B4D9>.<#EFB0E6>.<#FDADF4>\"")
             .vanillaEnchants(
                 Enchantment.UNBREAKING to 10,
                 Enchantment.PROTECTION to 6,

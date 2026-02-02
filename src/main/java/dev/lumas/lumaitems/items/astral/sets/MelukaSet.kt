@@ -7,7 +7,7 @@ import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
-import dev.lumas.lumaitems.util.extensions.ItemUtil.isWearing
+import dev.lumas.lumaitems.util.extensions.isWearing
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player

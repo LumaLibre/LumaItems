@@ -34,7 +34,7 @@ class RainbowShearsItem : CustomItem {
                 Enchantment.EFFICIENCY to 7,
                 Enchantment.MENDING to 1
             )
-            .quotes("<gray>\"Shear to your heart's content!\"")
+            .tagline("<gray>\"Shear to your heart's content!\"")
             .material(Material.SHEARS)
             .tier(Tier.PRIDE_2025)
             .buildPair()

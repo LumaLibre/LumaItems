@@ -12,10 +12,10 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.extensions.BlockUtil.getOreColor
+import dev.lumas.lumaitems.util.extensions.getOreColor
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.ItemUtil.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue

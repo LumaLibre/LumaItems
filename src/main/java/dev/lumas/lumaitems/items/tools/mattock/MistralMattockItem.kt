@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import org.bukkit.Material
@@ -50,7 +51,7 @@ class MistralMattockItem : CustomItem {
 
     private fun seeker(block: Block, player: Player) {
         if (block.type.toString().lowercase().contains("ore")) {
-            AbilityUtil.breakRelativeBlock(block, player, Particle.GLOW, "ore", 0)
+            //AbilityUtil.breakRelativeBlock(block, player, Particle.GLOW, "ore", 0)
         } else {
             val chance = Random().nextInt(100)
             if (chance <= 5) seekOres(block)
@@ -77,7 +78,7 @@ class MistralMattockItem : CustomItem {
         val repeatTracker = intArrayOf(0)
         object : BukkitRunnable() {
             override fun run() {
-                val vector: Vector = AbilityUtil.getDirectionBetweenLocations(Loc1, Loc2)
+                val vector: Vector = BukkitVectors.direction(Loc1, Loc2)
                 var i = 1.0
                 while (i <= blockBroken.location.distance(Loc2)) {
                     vector.multiply(i)

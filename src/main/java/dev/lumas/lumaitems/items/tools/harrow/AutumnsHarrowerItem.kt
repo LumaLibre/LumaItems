@@ -3,9 +3,9 @@ package dev.lumas.lumaitems.items.tools.harrow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.determineMostCommon
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
@@ -62,7 +62,7 @@ class AutumnsHarrowerItem : CustomItem {
 
     private fun fullHarvest(block: Block, drops: Collection<ItemStack>) {
         if (drops.isEmpty()) return
-        val item = AbilityUtil.findMostCommonItem(drops)
+        val item = drops.determineMostCommon()
 
         if (crops.containsKey(item.type)) {
             block.world.spawnParticle(

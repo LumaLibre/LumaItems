@@ -1,4 +1,5 @@
-package dev.lumas.lumaitems.obj
+@file:Suppress("UnstableApiUsage")
+package dev.lumas.lumaitems.model
 
 import io.papermc.paper.datacomponent.DataComponentType
 
@@ -17,13 +18,10 @@ abstract class PaperDataComponent {
 }
 
 class UnValuedPaperDataComponent(
-    val dataComponentType: DataComponentType.NonValued,
-) : PaperDataComponent() {
-
-}
+    val dataComponentType: DataComponentType.NonValued
+) : PaperDataComponent()
 
 class ValuedPaperDataComponent<T : Any>(
     val dataComponentType: DataComponentType.Valued<T>,
     val value: T,
-) : PaperDataComponent() {
-}
+) : PaperDataComponent()

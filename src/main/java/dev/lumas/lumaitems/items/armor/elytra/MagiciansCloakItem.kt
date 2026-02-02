@@ -9,7 +9,7 @@ import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.ColorUtil.toColor
+import dev.lumas.lumaitems.util.extensions.toColor
 import dev.lumas.lumaitems.util.tiers.Tier
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor

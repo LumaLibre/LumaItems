@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.tools.hatchet
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.PersistentDataRecord
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -41,7 +41,7 @@ class FrostbarkChiselItem : CustomItemFunctions() {
                 Enchantment.SMITE to 5,
                 Enchantment.MENDING to 1
             )
-            .quotes("<#8A4E4E>\"<#8A5254>C<#8A575A>h<#8A5B60>o<#8A6066>o<#8A646C>s<#8A6973>e <#8A727F>i<#8A7685>t<#8A7B8B>, <#8B8397>c<#8B889D>h<#8B8CA3>i<#8B91A9>s<#8B95AF>e<#8B9AB6>l <#8BA3C2>i<#8BA7C8>t<#8BACCE>.<#8BB0D4>\"")
+            .tagline("<#8A4E4E>\"<#8A5254>C<#8A575A>h<#8A5B60>o<#8A6066>o<#8A646C>s<#8A6973>e <#8A727F>i<#8A7685>t<#8A7B8B>, <#8B8397>c<#8B889D>h<#8B8CA3>i<#8B91A9>s<#8B95AF>e<#8B9AB6>l <#8BA3C2>i<#8BA7C8>t<#8BACCE>.<#8BB0D4>\"")
             .tier(Tier.WINTER_2024)
             .persistentDataRecords(PersistentDataRecord.create(key, PersistentDataType.STRING, Mode.LOGS.name))
             .persistentData("frostbark-chisel")

@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.obj.PersistentDataRecord
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.dialogue.DialogueText
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -109,7 +109,7 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
                 Enchantment.LOOTING to 4,
                 Enchantment.MENDING to 1,
             )
-            .quotes(
+            .tagline(
                 "<$color>\"Don't listen to the voices...\""
             )
             .lore(
@@ -189,6 +189,7 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
 
     override fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {
         val item = event.item
+        player.sendViewDistance
         if (item.type != Material.SHEARS) return
 
         // Only damage shears 11.71% of the time to match the health of Netherite gear

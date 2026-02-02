@@ -4,7 +4,6 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.AbilityUtil.breakRelativeBlock
 import dev.lumas.lumaitems.util.disabling.Ignore
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -53,7 +52,7 @@ class CrescentMoonHatchetItem : CustomItem {
             val b: Block = cuboid.blockList().get(i)
             if (b.type.toString().contains("LOG")) {
                 player.breakBlock(b)
-                breakRelativeBlock(b, player, null, "leaves", 0)
+                //breakRelativeBlock(b, player, null, "leaves", 0)
             }
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(instance(),

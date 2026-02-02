@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.BukkitVectors
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -106,7 +107,7 @@ class SoulEaterItem : CustomItem {
         val repTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
             val loc1 = entity.location.add(0.0, 1.0, 0.0)
             val loc2 = p.location.add(0.0, 1.0, 0.0)
-            val vector: Vector = AbilityUtil.getDirectionBetweenLocations(loc1, loc2)
+            val vector: Vector = BukkitVectors.direction(loc1, loc2)
             var i = 1.0
             while (i <= loc1.distance(loc2)) {
                 vector.multiply(i)

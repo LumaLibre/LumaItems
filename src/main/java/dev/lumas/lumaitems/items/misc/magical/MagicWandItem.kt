@@ -3,8 +3,8 @@ package dev.lumas.lumaitems.items.misc.magical
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.obj.MagicItemCooldown
+import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.MagicItemCooldown
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
