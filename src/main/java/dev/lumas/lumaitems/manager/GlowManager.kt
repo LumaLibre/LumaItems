@@ -9,17 +9,13 @@ import com.comphenix.protocol.wrappers.WrappedTeamParameters
 import com.comphenix.protocol.wrappers.WrappedWatchableObject
 import com.google.common.collect.Lists
 import dev.lumas.lumacore.utility.ContextLogger
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import java.lang.reflect.Type
 import java.util.Optional
 import java.util.UUID
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
-import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player

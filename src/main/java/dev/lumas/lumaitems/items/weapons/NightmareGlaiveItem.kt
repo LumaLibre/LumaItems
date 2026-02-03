@@ -8,7 +8,7 @@ import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.FireAnyways
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
@@ -151,11 +151,11 @@ class NightmareGlaiveItem : CustomItemFunctions() {
             }
             pin.world.playSound(pin, Sound.ITEM_LEAD_BREAK, 2.0f, Random.nextDouble(0.5, 0.8).toFloat())
 
-            this.task = player.syncEntityTimer(0, 1) { task ->
+            this.task = player.syncTimer(0, 1) { task ->
                 this.entities.removeIf { !it.isValid || (it is Player && player.isSneaking) }
                 if (++count > durationTicks || this.entities.isEmpty()) {
                     this.stopTicking()
-                    return@syncEntityTimer
+                    return@syncTimer
                 } else if (count > durationTicks / 3) {
                     this.entities.filter { it is Player }.forEach {
                         it.removePotionEffect(PotionEffectType.BLINDNESS)

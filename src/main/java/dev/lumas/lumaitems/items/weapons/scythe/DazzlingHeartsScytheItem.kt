@@ -2,15 +2,14 @@ package dev.lumas.lumaitems.items.weapons.scythe
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors.syncLocationDelayed
-import dev.lumas.lumaitems.util.Executors.syncLocationTimer
+import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -87,7 +86,7 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
 
         // runnables
         // i want to clean this up but ehhh
-        val slashes = loc.syncLocationTimer(0, 1) { task ->
+        val slashes = loc.syncTimer(0, 1) { task ->
             loc.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1f, 1.23f)
             loc.getWorld().spawnParticle(
                 Particle.SWEEP_ATTACK,
@@ -99,7 +98,7 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
             )
         }
         for (i in 0..5) {
-            loc.syncLocationDelayed((7 * (i + 1)).toLong()) {
+            loc.syncDelayed((7 * (i + 1)).toLong()) {
                 loc.getWorld().getNearbyEntities(loc, 2.0, 2.5, 2.0)
                     .forEach(Consumer { e: Entity ->
                         if (e is LivingEntity && e != p) {

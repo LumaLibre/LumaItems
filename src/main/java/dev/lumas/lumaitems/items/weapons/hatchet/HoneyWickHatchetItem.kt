@@ -2,14 +2,13 @@ package dev.lumas.lumaitems.items.weapons.hatchet
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable
 import io.papermc.paper.datacomponent.item.FoodProperties
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
@@ -78,7 +77,7 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
         target.world.playSound(target.location, Sound.BLOCK_HONEY_BLOCK_HIT, 1.0f, 1.0f)
 
 
-        target.syncEntityDelayed(25) {
+        target.syncDelayed(25) {
             list.forEach { it.remove() }
         }
     }

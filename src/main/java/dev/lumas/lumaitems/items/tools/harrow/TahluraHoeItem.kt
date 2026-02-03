@@ -9,7 +9,7 @@ import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncLocation
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -202,7 +202,7 @@ class TahluraHoeItem : CustomItemFunctions() {
                     BLUE_DUST.spawn(it.location)
                 }
 
-                cloudSpawnLoc.syncLocation {
+                cloudSpawnLoc.sync {
                     snowball(randLoc).also {
                         snowballs.add(it)
                     }

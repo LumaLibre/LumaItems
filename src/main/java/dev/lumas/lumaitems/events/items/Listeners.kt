@@ -291,9 +291,7 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (!event.hasChangedPosition()) return
-        Executors.async {
-            fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
-        }
+        fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
     }
 
     @FireForAllNBT
@@ -311,9 +309,7 @@ class Listeners : ItemListener() {
         val container: PersistentDataContainer = event.entity.persistentDataContainer
         if (container.isEmpty) return
 
-        Executors.async {
-            fire(container, action, null, event)
-        }
+        fire(container, action, null, event)
     }
 
     @EventHandler
@@ -464,9 +460,7 @@ class Listeners : ItemListener() {
         val action = Action.PICKUP_ITEM
         if (!action.canFireRightNow()) return
 
-        Executors.async {
-            fire(Util.getAllEquipmentNBT(player), action, player, event, true)
-        }
+        fire(Util.getAllEquipmentNBT(player), action, player, event, true)
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) // if you modify this event to include previous slot, items that use this need a conditional added to their logic

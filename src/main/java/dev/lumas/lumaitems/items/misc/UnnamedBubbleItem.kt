@@ -3,8 +3,8 @@ package dev.lumas.lumaitems.items.misc
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.sync
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Ignore
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
@@ -54,7 +54,7 @@ class UnnamedBubbleItem : CustomItemFunctions() {
 
     override fun asyncGlobalTask() {
         val players = instance().server.onlinePlayers.filter {
-            it.syncEntity {
+            it.sync {
                 Util.isItemInSlot(nameSpace, EquipmentSlot.HAND, it)
             }
         }
@@ -66,12 +66,12 @@ class UnnamedBubbleItem : CustomItemFunctions() {
         }
 
         players.forEach { player ->
-            player.syncEntity {
+            player.sync {
                 val group = processes[player.uniqueId] ?: run {
                     val newGroup = BlobGroup(player)
                     processes[player.uniqueId] = newGroup
                     newGroup.initiateGroup()
-                    return@syncEntity
+                    return@sync
                 }
                 group.updatePositions()
             }
@@ -172,14 +172,14 @@ class UnnamedBubbleItem : CustomItemFunctions() {
             if ((moveTask != null && !moveTask!!.isCancelled) || !valid) {
                 return
             }
-            this.moveTask = snowball.syncEntityTimer(0, 1) { task ->
+            this.moveTask = snowball.syncTimer(0, 1) { task ->
                 if (!valid) {
                     task.cancel()
-                    return@syncEntityTimer
+                    return@syncTimer
                 }
                 if (snowball.location.world != position.world || snowball.location.distance(position) <= 0.5) {
                     snowball.velocity = BukkitVectors.ZERO
-                    return@syncEntityTimer
+                    return@syncTimer
                 }
                 val direction = position.clone().subtract(snowball.location).toVector().normalize()
                 snowball.velocity = direction.normalize()

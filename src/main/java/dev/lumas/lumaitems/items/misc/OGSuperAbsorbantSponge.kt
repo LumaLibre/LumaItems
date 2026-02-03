@@ -1,16 +1,14 @@
 package dev.lumas.lumaitems.items.misc
 
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.Executors.syncLocationDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -117,7 +115,7 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
         world.playSound(location, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.5f)
         world.playSound(location, Sound.BLOCK_WET_GRASS_BREAK, 1.0f, 1.0f)
 
-        sponge.location.syncLocationDelayed(1) {
+        sponge.location.syncDelayed(1) {
             if (Material.WATER in types) removeWaterlogged(sponge, player)
             if (sponge.type in types) sponge.type = Material.AIR
         }

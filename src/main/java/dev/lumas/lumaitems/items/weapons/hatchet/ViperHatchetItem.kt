@@ -3,8 +3,7 @@ package dev.lumas.lumaitems.items.weapons.hatchet
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -53,11 +52,11 @@ class ViperHatchetItem : CustomItem {
             e.setMetadata("viper", FixedMetadataValue(instance(), true))
 
             var count = 0
-            e.syncEntityTimer(0, 15) {
+            e.syncTimer(0, 15) {
                 if (++count > 100) {
                     it.cancel()
                     e.removeMetadata("viper", instance())
-                    return@syncEntityTimer
+                    return@syncTimer
                 }
                 e.damage(0.5)
             }

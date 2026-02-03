@@ -3,9 +3,8 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import org.bukkit.GameMode
@@ -58,19 +57,19 @@ class UnnamedBowItem : CustomItemFunctions() {
         }
 
         val projectile = event.entity as? AbstractArrow ?: return
-        projectile.syncEntityDelayed(20) {
+        projectile.syncDelayed(20) {
             if (projectile.isDead) {
-                return@syncEntityDelayed
+                return@syncDelayed
             }
 
             projectile.setNoPhysics(true)
 
             var count = 0
-            player.syncEntityTimer(0,1) { task ->
+            player.syncTimer(0,1) { task ->
                 val distance = player.eyeLocation.distanceSquared(projectile.location)
                 if (distance < 0.5 * 0.5 || projectile.isDead || ++count > 200) {
                     task.cancel()
-                    return@syncEntityTimer
+                    return@syncTimer
                 }
 
                 projectile.velocity = BukkitVectors.flyToLivingEntity(player, projectile, 2.8, 0.9, 0.89)

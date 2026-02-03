@@ -13,7 +13,7 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCreator
 import dev.lumas.lumaitems.relics.RelicDisassembler
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.Util
 import kotlin.random.Random
 import org.bukkit.Bukkit
@@ -69,7 +69,7 @@ class GeneralListeners : Listener {
                 material
             ).getRelicItem()
 
-            livingEntity.syncEntity {
+            livingEntity.sync {
                 if (GenericToolType.getGenericToolType(relic.type) == GenericToolType.ARMOR) {
                     val entityArmor = EntityArmor.getEquipmentSlotFromType(relic.type)
                     entityArmor?.setEntityArmorSlot(livingEntity, relic)

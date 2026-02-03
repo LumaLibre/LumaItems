@@ -16,38 +16,20 @@ object Executors {
         return ticks * 50 // 1 tick = 50 milliseconds
     }
 
-    @Deprecated("Not ThreadedRegions safe")
-    fun sync(runnable: Runnable): BukkitTask? {
-        throw UnsupportedOperationException("Not ThreadedRegions safe")
-    }
-
-    fun Entity.syncEntity(runnable: Runnable): Boolean {
+    fun Entity.sync(runnable: Runnable): Boolean {
         return this.scheduler.execute(LumaItems.getInstance(), runnable, null, 1)
     }
 
-    fun Location.syncLocation(runnable: Runnable) {
+    fun Location.sync(runnable: Runnable) {
         Bukkit.getRegionScheduler().execute(LumaItems.getInstance(), this, runnable)
     }
 
 
-    @Deprecated("Not ThreadedRegions safe")
-    fun syncTimer(delay: Long, period: Long, runnable: Consumer<BukkitRunnable>): BukkitTask {
-        return object : BukkitRunnable() {
-            override fun run() {
-                try {
-                    runnable.accept(this)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }.runTaskTimer(LumaItems.getInstance(), delay, period)
-    }
-
-    fun Entity.syncEntityTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
+    fun Entity.syncTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
         return this.scheduler.runAtFixedRate(LumaItems.getInstance(), runnable, null, delay.coerceAtLeast(1), period)
     }
 
-    fun Collection<Entity>.syncEntityTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
+    fun Collection<Entity>.syncTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
         return if (this.isEmpty()) {
             null
         } else {
@@ -55,28 +37,15 @@ object Executors {
         }
     }
 
-    fun Location.syncLocationTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
+    fun Location.syncTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
         return Bukkit.getRegionScheduler().runAtFixedRate(LumaItems.getInstance(), this, runnable, delay.coerceAtLeast(1), period)
     }
 
-    @Deprecated("Not ThreadedRegions safe")
-    fun syncDelayed(delay: Long, runnable: Consumer<BukkitRunnable>): BukkitTask {
-        return object : BukkitRunnable() {
-            override fun run() {
-                try {
-                    runnable.accept(this)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }.runTaskLater(LumaItems.getInstance(), delay)
-    }
-
-    fun Entity.syncEntityDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
+    fun Entity.syncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
         return this.scheduler.runDelayed(LumaItems.getInstance(), runnable, null, delay)
     }
 
-    fun Location.syncLocationDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
+    fun Location.syncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
         return Bukkit.getRegionScheduler().runDelayed(LumaItems.getInstance(), this, runnable, delay)
     }
 
@@ -109,11 +78,6 @@ object Executors {
                 e.printStackTrace()
             }
         }, ticksToMillis(delay), TimeUnit.MILLISECONDS)
-    }
-
-    @Deprecated("Not ThreadedRegions safe")
-    fun <T> (() -> T).sync(): BukkitTask? {
-        return sync { this() }
     }
 
     fun <T> (() -> T).async(): ScheduledTask {

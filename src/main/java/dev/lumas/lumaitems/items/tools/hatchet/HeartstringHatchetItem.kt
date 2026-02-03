@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
@@ -17,7 +18,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 
 @Disable(value = [WorldName.PINATA], hard = true)
@@ -69,36 +69,32 @@ class HeartstringHatchetItem : CustomItemFunctions() {
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (!player.isSneaking || QuickTasks.isOnCooldown(this, player.uniqueId)) return
         QuickTasks.addCooldown(this, player.uniqueId, 800L)
-        object : BukkitRunnable() {
 
-            var i = 0
+        var i = 0
+        player.syncTimer(0, 5) { task ->
+            val originLocation = player.eyeLocation
+            val nearbyItems = player.location.world?.getNearbyEntities(player.location, 10.0, 10.0, 10.0)
+                ?.filterIsInstance<Item>() ?: run {
+                task.cancel()
+                return@syncTimer
+            }
 
-            override fun run() {
-                val originLocation = player.eyeLocation
-                val nearbyItems = player.location.world?.getNearbyEntities(player.location, 10.0, 10.0, 10.0)
-                    ?.filterIsInstance<Item>() ?: run {
-                    this.cancel()
-                    return
-                }
+            if (i++ > 100) {
+                nearbyItems.forEach { it.velocity = still }
+                task.cancel()
+            }
 
-                if (i++ > 100) {
-                    nearbyItems.forEach { it.velocity = still }
-                    this.cancel()
-                }
-
-                nearbyItems.forEach { item ->
-                    val direction: Vector = originLocation.clone().subtract(item.location).toVector()
-                    val distance: Double = direction.x + direction.y + direction.z
+            nearbyItems.forEach { item ->
+                val direction: Vector = originLocation.clone().subtract(item.location).toVector()
+                val distance: Double = direction.x + direction.y + direction.z
 
 
-                    if (distance > 0.6 || distance < -0.6) {
-                        // Create a vector which spins the items around the player
-                        item.velocity = direction.normalize().multiply(0.4)
-                            .rotateAroundY(1.1)
-                    }
+                if (distance > 0.6 || distance < -0.6) {
+                    // Create a vector which spins the items around the player
+                    item.velocity = direction.normalize().multiply(0.4)
+                        .rotateAroundY(1.1)
                 }
             }
-        }.runTaskTimer(instance(), 0L, 5L)
-
+        }
     }
 }

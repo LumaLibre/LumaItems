@@ -8,8 +8,7 @@ import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import dev.lumas.lumaitems.util.Executors.syncLocation
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
@@ -186,7 +185,7 @@ class SpringtideScytheItem : CustomItemFunctions() {
                 it.world.spawnParticle(Particle.DUST, it.location, 50, 0.7, 0.7, 0.7, 0.1, WHITE_DUST)
                 it.world.spawnParticle(Particle.WAX_OFF, it.location, 10, 0.7, 0.7, 0.7, 0.1)
 
-                it.syncEntity {
+                it.sync {
                     it.world.playSound(it.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1f)
                 }
                 return@removeIf false
@@ -229,7 +228,7 @@ class SpringtideScytheItem : CustomItemFunctions() {
             )
             val projectile = fallingProjectile(spawnLocation, player, SpellType.NIGHTFALL_DOWNPOUR)
             snowballs.add(projectile)
-            location.syncLocation {
+            location.sync {
                 location.world.addEntity(projectile)
             }
         }, 0, 50, TimeUnit.MILLISECONDS)

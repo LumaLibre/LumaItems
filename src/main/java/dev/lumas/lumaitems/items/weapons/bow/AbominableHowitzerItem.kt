@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -70,7 +70,7 @@ class AbominableHowitzerItem : CustomItemFunctions() {
             if (snowman.isDead) {
                 task.cancel()
             } else if (snowman.hasHitBlock()) {
-                snowman.syncEntity {
+                snowman.sync {
                     snowman.world.createExplosion(snowman.location, 2.4f, false, false)
                     snowman.remove()
                 }

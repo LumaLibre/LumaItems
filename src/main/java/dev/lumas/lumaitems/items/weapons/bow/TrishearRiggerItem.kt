@@ -9,7 +9,7 @@ import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
@@ -172,7 +172,7 @@ class TrishearRiggerItem : CustomItemFunctions() {
         projectile.isGlowing = true
 
 
-        projectile.syncEntityDelayed(20) {
+        projectile.syncDelayed(20) {
             val particleDisplay = ParticleDisplay.of(Particle.DUST)
                 .withColor(type.color).withLocation(projectile.location)
             Particles.spikeSphere(1.0, 10.0, 3, 0.1, 0.6, particleDisplay)

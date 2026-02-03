@@ -9,6 +9,7 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -69,26 +70,25 @@ class CircusHarrowerItem : CustomItem {
 
                 QuickTasks.addIndefinitely(this, player.uniqueId)
 
-                object : BukkitRunnable() {
-                    val particleDisplay = ParticleDisplay.of(Particle.DUST)
-                    val item = player.inventory.itemInMainHand
+                val particleDisplay = ParticleDisplay.of(Particle.DUST)
+                val item = player.inventory.itemInMainHand
 
-                    override fun run() {
-                        if (!blocks.hasNext()) {
-                            this.cancel()
-                            QuickTasks.removeWhen(this@CircusHarrowerItem, player.uniqueId, 400L)
-                            return
-                        }
-                        val block = blocks.next()
-
-                        if (particleColors.contains(block.type)) {
-                            Particles.line(player.location.add(0.0,1.0,0.0), block.location, 0.2, particleDisplay.withColor(particleColors[block.type] ?: particleColors.getValue(Material.WHEAT)))
-                            //block.world.playSound(block.location, Sound.ENTITY_ALLAY_ITEM_GIVEN, 0.6f, 7f)
-                            block.breakNaturallyWithLog(player, item, true)
-                        }
-                        blocks.remove()
+                player.syncTimer(0, 5) {
+                    if (!blocks.hasNext()) {
+                        it.cancel()
+                        QuickTasks.removeWhen(this@CircusHarrowerItem, player.uniqueId, 400L)
+                        return@syncTimer
                     }
-                }.runTaskTimer(instance(), 0, 5L)
+                    val block = blocks.next()
+
+                    if (particleColors.contains(block.type)) {
+                        Particles.line(player.location.add(0.0,1.0,0.0), block.location, 0.2, particleDisplay.withColor(particleColors[block.type] ?: particleColors.getValue(Material.WHEAT)))
+                        //block.world.playSound(block.location, Sound.ENTITY_ALLAY_ITEM_GIVEN, 0.6f, 7f)
+                        block.breakNaturallyWithLog(player, item, true)
+                    }
+                    blocks.remove()
+                }
+
             }
 
             else -> return false

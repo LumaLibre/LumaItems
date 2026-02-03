@@ -8,6 +8,7 @@ import dev.lumas.lumaitems.model.MagicItemCooldown
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -152,25 +153,24 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
         val particleDisplay = ParticleDisplay.of(Particle.DUST).withColor(Util.getRandomColor())
         val entities: List<LivingEntity> = player.getNearbyEntities(15.0, 15.0,15.0).filterIsInstance<LivingEntity>()
         var i = 0
-        object : BukkitRunnable() {
-            override fun run() {
-                if (i++ > 5) {
-                    cancel()
-                    return
-                }
 
-                for (entity in entities) {
-                    if (AbilityUtil.noDamagePermission(player, entity) || entity.isDead) {
-                        continue
-                    }
-
-                    entity.damage(2.0)
-                    entity.world.playSound(entity.location, Sound.ENTITY_PLAYER_HURT, 1.0f, 1.0f)
-                    player.heal(2.0)
-                    Particles.line(player.boundingBox.center.toLocation(player.world), entity.boundingBox.center.toLocation(entity.world), 0.2, particleDisplay)
-                }
+        entities.syncTimer(0, 20) {
+            if (i++ > 5) {
+                it.cancel()
+                return@syncTimer
             }
-        }.runTaskTimer(instance(), 0, 20)
+
+            for (entity in entities) {
+                if (AbilityUtil.noDamagePermission(player, entity) || entity.isDead) {
+                    continue
+                }
+
+                entity.damage(2.0)
+                entity.world.playSound(entity.location, Sound.ENTITY_PLAYER_HURT, 1.0f, 1.0f)
+                player.heal(2.0)
+                Particles.line(player.boundingBox.center.toLocation(player.world), entity.boundingBox.center.toLocation(entity.world), 0.2, particleDisplay)
+            }
+        }
     }
 
     private fun valiantExplodeSpell(player: Player, target: LivingEntity) {

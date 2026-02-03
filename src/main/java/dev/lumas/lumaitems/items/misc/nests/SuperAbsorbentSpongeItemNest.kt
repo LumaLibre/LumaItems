@@ -4,8 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -26,7 +25,7 @@ abstract class SuperAbsorbentSpongeItemNest(val material: Material) : CustomItem
             return
         }
 
-        player.syncEntityDelayed(1) {
+        player.syncDelayed(1) {
             event.block.setAirWithLog(player)
         }
         removeNearbyBlocks(event.block, 3, material, player)

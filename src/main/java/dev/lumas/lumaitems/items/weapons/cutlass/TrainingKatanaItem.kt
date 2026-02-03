@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Material
@@ -84,14 +85,12 @@ class TrainingKatanaItem : CustomItemFunctions() {
         clickedEntity.addPotionEffect(darkness)
         player.addPotionEffect(darkness)
 
-        object : BukkitRunnable() {
-            var t = 0
-            override fun run() {
-                clickedEntity.damage(3.0, player)
-                if (t++ > 10) {
-                    this.cancel()
-                }
+        var t = 0
+        player.syncTimer(0, 25) {
+            clickedEntity.damage(3.0, player)
+            if (t++ > 10) {
+                it.cancel()
             }
-        }.runTaskTimer(instance(), 0, 25)
+        }
     }
 }

@@ -6,9 +6,7 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncLocation
-import dev.lumas.lumaitems.util.Executors.syncLocationTimer
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.awt.Color
 import java.util.UUID
@@ -22,7 +20,6 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitTask
 
 class NightmareScytheItem : CustomItemFunctions() {
 
@@ -97,11 +94,11 @@ class NightmareScytheItem : CustomItemFunctions() {
 
             pin.world.playSound(pin, Sound.ITEM_LEAD_BREAK, 2.0f, Random.Default.nextDouble(0.5, 0.8).toFloat())
 
-            this.task = pin.syncLocationTimer(0, 1) { task ->
+            this.task = pin.syncTimer(0, 1) { task ->
                 if (++count > durationTicks || entities.all { it.isDead }) {
                     Particles.spikeSphere(0.2, 30.0, 50, 1.0, 3.0, newDisplay)
                     this.stopTicking()
-                    return@syncLocationTimer
+                    return@syncTimer
                 }
 
                 pin.getNearbyLivingEntities(radius).forEach {

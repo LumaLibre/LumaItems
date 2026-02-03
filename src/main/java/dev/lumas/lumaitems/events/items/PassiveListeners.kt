@@ -3,12 +3,14 @@ package dev.lumas.lumaitems.events.items
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.Util
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
 
 
 class PassiveListeners(val plugin: LumaItems) {
@@ -36,22 +38,24 @@ class PassiveListeners(val plugin: LumaItems) {
     }
 
 
-    fun getPassiveListener(action: Action): BukkitRunnable {
-        return object: BukkitRunnable() {
-            override fun run() {
-                for (player in Bukkit.getOnlinePlayers()) {
+    fun getPassiveListener(action: Action, period: Long, synchronize: Boolean): ScheduledTask {
+        return Executors.asyncTimer(0, period) {
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (synchronize) {
+                    player.sync {
+                        fire(Util.getAllEquipmentNBT(player), player, action)
+                    }
+                } else {
                     fire(Util.getAllEquipmentNBT(player), player, action)
                 }
             }
         }
     }
 
-    fun getGlobalTask(): BukkitRunnable {
-        return object: BukkitRunnable() {
-            override fun run() {
-                for (customItem in Registry.CUSTOM_ITEMS.values()) {
-                    customItem.asyncGlobalTask()
-                }
+    fun getGlobalTask(period: Long): ScheduledTask {
+        return Executors.asyncTimer(0, period) {
+            for (customItem in Registry.CUSTOM_ITEMS.values()) {
+                customItem.asyncGlobalTask()
             }
         }
     }

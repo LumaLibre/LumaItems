@@ -3,12 +3,10 @@ package dev.lumas.lumaitems.items.tools.harrow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncLocationDelayed
-import dev.lumas.lumaitems.util.Executors.syncLocationTimer
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import dev.lumas.lumaitems.util.extensions.determineMostCommon
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -83,10 +81,10 @@ class AutumnsHarrowerItem : CustomItem {
         val loc = location.add(0.0,0.2,0.0).toCenterLocation()
         var count = 0
 
-        location.syncLocationTimer(0, 5) {
+        location.syncTimer(0, 5) {
             if (++count > 150) {
                 it.cancel()
-                return@syncLocationTimer
+                return@syncTimer
             }
 
             loc.world.dropItem(loc, ItemStack(material))

@@ -1,11 +1,9 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.Executors.sync
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Item
@@ -34,10 +32,10 @@ class LumineEyeglassesItem : CustomItem {
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.ASYNC_RUNNABLE -> {
-                player.syncEntity {
+                player.sync {
                     val originLocation = player.eyeLocation
                     val nearbyItems = player.location.world?.getNearbyEntities(player.location, 8.5, 8.5, 8.5)
-                        ?.filterIsInstance<Item>() ?: return@syncEntity
+                        ?.filterIsInstance<Item>() ?: return@sync
 
                     for (item in nearbyItems) {
                         val direction: Vector = originLocation.clone().subtract(item.location).toVector()

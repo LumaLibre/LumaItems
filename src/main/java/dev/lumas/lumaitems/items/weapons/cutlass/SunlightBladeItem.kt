@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.QuickTasks
 import java.util.Random
 import java.util.function.Consumer
@@ -90,7 +90,7 @@ class SunlightBladeItem : CustomItem {
         val colors = listOf(ChatColor.YELLOW, ChatColor.GOLD, ChatColor.RED)
         val rand = Random().nextInt(3)
         GlowManager.setGlowColor(fireball, colors[rand])
-        armorStand.syncEntityDelayed(100) {
+        armorStand.syncDelayed(100) {
             armorStand.remove()
             fireball.remove()
         }

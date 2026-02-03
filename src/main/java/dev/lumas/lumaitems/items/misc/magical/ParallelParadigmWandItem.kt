@@ -4,8 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -99,7 +98,7 @@ class ParallelParadigmWandItem : CustomItem {
         }
         entity.world.playSound(entity.location, Sound.ENTITY_TNT_PRIMED, 1f, 0.9f)
 
-        entity.syncEntityDelayed(19) {
+        entity.syncDelayed(19) {
             entity.damage(30.0)
             entity.world.createExplosion(entity.location, 3f, false, false)
             for (tnt in tnts) {

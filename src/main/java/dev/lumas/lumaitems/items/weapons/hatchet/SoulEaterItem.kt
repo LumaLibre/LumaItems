@@ -3,12 +3,10 @@ package dev.lumas.lumaitems.items.weapons.hatchet
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.Executors.sync
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -24,7 +22,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 
 class SoulEaterItem : CustomItem {
@@ -87,7 +84,7 @@ class SoulEaterItem : CustomItem {
             armorStand.world.spawnParticle(Particle.SCULK_SOUL, armorStand.location, 5, 0.5, 0.5, 0.5, 0.1)
             armorStand.world.spawnParticle(Particle.REVERSE_PORTAL, armorStand.location, 5, 0.5, 0.5, 0.5, 0.1)
 
-            armorStand.syncEntity {
+            armorStand.sync {
                 armorStand.world.playSound(armorStand.location, Sound.PARTICLE_SOUL_ESCAPE, 0.5f, 0.5f)
             }
 
@@ -111,10 +108,10 @@ class SoulEaterItem : CustomItem {
     private fun devour(entity: LivingEntity, p: Player) {
         //im not good at math
         var count = 0
-        entity.syncEntityTimer(0, 1) { task ->
+        entity.syncTimer(0, 1) { task ->
             if (++count > 80) {
                 task.cancel()
-                return@syncEntityTimer
+                return@syncTimer
             }
 
             val loc1 = entity.location.add(0.0, 1.0, 0.0)

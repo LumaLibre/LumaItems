@@ -10,9 +10,8 @@ import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.model.PersistentDataRecord
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
-import dev.lumas.lumaitems.util.Executors.syncLocation
+import dev.lumas.lumaitems.util.Executors.sync
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
@@ -227,7 +226,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
                     orbGroup.moveGroup(count)
 
-                    player.syncEntity {
+                    player.sync {
                         orbGroup.orbs.forEach { orb ->
                             if (orb.fireTime < count) {
                                 if (!orb.autoTarget(orbGroup.activeTargets)) {
@@ -450,14 +449,14 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 this.valid = true
             }
 
-            spawnLocation.syncLocation {
+            spawnLocation.sync {
                 createSnowball(spawnLocation)
             }
         }
 
         fun despawn() {
             this.valid = false
-            snowball.syncEntity {
+            snowball.sync {
                 if (!snowball.isDead) {
                     snowball.setGravity(true)
                 }
@@ -472,18 +471,18 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
         fun move() { //
             var smallCount = 40
-            snowball.syncEntityTimer(0, 1) { task ->
+            snowball.syncTimer(0, 1) { task ->
                 if (snowball.isDead) {
                     if (valid) {
                         createSnowball(snowball.location)
                     } else {
                         task.cancel()
-                        return@syncEntityTimer
+                        return@syncTimer
                     }
                 } else if (snowball.location.world != position.world || snowball.location.distance(position) <= 0.1) {
                     snowball.velocity = STOP
                     task.cancel()
-                    return@syncEntityTimer
+                    return@syncTimer
                 }
                 val direction = position.clone().subtract(snowball.location).toVector().normalize()
                 snowball.velocity = direction.multiply(0.2)
@@ -570,7 +569,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             val start = snowball.location.clone()
             Particles.line(start, lineCurrentEnd!!, 0.45, rayTraceParticle)
 
-            start.syncLocation {
+            start.sync {
                 val direction = lineCurrentEnd!!.clone().subtract(start).toVector().normalize()
                 val distanceToEnd = start.distance(lineCurrentEnd!!)
                 raytrace(start, direction, distanceToEnd, getPredicate(player))

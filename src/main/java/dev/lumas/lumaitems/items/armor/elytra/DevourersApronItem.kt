@@ -5,8 +5,7 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import dev.lumas.lumaitems.util.Executors.syncLocation
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.awt.Color
@@ -160,7 +159,7 @@ class DevourersApronItem : CustomItemFunctions() {
 
                 if (distance < 1) {
                     task.cancel()
-                    player.syncEntity { whenDone() }
+                    player.sync { whenDone() }
                     return@asyncTimer
                 }
 
@@ -177,7 +176,7 @@ class DevourersApronItem : CustomItemFunctions() {
 
         private fun playSounds() {
             if (Random.nextInt(10) == 5) {
-                location.syncLocation {
+                location.sync {
                     location.world.playSound(location, Sound.PARTICLE_SOUL_ESCAPE, 0.7f, 0.5f)
                 }
             }

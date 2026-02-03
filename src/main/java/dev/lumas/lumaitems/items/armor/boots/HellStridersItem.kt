@@ -5,13 +5,11 @@ import dev.lumas.lumaitems.events.items.BlockCacheManager
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.sync
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
-import kotlin.random.Random
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -98,7 +96,7 @@ class HellStridersItem : CustomItemFunctions() {
 
         if (blocks.size >= 40) {
             for (index in 0 until blocks.size / 4) {
-                player.syncEntity {
+                player.sync {
                     val block = blocks[index]
                     if (block.type == Material.OBSIDIAN) {
                         block.type = Material.CRYING_OBSIDIAN
@@ -111,7 +109,7 @@ class HellStridersItem : CustomItemFunctions() {
         }
 
         for (i in 0 until 3) {
-            player.syncEntityDelayed(random().nextLong(1, 10)) {
+            player.syncDelayed(random().nextLong(1, 10)) {
                 for (e in 0 until 6) {
                     val block = blocks.random()
                     if (block.world != player.world || block.location.distance(player.location) > 10) {

@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import org.bukkit.Material
@@ -76,23 +77,22 @@ class MistralMattockItem : CustomItem {
         val Loc1 = blockBroken.location
         val Loc2 = seekedBlock.location
         val repeatTracker = intArrayOf(0)
-        object : BukkitRunnable() {
-            override fun run() {
-                val vector: Vector = BukkitVectors.direction(Loc1, Loc2)
-                var i = 1.0
-                while (i <= blockBroken.location.distance(Loc2)) {
-                    vector.multiply(i)
-                    Loc1.add(vector)
-                    Loc1.getWorld().spawnParticle(Particle.GLOW, Loc1, 1, 0.1, 0.1, 0.1, 0.1)
-                    Loc1.subtract(vector)
-                    vector.normalize()
-                    i += 0.5
-                }
-                if (repeatTracker[0] == 5) {
-                    cancel()
-                } else repeatTracker[0]++
+
+        Loc1.syncTimer(0, 1) {
+            val vector: Vector = BukkitVectors.direction(Loc1, Loc2)
+            var i = 1.0
+            while (i <= blockBroken.location.distance(Loc2)) {
+                vector.multiply(i)
+                Loc1.add(vector)
+                Loc1.getWorld().spawnParticle(Particle.GLOW, Loc1, 1, 0.1, 0.1, 0.1, 0.1)
+                Loc1.subtract(vector)
+                vector.normalize()
+                i += 0.5
             }
-        }.runTaskTimer(LumaItems.getInstance(), 0L, 1L)
+            if (repeatTracker[0] == 5) {
+                it.cancel()
+            } else repeatTracker[0]++
+        }
         seekedBlock.world.playSound(seekedBlock.location, Sound.ENTITY_ALLAY_ITEM_TAKEN, 1f, 1f)
     }
 }

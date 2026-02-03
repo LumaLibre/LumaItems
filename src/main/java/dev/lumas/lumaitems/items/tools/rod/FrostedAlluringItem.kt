@@ -40,7 +40,7 @@ class FrostedAlluringItem : CustomItemFunctions() {
         }
 
         Executors.asyncDelayed(1) {
-            val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return@Runnable
+            val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return@asyncDelayed
 
             val hand = if (Util.isItemInSlot("frosted-alluring", EquipmentSlot.OFF_HAND, player)) {
                 EnumWrappers.Hand.OFF_HAND

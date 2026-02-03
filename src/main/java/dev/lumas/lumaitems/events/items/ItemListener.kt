@@ -75,7 +75,7 @@ abstract class ItemListener : Listener {
                 return
             }
 
-            item.fireVerbosely(action, player ?: getDummyPlayer() ?: return@sync, event, if (withContainer) data else null)
+            item.fireVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) data else null)
         }
     }
 
@@ -94,7 +94,7 @@ abstract class ItemListener : Listener {
                     break
                 }
 
-                item.fireVerbosely(action, player ?: getDummyPlayer() ?: return@sync, event, if (withContainer) itemData else null)
+                item.fireVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) itemData else null)
             }
         }
     }

@@ -4,9 +4,8 @@ import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import java.util.Random
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -69,10 +68,10 @@ class RubyPinionsItem : CustomItem {
         }
 
         var count = 0
-        player.syncEntityTimer(0, 1) { task ->
+        player.syncTimer(0, 1) { task ->
             if (count++ > 35) {
                 task.cancel()
-                return@syncEntityTimer
+                return@syncTimer
             }
             player.world.spawnParticle(
                 Particle.DUST, player.location.add(0.0, 1.0, 0.0), 1, 0.5, 0.5, 0.5, 0.1, Particle.DustOptions(

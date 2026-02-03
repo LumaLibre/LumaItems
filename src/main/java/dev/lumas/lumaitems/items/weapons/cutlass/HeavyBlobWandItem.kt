@@ -8,8 +8,8 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.sync
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
@@ -93,10 +93,10 @@ class HeavyBlobWandItem : CustomItemFunctions() {
         val bubblesToSpawn = (cooldown / 0.25).toInt()
         val keys = colors.keys.toList()
         var spawned = 0
-        player.syncEntityTimer(0, 2) { task ->
+        player.syncTimer(0, 2) { task ->
             if (spawned++ >= bubblesToSpawn) {
                 task.cancel()
-                return@syncEntityTimer
+                return@syncTimer
             }
             val direction = player.eyeLocation.direction
             val launchLoc = player.eyeLocation.add(direction.normalize().multiply(0.5))
@@ -159,7 +159,7 @@ class HeavyBlobWandItem : CustomItemFunctions() {
             if (snowball.isDead || snowball.location.block.isLiquid) {
                 task.cancel()
                 if (!snowball.isDead) {
-                    snowball.syncEntity { snowball.remove() }
+                    snowball.sync { snowball.remove() }
                 }
                 return@asyncTimer
             }

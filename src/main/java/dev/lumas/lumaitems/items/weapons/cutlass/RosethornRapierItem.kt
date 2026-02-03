@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
+import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.extensions.blend
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -65,18 +66,17 @@ class RosethornRapierItem : CustomItemFunctions() {
         cachedDamagers[player.uniqueId] = rosethornRecord
         val d = rosethornRecord.display
         player.playSound(player.location, Sound.ITEM_ELYTRA_FLYING, 0.2f, 0.4f)
-        object : BukkitRunnable() {
-            var ticksRan = 0
-            override fun run() {
-                if (ticksRan++ >= 200) {
-                    cachedDamagers.remove(player.uniqueId)
-                    player.stopSound(Sound.ITEM_ELYTRA_FLYING)
-                    this.cancel()
-                    return
-                }
-                Particles.neopaganPentagram(5.0, 0.05, 0.0, d, d)
+
+        var ticksRan = 0
+        Executors.asyncTimer(0, 1) {
+            if (ticksRan++ >= 200) {
+                cachedDamagers.remove(player.uniqueId)
+                player.stopSound(Sound.ITEM_ELYTRA_FLYING)
+                it.cancel()
+                return@asyncTimer
             }
-        }.runTaskTimerAsynchronously(instance(), 0L, 1L)
+            Particles.neopaganPentagram(5.0, 0.05, 0.0, d, d)
+        }
     }
 
     override fun onEntityDeath(player: Player, event: EntityDeathEvent) {

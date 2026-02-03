@@ -8,6 +8,7 @@ import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -114,27 +115,26 @@ class YolkplaidYarweaveItem : CustomItem {
         livingEntity.addPotionEffect(SLOWNESS)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
         GlowManager.addToTeamForTicks(livingEntity, ChatColor.RED, 240)
-        object: BukkitRunnable() {
-            var totalTicks = 0
 
-            override fun run() {
-                var stop = false
-                if (totalTicks >= 240) {
-                    livingEntity.isCollidable = true
-                    stop = true
-                } else if (livingEntity.isDead) {
-                    stop = true
-                }
+        var totalTicks = 0
 
-                livingEntity.damage(4.0, attacker)
-                livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 2f, 7.7f)
-
-                if (stop) {
-                    egg.remove()
-                    this.cancel()
-                }
-                totalTicks+=20
+        livingEntity.syncTimer(0, 20) { task ->
+            var stop = false
+            if (totalTicks >= 240) {
+                livingEntity.isCollidable = true
+                stop = true
+            } else if (livingEntity.isDead) {
+                stop = true
             }
-        }.runTaskTimer(instance(), 0L, 20L)
+
+            livingEntity.damage(4.0, attacker)
+            livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 2f, 7.7f)
+
+            if (stop) {
+                egg.remove()
+                task.cancel()
+            }
+            totalTicks += 20
+        }
     }
 }

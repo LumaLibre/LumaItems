@@ -3,8 +3,8 @@ package dev.lumas.lumaitems.items.armor.helmet
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors.syncEntity
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.sync
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.math.floor
 import org.bukkit.Material
@@ -46,21 +46,21 @@ class MarigoldSunHatItem : CustomItemFunctions() {
 
 
     override fun onAsyncRunnable(player: Player) {
-        player.syncEntity {
+        player.sync {
             val value = player.eyeLocation.block.lightLevel  / 1.76
             val roundedDown = floor(value * 2) / 2
             val range = roundedDown.coerceAtLeast(5.0)
             val items = player.location.getNearbyEntitiesByType(Item::class.java, range)
                 .filter { player.location.distanceSquared(it.location) > 3.0 * 3.0 } // filter out items that are too close
             if (items.any { it.velocity.lengthSquared() > 0.1 }) {
-                return@syncEntity
+                return@sync
             } // check if moving
 
             var count = 0
-            items.syncEntityTimer(0, 1) { task ->
+            items.syncTimer(0, 1) { task ->
                 if (items.any { it.world != player.world } || ++count > 150) {
                     task.cancel()
-                    return@syncEntityTimer
+                    return@syncTimer
                 }
 
                 items.forEach { it ->

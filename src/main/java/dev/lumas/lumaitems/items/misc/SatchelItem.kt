@@ -5,8 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -63,7 +62,7 @@ class SatchelItem : CustomItem {
 
         if (!p.location.subtract(0.0, 0.1, 0.0).block.type.isAir || p.isFlying) return
 
-        projectile.syncEntityDelayed(5) {
+        projectile.syncDelayed(5) {
             if (!projectile.isDead) {
                 satchelDetonate(projectile, p)
             }

@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
@@ -42,15 +43,12 @@ class WinterVaultItem : CustomItemFunctions() {
 
         QuickTasks.addCooldown(this, player.uniqueId, 300L)
 
-        object : BukkitRunnable() {
-            var ticks = 0
-
-            override fun run() {
-                player.world.spawnParticle(Particle.GUST_EMITTER_SMALL, player.location, 2, 0.3, 0.3, 0.3, 0.1)
-                if (ticks++ >= 40) {
-                    this.cancel()
-                }
+        var ticks = 0
+        Executors.asyncTimer(0, 1) {
+            player.world.spawnParticle(Particle.GUST_EMITTER_SMALL, player.location, 2, 0.3, 0.3, 0.3, 0.1)
+            if (ticks++ >= 40) {
+                it.cancel()
             }
-        }.runTaskTimer(instance(), 0L, 1L)
+        }
     }
 }

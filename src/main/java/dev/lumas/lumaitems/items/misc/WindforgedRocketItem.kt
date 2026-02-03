@@ -4,8 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.MiniMessageUtil.mm
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -168,7 +167,7 @@ class WindforgedRocketItem : CustomItemFunctions() {
     }
 
     private fun scheduleRestoreIfConsumed(player: Player, slot: EquipmentSlot) {
-        player.syncEntityDelayed(1) {
+        player.syncDelayed(1) {
             if(player.inventory.getItem(slot).isEmpty)
                 player.inventory.setItem(slot, createWindforgedRocket())
         }

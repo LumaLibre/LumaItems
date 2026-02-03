@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.armor.helmet
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Color
 import org.bukkit.Material
@@ -110,10 +110,10 @@ class SunbrellaHatItem : CustomItemFunctions() {
         }
 
         var count = 0
-        projectile.syncEntityTimer(1, 3) { task ->
+        projectile.syncTimer(1, 3) { task ->
             if (projectile.isDead) {
                 task.cancel()
-                return@syncEntityTimer
+                return@syncTimer
             }
 
             projectile.world.spawnParticle(Particle.SWEEP_ATTACK, projectile.location, 1, 0.0, 0.0, 0.0, 0.0)
@@ -123,7 +123,7 @@ class SunbrellaHatItem : CustomItemFunctions() {
             if (count >= 130) {
                 projectile.remove()
                 task.cancel()
-                return@syncEntityTimer
+                return@syncTimer
             }
             count+= 3
         }

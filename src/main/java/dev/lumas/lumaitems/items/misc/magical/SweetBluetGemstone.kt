@@ -8,6 +8,7 @@ import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.sendFormatted
@@ -139,19 +140,18 @@ class SweetBluetGemstone : CustomItem {
         snowball.persistentDataContainer.set(NamespacedKey(plugin, "sweetbluetgemstone"), PersistentDataType.SHORT, 1)
 
         activeSnowballs.add(player.uniqueId)
-        object : BukkitRunnable() {
-            override fun run() {
-                if (snowball.isDead || snowball.ticksLived > 400) {
-                    this.cancel()
-                    activeSnowballs.remove(player.uniqueId)
-                    if (!snowball.isDead) snowball.remove()
-                    return
-                }//
-                snowball.world.playSound(snowball.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1f)
-                snowball.world.spawnParticle(Particle.DUST, snowball.location, 50, 0.7, 0.7, 0.7, 0.1, DustOptions(Color.WHITE, 1f))
-                snowball.world.spawnParticle(Particle.WAX_OFF, snowball.location, 10, 0.7, 0.7, 0.7, 0.1)
+
+        snowball.syncTimer(0, 1) {
+            if (snowball.isDead || snowball.ticksLived > 400) {
+                it.cancel()
+                activeSnowballs.remove(player.uniqueId)
+                if (!snowball.isDead) snowball.remove()
+                return@syncTimer
             }
-        }.runTaskTimer(plugin, 0L, 1L)
+            snowball.world.playSound(snowball.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1f)
+            snowball.world.spawnParticle(Particle.DUST, snowball.location, 50, 0.7, 0.7, 0.7, 0.1, DustOptions(Color.WHITE, 1f))
+            snowball.world.spawnParticle(Particle.WAX_OFF, snowball.location, 10, 0.7, 0.7, 0.7, 0.1)
+        }
     }
 
     private fun magicalDownFallLand(snowball: Snowball) {
@@ -192,19 +192,17 @@ class SweetBluetGemstone : CustomItem {
         Executors.asyncDelayed(AbilityType.GLACIER_BREAKAGE.cooldown) {
             cooldownGlacier.remove(player.uniqueId)
         }
-        object : BukkitRunnable() {
-            override fun run() {
-                if (snowball.isDead || snowball.ticksLived > 400) {
-                    this.cancel()
-                    if (!snowball.isDead) snowball.remove()
-                    return
-                }
-                snowball.world.playSound(snowball.location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.6f, 1f)
-                snowball.world.spawnParticle(Particle.SOUL_FIRE_FLAME, snowball.location, 5, 0.3, 0.3, 0.3, 0.2)
-                snowball.world.spawnParticle(Particle.GLOW, snowball.location, 5, 0.3, 0.3, 0.3, 0.2)
-            }
-        }.runTaskTimer(plugin, 0L, 1L)
 
+        snowball.syncTimer(0, 1) {
+            if (snowball.isDead || snowball.ticksLived > 400) {
+                it.cancel()
+                if (!snowball.isDead) snowball.remove()
+                return@syncTimer
+            }
+            snowball.world.playSound(snowball.location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.6f, 1f)
+            snowball.world.spawnParticle(Particle.SOUL_FIRE_FLAME, snowball.location, 5, 0.3, 0.3, 0.3, 0.2)
+            snowball.world.spawnParticle(Particle.GLOW, snowball.location, 5, 0.3, 0.3, 0.3, 0.2)
+        }
     }
 
     private fun magicGlacierExplosionLand(snowball: Snowball) {

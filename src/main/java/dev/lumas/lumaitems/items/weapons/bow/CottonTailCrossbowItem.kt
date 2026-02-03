@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.Color
 import org.bukkit.Material
@@ -48,18 +49,15 @@ class CottonTailCrossbowItem : CustomItem {
                 arrow.velocity = arrow.velocity.multiply(1.8)
                 arrow.isCritical = false
 
-                object : BukkitRunnable() {
+                arrow.syncTimer(0, 1) {
+                    arrow.world.spawnParticle(Particle.DUST, arrow.location, 2, 0.1, 0.1, 0.1, 0.1,
+                        Particle.DustOptions(dustColors.random(), 1f))
+                    arrow.world.spawnParticle(Particle.FLAME, arrow.location, 1, 0.1, 0.1, 0.1, 0.0)
 
-                    override fun run() {
-                        arrow.world.spawnParticle(Particle.DUST, arrow.location, 2, 0.1, 0.1, 0.1, 0.1,
-                            Particle.DustOptions(dustColors.random(), 1f))
-                        arrow.world.spawnParticle(Particle.FLAME, arrow.location, 1, 0.1, 0.1, 0.1, 0.0)
-
-                        if (arrow.isDead || arrow.ticksLived >= 200) {
-                            this.cancel()
-                        }
+                    if (arrow.isDead || arrow.ticksLived >= 200) {
+                        it.cancel()
                     }
-                }.runTaskTimer(instance(), 0L, 1L)
+                }
             }
             else -> return false
         }

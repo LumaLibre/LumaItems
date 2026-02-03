@@ -80,12 +80,12 @@ public final class LumaItems extends JavaPlugin {
         try {
             itemManager.registerItems(() -> LOGGER.info("Registered <gold>" + Registry.CUSTOM_ITEMS.size() + "</gold> classes through reflection"));
             passiveListeners.onPluginAction(Action.PLUGIN_ENABLE); // Fire this as soon as we're done registering our items
-            passiveListeners.getPassiveListener(Action.RUNNABLE).runTaskTimer(this, 0L, PassiveListeners.DEFAULT_PASSIVE_LISTENER_TICKS);
-            passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS);
-            passiveListeners.getPassiveListener(Action.FAST_ASYNC_RUNNABLE).runTaskTimerAsynchronously(this, 0L, PassiveListeners.FAST_ASYNC_PASSIVE_LISTENER_TICKS);
-            passiveListeners.getGlobalTask().runTaskTimerAsynchronously(this, 0L, PassiveListeners.ASYNC_GLOBAL_TASK_TICKS);
+            passiveListeners.getPassiveListener(Action.RUNNABLE, PassiveListeners.DEFAULT_PASSIVE_LISTENER_TICKS, true);
+            passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS, false);
+            passiveListeners.getPassiveListener(Action.FAST_ASYNC_RUNNABLE,  PassiveListeners.FAST_ASYNC_PASSIVE_LISTENER_TICKS, false);
+            passiveListeners.getGlobalTask(PassiveListeners.ASYNC_GLOBAL_TASK_TICKS);
         } catch (Exception e) {
-            LOGGER.error("An error occurred while registering items");
+            LOGGER.error("An error occurred while registering items", e);
             getServer().getPluginManager().disablePlugin(this);
         }
     }

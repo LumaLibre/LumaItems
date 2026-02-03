@@ -2,14 +2,12 @@ package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -29,7 +27,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
-import java.util.concurrent.TimeUnit
 
 abstract class StraszBowItemNest : CustomItemFunctions() {
 
@@ -110,7 +107,7 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
         Executors.asyncTimer(0, 1) { task ->
             if (snowball.isDead || snowball.ticksLived > 110) {
                 if (!snowball.isDead && !snowball.hasGravity()) {
-                    snowball.syncEntity { snowball.setGravity(true) }
+                    snowball.sync { snowball.setGravity(true) }
                 }
                 task.cancel()
                 return@asyncTimer

@@ -3,8 +3,8 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -70,20 +70,17 @@ class PumpkinLauncherItem : CustomItem {
         armorStand.setGravity(false);
         armorStand.persistentDataContainer.set(NamespacedKey(instance(), "pumpkinlauncher"), PersistentDataType.SHORT, 1)
 
+        armorStand.syncTimer(0, 1) { task ->
+            val loc: Location = projectile.location.add(0.0,-2.0,0.0);
+            loc.setDirection(player.location.toVector().subtract(armorStand.location.toVector()).normalize());
 
-        object : BukkitRunnable() {
-            override fun run() {
-                val loc: Location = projectile.location.add(0.0,-2.0,0.0);
-                loc.setDirection(player.location.toVector().subtract(armorStand.location.toVector()).normalize());
-
-                armorStand.teleport(loc);
-                projectile.world.spawnParticle(Particle.LAVA, projectile.location, 3, 0.1, 0.1, 0.1, 0.1);
-                projectile.world.playSound(projectile.location, Sound.ENTITY_WITCH_CELEBRATE, 1f, 1f);
-                if (projectile.isDead){
-                    this.cancel();
-                }
+            armorStand.teleport(loc);
+            projectile.world.spawnParticle(Particle.LAVA, projectile.location, 3, 0.1, 0.1, 0.1, 0.1);
+            projectile.world.playSound(projectile.location, Sound.ENTITY_WITCH_CELEBRATE, 1f, 1f);
+            if (projectile.isDead){
+                task.cancel();
             }
-        }.runTaskTimer(instance(), 0L, 1L);
+        }
         for (entity in projectile.getNearbyEntities(100.0,100.0,100.0)) {
             if (entity is Player) {
                 entity.hideEntity(instance(), projectile)
@@ -94,7 +91,7 @@ class PumpkinLauncherItem : CustomItem {
         projectile.setGravity(false);
         projectile.persistentDataContainer.set(NamespacedKey(instance(), "pumpkinlauncher"), PersistentDataType.SHORT, 1)
 
-        projectile.syncEntityDelayed(100) {
+        projectile.syncDelayed(100) {
             if (!projectile.isDead) {
                 jackOLand(projectile, player);
             }

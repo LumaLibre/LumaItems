@@ -3,8 +3,7 @@ package dev.lumas.lumaitems.items.tools.mattock
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
@@ -89,7 +88,7 @@ class AutumnsMattockItem : CustomItemFunctions() {
         val item = location.world.dropItem(location, itemStack)
         item.thrower = player.uniqueId
         Util.setPersistentKey(item, KEY, PersistentDataType.SHORT, 1)
-        item.syncEntityDelayed(20) {
+        item.syncDelayed(20) {
             Util.removePersistentKey(item, KEY)
         }
     }

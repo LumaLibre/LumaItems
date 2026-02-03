@@ -4,9 +4,9 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
-import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -56,23 +56,21 @@ class CandyCannonItem : CustomItemFunctions() {
         arrow.persistentDataContainer.set(NamespacedKey(instance(), "candycannon"), PersistentDataType.SHORT, 1)
         player.hideEntity(instance(), arrow)
 
-        object : BukkitRunnable() {
-            var ticks = 0
-            override fun run() {
-                itemDisplay.teleportAsync(arrow.location)
-                itemDisplay.world.spawnParticle(Particle.DUST, itemDisplay.location, 2, 0.0, 0.0, 0.0, 1.0, Particle.DustOptions(rand.value, 1.0f))
-
-                if (arrow.isDead || itemDisplay.isDead || ticks++ >= 300) {
-                    cancel()
-                    arrow.syncEntity {
-                        itemDisplay.remove()
-                        arrow.remove()
-                    }
-                }
-            }
-        }.runTaskTimerAsynchronously(instance(), 0L, 1L)
 
         // Despawn if it doesn't land
+        var ticks = 0
+        Executors.asyncTimer(0, 1) {
+            itemDisplay.teleportAsync(arrow.location)
+            itemDisplay.world.spawnParticle(Particle.DUST, itemDisplay.location, 2, 0.0, 0.0, 0.0, 1.0, Particle.DustOptions(rand.value, 1.0f))
+
+            if (arrow.isDead || itemDisplay.isDead || ticks++ >= 300) {
+                it.cancel()
+                arrow.sync {
+                    itemDisplay.remove()
+                    arrow.remove()
+                }
+            }
+        }
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {

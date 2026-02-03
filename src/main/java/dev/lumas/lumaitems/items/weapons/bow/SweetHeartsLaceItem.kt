@@ -3,9 +3,9 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import kotlin.random.Random
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -61,16 +61,15 @@ class SweetHeartsLaceItem : CustomItem {
                 }
                 snowball.persistentDataContainer.set(NamespacedKey(instance(), "sweetheartslace"), PersistentDataType.SHORT, 1)
                 snowball.shooter = player
-                object : BukkitRunnable() {
-                    override fun run() {
-                        if (snowball.isDead || snowball.ticksLived > 200) {
-                            this.cancel()
-                            if (!snowball.isDead) snowball.remove()
-                            return
-                        }
-                        snowball.world.spawnParticle(Particle.HEART, snowball.location, 2, 0.3, 0.2, 0.3, 0.3)
+
+                snowball.syncTimer(0, 1) {
+                    if (snowball.isDead || snowball.ticksLived > 200) {
+                        it.cancel()
+                        if (!snowball.isDead) snowball.remove()
+                        return@syncTimer
                     }
-                }.runTaskTimer(instance(), 0L, 1L);
+                    snowball.world.spawnParticle(Particle.HEART, snowball.location, 2, 0.3, 0.2, 0.3, 0.3)
+                }
 
             }
             Action.PROJECTILE_LAND -> {
@@ -81,8 +80,8 @@ class SweetHeartsLaceItem : CustomItem {
 
                 if (entity is Enemy && Random.Default.nextInt(100) <= 40) {
                     entity.persistentDataContainer.set(NamespacedKey(instance(), "sweetheartslace"), PersistentDataType.SHORT, 1.toShort())
-                    entity.syncEntityDelayed(600) {
-                        if (entity.isDead) return@syncEntityDelayed
+                    entity.syncDelayed(600) {
+                        if (entity.isDead) return@syncDelayed
                         entity.persistentDataContainer.remove(NamespacedKey(instance(), "sweetheartslace"))
                     }
                 }

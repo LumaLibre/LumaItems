@@ -4,8 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -85,8 +84,8 @@ class RubyLongbowItem : CustomItem {
 
 
     private fun despawnArrow(arrow: Projectile) {
-        arrow.syncEntityDelayed(20) {
-            if (arrow.isDead) return@syncEntityDelayed
+        arrow.syncDelayed(20) {
+            if (arrow.isDead) return@syncDelayed
             arrow.remove()
         }
     }

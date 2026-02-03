@@ -6,8 +6,7 @@ import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.AbilityUtil.isOnGround
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -97,7 +96,7 @@ class ThunderStridesItem : CustomItem {
 
         player.setMetadata("thunderstrides", FixedMetadataValue(instance(), true))
 
-        player.syncEntityDelayed(17) {
+        player.syncDelayed(17) {
             player.removeMetadata("thunderstrides", instance())
         }
     }

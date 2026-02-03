@@ -1,11 +1,10 @@
 package dev.lumas.lumaitems.model
 
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.sync
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitTask
 
 /**
  * A simple builder for damaging entities over a period of ticks
@@ -38,11 +37,11 @@ class TickDamager private constructor(
 
         this.task = Executors.asyncTimer(0, tickInterval) { task ->
             for (victim in victims) {
-                victim.syncEntity {
+                victim.sync {
                     if (count >= hitAmount || victim.isDead) {
                         task.cancel()
                         onFinishCallback?.invoke(victim)
-                        return@syncEntity
+                        return@sync
                     }
                     victim.damage(damageToDealOverTicks, attacker)
                     onTickCallback?.invoke(victim)

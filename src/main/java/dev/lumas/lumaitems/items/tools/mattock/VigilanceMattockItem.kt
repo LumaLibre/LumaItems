@@ -13,8 +13,7 @@ import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.extensions.getOreColor
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -109,7 +108,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
             }
         }
         if (player.inventory.itemInMainHand.isMatchingItem(KEY)) {
-            player.syncEntity {
+            player.sync {
                 getNearbyOreDisplayableBlocks(player)
                     .takeIf { it.isNotEmpty() }
                     ?.apply { DISPLAYABLE_BLOCKS.addAll(this) }
@@ -160,11 +159,11 @@ class VigilanceMattockItem : CustomItemFunctions() {
     }
 
     private fun addPotionEffects(player: Player) {
-        player.syncEntity { player.addPotionEffect(BLINDNESS) }
+        player.sync { player.addPotionEffect(BLINDNESS) }
     }
 
     private fun clearPotionEffects(player: Player) {
-        player.syncEntity { player.removePotionEffect(PotionEffectType.BLINDNESS) }
+        player.sync { player.removePotionEffect(PotionEffectType.BLINDNESS) }
     }
 
 
@@ -228,7 +227,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
         fun ownerAsPlayer(): Player? = Bukkit.getPlayer(owner)
 
         fun remove() {
-            blockDisplay.syncEntity { blockDisplay.remove() }
+            blockDisplay.sync { blockDisplay.remove() }
             DISPLAYABLE_BLOCKS.remove(this)
         }
 

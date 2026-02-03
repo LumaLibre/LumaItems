@@ -4,9 +4,8 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.disabling.Ignore
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
@@ -57,7 +56,7 @@ class CrescentMoonHatchetItem : CustomItem {
             }
         }
 
-        player.syncEntityDelayed(35) {
+        player.syncDelayed(35) {
             player.removeMetadata("BlockTreeFeller", instance())
         }
     }

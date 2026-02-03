@@ -4,7 +4,7 @@ import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncDelayed
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -58,9 +58,9 @@ class BorealHatchetItem : CustomItemFunctions() {
                 }
                 factor += 5
 
-                player.syncEntityDelayed(REPLANT_DELAY_TICKS + factor) {
+                player.syncDelayed(REPLANT_DELAY_TICKS + factor) {
                     if (!player.inventory.contains(saplingMaterial)) {
-                        return@syncEntityDelayed
+                        return@syncDelayed
                     }
 
                     val saplingItem = ItemStack(saplingMaterial, 1)

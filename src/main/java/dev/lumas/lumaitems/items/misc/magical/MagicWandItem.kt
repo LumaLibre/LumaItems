@@ -9,6 +9,7 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -160,18 +161,17 @@ class MagicWandItem : CustomItem {
         val particleDisplay = ParticleDisplay.of(Particle.DUST).withColor(Util.getRandomColor())
         for (livingEntity in entities) {
             if (AbilityUtil.noDamagePermission(player, livingEntity)) continue
-            object : BukkitRunnable() {
-                var i = 0
-                override fun run() {
-                    if (i++ > 2) {
-                        cancel()
-                    }
-                    livingEntity.velocity = livingEntity.location.toVector().subtract(loc.toVector()).add(Vector(0.0,5.0,0.0)).multiply(23.5).normalize()
 
-                    Particles.line(livingEntity.location, loc, 0.2, particleDisplay)
-                    livingEntity.damage(5.0)
+            var i = 0
+            livingEntity.syncTimer(0, 2) {
+                if (i++ > 2) {
+                    it.cancel()
                 }
-            }.runTaskTimer(instance(), 0, 2)
+                livingEntity.velocity = livingEntity.location.toVector().subtract(loc.toVector()).add(Vector(0.0,5.0,0.0)).multiply(23.5).normalize()
+
+                Particles.line(livingEntity.location, loc, 0.2, particleDisplay)
+                livingEntity.damage(5.0)
+            }
         }
     }
 

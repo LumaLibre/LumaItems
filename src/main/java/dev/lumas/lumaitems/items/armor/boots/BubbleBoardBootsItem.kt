@@ -6,7 +6,7 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -85,7 +85,7 @@ class BubbleBoardBootsItem : CustomItemFunctions() {
             }
 
             if (ticksHeld >= 35 && !player.isSneaking) {
-                player.syncEntity {
+                player.sync {
                     val vec = player.eyeLocation.direction.clone().multiply(1.5).setY(2.5)
                     player.velocity = vec
                 }
