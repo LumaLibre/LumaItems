@@ -5,6 +5,8 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.syncLocation
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.awt.Color
@@ -126,7 +128,7 @@ class DevourersApronItem : CustomItemFunctions() {
 
             this.remove()
 
-            this.consumeEffects {
+            this.consumeEffects(player) {
                 val amp = (health / 16).coerceAtMost(50)
 
                 player.removePotionEffect(PotionEffectType.ABSORPTION)
@@ -148,7 +150,7 @@ class DevourersApronItem : CustomItemFunctions() {
             this.location.world.spawnParticle(Particle.SCULK_SOUL, this.location, 10, 0.2, 0.2, 0.2, 0.0)
         }
 
-        private fun consumeEffects(whenDone: () -> Unit) {
+        private fun consumeEffects(player: Player, whenDone: () -> Unit) {
             val lineCurrentEnd: Location = location.clone()
             val lineCurrentStart: Location = location.clone()
 
@@ -158,7 +160,7 @@ class DevourersApronItem : CustomItemFunctions() {
 
                 if (distance < 1) {
                     task.cancel()
-                    Executors.sync { whenDone() }
+                    player.syncEntity { whenDone() }
                     return@asyncTimer
                 }
 
@@ -175,7 +177,7 @@ class DevourersApronItem : CustomItemFunctions() {
 
         private fun playSounds() {
             if (Random.nextInt(10) == 5) {
-                Executors.sync {
+                location.syncLocation {
                     location.world.playSound(location, Sound.PARTICLE_SOUL_ESCAPE, 0.7f, 0.5f)
                 }
             }

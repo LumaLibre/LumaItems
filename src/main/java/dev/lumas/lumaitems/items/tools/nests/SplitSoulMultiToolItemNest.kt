@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.util.Executors.syncEntity
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.dialogue.DialogueText
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -403,9 +404,9 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
             val messages = this.messages[personality]?.random()?.split("#") ?: return
             dialogue.queueText(messages)
             dialogue.sendQueuedText {
-                Bukkit.getScheduler().runTask(LumaItems.getInstance(), Runnable {
+                player.syncEntity {
                     this.block.invoke(player, personality)
-                })
+                }
             }
         }
 
@@ -419,9 +420,9 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
             )
             dialogue.queueText(messages)
             dialogue.sendQueuedText {
-                Bukkit.getScheduler().runTask(LumaItems.getInstance(), Runnable {
+                player.syncEntity {
                     this.block.invoke(player, personality)
-                })
+                }
             }
 
             if (this.result == MoodyActionResult.HOLD_ACTION) {

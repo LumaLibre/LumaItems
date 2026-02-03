@@ -6,6 +6,8 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID
 import org.bukkit.Location
 import org.bukkit.Material
@@ -60,7 +62,7 @@ class UnnamedScytheItem : CustomItemFunctions() {
             REFERENCES[player.uniqueId] = this
         }
 
-        var task: BukkitTask? = null
+        var task: ScheduledTask? = null
 
         fun startTicking() {
             val entities = initialLoc.world.getNearbyLivingEntities(initialLoc, 15.0)
@@ -68,11 +70,10 @@ class UnnamedScytheItem : CustomItemFunctions() {
 
             var currentPulse = 0
             var sinceLastPulse = 0
-            this.task = Executors.syncTimer(0, 1) { task ->
-                println("test")
+            this.task = player.syncEntityTimer(0, 1) { task ->
                 if (currentPulse >= pulses) {
                     task.cancel()
-                    return@syncTimer
+                    return@syncEntityTimer
                 }
 
                 if (sinceLastPulse >= pulseDelay) {

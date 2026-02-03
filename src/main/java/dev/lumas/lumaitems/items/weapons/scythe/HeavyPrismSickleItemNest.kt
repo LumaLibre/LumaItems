@@ -10,6 +10,9 @@ import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.syncLocation
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
@@ -216,7 +219,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                     // Prune orbs that are no longer valid
                     if (count >= FIRE_TIME || orbGroup.orbs.all { !it.valid }) {
                         task.cancel()
-                        Executors.sync { orbGroup.destroy() }
+                        orbGroup.destroy()
                         whenDone()
                         return@asyncTimer
                     }
@@ -224,7 +227,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
                     orbGroup.moveGroup(count)
 
-                    Executors.sync {
+                    player.syncEntity {
                         orbGroup.orbs.forEach { orb ->
                             if (orb.fireTime < count) {
                                 if (!orb.autoTarget(orbGroup.activeTargets)) {
@@ -447,39 +450,40 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 this.valid = true
             }
 
-            Executors.sync {
+            spawnLocation.syncLocation {
                 createSnowball(spawnLocation)
             }
         }
 
         fun despawn() {
             this.valid = false
-            if (!snowball.isDead) {
-                snowball.setGravity(true)
-                //snowball.world.spawnParticle(Particle.WAX_OFF, snowball.location, 4, 0.2, 0.2, 0.2, 0.9)
-            }
-            if (target != null && target?.isDead == false) {
-                if (target !is Player) {
-                    GlowManager.removeGlowColor(target!!)
+            snowball.syncEntity {
+                if (!snowball.isDead) {
+                    snowball.setGravity(true)
                 }
-                GlowManager.setProtocolGlowPacket(player, target!!, false)
+                if (target != null && target?.isDead == false) {
+                    if (target !is Player) {
+                        GlowManager.removeGlowColor(target!!)
+                    }
+                    GlowManager.setProtocolGlowPacket(player, target!!, false)
+                }
             }
         }
 
         fun move() { //
             var smallCount = 40
-            Executors.syncTimer(0, 1) { task ->
+            snowball.syncEntityTimer(0, 1) { task ->
                 if (snowball.isDead) {
                     if (valid) {
                         createSnowball(snowball.location)
                     } else {
                         task.cancel()
-                        return@syncTimer
+                        return@syncEntityTimer
                     }
                 } else if (snowball.location.world != position.world || snowball.location.distance(position) <= 0.1) {
                     snowball.velocity = STOP
                     task.cancel()
-                    return@syncTimer
+                    return@syncEntityTimer
                 }
                 val direction = position.clone().subtract(snowball.location).toVector().normalize()
                 snowball.velocity = direction.multiply(0.2)
@@ -566,7 +570,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             val start = snowball.location.clone()
             Particles.line(start, lineCurrentEnd!!, 0.45, rayTraceParticle)
 
-            Executors.sync {
+            start.syncLocation {
                 val direction = lineCurrentEnd!!.clone().subtract(start).toVector().normalize()
                 val distanceToEnd = start.distance(lineCurrentEnd!!)
                 raytrace(start, direction, distanceToEnd, getPredicate(player))

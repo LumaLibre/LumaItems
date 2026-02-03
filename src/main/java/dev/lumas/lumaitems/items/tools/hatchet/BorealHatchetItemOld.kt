@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.tools.hatchet
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
 import dev.lumas.lumaitems.util.disabling.Ignore
 import java.util.UUID
 import org.bukkit.entity.Item
@@ -41,10 +41,10 @@ class BorealHatchetItemOld : CustomItemFunctions() {
             ?: return
 
         var count = 0
-        Executors.syncTimer(0, 1) { task ->
+        player.syncEntityTimer(0, 1) { task ->
             if (items.any { it.world != player.world } || items.isEmpty() || ++count > 50) {
                 task.cancel()
-                return@syncTimer
+                return@syncEntityTimer
             }
 
             items.removeIf {

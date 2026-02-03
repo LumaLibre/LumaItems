@@ -1,6 +1,8 @@
 package dev.lumas.lumaitems.model
 
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
@@ -18,7 +20,7 @@ class TickDamager private constructor(
     val onFinishCallback: ((LivingEntity) -> Unit)?
 ) {
 
-    var task: BukkitTask? = null
+    var task: ScheduledTask? = null
 
     fun ticksToComplete(): Long = hitAmount * tickInterval
     fun damagePerTick(): Double = damage / hitAmount
@@ -34,15 +36,17 @@ class TickDamager private constructor(
         val damageToDealOverTicks = damage / hitAmount
         var count = 0
 
-        this.task = Executors.syncTimer(0, 10) { task ->
+        this.task = Executors.asyncTimer(0, tickInterval) { task ->
             for (victim in victims) {
-                if (count >= hitAmount || victim.isDead) {
-                    task.cancel()
-                    onFinishCallback?.invoke(victim)
-                    return@syncTimer
+                victim.syncEntity {
+                    if (count >= hitAmount || victim.isDead) {
+                        task.cancel()
+                        onFinishCallback?.invoke(victim)
+                        return@syncEntity
+                    }
+                    victim.damage(damageToDealOverTicks, attacker)
+                    onTickCallback?.invoke(victim)
                 }
-                victim.damage(damageToDealOverTicks, attacker)
-                onTickCallback?.invoke(victim)
             }
             ++count
         }

@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.weapons.cutlass
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Color
@@ -61,7 +62,7 @@ class ComicStyleWeapon : CustomItemFunctions() {
             it.isPersistent = false
         }
         world.spawnParticle(Particle.WAX_OFF, spawnLocation, 3, 0.2, 0.1, 0.2, 0.1)
-        Executors.syncDelayed(6) {
+        textDisplay.syncEntityDelayed(6) {
             textDisplay.remove()
         }
     }

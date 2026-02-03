@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
@@ -161,7 +162,7 @@ class YukonCutlassItem : CustomItemFunctions() {
                 if (snowball.isDead || !snowball.isValid) {
                     iterator.remove()
                 } else if (snowball.isInWater || snowball.isInLava) {
-                    sync { snowball.dropAndRemove() }
+                    snowball.syncEntity { snowball.dropAndRemove() }
                     iterator.remove()
                     continue
                 }
@@ -176,7 +177,7 @@ class YukonCutlassItem : CustomItemFunctions() {
                 task.cancel()
                 return@asyncTimer
             } else if (this.isInWater || this.isInLava) {
-                sync { this.dropAndRemove() }
+                this.syncEntity { this.dropAndRemove() }
                 task.cancel()
                 return@asyncTimer
             }

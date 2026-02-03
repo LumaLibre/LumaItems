@@ -8,6 +8,7 @@ import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
@@ -150,7 +151,7 @@ class BlobbleHammerItem : CustomItemFunctions() {
     private fun repeatExecutorLogic(snowball: Snowball): Boolean {
         if (snowball.isDead || snowball.location.block.isLiquid) {
             if (!snowball.isDead) {
-                Executors.sync { snowball.remove() }
+                snowball.syncEntity { snowball.remove() }
             }
             return true
         }

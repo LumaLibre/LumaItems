@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.weapons.hatchet
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -50,13 +51,16 @@ class ViperHatchetItem : CustomItem {
         if (e !is LivingEntity) return damage
         if (e.category == EntityCategory.UNDEAD && !e.hasMetadata("viper")) {
             e.setMetadata("viper", FixedMetadataValue(instance(), true))
-            val repeatTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(),
-                { e.damage(0.5) }, 0L, 15L
-            )
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-                Bukkit.getScheduler().cancelTask(repeatTask)
-                e.removeMetadata("viper", instance())
-            }, 100L)
+
+            var count = 0
+            e.syncEntityTimer(0, 15) {
+                if (++count > 100) {
+                    it.cancel()
+                    e.removeMetadata("viper", instance())
+                    return@syncEntityTimer
+                }
+                e.damage(0.5)
+            }
         }
         if (!e.hasPotionEffect(PotionEffectType.POISON)) {
             e.addPotionEffect(PotionEffect(PotionEffectType.POISON, 100, 1, false, false, true))

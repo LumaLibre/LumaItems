@@ -5,6 +5,9 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -78,17 +81,20 @@ class SoulEaterItem : CustomItem {
         armorStand.isInvisible = true
         armorStand.setGravity(false)
         armorStand.maxHealth = entity.maxHealth
-        object : BukkitRunnable() {
-            override fun run() {
-                armorStand.world.spawnParticle(Particle.SCULK_SOUL, armorStand.location, 5, 0.5, 0.5, 0.5, 0.1)
-                armorStand.world.spawnParticle(Particle.REVERSE_PORTAL, armorStand.location, 5, 0.5, 0.5, 0.5, 0.1)
+
+        var count = 0
+        Executors.asyncTimer(0, 1) { task ->
+            armorStand.world.spawnParticle(Particle.SCULK_SOUL, armorStand.location, 5, 0.5, 0.5, 0.5, 0.1)
+            armorStand.world.spawnParticle(Particle.REVERSE_PORTAL, armorStand.location, 5, 0.5, 0.5, 0.5, 0.1)
+
+            armorStand.syncEntity {
                 armorStand.world.playSound(armorStand.location, Sound.PARTICLE_SOUL_ESCAPE, 0.5f, 0.5f)
-                if (armorStand.isDead) {
-                    cancel()
-                }
             }
-        }.runTaskTimer(instance(), 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), { armorStand.remove() }, 80L)
+
+            if (armorStand.isDead || ++count > 80) {
+                task.cancel()
+            }
+        }
     }
 
     fun canDevour(p: Player): Boolean {
@@ -104,7 +110,13 @@ class SoulEaterItem : CustomItem {
 
     private fun devour(entity: LivingEntity, p: Player) {
         //im not good at math
-        val repTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
+        var count = 0
+        entity.syncEntityTimer(0, 1) { task ->
+            if (++count > 80) {
+                task.cancel()
+                return@syncEntityTimer
+            }
+
             val loc1 = entity.location.add(0.0, 1.0, 0.0)
             val loc2 = p.location.add(0.0, 1.0, 0.0)
             val vector: Vector = BukkitVectors.direction(loc1, loc2)
@@ -120,10 +132,7 @@ class SoulEaterItem : CustomItem {
             }
             loc1.getWorld().spawnParticle(Particle.SCULK_SOUL, loc1, 5, 0.5, 0.5, 0.5, 0.1)
             loc1.getWorld().spawnParticle(Particle.REVERSE_PORTAL, loc1, 5, 0.5, 0.5, 0.5, 0.1)
-        }, 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(),
-            { Bukkit.getScheduler().cancelTask(repTask) }, 80L
-        )
+        }
 
 
         //sfx

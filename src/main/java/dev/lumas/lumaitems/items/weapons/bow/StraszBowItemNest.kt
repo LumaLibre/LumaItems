@@ -4,6 +4,8 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -105,17 +107,17 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
             snowball.setMetadata(DUPLICATE, metaDataValue)
         }
 
-        Bukkit.getAsyncScheduler().runAtFixedRate(instance(), { task ->
+        Executors.asyncTimer(0, 1) { task ->
             if (snowball.isDead || snowball.ticksLived > 110) {
                 if (!snowball.isDead && !snowball.hasGravity()) {
-                    Bukkit.getScheduler().runTask(instance(), Runnable { snowball.setGravity(true) })
+                    snowball.syncEntity { snowball.setGravity(true) }
                 }
                 task.cancel()
-                return@runAtFixedRate
+                return@asyncTimer
             }
             snowball.world.spawnParticle(Particle.DUST, snowball.location, 5, 0.2, 0.2, 0.2, 0.1, dustOptions)
             snowball.world.spawnParticle(Particle.WITCH, snowball.location, 5, 0.2, 0.2, 0.2, 0.1)
-        }, 0, 50, TimeUnit.MILLISECONDS)
+        }
         return snowball
     }
 }

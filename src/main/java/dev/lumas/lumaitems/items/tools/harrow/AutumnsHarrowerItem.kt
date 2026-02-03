@@ -3,6 +3,8 @@ package dev.lumas.lumaitems.items.tools.harrow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.util.Executors.syncLocationDelayed
+import dev.lumas.lumaitems.util.Executors.syncLocationTimer
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import dev.lumas.lumaitems.util.extensions.determineMostCommon
@@ -79,14 +81,17 @@ class AutumnsHarrowerItem : CustomItem {
 
     private fun topHarvestAnimation(location: Location, material: Material, dustOptions: DustOptions) {
         val loc = location.add(0.0,0.2,0.0).toCenterLocation()
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
+        var count = 0
+
+        location.syncLocationTimer(0, 5) {
+            if (++count > 150) {
+                it.cancel()
+                return@syncLocationTimer
+            }
+
             loc.world.dropItem(loc, ItemStack(material))
             loc.world.spawnParticle(Particle.DUST, loc, 30, 0.2, 0.2, 0.2, dustOptions)
-        }, 0, 5)
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-            Bukkit.getScheduler().cancelTask(task)
-        }, 150)
+        }
     }
 
 }

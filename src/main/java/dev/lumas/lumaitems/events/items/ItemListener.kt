@@ -2,12 +2,10 @@ package dev.lumas.lumaitems.events.items
 
 import com.gmail.nossr50.api.AbilityAPI as mcMMOAbilityAPI
 import dev.lumas.lumacore.utility.Logging
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import io.papermc.paper.persistence.PersistentDataContainerView
 import java.util.EnumMap
@@ -76,9 +74,8 @@ abstract class ItemListener : Listener {
                 item.handleDisabled(player, event)
                 return
             }
-            Executors.sync {
-                item.fireVerbosely(action, player ?: getDummyPlayer() ?: return@sync, event, if (withContainer) data else null)
-            }
+
+            item.fireVerbosely(action, player ?: getDummyPlayer() ?: return@sync, event, if (withContainer) data else null)
         }
     }
 
@@ -96,9 +93,8 @@ abstract class ItemListener : Listener {
                     item.handleDisabled(player, event)
                     break
                 }
-                Executors.sync {
-                    item.fireVerbosely(action, player ?: getDummyPlayer() ?: return@sync, event, if (withContainer) itemData else null)
-                }
+
+                item.fireVerbosely(action, player ?: getDummyPlayer() ?: return@sync, event, if (withContainer) itemData else null)
             }
         }
     }

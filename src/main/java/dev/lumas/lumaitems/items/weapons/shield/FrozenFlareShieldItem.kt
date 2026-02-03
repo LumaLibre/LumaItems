@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.weapons.shield
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
@@ -44,13 +45,12 @@ class FrozenFlareShieldItem : CustomItem {
     private fun countdownLighter(player: Player) {
         if (QuickTasks.isOnCooldown(this, player)) return
 
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+        player.syncEntityDelayed(40) {
             if (!player.isSneaking || QuickTasks.isOnCooldown(this, player)) return@scheduleSyncDelayedTask
             player.world.createExplosion(player.location, 7f, false, false, player)
             player.world.spawnParticle(Particle.FLAME, player.location, 50, 0.5, 0.5, 0.5, 0.8)
             player.world.spawnParticle(Particle.SOUL_FIRE_FLAME, player.location, 50, 0.5, 0.5, 0.5, 0.8)
             QuickTasks.addCooldown(this, player, 300L)
-        },40)
+        }
     }
 }

@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.particles;
 
 import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
 import org.bukkit.*;
@@ -27,6 +28,7 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -363,8 +365,8 @@ public final class  Particles {
      * @see #magicCircles(Plugin, double, double, double, double, ParticleDisplay)
      * @since 3.0.0
      */
-    public static BukkitTask circularBeam(Plugin plugin, double maxRadius, double rate, double radiusRate, double extend, ParticleDisplay display) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, circularBeam(maxRadius, rate, radiusRate, extend, display), 0, 1);
+    public static ScheduledTask circularBeam(Plugin plugin, double maxRadius, double rate, double radiusRate, double extend, ParticleDisplay display) {
+        return runTaskTimerAsynchronously(plugin, circularBeam(maxRadius, rate, radiusRate, extend, display), 0, 1);
     }
 
     /**
@@ -523,10 +525,10 @@ public final class  Particles {
      * @return the animation handler.
      * @since 4.0.0
      */
-    public static BukkitTask chaoticDoublePendulum(Plugin plugin, double radius, double gravity, double length, double length2,
+    public static ScheduledTask chaoticDoublePendulum(Plugin plugin, double radius, double gravity, double length, double length2,
                                                    double mass1, double mass2,
                                                    boolean dimension3, int speed, ParticleDisplay display) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, chaoticDoublePendulum(radius, gravity, length, length2, mass1, mass2, dimension3, speed, display), 0, 1);
+        return runTaskTimerAsynchronously(plugin, chaoticDoublePendulum(radius, gravity, length, length2, mass1, mass2, dimension3, speed, display), 0, 1);
     }
 
     /**
@@ -575,8 +577,8 @@ public final class  Particles {
      * @see #circularBeam(Plugin, double, double, double, double, ParticleDisplay)
      * @since 3.0.0
      */
-    public static BukkitTask magicCircles(Plugin plugin, double radius, double rate, double radiusRate, double distance, ParticleDisplay display) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, magicCircles(radius, rate, radiusRate, distance, display), 0, 1);
+    public static ScheduledTask magicCircles(Plugin plugin, double radius, double rate, double radiusRate, double distance, ParticleDisplay display) {
+        return runTaskTimerAsynchronously(plugin, magicCircles(radius, rate, radiusRate, distance, display), 0, 1);
     }
 
     /**
@@ -940,8 +942,8 @@ public final class  Particles {
      * @return the task handling the animation.
      * @since 2.0.0
      */
-    public static BukkitTask vortex(Plugin plugin, int points, double rate, ParticleDisplay display) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, vortex(points, rate, display), 0, 1);
+    public static ScheduledTask vortex(Plugin plugin, int points, double rate, ParticleDisplay display) {
+        return runTaskTimerAsynchronously(plugin, vortex(points, rate, display), 0, 1);
     }
 
     /**
@@ -1013,9 +1015,9 @@ public final class  Particles {
      * @see #guard(Plugin, long, double, double, double, double, Runnable, ParticleDisplay...)
      * @since 1.0.0
      */
-    public static BukkitTask moveRotatingAround(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
+    public static ScheduledTask moveRotatingAround(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
                                                 Runnable runnable, ParticleDisplay... displays) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, moveRotatingAround(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
+        return runTaskTimerAsynchronously(plugin, moveRotatingAround(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
     }
 
     /**
@@ -1072,9 +1074,9 @@ public final class  Particles {
      * @see #guard(Plugin, long, double, double, double, double, Runnable, ParticleDisplay...)
      * @since 1.0.0
      */
-    public static BukkitTask moveAround(Plugin plugin, long update, double rate, double endRate, double offsetx, double offsety, double offsetz,
+    public static ScheduledTask moveAround(Plugin plugin, long update, double rate, double endRate, double offsetx, double offsety, double offsetz,
                                         Runnable runnable, ParticleDisplay... displays) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, moveAround(rate, endRate, offsetx, offsety, offsetz, runnable, displays), 0, update);
+        return runTaskTimerAsynchronously(plugin, moveAround(rate, endRate, offsetx, offsety, offsetz, runnable, displays), 0, update);
     }
 
     /**
@@ -1085,8 +1087,8 @@ public final class  Particles {
      * @return the timer task handling the displays.
      * @since 1.0.0
      */
-    public static BukkitTask testDisplay(Plugin plugin, Runnable runnable) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, 0L, 1L);
+    public static ScheduledTask testDisplay(Plugin plugin, Runnable runnable) {
+        return runTaskTimerAsynchronously(plugin, runnable, 0L, 1L);
     }
 
     /**
@@ -1133,9 +1135,9 @@ public final class  Particles {
      * @see #guard(Plugin, long, double, double, double, double, Runnable, ParticleDisplay...)
      * @since 1.0.0
      */
-    public static BukkitTask rotateAround(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
+    public static ScheduledTask rotateAround(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
                                           Runnable runnable, ParticleDisplay... displays) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, rotateAround(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
+        return runTaskTimerAsynchronously(plugin, rotateAround(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
     }
 
     /**
@@ -1205,9 +1207,9 @@ public final class  Particles {
      * @see #moveRotatingAround(Plugin, long, double, double, double, double, Runnable, ParticleDisplay...)
      * @since 1.0.0
      */
-    public static BukkitTask guard(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
+    public static ScheduledTask guard(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
                                    Runnable runnable, ParticleDisplay... displays) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, guard(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
+        return runTaskTimerAsynchronously(plugin, guard(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
     }
 
     /**
@@ -1449,8 +1451,8 @@ public final class  Particles {
      * @see #atom(int, double, double, ParticleDisplay, ParticleDisplay)
      * @since 1.0.0
      */
-    public static BukkitTask atomic(Plugin plugin, int orbits, double radius, double rate, ParticleDisplay orbit) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, atomic(orbits, radius, rate, orbit), 0, 1);
+    public static ScheduledTask atomic(Plugin plugin, int orbits, double radius, double rate, ParticleDisplay orbit) {
+        return runTaskTimerAsynchronously(plugin, atomic(orbits, radius, rate, orbit), 0, 1);
     }
 
     /**
@@ -1791,8 +1793,8 @@ public final class  Particles {
      * @return the timer task handling the animation.
      * @since 1.0.0
      */
-    public static BukkitTask cloud(Plugin plugin, ParticleDisplay cloud, ParticleDisplay rain) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, cloud(cloud, rain), 0, 1);
+    public static ScheduledTask cloud(Plugin plugin, ParticleDisplay cloud, ParticleDisplay rain) {
+        return runTaskTimerAsynchronously(plugin, cloud(cloud, rain), 0, 1);
     }
 
     /**
@@ -2976,6 +2978,12 @@ public final class  Particles {
 
             return image;
         });
+    }
+
+    private static ScheduledTask runTaskTimerAsynchronously(Plugin plugin, Runnable runnable, long delay, long period) {
+        long delayInMillis = delay * 50;
+        long periodInMillis = period * 50;
+        return Bukkit.getAsyncScheduler().runAtFixedRate(plugin, task -> runnable.run(), delayInMillis, periodInMillis, TimeUnit.MILLISECONDS);
     }
 
 

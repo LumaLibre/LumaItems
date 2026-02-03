@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.random.Random
 import net.minecraft.world.entity.projectile.FishingHook
@@ -125,7 +126,7 @@ class FluxRodItem : CustomItemFunctions() {
                     if (hookPool.count { it.isValid } == 1) {
                         return true
                     }
-                    Executors.syncDelayed(1) {
+                    event.player.syncEntityDelayed(1) {
                         for (hook in hookPool) {
                             if (hook.isValid && hook != event.hook) {
                                 resetPlayerHook(event.player, hook)

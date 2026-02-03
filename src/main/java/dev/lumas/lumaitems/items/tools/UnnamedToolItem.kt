@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
 import java.awt.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -41,12 +41,12 @@ class UnnamedToolItem : CustomItemFunctions() {
         val particleDisplay = ParticleDisplay.of(Particle.DUST)
             .withColor(Color.WHITE)
         println("starting")
-        Executors.syncTimer(0, 1) { task ->
+        projectile.syncEntityTimer(0, 1) { task ->
             if (ticksRun++ >= 150 || projectile.location.distanceSquared(player.location) > 30.0 * 30.0) {
                 task.cancel()
                 projectile.remove()
                 println("done")
-                return@syncTimer
+                return@syncEntityTimer
             }
 
             Particles.spikeSphere(0.2, 15.0, 60, 0.1, 0.3, particleDisplay.clone().withLocation(projectile.location))

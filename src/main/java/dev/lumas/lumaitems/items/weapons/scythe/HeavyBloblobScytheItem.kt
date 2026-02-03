@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
@@ -191,11 +192,11 @@ class HeavyBloblobScytheItem : CustomItemFunctions() {
 
             snowballs.removeIf { snowball ->
                 if (snowball.isDead || snowball.location.block.isLiquid || removal) {
-                    Executors.sync { snowball.remove() }
+                    snowball.syncEntity { snowball.remove() }
                     return@removeIf true
                 } else {
                     val dustOptions = BallAttribute.dustOptionsOf(snowball.item.type) ?: run {
-                        Executors.sync { snowball.remove() }
+                        snowball.syncEntity { snowball.remove() }
                         task.cancel()
                         return@removeIf true
                     }
@@ -215,13 +216,13 @@ class HeavyBloblobScytheItem : CustomItemFunctions() {
         Executors.asyncTimer(0, 1) { task ->
             if (snowball.isDead || snowball.location.block.isLiquid || ++count >= 200) {
                 task.cancel()
-                Executors.sync { snowball.remove() }
+                snowball.syncEntity { snowball.remove() }
                 return@asyncTimer
             }
 
             val dustOptions = BallAttribute.dustOptionsOf(snowball.item.type) ?: run {
                 task.cancel()
-                Executors.sync { snowball.remove() }
+                snowball.syncEntity { snowball.remove() }
                 return@asyncTimer
             }
             snowball.world.spawnParticle(Particle.DUST, snowball.location, 1, 0.05, 0.05, 0.05, 0.1, dustOptions)

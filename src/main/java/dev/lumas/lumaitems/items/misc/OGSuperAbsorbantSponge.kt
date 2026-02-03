@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
+import dev.lumas.lumaitems.util.Executors.syncLocationDelayed
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
@@ -116,10 +117,10 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
         world.playSound(location, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.5f)
         world.playSound(location, Sound.BLOCK_WET_GRASS_BREAK, 1.0f, 1.0f)
 
-        Bukkit.getScheduler().runTaskLater(LumaItems.getInstance(), Runnable {
+        sponge.location.syncLocationDelayed(1) {
             if (Material.WATER in types) removeWaterlogged(sponge, player)
             if (sponge.type in types) sponge.type = Material.AIR
-        }, 1L)
+        }
     }
 
     private fun removeWaterlogged(block: Block, player: Player) {

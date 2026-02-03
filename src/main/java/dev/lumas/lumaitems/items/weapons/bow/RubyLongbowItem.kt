@@ -3,6 +3,8 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
@@ -64,22 +66,28 @@ class RubyLongbowItem : CustomItem {
         } else {
             proj2 = null
         }
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
+
+
+        var count = 0
+        Executors.asyncTimer(0, 1) {
+            if (++count > 45) {
+                it.cancel()
+                return@asyncTimer
+            }
             proj.world.spawnParticle(Particle.DUST, proj.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(255, 83, 114), 1f))
             proj.world.spawnParticle(Particle.DUST, proj.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(207, 74, 253), 1f))
             if (proj2 != null) {
                 proj2.world.spawnParticle(Particle.DUST, proj2.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(255, 83, 114), 1f))
                 proj2.world.spawnParticle(Particle.DUST, proj2.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(207, 74, 253), 1f))
             }
-        }, 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), { Bukkit.getScheduler().cancelTask(task) }, 45L)
+        }
     }
 
 
     private fun despawnArrow(arrow: Projectile) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-            if (arrow.isDead) return@scheduleSyncDelayedTask
+        arrow.syncEntityDelayed(20) {
+            if (arrow.isDead) return@syncEntityDelayed
             arrow.remove()
-        }, 20L)
+        }
     }
 }

@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -109,11 +110,11 @@ class BallisticBunnyMattockItem : CustomItem {
 
         stuckCarrots.getOrPut(player.uniqueId) { mutableListOf() }.add(CarrotDisplay(itemDisplay, interaction, block, if (double) 1.4f else 1.0f))
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-           if (!itemDisplay.isDead || !interaction.isDead) {
-               detonateCarrots(player)
-           }
-        }, 300)
+        itemDisplay.syncEntityDelayed(300) {
+            if (!itemDisplay.isDead || !interaction.isDead) {
+                detonateCarrots(player)
+            }
+        }
     }
 
 

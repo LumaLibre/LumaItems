@@ -3,9 +3,11 @@ package dev.lumas.lumaitems.items.misc
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Ignore
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID
 import kotlin.random.Random
 import org.bukkit.Location
@@ -17,7 +19,6 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitTask
 
 @Ignore
 class UnnamedBubbleItem : CustomItemFunctions() {
@@ -52,23 +53,25 @@ class UnnamedBubbleItem : CustomItemFunctions() {
     }
 
     override fun asyncGlobalTask() {
-        sync {
-            val players = instance().server.onlinePlayers.filter {
+        val players = instance().server.onlinePlayers.filter {
+            it.syncEntity {
                 Util.isItemInSlot(nameSpace, EquipmentSlot.HAND, it)
             }
-            // destroy and remove groups for players that are not in ths list
-            processes.keys.filter { it !in players.map { p -> p.uniqueId } }.forEach { uuid ->
-                processes[uuid]?.destroy()
-                println("Destroying blob group for player: ${uuid}")
-                processes.remove(uuid)
-            }
+        }
+        // destroy and remove groups for players that are not in ths list
+        processes.keys.filter { it !in players.map { p -> p.uniqueId } }.forEach { uuid ->
+            processes[uuid]?.destroy()
+            println("Destroying blob group for player: ${uuid}")
+            processes.remove(uuid)
+        }
 
-            players.forEach { player ->
+        players.forEach { player ->
+            player.syncEntity {
                 val group = processes[player.uniqueId] ?: run {
                     val newGroup = BlobGroup(player)
                     processes[player.uniqueId] = newGroup
                     newGroup.initiateGroup()
-                    return@forEach
+                    return@syncEntity
                 }
                 group.updatePositions()
             }
@@ -146,7 +149,7 @@ class UnnamedBubbleItem : CustomItemFunctions() {
         @Volatile var position: Location,
     ) {
         @Volatile var snowball = createSnowball()
-        var moveTask: BukkitTask? = null
+        var moveTask: ScheduledTask? = null
         var valid = true
 
         fun createSnowball(): Snowball {
@@ -169,18 +172,18 @@ class UnnamedBubbleItem : CustomItemFunctions() {
             if ((moveTask != null && !moveTask!!.isCancelled) || !valid) {
                 return
             }
-            this.moveTask = Executors.syncTimer(0, 1) { task ->
+            this.moveTask = snowball.syncEntityTimer(0, 1) { task ->
                 if (!valid) {
                     task.cancel()
-                    return@syncTimer
+                    return@syncEntityTimer
                 }
                 if (snowball.location.world != position.world || snowball.location.distance(position) <= 0.5) {
                     snowball.velocity = BukkitVectors.ZERO
-                    return@syncTimer
+                    return@syncEntityTimer
                 }
                 val direction = position.clone().subtract(snowball.location).toVector().normalize()
                 snowball.velocity = direction.normalize()
-            }
+            } ?: return
         }
     }
 }

@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -61,11 +62,12 @@ class SatchelItem : CustomItem {
         GlowManager.setGlowColor(projectile, GlowManager.COLORS.random())
 
         if (!p.location.subtract(0.0, 0.1, 0.0).block.type.isAir || p.isFlying) return
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+
+        projectile.syncEntityDelayed(5) {
             if (!projectile.isDead) {
                 satchelDetonate(projectile, p)
             }
-        }, 5L)
+        }
     }
 
     private fun satchelDetonate(satchelEntity: Entity, p: Player) {

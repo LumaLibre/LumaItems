@@ -1,15 +1,15 @@
 package dev.lumas.lumaitems.relics
 
 import dev.lumas.lumacore.utility.Logging
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.sendFormatted
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID
 import kotlin.random.Random
-import org.bukkit.Bukkit
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.block.Action
@@ -22,7 +22,7 @@ object RelicDisassembler {
     val RELIC_RARITY_KEY = Util.namespacedKey("relic-rarity")
     val DISASSEMBLER_BLOCKS: MutableList<Block> = mutableListOf()
 
-    private val confirmCooldownTasks: MutableMap<UUID, Int> = mutableMapOf()
+    private val confirmCooldownTasks: MutableMap<UUID, ScheduledTask> = mutableMapOf()
 
     @JvmStatic
     fun setupDisassemblerBlocks() {
@@ -87,15 +87,16 @@ object RelicDisassembler {
     private fun rescheduleCooldownTask(player: Player): Boolean {
         var returnValue = false
         if (confirmCooldownTasks.contains(player.uniqueId)) {
-            Bukkit.getScheduler().cancelTask(confirmCooldownTasks[player.uniqueId]!!)
+            confirmCooldownTasks[player.uniqueId]?.cancel()
             returnValue = true
         } else {
             player.sendFormatted("Are you sure you want to disassemble this item? Click again to confirm.")
         }
 
-        confirmCooldownTasks[player.uniqueId] = Bukkit.getScheduler().scheduleSyncDelayedTask(LumaItems.getInstance(), {
+        confirmCooldownTasks[player.uniqueId] = Executors.asyncDelayed(200) {
             confirmCooldownTasks.remove(player.uniqueId)
-        }, 200L)
+        }
+
         return returnValue
     }
 }

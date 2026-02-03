@@ -4,23 +4,18 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Ignore
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
-import dev.lumas.lumaitems.util.extensions.toBukkitColor
-import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Color
 import org.bukkit.GameMode
 import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.AbstractArrow
-import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 import org.bukkit.entity.SpectralArrow
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.ProjectileHitEvent
-import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
@@ -63,19 +58,19 @@ class UnnamedBowItem : CustomItemFunctions() {
         }
 
         val projectile = event.entity as? AbstractArrow ?: return
-        Executors.syncDelayed(20) {
+        projectile.syncEntityDelayed(20) {
             if (projectile.isDead) {
-                return@syncDelayed
+                return@syncEntityDelayed
             }
 
             projectile.setNoPhysics(true)
 
             var count = 0
-            Executors.syncTimer(0,1) { task ->
+            player.syncEntityTimer(0,1) { task ->
                 val distance = player.eyeLocation.distanceSquared(projectile.location)
                 if (distance < 0.5 * 0.5 || projectile.isDead || ++count > 200) {
                     task.cancel()
-                    return@syncTimer
+                    return@syncEntityTimer
                 }
 
                 projectile.velocity = BukkitVectors.flyToLivingEntity(player, projectile, 2.8, 0.9, 0.89)

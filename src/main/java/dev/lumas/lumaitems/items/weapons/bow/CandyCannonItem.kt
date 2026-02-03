@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
+import dev.lumas.lumaitems.util.Executors.syncEntity
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
 import org.bukkit.Color
@@ -63,10 +64,10 @@ class CandyCannonItem : CustomItemFunctions() {
 
                 if (arrow.isDead || itemDisplay.isDead || ticks++ >= 300) {
                     cancel()
-                    Bukkit.getScheduler().runTask(instance(), Runnable {
+                    arrow.syncEntity {
                         itemDisplay.remove()
                         arrow.remove()
-                    })
+                    }
                 }
             }
         }.runTaskTimerAsynchronously(instance(), 0L, 1L)

@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -93,11 +94,11 @@ class PumpkinLauncherItem : CustomItem {
         projectile.setGravity(false);
         projectile.persistentDataContainer.set(NamespacedKey(instance(), "pumpkinlauncher"), PersistentDataType.SHORT, 1)
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+        projectile.syncEntityDelayed(100) {
             if (!projectile.isDead) {
                 jackOLand(projectile, player);
             }
-        }, 100L);
+        }
     }
 
     private fun jackOLand(projectile: Projectile, player: Player) {

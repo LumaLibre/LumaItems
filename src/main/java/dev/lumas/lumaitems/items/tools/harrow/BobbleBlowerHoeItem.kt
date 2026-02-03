@@ -9,7 +9,7 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -159,10 +159,10 @@ class BobbleBlowerHoeItem : CustomItemFunctions() {
     }
 
     private fun trackSnowball(player: Player, snowballs: Collection<Snowball>) {
-        Executors.syncTimer(0, 2) { task ->
+        player.syncEntityTimer(0, 2) { task ->
             if (snowballs.all { it.isDead || it.location.block.isLiquid }) {
                 task.cancel()
-                return@syncTimer
+                return@syncEntityTimer
             }
             for (s in snowballs) {
                 if (s.isDead) continue
@@ -172,13 +172,13 @@ class BobbleBlowerHoeItem : CustomItemFunctions() {
     }
 
     private fun trackSnowball(player: Player, snowball: Snowball) {
-        Executors.syncTimer(0, 2) { task ->
+        snowball.syncEntityTimer(0, 2) { task ->
             if (snowball.isDead || snowball.location.block.isLiquid) {
                 task.cancel()
                 if (!snowball.isDead) {
                     snowball.remove()
                 }
-                return@syncTimer
+                return@syncEntityTimer
             }
             processSnowballRaytrace(player, snowball)
         }

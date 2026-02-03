@@ -7,6 +7,9 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.syncLocation
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
@@ -159,10 +162,10 @@ class SpringtideScytheItem : CustomItemFunctions() {
             player.world.addEntity(snowball)
         }
 
-        Bukkit.getAsyncScheduler().runAtFixedRate(instance(), { task ->
+        Executors.asyncTimer(0, 1) { task ->
             if (snowballs.isEmpty() || ticksRan++ > 80) {
                 task.cancel()
-                return@runAtFixedRate
+                return@asyncTimer
             }
             snowballs.removeIf {
                 if (it.isDead) {
@@ -183,13 +186,12 @@ class SpringtideScytheItem : CustomItemFunctions() {
                 it.world.spawnParticle(Particle.DUST, it.location, 50, 0.7, 0.7, 0.7, 0.1, WHITE_DUST)
                 it.world.spawnParticle(Particle.WAX_OFF, it.location, 10, 0.7, 0.7, 0.7, 0.1)
 
-                Bukkit.getScheduler().runTask(instance(), Runnable {
+                it.syncEntity {
                     it.world.playSound(it.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1f)
-                })
+                }
                 return@removeIf false
             }
-
-        }, 0, 50, TimeUnit.MILLISECONDS)
+        }
     }
 
     private fun downPour(location: Location, player: Player) {
@@ -227,9 +229,9 @@ class SpringtideScytheItem : CustomItemFunctions() {
             )
             val projectile = fallingProjectile(spawnLocation, player, SpellType.NIGHTFALL_DOWNPOUR)
             snowballs.add(projectile)
-            Bukkit.getScheduler().runTask(instance(), Runnable {
+            location.syncLocation {
                 location.world.addEntity(projectile)
-            })
+            }
         }, 0, 50, TimeUnit.MILLISECONDS)
     }
 

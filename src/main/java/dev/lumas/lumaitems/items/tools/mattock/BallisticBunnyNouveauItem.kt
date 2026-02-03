@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
@@ -91,9 +92,9 @@ class BallisticBunnyNouveauItem : CustomItemFunctions() {
         cachedCharges[player.uniqueId] = 0
         QuickTasks.addCooldown(this, player.uniqueId, 1200L)
         Particles.meguminExplosion(instance(), power / 10.0, particleDisplay)
-        Bukkit.getScheduler().runTaskLater(instance(), Runnable {
+        player.syncEntityDelayed(5) {
             player.world.createExplosion(player, power.toFloat(), false)
-        }, 5L)
+        }
     }
 
     private fun getExplosionPower(player: Player): Double {

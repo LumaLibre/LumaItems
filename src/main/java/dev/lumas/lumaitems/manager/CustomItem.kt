@@ -27,6 +27,7 @@ interface CustomItem : RegistryItem {
         return Random
     }
 
+    @Deprecated("Not ThreadedRegions safe")
     fun <T> sync(block: () -> T): BukkitTask? {
         return Executors.sync { block() }
     }

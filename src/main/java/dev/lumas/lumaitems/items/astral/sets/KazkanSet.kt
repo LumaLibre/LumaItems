@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import dev.lumas.lumaitems.util.Util
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -157,14 +158,14 @@ class KazkanSet : AstralSet {
 
                 playerLinkedArrows[player] = linkedArrows.plus(projectile)
 
-                Bukkit.getScheduler().runTaskLater(instance(), Runnable {
+                player.syncEntityDelayed(150) {
                     if (!projectile.isOnGround) {
                         projectile.setGravity(true)
                         val arrows = playerLinkedArrows[player]?.toMutableList() ?: return@Runnable
                         arrows.remove(projectile)
                         playerLinkedArrows[player] = arrows
                     }
-                }, 150)
+                }
             }
 
             Action.PROJECTILE_LAND -> {

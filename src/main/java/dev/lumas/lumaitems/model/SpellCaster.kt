@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.model
 
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -52,7 +53,7 @@ class SpellCaster private constructor(
                 onTickCallback?.invoke(snowball)
             }
         }
-        Executors.syncDelayed(ticks) {
+        snowball.syncEntityDelayed(ticks) {
             if (!snowball.isDead) {
                 snowball.remove()
             }

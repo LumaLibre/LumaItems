@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import kotlin.random.Random
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -80,10 +81,10 @@ class SweetHeartsLaceItem : CustomItem {
 
                 if (entity is Enemy && Random.Default.nextInt(100) <= 40) {
                     entity.persistentDataContainer.set(NamespacedKey(instance(), "sweetheartslace"), PersistentDataType.SHORT, 1.toShort())
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-                        if (entity.isDead) return@scheduleSyncDelayedTask
+                    entity.syncEntityDelayed(600) {
+                        if (entity.isDead) return@syncEntityDelayed
                         entity.persistentDataContainer.remove(NamespacedKey(instance(), "sweetheartslace"))
-                    }, 600L)
+                    }
                 }
             }
             Action.ENTITY_TARGET_PLAYER -> {

@@ -12,6 +12,7 @@ import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntity
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlots
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -89,7 +90,7 @@ class VigilanceDriverItem : CustomItemFunctions() {
         referencedEntities.forEach { (playerUUID, entities) ->
             val player = Bukkit.getPlayer(playerUUID) ?: run { referencedEntities.remove(playerUUID); return@forEach }
             if (!player.isItemInSlots(KEY, EquipmentSlot.HAND, EquipmentSlot.OFF_HAND)) {
-                Executors.sync {
+                player.syncEntity {
                     this.removePlayer(player, entities)
                 }
             }
@@ -119,7 +120,7 @@ class VigilanceDriverItem : CustomItemFunctions() {
 
         Executors.asyncTimer(0, 2) {
             if (arrow.location.distanceSquared(player.location) >= RANGE * RANGE || arrow.isDead || ++count > 5) {
-                Executors.sync { arrow.remove() }
+                arrow.syncEntity { arrow.remove() }
                 it.cancel()
             }
         }

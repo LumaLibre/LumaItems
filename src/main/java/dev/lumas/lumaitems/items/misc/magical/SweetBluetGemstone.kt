@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.sendFormatted
@@ -187,9 +188,10 @@ class SweetBluetGemstone : CustomItem {
         snowball.shooter = player
 
         cooldownGlacier.add(player.uniqueId)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+
+        Executors.asyncDelayed(AbilityType.GLACIER_BREAKAGE.cooldown) {
             cooldownGlacier.remove(player.uniqueId)
-        }, AbilityType.GLACIER_BREAKAGE.cooldown)
+        }
         object : BukkitRunnable() {
             override fun run() {
                 if (snowball.isDead || snowball.ticksLived > 400) {
@@ -228,9 +230,9 @@ class SweetBluetGemstone : CustomItem {
         }
 
         cooldownStorm.add(player.uniqueId)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, {
+        Executors.asyncDelayed(AbilityType.STORM.cooldown) {
             cooldownStorm.remove(player.uniqueId)
-        }, AbilityType.STORM.cooldown)
+        }
     }
 
 

@@ -3,6 +3,7 @@ version: '${version}'
 main: dev.lumas.lumaitems.LumaItems
 api-version: '1.21'
 author: 'Jsinco'
+folia-supported: true
 depend:
   - LumaCore
 softdepend:

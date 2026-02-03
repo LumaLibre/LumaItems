@@ -8,6 +8,8 @@ import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityTimer
+import dev.lumas.lumaitems.util.Executors.syncLocation
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
@@ -111,7 +113,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
     private fun flyToPlayerExecutor(items: List<Item>, player: Player) {
         var count = 0
 
-        Executors.syncTimer(0, 1) { task ->
+        player.syncEntityTimer(0, 1) { task ->
             if (++count > MAX_FLY_TIME || items.all { isWithinDistance(it, player, 2.0) || !it.isValid }) {
                 task.cancel()
             } else {
@@ -157,7 +159,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
 
 
             val amt = Random.Default.nextInt(snowballCountRange.first, snowballCountRange.second)
-            Executors.sync {
+            pin.syncLocation {
                 pin.world.playSound(pin, Sound.ENTITY_WARDEN_HEARTBEAT, 0.5f, 7f)
                 repeat(amt) {
                     val loc = BukkitVectors.randomGoalLocation(pin, 0.35, 1.0, 0.0)

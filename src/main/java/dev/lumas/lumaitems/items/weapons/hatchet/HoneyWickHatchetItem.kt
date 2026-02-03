@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.items.weapons.hatchet
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
@@ -77,10 +78,9 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
         target.world.playSound(target.location, Sound.BLOCK_HONEY_BLOCK_HIT, 1.0f, 1.0f)
 
 
-
-        Bukkit.getScheduler().runTaskLater(instance(), Runnable {
+        target.syncEntityDelayed(25) {
             list.forEach { it.remove() }
-        }, 25)
+        }
     }
 
     override fun onEntityPickupItem(event: EntityPickupItemEvent) {

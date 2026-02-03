@@ -5,6 +5,8 @@ import dev.lumas.lumaitems.events.items.BlockCacheManager
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
+import dev.lumas.lumaitems.util.Executors.syncEntity
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
@@ -96,7 +98,7 @@ class HellStridersItem : CustomItemFunctions() {
 
         if (blocks.size >= 40) {
             for (index in 0 until blocks.size / 4) {
-                Bukkit.getScheduler().runTask(instance(), Runnable {
+                player.syncEntity {
                     val block = blocks[index]
                     if (block.type == Material.OBSIDIAN) {
                         block.type = Material.CRYING_OBSIDIAN
@@ -104,12 +106,12 @@ class HellStridersItem : CustomItemFunctions() {
                         block.type = Material.LAVA
                         BlockCacheManager.unCacheBlock(player.uniqueId, block)
                     }
-                })
+                }
             }
         }
 
         for (i in 0 until 3) {
-            Bukkit.getScheduler().runTaskLater(instance(), Runnable {
+            player.syncEntityDelayed(random().nextLong(1, 10)) {
                 for (e in 0 until 6) {
                     val block = blocks.random()
                     if (block.world != player.world || block.location.distance(player.location) > 10) {
@@ -133,7 +135,7 @@ class HellStridersItem : CustomItemFunctions() {
                         else -> continue
                     }
                 }
-            }, Random.Default.nextLong(1, 10))
+            }
         }
     }
 

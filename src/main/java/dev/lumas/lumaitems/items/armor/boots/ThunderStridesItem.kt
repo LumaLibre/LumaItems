@@ -5,6 +5,8 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.AbilityUtil.isOnGround
+import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.Executors.syncEntityDelayed
 import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
@@ -69,15 +71,17 @@ class ThunderStridesItem : CustomItem {
     private fun startFastLane(player: Player) {
         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 140, 2, false, false, false))
         activeFastLane.add(player.uniqueId)
-        val particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
+
+        var count = 0
+        Executors.asyncTimer(0, 1) { task ->
+            if (count++ > 140 || !activeFastLane.contains(player.uniqueId)) {
+                task.cancel()
+                stopFastLane(player)
+                return@asyncTimer
+            }
             player.world.spawnParticle(Particle.DUST, player.location, 1, 0.2, 0.0, 0.2, 0.1, DustOptions(Color.fromRGB(251, 216, 90), 0.9f))
             player.world.spawnParticle(Particle.DUST, player.location, 1, 0.2, 0.0, 0.2, 0.1, DustOptions(Color.fromRGB(106, 129, 253), 0.9f))
-        }, 0L, 1L)
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-            stopFastLane(player)
-            Bukkit.getScheduler().cancelTask(particles)
-        }, 140L)
+        }
     }
 
     private fun stopFastLane(player: Player) {
@@ -92,8 +96,9 @@ class ThunderStridesItem : CustomItem {
         player.world.spawnParticle(Particle.WAX_OFF, player.location, 6, 0.5, 0.5, 0.5, 0.3)
 
         player.setMetadata("thunderstrides", FixedMetadataValue(instance(), true))
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+
+        player.syncEntityDelayed(17) {
             player.removeMetadata("thunderstrides", instance())
-        }, 17)
+        }
     }
 }
