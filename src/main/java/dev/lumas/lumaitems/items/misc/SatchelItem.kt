@@ -2,10 +2,11 @@ package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
 import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import java.util.function.Consumer
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -19,7 +20,6 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
-import java.util.function.Consumer
 
 class SatchelItem : CustomItem {
 

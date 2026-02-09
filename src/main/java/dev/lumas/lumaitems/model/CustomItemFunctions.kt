@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.manager
+package dev.lumas.lumaitems.model
 
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
@@ -10,6 +10,7 @@ import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.util.FireAnyways
+import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import java.util.EnumSet
@@ -29,6 +30,7 @@ import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ItemMergeEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -82,6 +84,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.GENERIC_INTERACT -> onGenericInteract(player, event as PlayerInteractEvent)
             Action.SWAP_HAND -> onPlayerSwapHands(player, event as PlayerSwapHandItemsEvent)
             Action.ENTITY_DEATH -> onEntityDeath(player, event as EntityDeathEvent)
+            Action.PLAYER_DEATH -> onPlayerDeath(player, event as PlayerDeathEvent)
             Action.ENTITY_DAMAGE -> onEntityDamage(player, event as EntityDamageByEntityEvent)
             Action.PLAYER_DAMAGED_BY_ENTITY -> onPlayerDamagedByEntity(player, event as EntityDamageByEntityEvent)
             Action.PLAYER_DAMAGED -> onPlayerDamaged(player, event as EntityDamageEvent)
@@ -115,7 +118,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.PLAYER_QUIT -> onPlayerQuit(player, event as PlayerQuitEvent)
             Action.PLAYER_JOIN -> onPlayerJoin(player, event as PlayerJoinEvent)
             Action.PLAYER_PICKUP_EXP -> onPlayerPickupExp(player, event as PlayerPickupExperienceEvent)
-            Action.MACE_SMASH_ATTACK -> onMaceSmashAttack(player, event as EntityDamageByEntityEvent)
+            Action.MACE_SMASH_ATTACK -> onSmashAttack(player, event as EntityAttemptSmashAttackEvent)
             Action.ENTITY_PICKUP_ITEM -> onEntityPickupItem(event as EntityPickupItemEvent)
             Action.HOPPER_PICKUP_ITEM -> onHopperPickupItem(event as InventoryPickupItemEvent)
             Action.INVENTORY_CLICK -> onInventoryClick(player, event as InventoryClickEvent)
@@ -150,6 +153,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onGenericInteract(player: Player, event: PlayerInteractEvent) {}
     open fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {}
     open fun onEntityDeath(player: Player, event: EntityDeathEvent) {}
+    open fun onPlayerDeath(player: Player, event: PlayerDeathEvent) {}
     open fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {}
     open fun onPlayerDamagedByEntity(player: Player, event: EntityDamageByEntityEvent) {}
     open fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {}
@@ -183,7 +187,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPlayerQuit(player: Player, event: PlayerQuitEvent) {}
     open fun onPlayerJoin(player: Player, event: PlayerJoinEvent) {}
     open fun onPlayerPickupExp(player: Player, event: PlayerPickupExperienceEvent) {}
-    open fun onMaceSmashAttack(player: Player, event: EntityDamageByEntityEvent) {}
+    open fun onSmashAttack(player: Player, event: EntityAttemptSmashAttackEvent) {}
     open fun onEntityPickupItem(event: EntityPickupItemEvent) {}
     open fun onHopperPickupItem(event: InventoryPickupItemEvent) {}
     open fun onInventoryClick(player: Player, event: InventoryClickEvent) {}

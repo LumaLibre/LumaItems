@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.misc.nests
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle

@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.extensions.BLOCK_FACE_RELATIVES
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog

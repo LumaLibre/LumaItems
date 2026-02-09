@@ -1,13 +1,12 @@
-package dev.lumas.lumaitems.manager
+package dev.lumas.lumaitems.model
 
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.events.items.ItemListener
-import dev.lumas.lumaitems.registry.Identifier
 import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.RegistryItem
-import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.disabling.Disable
+import dev.lumas.lumaitems.util.extensions.Executors
 import io.papermc.paper.persistence.PersistentDataContainerView
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import kotlin.random.Random
@@ -16,7 +15,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitTask
 
 interface CustomItem : RegistryItem {
 
@@ -24,7 +22,7 @@ interface CustomItem : RegistryItem {
         return LumaItems.getInstance()
     }
     fun random(): Random {
-        return Random
+        return Random.Default
     }
 
     fun <T> async(block: () -> T): ScheduledTask {
@@ -55,13 +53,8 @@ interface CustomItem : RegistryItem {
     fun asyncGlobalTask() {}
 
     fun isDisabled(inLocation: Location): Boolean {
-        val disableAnnotation: Disable? = this::class.java.getAnnotation(Disable::class.java)
-        disableAnnotation?.value?.forEach {
-            if (it.isInWorld(inLocation)) {
-                return true
-            }
-        }
-        return false
+        val disable = this::class.java.getAnnotation(Disable::class.java) ?: return false
+        return disable.value.any { if (disable.invert) !it.isInWorld(inLocation) else it.isInWorld(inLocation) }
     }
 
     fun isHardDisabled(): Boolean {
@@ -75,7 +68,7 @@ interface CustomItem : RegistryItem {
             event.isCancelled = true
             persistNotif = true
         }
-        ItemListener.notify(player, persistNotif)
+        ItemListener.Companion.notify(player, persistNotif)
     }
 
     fun fireAnyways(action: Action): Boolean {

@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.weapons.shield
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle

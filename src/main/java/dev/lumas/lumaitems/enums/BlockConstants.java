@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public enum BlockConstants {
 
-    BLACKLISTED( "SHULKER_BOX",
+    BLACKLISTED( ".*SHULKER_BOX|.*_SIGN",
             Material.CHEST, Material.BARREL, Material.TRAPPED_CHEST,
             Material.FURNACE, Material.BLAST_FURNACE, Material.SMOKER,
             Material.HOPPER, Material.BREWING_STAND, Material.DROPPER,

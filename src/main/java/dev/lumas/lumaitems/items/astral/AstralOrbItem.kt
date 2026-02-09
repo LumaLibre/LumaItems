@@ -1,10 +1,9 @@
 package dev.lumas.lumaitems.items.astral
 
-import dev.lumas.lumaitems.util.extensions.sendFormatted
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.configuration.files.AstralYml
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCrafting
 import dev.lumas.lumaitems.util.Util

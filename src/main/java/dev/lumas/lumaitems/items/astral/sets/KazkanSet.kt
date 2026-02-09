@@ -5,8 +5,8 @@ import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncDelayed
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Material

@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.armor.boots
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil.isOnGround
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import java.util.UUID
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -19,7 +20,6 @@ import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
-import java.util.UUID
 
 class ThunderStridesItem : CustomItem {
 

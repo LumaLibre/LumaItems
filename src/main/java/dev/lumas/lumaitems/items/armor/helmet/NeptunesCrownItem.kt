@@ -1,8 +1,7 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -27,7 +26,6 @@ class NeptunesCrownItem : CustomItemFunctions() {
             .material(Material.AMETHYST_CLUSTER)
             .autoHat(true)
             .vanillaEnchants(Enchantment.PROTECTION to 8)
-            .attributeModifiers(DefaultAttributes.NETHERITE_HELMET.get())
             .tier(Tier.SUMMER_2025)
             .lore(
                 "Wear this shimmering crown to",

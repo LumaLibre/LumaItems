@@ -3,15 +3,14 @@ package dev.lumas.lumaitems.items
 import com.iridium.iridiumcolorapi.IridiumColorAPI
 import dev.lumas.lumacore.utility.ContextLogger
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.enums.RomanNumeral
 import dev.lumas.lumaitems.model.AttributeContainer
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.model.PaperDataComponent
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.model.UnValuedPaperDataComponent
-import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.model.ValuedPaperDataComponent
+import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentType.Valued
 import net.kyori.adventure.text.format.NamedTextColor
@@ -49,7 +48,7 @@ class ItemFactory(
     /**
      * Attribute modifiers.
      */
-    var attributeModifiers: MutableMap<Attribute, AttributeModifier> = mutableMapOf(),
+    var attributeContainers: MutableList<AttributeContainer> = mutableListOf(),
     /**
      * Quotes.
      */
@@ -100,7 +99,6 @@ class ItemFactory(
     val item = ItemStack(material, amount)
     val meta: Damageable? = item.itemMeta as? Damageable
     var miniMessage = false
-    var hideDefaultAttributes = true
 
     fun miniMessage(): ItemFactory {
         miniMessage = true
@@ -131,7 +129,7 @@ class ItemFactory(
     }
 
     fun addAttributeContainer(attributeContainer: AttributeContainer): ItemFactory {
-        this.attributeModifiers[attributeContainer.attribute] = AttributeModifier(attributeContainer.key, attributeContainer.amount, attributeContainer.operation, attributeContainer.slot)
+        this.attributeContainers.add(attributeContainer)
         return this
     }
 
@@ -209,18 +207,19 @@ class ItemFactory(
         for (enchant in vanillaEnchants) {
             meta.addEnchant(enchant.key, enchant.value, true)
         }
-        if (attributeModifiers.isNotEmpty()) {
-            for (attributeModifier in attributeModifiers) {
-                meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
-            }
-        } else if (hideDefaultAttributes) {
-            val defaultAttributes = DefaultAttributes.getFromMaterial(material)
-            if (defaultAttributes != null) {
-                for (attributeModifier in defaultAttributes.attributes) {
-                    meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
-                }
-            }
+
+        val defaultAttrs = material.defaultAttributeModifiers.entries().associate { it.key to it.value }
+        val customAttrs = attributeContainers.associate { it.attribute() to it.modifier() }
+
+        val attributes = buildMap {
+            putAll(defaultAttrs)
+            putAll(customAttrs)
         }
+
+        for ((attribute, modifier) in attributes) {
+            meta.addAttributeModifier(attribute, modifier)
+        }
+
         meta.isUnbreakable = unbreakable
         if (hideEnchants) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
 
@@ -269,7 +268,7 @@ class ItemFactory(
         private var hideEnchants: Boolean = false
         private var addSpace: Boolean = true
         private var autoHat: Boolean = false
-        private var attributeModifiers: MutableMap<Attribute, AttributeModifier> = mutableMapOf()
+        private var attributeContainers: MutableList<AttributeContainer> = mutableListOf()
         private var taglines: MutableList<String> = mutableListOf()
         private var b64PHead: String? = null
         private var spoofEnchants: Boolean = false
@@ -306,12 +305,8 @@ class ItemFactory(
         fun hideEnchants(hideEnchants: Boolean) = apply { this.hideEnchants = hideEnchants }
         fun addSpace(addSpace: Boolean) = apply { this.addSpace = addSpace }
         fun autoHat(autoHat: Boolean) = apply { this.autoHat = autoHat }
-        fun attributeModifiers(attributeModifiers: MutableMap<Attribute, AttributeModifier>) = apply { this.attributeModifiers = attributeModifiers }
-        fun attributeModifiers(vararg containers: AttributeContainer) = apply {
-            this.attributeModifiers = containers.associate {
-                it.attribute to AttributeModifier(it.key, it.amount, it.operation, it.slot)
-            }.toMutableMap()
-        }
+        fun attributeModifiers(attributeModifiers: MutableMap<Attribute, AttributeModifier>) = apply { this.attributeContainers = attributeModifiers.map { AttributeContainer.from(it.key, it.value) }.toMutableList() }
+        fun attributeModifiers(vararg containers: AttributeContainer) = apply { this.attributeContainers = containers.toMutableList() }
         fun tagline(quotes: MutableList<String>) = apply { this.taglines = quotes }
         @SafeVarargs
         fun tagline(tagline: String) = apply { this.taglines = mutableListOf(tagline) }
@@ -324,7 +319,7 @@ class ItemFactory(
 
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
-            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, taglines, b64PHead,
+            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeContainers, taglines, b64PHead,
             spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount
         )
 

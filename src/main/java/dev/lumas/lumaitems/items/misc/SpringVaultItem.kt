@@ -3,11 +3,10 @@ package dev.lumas.lumaitems.items.misc
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
 import java.util.UUID
 import org.bukkit.Color
 import org.bukkit.Material

@@ -35,6 +35,7 @@ public enum Action {
     GENERIC_INTERACT, // A generic interaction (I believe this is called when a player crouches while holding an item?)
     SWAP_HAND, // When a player swaps their main and offhand items (F Key)
     ENTITY_DEATH, // When a living entity dies and the killer is a player
+    PLAYER_DEATH, // When a player dies while wearing specific nbt
     ENTITY_DAMAGE, // When a player or a projectile shot by a player damages a living entity
     PLAYER_DAMAGED_BY_ENTITY, // When a player is damaged by a living entity
     //PLAYER_DAMAGED_WHILE_BLOCKING, // When a player is damaged while blocking with a shield

@@ -10,6 +10,10 @@ abstract class PaperDataComponent {
             return ValuedPaperDataComponent(dataComponentType, value)
         }
 
+        fun <T: Any> valued(dataComponentType: DataComponentType.Valued<T>): ValuedPaperDataComponent.Builder<T> {
+            return ValuedPaperDataComponent.Builder(dataComponentType)
+        }
+
         @JvmStatic
         fun unValued(dataComponentType: DataComponentType.NonValued): UnValuedPaperDataComponent {
             return UnValuedPaperDataComponent(dataComponentType)
@@ -24,4 +28,14 @@ class UnValuedPaperDataComponent(
 class ValuedPaperDataComponent<T : Any>(
     val dataComponentType: DataComponentType.Valued<T>,
     val value: T,
-) : PaperDataComponent()
+) : PaperDataComponent() {
+
+    class Builder<T : Any>(
+        private val dataComponentType: DataComponentType.Valued<T>
+    ) {
+
+        fun value(value: T): ValuedPaperDataComponent<T> {
+            return ValuedPaperDataComponent(dataComponentType, value)
+        }
+    }
+}

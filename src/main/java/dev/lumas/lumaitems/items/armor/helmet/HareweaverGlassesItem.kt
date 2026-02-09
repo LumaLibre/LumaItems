@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.armor.helmet
 
 import dev.lumas.lumaitems.guis.SnapshotShulkerBoxInventory
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.block.ShulkerBox

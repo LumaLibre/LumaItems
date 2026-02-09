@@ -2,11 +2,11 @@ package dev.lumas.lumaitems.items.weapons.hatchet
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.sync
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound

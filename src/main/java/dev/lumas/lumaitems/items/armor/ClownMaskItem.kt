@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.armor
 
 import dev.lumas.lumaitems.configuration.files.HeadsYml
-import dev.lumas.lumaitems.enums.DefaultAttributes
-import dev.lumas.lumaitems.util.tiers.Tier
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute
@@ -35,7 +35,7 @@ class ClownMaskItem : CustomItemFunctions() {
             .tier(Tier.CARNIVAL_2024)
             .b64PHead(headTextures.random())
             .persistentData(KEY)
-            .attributeModifiers(DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH, KEY, 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD))
+            .attributeModifiers(AttributeContainer.ofMap(Attribute.MAX_HEALTH, KEY, 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD))
             .vanillaEnchants(mutableMapOf(Enchantment.PROTECTION to 7, Enchantment.RESPIRATION to 4, Enchantment.AQUA_AFFINITY to 2))
             .lore("Disguise yourself in this", "neat mask!", "", "Wearing this mask grants", "an extra <#FA909D>3</#FA909D> hearts.", "", "<red>Same stats as Netherite</red>")
             .buildPair()

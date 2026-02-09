@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.armor.boots
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import kotlin.math.min
 import org.bukkit.block.BlockFace

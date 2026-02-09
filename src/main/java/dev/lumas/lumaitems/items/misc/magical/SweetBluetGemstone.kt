@@ -1,18 +1,17 @@
 package dev.lumas.lumaitems.items.misc.magical
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.sendFormatted
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import java.util.UUID
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -28,9 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.UUID
 
 class SweetBluetGemstone : CustomItem {
 

@@ -1,12 +1,12 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors.syncDelayed
-import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -35,6 +35,7 @@ class UnnamedBowItem : CustomItemFunctions() {
                 Enchantment.QUICK_CHARGE to 4,
                 Enchantment.PIERCING to 5,
                 Enchantment.UNBREAKING to 5,
+                Enchantment.MULTISHOT to 1,
                 Enchantment.MENDING to 1
             )
             .buildPair()

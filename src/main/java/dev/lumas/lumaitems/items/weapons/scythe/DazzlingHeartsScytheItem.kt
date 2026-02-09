@@ -1,15 +1,16 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors.syncDelayed
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.util.function.Consumer
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -19,12 +20,11 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
-import java.util.function.Consumer
-import org.bukkit.inventory.EquipmentSlot
 
 @Disable(WorldName.PINATA)
 class DazzlingHeartsScytheItem : CustomItemFunctions() {

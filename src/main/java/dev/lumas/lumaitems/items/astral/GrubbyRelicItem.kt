@@ -2,16 +2,23 @@ package dev.lumas.lumaitems.items.astral
 
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.relics.RelicCreator
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 class GrubbyRelicItem : CustomItemFunctions() {
+
+    private companion object {
+        val KEY = "grubby-relic".namespacedKey()
+    }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -22,13 +29,13 @@ class GrubbyRelicItem : CustomItemFunctions() {
             .addSpace(false)
             .vanillaEnchants(Enchantment.UNBREAKING to 1)
             .lore("<gray>Right-click to open!")
-            .persistentData("grubby-relic")
+            .persistentData(KEY)
             .buildPair()
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        val item = event.item ?: return
-        item.amount -= 1
+        if (!player.isItemInSlot(KEY, EquipmentSlot.HAND)) return
+        player.inventory.itemInMainHand.amount -= 1
 
         val rarity = GrubbyWeights.randomByTotalWeight().delegate
         val material = rarity.materials.random()

@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.armor.trousers
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.util.UUID
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
 
 class BouquetTrousersItem : CustomItemFunctions() {
 
@@ -44,9 +43,7 @@ class BouquetTrousersItem : CustomItemFunctions() {
             .tier(Tier.VALENTIDE_2025)
             .material(Material.NETHERITE_LEGGINGS)
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(
-                    AttributeContainer.of(key, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.LEGS)
-                )
+                AttributeContainer.of(key, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.LEGS)
             )
             .buildPair()
     }

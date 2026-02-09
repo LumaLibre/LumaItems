@@ -17,13 +17,15 @@ public enum WorldName {
     MAIN_SEASONS("main_seasons"),
     RESOURCE("resource"),
     RESOURCE_NETHER("resource_nether"),
+    RESOURCE_THE_END("resource_the_end"),
+    RESOURCE_DESERT("resource_desert"),
     STAFF("staff"),
     INTRODUCTION("introduction"),
     PINATA("pinata"),
     ;
 
 
-    // Worlds that are normally accessible to players on LumaMC
+    // Worlds that are normally accessible to players on Luma
     public static WorldName[] NORMALLY_ACCESSIBLE = {
             MAIN,
             MAIN_NETHER,
@@ -31,10 +33,8 @@ public enum WorldName {
             MAIN_SEASONS,
             RESOURCE,
             RESOURCE_NETHER,
-            SPAWN,
-            EVENT,
-            EVENT_NEW,
-            EVENT_THE_END
+            RESOURCE_THE_END,
+            RESOURCE_DESERT
     };
 
     private final String stringName;

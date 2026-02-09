@@ -1,7 +1,11 @@
 package dev.lumas.lumaitems.particles;
 
 import dev.lumas.lumaitems.util.extensions.ColorUtil;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Note;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -13,9 +17,18 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.Color;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.*;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.StringJoiner;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
@@ -954,6 +967,12 @@ public class ParticleDisplay implements Cloneable {
         this.data = new DustTransitionParticleColor(fromColor, toColor, size);
         this.extra = size;
         return this;
+    }
+
+
+    @Nonnull
+    public ParticleDisplay withTransitionColor(@Nonnull Color fromColor, @Nonnull Color toColor, float size) {
+        return withTransitionColor(fromColor, size, toColor);
     }
 
     /**

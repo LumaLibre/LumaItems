@@ -1,6 +1,5 @@
 package dev.lumas.lumaitems.model
 
-import dev.lumas.lumaitems.manager.CustomItem
 import java.util.UUID
 
 class CustomItemCooldown(

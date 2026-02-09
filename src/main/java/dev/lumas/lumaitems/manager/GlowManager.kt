@@ -11,14 +11,19 @@ import com.google.common.collect.Lists
 import dev.lumas.lumacore.utility.ContextLogger
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.extensions.classExists
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.lang.reflect.Type
 import java.util.Optional
 import java.util.UUID
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
 
 
@@ -64,12 +69,10 @@ object GlowManager {
         )
     }
 
-    private val LOGGER: ContextLogger = ContextLogger.getLogger(true)
-
-    //private val board = Bukkit.getScoreboardManager().mainScoreboard
-    private val teams: MutableList<Team> = mutableListOf()
-
-    private val playerTeamsTasks: MutableMap<UUID, Int> = mutableMapOf()
+    private val IS_FOLIA by lazy { classExists("io.papermc.paper.threadedregions.RegionizedServer") }
+    private val LOGGER: ContextLogger by lazy { ContextLogger.getLogger(true) }
+    private val TEAMS: MutableList<Team> by lazy { mutableListOf() }
+    private val PLAYER_TEAM_TASKS: MutableMap<UUID, ScheduledTask> by lazy { mutableMapOf() }
 
     @JvmStatic
     fun initGlowTeams() {
@@ -80,102 +83,108 @@ object GlowManager {
 
     // FIXME: no-op folia
     fun registerGlowColorTeam(glowColor: NamedTextColor): Boolean {
-//        val glowColorName = glowColor.toString().lowercase()
-//        val team = board.getTeam(glowColorName)
-//        if (team == null) {
-//            board.registerNewTeam(glowColorName).color(glowColor)
-//            teams.add(board.getTeam(glowColorName) ?: return false)
-//        }
+        val board = getScoreBoard() ?: return false
+        val glowColorName = glowColor.toString().lowercase()
+        val team = board.getTeam(glowColorName)
+        if (team == null) {
+            board.registerNewTeam(glowColorName).color(glowColor)
+            TEAMS.add(board.getTeam(glowColorName) ?: return false)
+        }
         return true
     }
 
     // FIXME: no-op folia
     fun setGlowColor(entity: Entity, glowColor: NamedTextColor) {
-//        val team = board.getTeam(glowColor.toString().lowercase())
-//        if (team == null) {
-//            LOGGER.error("Could not find team for color $glowColor")
-//        } else {
-//            team.addEntry(entity.uniqueId.toString())
-//        }
+        val board = getScoreBoard() ?: return
+        val team = board.getTeam(glowColor.toString().lowercase())
+        if (team == null) {
+            LOGGER.error("Could not find team for color $glowColor")
+        } else {
+            team.addEntry(entity.uniqueId.toString())
+        }
     }
 
     // FIXME: no-op folia
     @Suppress("DEPRECATION")
     fun setGlowColor(entity: Entity, glowColor: ChatColor) {
-//        val team = board.getTeam(glowColor.name.lowercase())
-//        if (team == null) {
-//            LOGGER.error("Could not find team for color ${glowColor.name.lowercase()}")
-//        } else {
-//            team.addEntry(entity.uniqueId.toString())
-//        }
+        val board = getScoreBoard() ?: return
+        val team = board.getTeam(glowColor.name.lowercase())
+        if (team == null) {
+            LOGGER.error("Could not find team for color ${glowColor.name.lowercase()}")
+        } else {
+            team.addEntry(entity.uniqueId.toString())
+        }
     }
 
     // FIXME: no-op folia
     fun removeGlowColor(entity: Entity) {
-//        val team = board.getEntityTeam(entity) ?: return
-//        team.removeEntry(entity.uniqueId.toString())
+        val team = getScoreBoard()?.getEntityTeam(entity) ?: return
+        team.removeEntry(entity.uniqueId.toString())
     }
 
 
     // FIXME: no-op folia
     fun addToTeamForTicks(entity: Entity, glowColor: NamedTextColor, ticks: Long) {
-//        setGlowColor(entity, glowColor)
-//        entity.syncEntityDelayed(ticks) {
-//            removeGlowColor(entity)
-//            board.getEntityTeam(entity)?.addEntry(entity.uniqueId.toString())
-//        }
+        val board = getScoreBoard() ?: return
+        setGlowColor(entity, glowColor)
+        entity.syncDelayed(ticks) {
+            removeGlowColor(entity)
+            board.getEntityTeam(entity)?.addEntry(entity.uniqueId.toString())
+        }
     }
 
     // FIXME: no-op folia
     fun addToTeamForTicks(player: Player, glowColor: NamedTextColor, ticks: Long) {
-//        val uuid = player.uniqueId
-//        if (playerTeamsTasks.contains(uuid)) {
-//            Bukkit.getScheduler().cancelTask(playerTeamsTasks[uuid]!!)
-//        }
-//
-//        setGlowColor(player, glowColor)
-//
-//        playerTeamsTasks[uuid] = Executors.syncDelayed(ticks) {
-//            removeGlowColor(player)
-//        }.taskId
+        if (getScoreBoard() == null) return
+        val uuid = player.uniqueId
+        PLAYER_TEAM_TASKS[uuid]?.cancel()
+
+        setGlowColor(player, glowColor)
+
+        PLAYER_TEAM_TASKS[uuid] = player.syncDelayed(ticks) {
+            removeGlowColor(player)
+        } ?: return
     }
 
     // FIXME: no-op folia
     @Suppress("DEPRECATION")
     fun addToTeamForTicks(entity: Entity, glowColor: ChatColor, ticks: Long) {
-//        setGlowColor(entity, glowColor)
-//        Executors.syncDelayed(ticks) {
-//            removeGlowColor(entity)
-//            board.getEntityTeam(entity)?.addEntry(entity.uniqueId.toString())
-//        }
+        val board = getScoreBoard() ?: return
+        setGlowColor(entity, glowColor)
+        entity.syncDelayed(ticks) {
+            removeGlowColor(entity)
+            board.getEntityTeam(entity)?.addEntry(entity.uniqueId.toString())
+        }
     }
 
-    // FIXME: no-op folia
+
     @Suppress("DEPRECATION")
     fun addToTeamForTicks(player: Player, glowColor: ChatColor, ticks: Long) {
-//        val uuid = player.uniqueId
-//        if (playerTeamsTasks.contains(uuid)) {
-//            Bukkit.getScheduler().cancelTask(playerTeamsTasks[uuid]!!)
-//        }
-//
-//        setGlowColor(player, glowColor)
-//
-//        playerTeamsTasks[uuid] = Executors.syncDelayed(ticks) {
-//            removeGlowColor(player)
-//        }.taskId
+        if (getScoreBoard() == null) return
+        val uuid = player.uniqueId
+        PLAYER_TEAM_TASKS[uuid]?.cancel()
+
+        setGlowColor(player, glowColor)
+
+        PLAYER_TEAM_TASKS[uuid] = player.syncDelayed(ticks) {
+            removeGlowColor(player)
+        } ?: return
     }
 
-    // FIXME: no-op folia
     @Suppress("DEPRECATION")
     fun getGlowColorLegacy(entity: Entity): ChatColor? {
-//        return board.getEntityTeam(entity)?.color
-        return ChatColor.WHITE
+        val board = getScoreBoard() ?: return null
+        return board.getEntityTeam(entity)?.color
     }
 
-    // FIXME: no-op folia
     fun getGlowColor(player: Entity): TextColor? {
-//        return board.getEntityTeam(player)?.color()
-        return NamedTextColor.WHITE
+        val board = getScoreBoard() ?: return null
+        return board.getEntityTeam(player)?.color()
+    }
+
+    fun getScoreBoard(): Scoreboard? {
+        if (IS_FOLIA) return null
+        return Bukkit.getScoreboardManager().mainScoreboard
     }
 
     fun removeProtocolTeam(player: Player, entity: Entity) {

@@ -2,21 +2,19 @@ package dev.lumas.lumaitems.items.tools.rod
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
-import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Executors
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.extensions.Executors
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.inventory.ItemStack
-import kotlin.random.Random
 
 class LoversAlluringItem : CustomItem {
 

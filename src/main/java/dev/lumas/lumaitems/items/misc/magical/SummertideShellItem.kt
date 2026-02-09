@@ -1,14 +1,12 @@
 package dev.lumas.lumaitems.items.misc.magical
 
-import dev.lumas.lumaitems.util.extensions.sendFormatted
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.model.PersistentDataRecord
-import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.Material
 import org.bukkit.NamespacedKey

@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.astral.sets
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.items.astral.AstralSetFunctions
+import dev.lumas.lumaitems.model.AttributeContainer
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -24,7 +24,7 @@ class ReforgedSet : AstralSetFunctions("reforged-set") {
             mutableMapOf(Enchantment.RESPIRATION to 3),
             mutableListOf("Increases max amount", "of health while worn."),
             true,
-            DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(Attribute.MAX_HEALTH,
+            AttributeContainer.ofMap(Attribute.MAX_HEALTH,
                 "${identifier()}-helm", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
         )
 
@@ -33,7 +33,7 @@ class ReforgedSet : AstralSetFunctions("reforged-set") {
             mutableMapOf(),
             mutableListOf("Increases max amount", "of health while worn."),
             true,
-            DefaultAttributes.NETHERITE_CHESTPLATE.appendThenGetAttributes(Attribute.MAX_HEALTH,
+            AttributeContainer.ofMap(Attribute.MAX_HEALTH,
                 "${identifier()}-chest", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
         )
 
@@ -42,7 +42,7 @@ class ReforgedSet : AstralSetFunctions("reforged-set") {
             mutableMapOf(),
             mutableListOf("Increases max amount", "of health while worn."),
             true,
-            DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(Attribute.MAX_HEALTH,
+            AttributeContainer.ofMap(Attribute.MAX_HEALTH,
                 "${identifier()}-legs", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
         )
 
@@ -51,7 +51,7 @@ class ReforgedSet : AstralSetFunctions("reforged-set") {
             mutableMapOf(Enchantment.FEATHER_FALLING to 4, Enchantment.DEPTH_STRIDER to 3),
             mutableListOf("Increases max amount", "of health while worn."),
             true,
-            DefaultAttributes.NETHERITE_BOOTS.appendThenGetAttributes(Attribute.MAX_HEALTH,
+            AttributeContainer.ofMap(Attribute.MAX_HEALTH,
                 "${identifier()}-boots", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
         )
 

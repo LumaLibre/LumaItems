@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.weapons.hatchet
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors.syncDelayed
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable

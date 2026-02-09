@@ -9,13 +9,12 @@ import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.FireForAllNBT
 import dev.lumas.lumaitems.util.Util
+import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
 import org.bukkit.event.EventHandler
@@ -35,6 +34,7 @@ import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ItemMergeEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -124,7 +124,7 @@ class Listeners : ItemListener() {
     }
 
     @FireForAllNBT
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityDeath(event: EntityDeathEvent) {
         val entity = event.entity
 
@@ -136,6 +136,14 @@ class Listeners : ItemListener() {
         // No killer. Let's check the entity's persistent data container.
         val data: PersistentDataContainer = entity.persistentDataContainer
         fire(data, Action.ENTITY_DEATH, getDummyPlayer(), event)
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onPlayerDeath(event: PlayerDeathEvent) {
+        val player = event.entity
+        val data = Util.getAllEquipmentNBT(player)
+
+        fire(data, Action.PLAYER_DEATH, player, event)
     }
 
     @FireForAllNBT
@@ -151,12 +159,7 @@ class Listeners : ItemListener() {
             (event.damager as? Projectile)?.persistentDataContainer?.let { add(it) }
         }
 
-        // TODO: Add special Ability type for when players are damaging an entity with no permission to damage them
-        if (player.inventory.itemInMainHand.type == Material.MACE && player.fallDistance >= 1.5f) {
-            fire(data, Action.MACE_SMASH_ATTACK, player, event)
-        } else {
-            fire(data, Action.ENTITY_DAMAGE, player, event)
-        }
+        fire(data, Action.ENTITY_DAMAGE, player, event)
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -228,7 +231,7 @@ class Listeners : ItemListener() {
         fire(data, Action.PLACE_BLOCK, player, event)
     }
 
-    //@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBlockDamage(event: BlockDamageEvent) {
         val player = event.player
         val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
@@ -495,5 +498,13 @@ class Listeners : ItemListener() {
         val player = event.target.thrower?.let { Bukkit.getPlayer(it) } ?: return
         val data = event.target.persistentDataContainer
         fire(data, Action.ITEM_MERGE, player, event)
+    }
+
+    @EventHandler
+    fun onSmashAttack(event: EntityAttemptSmashAttackEvent) {
+        val player = event.entity as? Player ?: return
+        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.MACE_SMASH_ATTACK, player, event)
     }
 }

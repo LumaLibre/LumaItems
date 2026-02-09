@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
@@ -14,7 +14,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 
 @Disable(WorldName.EVENT_NEW)

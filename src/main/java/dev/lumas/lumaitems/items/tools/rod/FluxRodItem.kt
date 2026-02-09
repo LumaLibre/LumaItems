@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.tools.rod
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.random.Random
 import net.minecraft.world.entity.projectile.FishingHook
@@ -43,7 +43,7 @@ class FluxRodItem : CustomItemFunctions() {
                 Enchantment.UNBREAKING to 3,
                 Enchantment.MENDING to 1
             )
-            .tier(Tier.VALENTINES_2026)
+            .tier(Tier.VALENTIDE_2026)
             .buildPair()
     }
 

@@ -1,13 +1,13 @@
 package dev.lumas.lumaitems.items.tools.nests
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.model.PersistentDataRecord
-import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.dialogue.DialogueText
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import kotlin.random.Random

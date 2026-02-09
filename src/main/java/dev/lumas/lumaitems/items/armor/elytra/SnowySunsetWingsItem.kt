@@ -5,7 +5,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.lumas.glowapi.colormanagers.ColorManager
 import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot

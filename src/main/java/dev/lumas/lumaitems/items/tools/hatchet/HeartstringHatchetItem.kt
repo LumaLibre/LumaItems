@@ -1,13 +1,12 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -49,10 +48,8 @@ class HeartstringHatchetItem : CustomItemFunctions() {
                 "<red>Cooldown<gray>:<red> 40s"
             )
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_AXE.appendThenGetAttributes(
-                    AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, extra, EquipmentSlotGroup.MAINHAND),
-                    AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, extra, EquipmentSlotGroup.MAINHAND)
-                )
+                AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, extra, EquipmentSlotGroup.MAINHAND),
+                AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, extra, EquipmentSlotGroup.MAINHAND)
             )
             .vanillaEnchants(
                 Enchantment.SMITE to 6,

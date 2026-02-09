@@ -2,8 +2,9 @@ package dev.lumas.lumaitems.items.armor.helmet
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.Util
+import java.util.UUID
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.ChatColor
@@ -15,7 +16,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.UUID
 
 class LuminaLensesItem : CustomItem {
 

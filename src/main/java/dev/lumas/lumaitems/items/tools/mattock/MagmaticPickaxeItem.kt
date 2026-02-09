@@ -1,10 +1,11 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
+import java.util.function.Consumer
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
@@ -12,7 +13,6 @@ import org.bukkit.entity.ExperienceOrb
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import java.util.function.Consumer
 
 @Disable(WorldName.EVENT_NEW)
 class MagmaticPickaxeItem : CustomItem {

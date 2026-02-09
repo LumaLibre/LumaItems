@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.armor.trousers
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.QuickTasks
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -28,8 +28,10 @@ class ParfaitStridesItem : CustomItem {
             mutableMapOf(Enchantment.BLAST_PROTECTION to 8, Enchantment.PROTECTION to 7, Enchantment.UNBREAKING to 8, Enchantment.MENDING to 1)
         )
         item.tier = "&#fb5a5a&lV&#fb6069&la&#fc6677&ll&#fc6c86&le&#fc7294&ln&#fd78a3&lt&#fd7eb2&li&#fb83be&ln&#f788c9&le&#f38dd4&ls &#f092df&l2&#ec97e9&l0&#e89cf4&l2&#e4a1ff&l4"
-        item.attributeModifiers = DefaultAttributes.NETHERITE_LEGGINGS.appendThenGetAttributes(
-            Attribute.MAX_HEALTH, "parfaitstrides", 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS
+        item.attributeContainers = mutableListOf(
+            AttributeContainer.of(
+                "parfaitstrides", Attribute.MAX_HEALTH, AttributeModifier.Operation.ADD_NUMBER, 4.0, EquipmentSlotGroup.LEGS
+            )
         )
 
         return Pair("parfaitstrides", item.createItem())

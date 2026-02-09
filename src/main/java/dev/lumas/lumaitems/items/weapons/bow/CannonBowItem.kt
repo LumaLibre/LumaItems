@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.model.CustomItem
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import org.bukkit.ChatColor
 import org.bukkit.GameMode

@@ -2,10 +2,9 @@ package dev.lumas.lumaitems.items.tools.spade
 
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.enums.CardinalDirection
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Ellipsoid
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -45,10 +44,9 @@ class BigSwingSpadeItem : CustomItemFunctions() {
                 Enchantment.MENDING to 1
             )
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_SHOVEL.appendThenGetAttributes(
-                    AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.86, EquipmentSlotGroup.ANY),
-                    AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.4, EquipmentSlotGroup.ANY)
-                )
+                AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.86, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.4, EquipmentSlotGroup.ANY)
+
             )
             .buildPair()
     }
@@ -60,7 +58,7 @@ class BigSwingSpadeItem : CustomItemFunctions() {
             return
         }
 
-        val cardinalDirection = CardinalDirection.fromEntityYaw(player)
+        val cardinalDirection = CardinalDirection.fromEntity(player)
 
 
         val xRadius = if (cardinalDirection == CardinalDirection.EAST || cardinalDirection == CardinalDirection.WEST) 2.5 else 4.0

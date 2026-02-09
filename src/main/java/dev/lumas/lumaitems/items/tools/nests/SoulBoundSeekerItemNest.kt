@@ -3,15 +3,15 @@ package dev.lumas.lumaitems.items.tools.nests
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.MultiPlayerCustomItem
 import dev.lumas.lumaitems.model.PersistentDataRecord
-import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
@@ -22,8 +22,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import java.util.UUID
-import kotlin.collections.iterator
 
 
 class SoulboundSeeker : CustomItemFunctions() {
@@ -66,22 +64,16 @@ class SoulboundSeeker : CustomItemFunctions() {
 }
 
 
-class SoulboundSeekerItem : CustomItemFunctions() {
+class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getInstance(), "lovers-bond-secret")) {
 
     // Static
     companion object {
-        private val key = NamespacedKey(LumaItems.getInstance(), "lovers-bond-mattock")
-        private val secretKey = NamespacedKey(LumaItems.getInstance(), "lovers-bond-secret")
-        private val cachedBonds: MutableMap<UUID, String> = mutableMapOf()
+        private const val KEY = "lovers-bond-mattock"
     }
 
     // Item creation
 
-    var secret: String
-    init {
-        val chars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        secret = (1..7).map { chars.random() }.joinToString("")
-    }
+    private val secretGenerator = SecretGenerator()
 
     enum class Style(val styleName: String, val baseColor: String) {
         STYLE_1(
@@ -112,15 +104,15 @@ class SoulboundSeekerItem : CustomItemFunctions() {
             )
             .material(Material.NETHERITE_PICKAXE)
             .tier(Tier.VALENTIDE_2025)
-            .persistentData(key.key)
-            .persistentDataRecords(PersistentDataRecord.create(secretKey, PersistentDataType.STRING, secret))
+            .persistentData(KEY)
+            .persistentDataRecords(PersistentDataRecord.create(secretKey, PersistentDataType.STRING, secretGenerator.secret))
             .vanillaEnchants(Enchantment.EFFICIENCY to 7, Enchantment.UNBREAKING to 10, Enchantment.SILK_TOUCH to 1, Enchantment.MENDING to 1)
             .build()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
         val style = Style.entries.random()
-        return Pair(key.key, create(style).createItem())
+        return Pair(KEY, create(style).createItem())
     }
 
 
@@ -148,7 +140,7 @@ class SoulboundSeekerItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val type = event.block.type
-        if (!BlockConstants.ORES.contains(type) || !cachedBonds.hasSpecificValueMoreThanTwice(cachedBonds[player.uniqueId])) {
+        if (!BlockConstants.ORES.contains(type) || !isBondedPlayerOnline(player)) {
             return // Fast checks
         }
         val blocks = Sphere(event.block.location, 9.0, 20.0).sphere
@@ -158,54 +150,6 @@ class SoulboundSeekerItem : CustomItemFunctions() {
             if (block.type != type) continue
             block.breakNaturallyWithLog(player, item, true)
         }
-    }
-
-
-    // Secrets
-
-    override fun asyncGlobalTask() {
-        if (cachedBonds.isNotEmpty()) {
-            cachedBonds.entries.retainAll { entry ->
-                val player = Bukkit.getPlayer(entry.key) ?: return@retainAll false
-                findSecret(player) != null
-            }
-        }
-
-        for (player in Bukkit.getOnlinePlayers()) {
-            if (cachedBonds.containsKey(player.uniqueId)) continue // already cached
-            val secret = findSecret(player) ?: continue
-            cachedBonds[player.uniqueId] = secret
-        }
-    }
-
-    private fun getBondedPlayer(seeker: Player): Player? {
-        val secret = cachedBonds[seeker.uniqueId] ?: return null
-        for (bond in cachedBonds) {
-            if (bond.value == secret && bond.key != seeker.uniqueId) {
-                return Bukkit.getPlayer(bond.key)
-            }
-        }
-        return null
-    }
-
-    private fun findSecret(player: Player): String? {
-        for (item in player.inventory.contents.filterNotNull()) {
-            val secret = getSecret(item)
-            if (secret != null) {
-                return secret
-            }
-        }
-        return null
-    }
-
-    private fun getSecret(item: ItemStack): String? {
-        return item.itemMeta?.persistentDataContainer?.get(secretKey, PersistentDataType.STRING)
-    }
-
-    // Util
-
-    private fun <K, V> Map<K, V>.hasSpecificValueMoreThanTwice(value: V): Boolean {
-        return this.values.count { it == value } > 1
     }
 
 }

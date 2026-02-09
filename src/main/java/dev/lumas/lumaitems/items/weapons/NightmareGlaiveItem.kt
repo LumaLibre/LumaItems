@@ -2,17 +2,17 @@ package dev.lumas.lumaitems.items.weapons
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.FireAnyways
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.awt.Color

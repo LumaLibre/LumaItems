@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Disable {
     WorldName[] value();
     boolean hard() default false;
+    boolean invert() default false; // if true, the item is disabled in all worlds EXCEPT the ones specified in value()
 }

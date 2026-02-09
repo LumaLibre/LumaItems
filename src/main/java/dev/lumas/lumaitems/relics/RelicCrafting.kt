@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.relics
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFunctions
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.Bukkit
 import org.bukkit.Material

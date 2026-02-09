@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.tools.spade
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import org.bukkit.Material

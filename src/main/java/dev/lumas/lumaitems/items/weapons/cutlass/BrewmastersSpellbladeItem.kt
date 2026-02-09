@@ -1,9 +1,10 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -13,7 +14,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffectType
-import kotlin.random.Random
 
 class BrewmastersSpellbladeItem : CustomItem {
 

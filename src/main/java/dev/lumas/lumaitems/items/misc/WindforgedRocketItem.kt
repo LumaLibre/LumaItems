@@ -3,8 +3,8 @@ package dev.lumas.lumaitems.items.misc
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.MiniMessageUtil.mm
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier

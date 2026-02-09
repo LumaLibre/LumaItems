@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Color

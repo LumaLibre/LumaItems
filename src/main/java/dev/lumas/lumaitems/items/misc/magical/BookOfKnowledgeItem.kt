@@ -2,16 +2,17 @@ package dev.lumas.lumaitems.items.misc.magical
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.model.MagicItemCooldown
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -26,9 +27,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.concurrent.ConcurrentLinkedQueue
 
 @Suppress("Duplicates")
 class BookOfKnowledgeItem : CustomItemFunctions() {

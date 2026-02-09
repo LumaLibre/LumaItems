@@ -4,8 +4,8 @@ import dev.lumas.lumacore.utility.Logging
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.sendFormatted
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID

@@ -1,17 +1,16 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.toBukkitColor
+import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.random.asJavaRandom
 import org.bukkit.Color
@@ -57,9 +56,7 @@ class HeavyBloblobScytheItem : CustomItemFunctions() {
             .persistentData(KEY)
             .tier(Tier.CHRISTMAS_2025)
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_HOE.appendThenGetAttributes(
-                    AttributeContainer.of(KEY, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.45, EquipmentSlotGroup.ANY)
-                )
+                AttributeContainer.of(KEY, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.45, EquipmentSlotGroup.ANY)
             )
             .lore(
 //                "A frozen scythe that",

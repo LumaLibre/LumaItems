@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.disabling.Ignore
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.UUID
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player

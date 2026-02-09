@@ -12,9 +12,9 @@ import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCreator
 import dev.lumas.lumaitems.relics.RelicDisassembler
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.sync
 import kotlin.random.Random
 import org.bukkit.Bukkit
 import org.bukkit.Material

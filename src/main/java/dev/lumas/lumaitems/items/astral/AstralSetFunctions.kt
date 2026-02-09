@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.astral
 
 import dev.lumas.lumaitems.enums.GenericToolType
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.inventory.ItemStack
 

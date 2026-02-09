@@ -1,17 +1,16 @@
 package dev.lumas.lumaitems.items.tools.harrow
 
 import dev.lumas.lumaitems.enums.BlockConstants
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
 import org.bukkit.FluidCollisionMode
@@ -63,9 +62,7 @@ class BobbleBlowerHoeItem : CustomItemFunctions() {
             .persistentData(nameSpace)
             .tier(Tier.SUMMER_2025)
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_HOE.appendThenGetAttributes(
-                    AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -2.4, EquipmentSlotGroup.HAND)
-                )
+                AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -2.4, EquipmentSlotGroup.HAND)
             )
             .lore(
                 "A fancy hoe with a bubble",

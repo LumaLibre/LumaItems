@@ -2,9 +2,9 @@ package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncDelayed
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -20,7 +20,6 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
 
 class SweetHeartsLaceItem : CustomItem {
 

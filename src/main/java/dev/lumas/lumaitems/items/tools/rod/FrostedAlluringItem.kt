@@ -2,15 +2,13 @@ package dev.lumas.lumaitems.items.tools.rod
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.wrappers.EnumWrappers
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player

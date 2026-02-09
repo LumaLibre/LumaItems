@@ -1,13 +1,12 @@
 package dev.lumas.lumaitems.items.armor.boots
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.sync
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -32,10 +31,8 @@ class BubbleBoardBootsItem : CustomItemFunctions() {
             .persistentData(key)
             .tier(Tier.SUMMER_2025)
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_BOOTS.appendThenGetAttributes(
                     AttributeContainer.of(key, Attribute.STEP_HEIGHT, AttributeModifier.Operation.ADD_NUMBER, 1.0, EquipmentSlotGroup.FEET),
                     AttributeContainer.of(key, Attribute.JUMP_STRENGTH, AttributeModifier.Operation.ADD_NUMBER, 0.2, EquipmentSlotGroup.FEET)
-                )
             )
             .lore(
                 "Add a little 'pop' to",

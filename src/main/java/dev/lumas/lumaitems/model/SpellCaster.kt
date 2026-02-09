@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.model
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.entity.Player

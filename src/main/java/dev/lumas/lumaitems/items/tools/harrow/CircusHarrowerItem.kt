@@ -1,16 +1,17 @@
 package dev.lumas.lumaitems.items.tools.harrow
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.util.tiers.Tier
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import dev.lumas.lumaitems.util.tiers.Tier
+import java.awt.Color
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.block.Block
@@ -19,8 +20,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
-import java.awt.Color
 
 class CircusHarrowerItem : CustomItem {
 
@@ -68,7 +67,7 @@ class CircusHarrowerItem : CustomItem {
                     return false
                 }
 
-                QuickTasks.addIndefinitely(this, player.uniqueId)
+                QuickTasks.addCooldownIndefinitely(this, player.uniqueId)
 
                 val particleDisplay = ParticleDisplay.of(Particle.DUST)
                 val item = player.inventory.itemInMainHand

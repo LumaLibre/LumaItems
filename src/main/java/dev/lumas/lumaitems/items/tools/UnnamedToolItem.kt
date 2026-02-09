@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.tools
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.awt.Color
 import org.bukkit.Material
 import org.bukkit.Particle

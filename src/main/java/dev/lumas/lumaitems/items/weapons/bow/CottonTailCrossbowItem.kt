@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -13,7 +13,6 @@ import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
 
 class CottonTailCrossbowItem : CustomItem {
 

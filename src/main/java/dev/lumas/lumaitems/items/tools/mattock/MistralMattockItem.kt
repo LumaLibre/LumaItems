@@ -1,15 +1,15 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import java.util.Locale
+import java.util.Random
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -18,10 +18,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.Locale
-import java.util.Random
 
 @Disable(WorldName.EVENT_NEW)
 class MistralMattockItem : CustomItem {

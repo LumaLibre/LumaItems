@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
+import java.util.UUID
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -17,8 +18,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
-import kotlin.random.Random
 
 @Disable(WorldName.EVENT_NEW)
 class ShiningHeartsHatchetItem : CustomItem {

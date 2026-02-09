@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors.sync
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.math.floor
 import org.bukkit.Material

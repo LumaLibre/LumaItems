@@ -4,11 +4,10 @@ import dev.lumas.lumaitems.configuration.files.HeadsYml
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.MythicMobsHook
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -25,7 +24,6 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Transformation
 import org.joml.Vector3f
 import kotlin.random.Random

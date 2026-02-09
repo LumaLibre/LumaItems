@@ -1,23 +1,23 @@
 package dev.lumas.lumaitems.items.weapons
 
-import dev.lumas.lumaitems.util.tiers.Tier
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.tiers.Tier
+import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
+import kotlin.random.Random
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import kotlin.random.Random
 
 class GiantInflatableHammerItem : CustomItemFunctions() {
 
@@ -43,10 +43,10 @@ class GiantInflatableHammerItem : CustomItemFunctions() {
             .buildPair()
     }
 
-    override fun onMaceSmashAttack(player: Player, event: EntityDamageByEntityEvent) {
-        stunEntity(event.entity as? LivingEntity ?: return)
+    override fun onSmashAttack(player: Player, event: EntityAttemptSmashAttackEvent) {
+        stunEntity(event.target ?: return)
 
-        val loc = event.entity.location
+        val loc = event.target.location
         if (!AbilityUtil.noBuildPermission(player, loc.block) && Random.nextInt(10) == 1) {
             pushThruGround(loc, player)
         }

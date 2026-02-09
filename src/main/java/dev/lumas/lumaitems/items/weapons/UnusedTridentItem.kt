@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.weapons
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.entity.Trident

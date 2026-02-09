@@ -1,19 +1,21 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.sync
+import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.util.concurrent.TimeUnit
 import org.bukkit.Bukkit
+import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -32,8 +34,6 @@ import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.concurrent.TimeUnit
-import org.bukkit.Color
 
 @Disable(WorldName.PINATA)
 class SpringtideScytheItem : CustomItemFunctions() {

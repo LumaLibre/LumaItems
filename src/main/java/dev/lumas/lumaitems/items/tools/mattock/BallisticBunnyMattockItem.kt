@@ -1,12 +1,14 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncDelayed
+import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import java.util.UUID
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
@@ -20,9 +22,6 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import java.util.UUID
-import kotlin.collections.iterator
-import kotlin.random.Random
 
 class BallisticBunnyMattockItem : CustomItem {
 

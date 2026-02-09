@@ -1,7 +1,6 @@
-package dev.lumas.lumaitems.manager
+package dev.lumas.lumaitems.model
 
 import dev.lumas.lumacore.utility.ContextLogger
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.registry.RegistryItem
 import dev.lumas.lumaitems.registry.StringIdentifier
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer

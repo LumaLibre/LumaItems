@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.armor.elytra
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.QuickTasks
 import org.bukkit.Material
 import org.bukkit.Sound

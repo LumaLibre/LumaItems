@@ -70,6 +70,13 @@ fun Player.isLocationOnGround(amt: Double, isAir: Boolean): Boolean {
     return if (isAir) block.isEmpty else block.isSolid
 }
 
+fun Player.isLookingUp(): Boolean {
+    return eyeLocation.pitch <= -45
+}
+
+fun Player.isLookingDown(): Boolean {
+    return eyeLocation.pitch >= 45
+}
 
 fun Player.equipmentContainers(): List<PersistentDataContainer> {
     val result = ArrayList<PersistentDataContainer>(6)
@@ -177,4 +184,3 @@ fun Player.sendFormatted(msg: String) {
 fun CommandSender.sendFormatted(msg: String) {
     Text.msg(this, msg)
 }
-

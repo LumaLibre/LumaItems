@@ -1,12 +1,12 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.blend
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
@@ -20,7 +20,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
 
 class RosethornRapierItem : CustomItemFunctions() {
 

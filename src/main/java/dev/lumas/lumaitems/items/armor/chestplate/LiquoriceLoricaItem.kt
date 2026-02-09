@@ -1,9 +1,8 @@
 package dev.lumas.lumaitems.items.armor.chestplate
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -23,10 +22,8 @@ class LiquoriceLoricaItem : CustomItemFunctions() {
             .persistentData(k)
             .tier(Tier.EASTER_2025)
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_CHESTPLATE.appendThenGetAttributes(
                     AttributeContainer.of(k, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.CHEST),
                     AttributeContainer.of(k, Attribute.FLYING_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.CHEST),
-                )
             )
             .vanillaEnchants(
                 Enchantment.PROTECTION to 7,

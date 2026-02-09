@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -48,7 +48,7 @@ class WonderBeanieItem : CustomItemFunctions() {
             .vanillaEnchants(Enchantment.UNBREAKING to 10, Enchantment.PROTECTION to 7, Enchantment.BLAST_PROTECTION to 7, Enchantment.MENDING to 1)
             .tier(Tier.CHRISTMAS_2025)
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
+                AttributeContainer.ofMap(
                     KEY, Attribute.MAX_HEALTH, 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD
                 )
             )

@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.disabling.WorldName
 import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier

@@ -7,7 +7,6 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.api.LumaItemsAPI
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -34,7 +33,7 @@ class HideToolTipsCommand : SubCommand {
             return true
         }
 
-        val defaultAttributes = DefaultAttributes.getFromMaterial(item.type) ?: run {
+        val defaultAttributes = item.type.defaultAttributeModifiers.entries().ifEmpty {
             MiniMessageUtil.msg(player, "Couldn't find default attributes for this item! (Material: ${item.type})")
             return true
         }
@@ -51,7 +50,7 @@ class HideToolTipsCommand : SubCommand {
             ItemFlag.HIDE_DYE,
             ItemFlag.HIDE_ADDITIONAL_TOOLTIP
         )
-        for (attributeModifier in defaultAttributes.attributes) {
+        for (attributeModifier in defaultAttributes) {
             meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
         }
 

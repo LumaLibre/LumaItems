@@ -13,13 +13,12 @@ import dev.lumas.lumaitems.hooks.MythicMobsHook;
 import dev.lumas.lumaitems.hooks.ProtocolLibHook;
 import dev.lumas.lumaitems.hooks.TownyHook;
 import dev.lumas.lumaitems.hooks.WorldGuardHook;
-import dev.lumas.lumaitems.manager.CustomItem;
-import dev.lumas.lumaitems.manager.NamedCustomItem;
+import dev.lumas.lumaitems.model.CustomItem;
+import dev.lumas.lumaitems.model.NamedCustomItem;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

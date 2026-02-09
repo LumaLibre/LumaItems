@@ -3,8 +3,8 @@ package dev.lumas.lumaitems.items.armor.elytra
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.Random
 import org.bukkit.Color
 import org.bukkit.Material

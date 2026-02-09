@@ -4,11 +4,12 @@ import com.google.common.reflect.ClassPath;
 import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
 import dev.lumas.lumaitems.items.astral.AstralSet;
+import dev.lumas.lumaitems.model.CustomItem;
+import dev.lumas.lumaitems.model.NamedCustomItem;
 import dev.lumas.lumaitems.registry.NamespacedIdentifier;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.registry.StringIdentifier;
 import dev.lumas.lumaitems.util.disabling.Ignore;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.model
 
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.sync
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.sync
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player

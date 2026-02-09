@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.astral
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.extensions.formatEnumerator
 import org.bukkit.Material
@@ -70,7 +71,15 @@ open class AstralSetFactory (val identifier: String, val name: String, val custo
         )
 
         if (attributeModifiers != null) {
-            item.attributeModifiers = attributeModifiers
+            item.attributeContainers = attributeModifiers.map {
+                AttributeContainer.builder()
+                    .setAttribute(it.key)
+                    .setKey(identifier)
+                    .setAmount(it.value.amount)
+                    .setOperation(it.value.operation)
+                    .setSlot(it.value.slotGroup)
+                    .build()
+            }.toMutableList()
         }
 
 

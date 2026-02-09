@@ -1,7 +1,6 @@
 package dev.lumas.lumaitems.items.astral.upgrades
 
 import dev.lumas.lumaitems.configuration.files.AstralYml
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.MiniMessageUtil
@@ -92,7 +91,7 @@ class AstralSetUpgradeFactory (val item: ItemStack) {
             }
 
             // bad patch for an even worse system, but it works for now
-            DefaultAttributes.getFromMaterial(item.type)?.attributes?.let { newAttributes ->
+            item.type.defaultAttributeModifiers.entries().let { newAttributes ->
                 for (entry in newAttributes) {
                     val attribute = entry.key
                     val value = entry.value

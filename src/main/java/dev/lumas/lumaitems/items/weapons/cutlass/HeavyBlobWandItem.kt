@@ -1,16 +1,15 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
 import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.Executors.sync
-import dev.lumas.lumaitems.util.Executors.syncTimer
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
 import org.bukkit.Location
@@ -54,9 +53,7 @@ class HeavyBlobWandItem : CustomItemFunctions() {
             .material(Material.NETHERITE_SWORD)
             .persistentData(nameSpace)
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
-                    AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.35, EquipmentSlotGroup.HAND)
-                )
+                AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.35, EquipmentSlotGroup.HAND)
             )
             .tier(Tier.SUMMER_2025)
             .lore(

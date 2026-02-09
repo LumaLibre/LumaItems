@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.armor.elytra
 
-import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors.syncTimer
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import java.util.UUID
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -14,8 +14,6 @@ import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
-import java.util.UUID
 
 class AmorCeralytrasItem : CustomItem {
 
