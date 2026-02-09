@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -53,7 +53,7 @@ class IllumeShearsItem : CustomItemFunctions() {
         if (block.getBreakSpeed(player) == Float.POSITIVE_INFINITY) return
 
         if (block.type in lightBlocks) {
-            block.breakNaturallyWithLog(player, player.inventory.itemInMainHand)
+            block.breakNaturallyWithLog(player, player.inventory.itemInMainHand, true)
         }
     }
 }
