@@ -8,8 +8,8 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
+import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.util.FireAnyways
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent

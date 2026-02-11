@@ -8,10 +8,10 @@ import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.sync

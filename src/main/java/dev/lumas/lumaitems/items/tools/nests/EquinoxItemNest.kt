@@ -7,7 +7,7 @@ import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
@@ -36,7 +36,8 @@ import org.bukkit.persistence.PersistentDataType
 abstract class EquinoxItemNest : CustomItemFunctions() {
 
     companion object {
-        private val DYES = Material.entries.filter { it.name.matches(Regex(".*_DYE")) }
+        private val REGEX = Regex(".*_DYE")
+        private val DYES = Material.entries.filter { it.name.matches(REGEX) }
         private val COLORS = listOf("#feb17d", "#f9ce90", "#f9f2db", "#b8d1c0", "#af97c7", "#ed9bb0")
             .map { Color.decode(it) }
         private val ACTIVATOR_KEY = Util.namespacedKey("equinox-nest-activator")

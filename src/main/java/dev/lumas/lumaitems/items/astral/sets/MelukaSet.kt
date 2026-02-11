@@ -5,8 +5,8 @@ import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.util.extensions.isWearing
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

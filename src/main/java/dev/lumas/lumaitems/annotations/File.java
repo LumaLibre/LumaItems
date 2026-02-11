@@ -1,11 +1,15 @@
-package dev.lumas.lumaitems.util.disabling;
+package dev.lumas.lumaitems.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+/**
+ * An annotation to specify the file name for an Okaeri config file.
+ */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Ignore {
+@Target(ElementType.TYPE)
+public @interface File {
+    String value() default "";
 }

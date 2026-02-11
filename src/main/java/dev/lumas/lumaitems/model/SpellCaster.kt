@@ -8,15 +8,18 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
+import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
 class SpellCaster private constructor(
     val player: Player,
     val particle: Particle?,
+    val particleData: Any?,
     val key: NamespacedKey,
     val ticks: Long,
     val hideRadius: Double,
-    val onTickCallback: ((Snowball) -> Unit)?
+    val onTickCallback: ((Snowball) -> Unit)?,
+    val spells: List<PersistentDataRecord<*, *>> = emptyList()
 ) {
 
     private var snowball: Snowball? = null
@@ -30,6 +33,7 @@ class SpellCaster private constructor(
         }
 
         val snowball = player.launchProjectile(Snowball::class.java)
+            //.apply { velocity = velocity.multiply(0.7) }
             .also { this.snowball = it }
 
         snowball.setGravity(false)
@@ -40,6 +44,10 @@ class SpellCaster private constructor(
             player.hideEntity(LumaItems.getInstance(), snowball)
         }
 
+        for (record in spells) {
+            setPersistentData(snowball.persistentDataContainer, record)
+        }
+
 
         if (particle != null || onTickCallback != null) {
             Executors.asyncTimer(0, 1) { task ->
@@ -48,7 +56,7 @@ class SpellCaster private constructor(
                     return@asyncTimer
                 }
                 if (particle != null) {
-                    snowball.world.spawnParticle(particle, snowball.location, 4, 0.1, 0.1, 0.1, 0.0)
+                    snowball.world.spawnParticle(particle, snowball.location, 4, 0.1, 0.1, 0.1, 0.0, particleData)
                 }
                 onTickCallback?.invoke(snowball)
             }
@@ -61,6 +69,10 @@ class SpellCaster private constructor(
         }
     }
 
+    fun <P, C : Any> setPersistentData(container: PersistentDataContainer, data: PersistentDataRecord<P, C>) {
+        container.set(data.nameSpacedKey, data.persistentDataType, data.value)
+    }
+
 
     companion object {
         fun builder() = Builder()
@@ -70,26 +82,32 @@ class SpellCaster private constructor(
     class Builder {
         private var player: Player? = null
         private var particle: Particle? = null
+        private var particleData: Any? = null
         private var key: NamespacedKey? = null
         private var ticks: Long = 100
         private var hideRadius: Double = 65.0
         private var onTickCallback: ((Snowball) -> Unit)? = null
+        private val spells: MutableList<PersistentDataRecord<*, *>> = mutableListOf()
 
         fun player(player: Player) = apply { this.player = player }
         fun particle(particle: Particle?) = apply { this.particle = particle }
+        fun particleData(data: Any?) = apply { this.particleData = data }
         fun key(key: NamespacedKey) = apply { this.key = key }
         fun ticks(ticks: Long) = apply { this.ticks = ticks }
         fun hideRadius(radius: Double) = apply { this.hideRadius = radius }
         fun onTick(callback: (Snowball) -> Unit) = apply { this.onTickCallback = callback }
+        fun addSpellData(record: PersistentDataRecord<*, *>) = apply { this.spells.add(record) }
 
         fun build(): SpellCaster {
             return SpellCaster(
                 player ?: throw IllegalArgumentException("Player must be provided"),
                 particle,
+                particleData,
                 key ?: throw IllegalArgumentException("Key must be provided"),
                 ticks,
                 hideRadius,
-                onTickCallback
+                onTickCallback,
+                spells
             )
         }
 

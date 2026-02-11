@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.configuration;
 
 import com.google.common.base.Preconditions;
 import dev.lumas.lumaitems.LumaItems;
+import dev.lumas.lumaitems.annotations.File;
 import dev.lumas.lumaitems.configuration.serdes.AstralSetClassTransformer;
 import dev.lumas.lumaitems.configuration.serdes.EnchantmentTransformer;
 import dev.lumas.lumaitems.configuration.serdes.LocationTransformer;

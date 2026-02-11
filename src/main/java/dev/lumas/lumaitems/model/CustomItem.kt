@@ -1,11 +1,12 @@
 package dev.lumas.lumaitems.model
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.events.items.ItemListener
 import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.RegistryItem
-import dev.lumas.lumaitems.util.disabling.Disable
 import dev.lumas.lumaitems.util.extensions.Executors
 import io.papermc.paper.persistence.PersistentDataContainerView
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
@@ -64,11 +65,11 @@ interface CustomItem : RegistryItem {
 
     fun handleDisabled(player: Player, event: Any) {
         var persistNotif = false
-        if (this.isHardDisabled() && event is Cancellable && event !is PlayerMoveEvent) {
+        if (this.isHardDisabled() && event is Cancellable && event !is PlayerMoveEvent && event !is PlayerJumpEvent) {
             event.isCancelled = true
             persistNotif = true
         }
-        ItemListener.Companion.notify(player, persistNotif)
+        ItemListener.notify(player, persistNotif)
     }
 
     fun fireAnyways(action: Action): Boolean {

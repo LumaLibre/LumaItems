@@ -1,6 +1,6 @@
 package dev.lumas.lumaitems.configuration.files
 
-import dev.lumas.lumaitems.configuration.File
+import dev.lumas.lumaitems.annotations.File
 import dev.lumas.lumaitems.configuration.OkaeriFile
 import eu.okaeri.configs.OkaeriConfig
 import eu.okaeri.configs.annotation.CustomKey

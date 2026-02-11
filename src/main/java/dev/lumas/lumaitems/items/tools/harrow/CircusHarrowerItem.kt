@@ -7,7 +7,7 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier

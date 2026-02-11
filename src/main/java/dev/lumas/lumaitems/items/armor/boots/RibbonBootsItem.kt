@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.armor.boots
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.annotations.Ignore
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
+@Ignore
 class RibbonBootsItem : CustomItem {
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(

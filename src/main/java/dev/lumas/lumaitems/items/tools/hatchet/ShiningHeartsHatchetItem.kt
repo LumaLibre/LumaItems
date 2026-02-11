@@ -4,8 +4,8 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import java.util.UUID
 import kotlin.random.Random
 import org.bukkit.Material

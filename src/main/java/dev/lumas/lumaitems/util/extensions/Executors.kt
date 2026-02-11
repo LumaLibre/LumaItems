@@ -50,9 +50,7 @@ fun Location.syncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): Schedu
 
 object Executors {
 
-    private fun ticksToMillis(ticks: Long): Long {
-        return ticks * 50
-    }
+    private fun Long.asMillis() = this * 50
 
     @JvmStatic
     fun async(runnable: Consumer<ScheduledTask>): ScheduledTask {
@@ -73,7 +71,18 @@ object Executors {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }, ticksToMillis(delay), ticksToMillis(period), TimeUnit.MILLISECONDS)
+        }, delay.asMillis(), period.asMillis(), TimeUnit.MILLISECONDS)
+    }
+
+    @JvmStatic
+    fun asyncTimer(timeUnit: TimeUnit, delay: Long, period: Long, consumer: Consumer<ScheduledTask>): ScheduledTask {
+        return Bukkit.getAsyncScheduler().runAtFixedRate(LumaItems.getInstance(), Consumer { task ->
+            try {
+                consumer.accept(task)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }, delay, period, timeUnit)
     }
 
     @JvmStatic
@@ -84,7 +93,18 @@ object Executors {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }, ticksToMillis(delay), TimeUnit.MILLISECONDS)
+        }, delay.asMillis(), TimeUnit.MILLISECONDS)
+    }
+
+    @JvmStatic
+    fun asyncDelayed(timeUnit: TimeUnit, delay: Long, consumer: Consumer<ScheduledTask>): ScheduledTask {
+        return Bukkit.getAsyncScheduler().runDelayed(LumaItems.getInstance(), Consumer { task ->
+            try {
+                consumer.accept(task)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }, delay, timeUnit)
     }
 
     fun <T> (() -> T).async(): ScheduledTask {

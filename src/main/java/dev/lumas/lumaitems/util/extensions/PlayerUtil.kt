@@ -82,13 +82,13 @@ fun Player.equipmentContainers(): List<PersistentDataContainer> {
     val result = ArrayList<PersistentDataContainer>(6)
     val inv = inventory
 
-    inv.itemInMainHand.itemMeta?.persistentDataContainer?.let(result::add)
-    inv.itemInOffHand.itemMeta?.persistentDataContainer?.let(result::add)
-
     val armor = equipment?.armorContents ?: return result
     for (item in armor) {
         item?.itemMeta?.persistentDataContainer?.let(result::add)
     }
+
+    inv.itemInMainHand.itemMeta?.persistentDataContainer?.let(result::add)
+    inv.itemInOffHand.itemMeta?.persistentDataContainer?.let(result::add)
 
     return result
 }

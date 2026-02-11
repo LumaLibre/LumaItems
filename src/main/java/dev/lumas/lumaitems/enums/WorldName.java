@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.util.disabling;
+package dev.lumas.lumaitems.enums;
 
 import org.bukkit.Location;
 import org.bukkit.World;

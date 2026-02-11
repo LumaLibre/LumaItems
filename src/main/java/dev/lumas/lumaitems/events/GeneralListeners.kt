@@ -8,12 +8,14 @@ import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.guis.AbstractGui
 import dev.lumas.lumaitems.guis.DisassemblerGui
 import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCreator
 import dev.lumas.lumaitems.relics.RelicDisassembler
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.hasPersistentKey
 import dev.lumas.lumaitems.util.extensions.sync
 import kotlin.random.Random
 import org.bukkit.Bukkit
@@ -32,6 +34,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
+import org.bukkit.event.inventory.PrepareSmithingEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
 
@@ -172,6 +175,20 @@ class GeneralListeners : Listener {
 
 
         if (cancelEvent && event.inventory.secondItem != null) {
+            event.result = null
+        }
+    }
+
+    @EventHandler
+    fun onSmithingPrepare(event: PrepareSmithingEvent) {
+        val result = event.result ?: return
+        if (!result.hasItemMeta()) {
+            return
+        }
+
+
+        if (event.inventory.inputTemplate?.type == Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE
+            && result.hasPersistentKey(PersistentDataRecord.PREVENT_NETHERITE_SMITHING_KEY)) {
             event.result = null
         }
     }

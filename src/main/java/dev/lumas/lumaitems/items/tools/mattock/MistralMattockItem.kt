@@ -5,8 +5,8 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.Locale
 import java.util.Random

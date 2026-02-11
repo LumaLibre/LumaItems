@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.blend
 import dev.lumas.lumaitems.util.tiers.Tier

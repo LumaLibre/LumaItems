@@ -52,12 +52,12 @@ public enum Action {
     ELYTRA_BOOST, // When a player boosts themselves with an item while gliding with an elytra
     PLAYER_CROUCH, // When a player toggles their sneak button (crouches or un-crouches)
     ASYNC_CHAT, // When a player sends a chat message (Async)
-    MOVE, // When a player moves and their position/location has changed
-    INPUT, // When a key input is received from a player (e.g. pressing a key)
-    ENTITY_MOVE(2), // When a living entity with specific persistent data moves and their position/location has changed
+    MOVE(true), // When a player moves and their position/location has changed
+    INPUT(true), // When a key input is received from a player (e.g. pressing a key)
+    ENTITY_MOVE(2, true), // When a living entity with specific persistent data moves and their position/location has changed
     CONSUME_ITEM, // When a player consumes an item
-    JUMP, // When a player jumps (Unused)
-    ENTITY_FORM_BLOCK, // When an entity changes a block (Unused)
+    JUMP, // When a player jumps
+    ENTITY_FORM_BLOCK, // When an entity changes a block
     POTION_EFFECT, // When a player is affected by a potion effect
     ENTITY_TARGET_PLAYER, // When a living entity with a specific persistent data targets a player
     ARMOR_CHANGE, // When a player changes their armor
@@ -77,7 +77,7 @@ public enum Action {
     INVENTORY_CLICK, // When a player clicks an item in their inventory with a specific persistent data
     FILL_BUCKET, // When a player fills a bucket with a specific persistent data
     EMPTY_BUCKET, // When a player empties a bucket with a specific persistent data
-    PICKUP_ITEM(10), // When a player picks up an item
+    PICKUP_ITEM(10, true), // When a player picks up an item
     ITEM_HELD, // When a player holds an item
     ITEM_DAMAGE, // When an item is damaged
     PLAYER_KNOCKBACK_ENTITY, // When a player knocks back an entity
@@ -87,16 +87,33 @@ public enum Action {
     ;
 
     private final int callSlowdown;
+    private final boolean hot;
+
+    Action(int callSlowdown, boolean hot) {
+        this.callSlowdown = callSlowdown;
+        this.hot = hot;
+    }
 
     Action(int callSlowdown) {
         this.callSlowdown = callSlowdown;
+        this.hot = false;
+    }
+
+    Action(boolean hot) {
+        this.callSlowdown = 0;
+        this.hot = hot;
     }
 
     Action() {
         this.callSlowdown = 0;
+        this.hot = false;
     }
 
     public int getCallSlowdown() {
         return callSlowdown;
+    }
+
+    public boolean isHot() {
+        return hot;
     }
 }

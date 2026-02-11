@@ -15,7 +15,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.persistence.PersistentDataContainer
 
-@Suppress("Duplicates")
+// TODO: cleanup this class & extract common code
 abstract class ItemListener : Listener {
 
     companion object {
@@ -57,7 +57,7 @@ abstract class ItemListener : Listener {
                 item.handleDisabled(player, event)
                 return
             }
-            item.fireVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) data else null)
+            item.fireViewVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) data else null)
         }
     }
 
@@ -154,7 +154,7 @@ abstract class ItemListener : Listener {
         }
     }
 
-    private fun CustomItem.fireVerbosely(action: Action, player: Player, event: Any, container: PersistentDataContainerView? = null) {
+    private fun CustomItem.fireViewVerbosely(action: Action, player: Player, event: Any, container: PersistentDataContainerView? = null) {
         try {
             if (container == null) {
                 executeActions(action, player, event)

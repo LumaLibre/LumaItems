@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.isLocationOnGround
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.toBukkitColor

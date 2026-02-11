@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 
@@ -51,4 +52,22 @@ fun Material.itemStack(amount: Int = 1, editMeta: ((ItemMeta) -> Unit)? = null):
         itemStack.itemMeta = itemMeta
     }
     return itemStack
+}
+
+fun ItemStack.willBreak(test: Int): Boolean {
+    val meta = this.itemMeta as? Damageable ?: return false
+    val maxDmg = if (meta.hasMaxDamage()) meta.maxDamage else type.maxDurability.toInt()
+    if (maxDmg <= 0) return false
+    return meta.damage + test >= maxDmg
+}
+
+fun ItemStack.setRemainingHealth(health: Int) {
+    val meta = this.itemMeta as? Damageable ?: return
+    val maxDmg = if (meta.hasMaxDamage()) meta.maxDamage else type.maxDurability.toInt()
+    if (maxDmg <= 0) return
+    val newDamage = (maxDmg - health).coerceAtLeast(1)
+    if (meta.damage != newDamage) {
+        meta.damage = newDamage
+        this.itemMeta = meta
+    }
 }

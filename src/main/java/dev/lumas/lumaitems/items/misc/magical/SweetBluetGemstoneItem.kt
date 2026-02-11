@@ -29,7 +29,7 @@ import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 
-class SweetBluetGemstone : CustomItem {
+class SweetBluetGemstoneItem : CustomItem {
 
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()

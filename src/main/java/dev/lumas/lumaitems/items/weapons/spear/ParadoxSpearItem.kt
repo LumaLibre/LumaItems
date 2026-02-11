@@ -2,12 +2,13 @@ package dev.lumas.lumaitems.items.weapons.spear
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.tiers.Tier
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -76,6 +77,7 @@ class ParadoxSpearItem : CustomItemFunctions() {
 
 
     override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
+        if (event.isCancelled) return
         event.damage *= PLAYER_DAMAGE_MULTIPLIER
 
         val value = QuickTasks.getFlag(this, player.uniqueId, Double::class.java) ?: BASE_DAMAGE_MULTIPLIER

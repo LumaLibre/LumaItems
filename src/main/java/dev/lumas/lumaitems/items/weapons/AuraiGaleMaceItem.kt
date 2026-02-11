@@ -70,7 +70,7 @@ class AuraiGaleMaceItem : CustomItemFunctions() {
     override fun onJump(player: Player, event: PlayerJumpEvent) {
         if (!player.isGliding && !player.isInWater && player.isItemInSlot(KEY, EquipmentSlot.HAND)) {
             player.gustUp(true)
-            player.inventory.itemInMainHand.damage(1, player)
+            player.inventory.itemInMainHand.damage(2, player)
         }
     }
 

@@ -6,7 +6,7 @@ import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -29,6 +29,7 @@ class ClearCooldownCommand : SubCommand {
 
         QuickTasks.removeNow(player.uniqueId)
         QuickTasks.removeAllFlags(player.uniqueId)
+        QuickTasks.removeAllSpellCooldowns(player.uniqueId)
         sender.sendFormatted("Cleared cooldown for player ${player.name}")
         return true
     }

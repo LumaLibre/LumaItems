@@ -9,7 +9,7 @@ import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.FireForAllNBT
+import dev.lumas.lumaitems.annotations.AllSlots
 import dev.lumas.lumaitems.util.Util
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
@@ -87,7 +87,7 @@ class Listeners : ItemListener() {
         fire(data, Action.PLAYER_SHOOT_BOW, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onProjectileLaunch(event: ProjectileLaunchEvent) {
         val player: Player = event.entity.shooter as? Player ?: return
@@ -102,7 +102,7 @@ class Listeners : ItemListener() {
         fire(data, Action.PROJECTILE_LAND, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
         val player = event.player
@@ -112,7 +112,7 @@ class Listeners : ItemListener() {
         fire(dataContainers, action, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerSwapHandItems(event: PlayerSwapHandItemsEvent) {
         val player = event.player
@@ -123,7 +123,7 @@ class Listeners : ItemListener() {
         fire(data, Action.SWAP_HAND, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityDeath(event: EntityDeathEvent) {
         val entity = event.entity
@@ -146,7 +146,7 @@ class Listeners : ItemListener() {
         fire(data, Action.PLAYER_DEATH, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
         val player: Player = when (event.damager) {
@@ -222,7 +222,7 @@ class Listeners : ItemListener() {
     }
 
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerPlaceBlock(event: BlockPlaceEvent) {
         val player = event.player
@@ -273,7 +273,7 @@ class Listeners : ItemListener() {
         fire(data, Action.ELYTRA_BOOST, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerCrouch(event: PlayerToggleSneakEvent) {
         val player = event.player
@@ -290,14 +290,14 @@ class Listeners : ItemListener() {
         fire(data, Action.ASYNC_CHAT, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (!event.hasChangedPosition()) return
         fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     //@EventHandler
     fun onPlayerInput(event: PlayerInputEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.INPUT, event.player, event)
@@ -338,7 +338,7 @@ class Listeners : ItemListener() {
         fire(data, Action.CONSUME_ITEM, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onEntityPotionEffect(event: EntityPotionEffectEvent) {
         val player = event.entity as? Player ?: return
@@ -394,25 +394,25 @@ class Listeners : ItemListener() {
         fire(data, Action.BLOCK_SHEAR_ENTITY, null, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerTeleport(event: PlayerTeleportEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_TELEPORT, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerQuit(event: PlayerQuitEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_QUIT, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerJoin(event: PlayerJoinEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_JOIN, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerPickupExp(event: PlayerPickupExperienceEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_PICKUP_EXP, event.player, event)

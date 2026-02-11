@@ -4,7 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Ignore
+import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask

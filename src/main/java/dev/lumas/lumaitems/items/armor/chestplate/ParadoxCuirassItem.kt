@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.armor.chestplate
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.hasPersistentKey
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -55,7 +55,7 @@ class ParadoxCuirassItem : CustomItemFunctions() {
 
 
     override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
-        if (!QuickTasks.isFlagged(this, player)) {
+        if (!QuickTasks.isFlagged(this, player) && !event.isCancelled) {
             QuickTasks.flag(this, player.uniqueId)
             player.world.playSound(player.location, Sound.PARTICLE_SOUL_ESCAPE,2.0f, 1.0f)
             player.world.spawnParticle(Particle.SOUL, player.eyeLocation, 10, 0.5, 0.5, 0.5, 0.01)

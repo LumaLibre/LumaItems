@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Color
 import org.bukkit.Material

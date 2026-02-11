@@ -4,8 +4,8 @@ import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.util.extensions.getOreColor
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier

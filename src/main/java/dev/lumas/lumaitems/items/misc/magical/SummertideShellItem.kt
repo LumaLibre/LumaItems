@@ -6,7 +6,7 @@ import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.Material
 import org.bukkit.NamespacedKey

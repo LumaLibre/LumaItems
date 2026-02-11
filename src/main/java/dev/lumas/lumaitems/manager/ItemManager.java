@@ -9,7 +9,7 @@ import dev.lumas.lumaitems.model.NamedCustomItem;
 import dev.lumas.lumaitems.registry.NamespacedIdentifier;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.registry.StringIdentifier;
-import dev.lumas.lumaitems.util.disabling.Ignore;
+import dev.lumas.lumaitems.annotations.Ignore;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 

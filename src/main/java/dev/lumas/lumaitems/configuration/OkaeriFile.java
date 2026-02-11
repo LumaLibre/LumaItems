@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.configuration;
 
+import dev.lumas.lumaitems.annotations.File;
 import dev.lumas.lumaitems.registry.Identifier;
 import dev.lumas.lumaitems.registry.RegistryItem;
 import dev.lumas.lumaitems.registry.StringIdentifier;

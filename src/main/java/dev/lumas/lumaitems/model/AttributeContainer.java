@@ -2,8 +2,6 @@ package dev.lumas.lumaitems.model;
 
 import com.google.common.base.Preconditions;
 import dev.lumas.lumaitems.LumaItems;
-import dev.lumas.lumaitems.enums.EntityAttributes;
-import kotlin.Pair;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -38,21 +36,6 @@ public record AttributeContainer(String key,
         return new AttributeModifier(getKey(), amount, operation, getSlot());
     }
 
-    public static double getAmountBasedFromPlayer(Attribute attribute, double value) {
-        EntityAttributes defaultPlayerAttributes = EntityAttributes.PLAYER;
-
-        for (Pair<Attribute, Double> attributeContainer : defaultPlayerAttributes.getValues()) {
-            if (attributeContainer.getFirst() != attribute) {
-                continue;
-            }
-
-            // Player has a default value of 4.0 for X attribute,
-            // We pass in 1.6 as our argument 'value' and return -2.4
-            return value - attributeContainer.getSecond();
-        }
-        return value;
-    }
-
     public static String generateStringKey(int length) {
         StringBuilder keyBuilder = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
@@ -62,10 +45,6 @@ public record AttributeContainer(String key,
         return keyBuilder.toString();
     }
 
-
-    public static AttributeContainer defaultAttributeContainer(Attribute attribute, double amount, @Nullable EquipmentSlotGroup slot) {
-        return new AttributeContainer("default-" + generateStringKey(9), attribute, AttributeModifier.Operation.ADD_NUMBER, getAmountBasedFromPlayer(attribute, amount), slot);
-    }
 
     public static AttributeContainer of(String key, Attribute attribute, AttributeModifier.Operation operation, double amount, @Nullable EquipmentSlotGroup slot) {
         return new AttributeContainer(key, attribute, operation, amount, slot);

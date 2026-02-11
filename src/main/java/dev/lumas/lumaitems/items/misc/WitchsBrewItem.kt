@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.misc
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.CustomItem
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 //import io.papermc.paper.datacomponent.item.TooltipDisplay
 import org.bukkit.Color
 import org.bukkit.Material

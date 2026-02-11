@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier

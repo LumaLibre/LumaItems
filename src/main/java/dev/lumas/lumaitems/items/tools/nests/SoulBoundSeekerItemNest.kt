@@ -8,7 +8,7 @@ import dev.lumas.lumaitems.model.MultiPlayerCustomItem
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
