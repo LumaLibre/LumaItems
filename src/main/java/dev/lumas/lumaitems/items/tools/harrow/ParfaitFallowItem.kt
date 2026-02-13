@@ -38,7 +38,7 @@ class ParfaitFallowItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
-        if (!Tag.CROPS.isTagged(block.type)) {
+        if (!Tag.CROPS.isTagged(block.type) && block.type != Material.NETHER_WART) {
             return
         }
 
