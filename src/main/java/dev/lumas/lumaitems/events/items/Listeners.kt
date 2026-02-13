@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.annotations.AllSlots
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.equipmentContainers
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
@@ -30,6 +31,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
+import org.bukkit.event.entity.EntityResurrectEvent
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
@@ -457,6 +459,7 @@ class Listeners : ItemListener() {
         fire(data, Action.EMPTY_BUCKET, player, event)
     }
 
+    @AllSlots
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPlayerPickupItem(event: PlayerAttemptPickupItemEvent) {
         val player = event.player
@@ -506,5 +509,12 @@ class Listeners : ItemListener() {
         val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
 
         fire(data, Action.MACE_SMASH_ATTACK, player, event)
+    }
+
+    @AllSlots
+    //@EventHandler Unused
+    fun onPlayerResurrect(event: EntityResurrectEvent) {
+        val player = event.entity as? Player ?: return
+        fire(player.equipmentContainers(), Action.PLAYER_RESURRECT, player, event)
     }
 }

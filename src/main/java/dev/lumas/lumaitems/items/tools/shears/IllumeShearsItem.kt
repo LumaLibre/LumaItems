@@ -25,9 +25,12 @@ class IllumeShearsItem : CustomItemFunctions() {
                 Enchantment.MENDING to 1
             )
             .lore(
-                "<#c5adff>Left-click</#c5adff> to instantly",
-                "break light-emitting",
-                "blocks."
+                "<#c5adff>Left-click</#c5adff> any light",
+                "emitting block to",
+                "instantly destroy it."
+//                "<#c5adff>Left-click</#c5adff> to instantly",
+//                "break light-emitting",
+//                "blocks."
             )
             .buildPair()
     }

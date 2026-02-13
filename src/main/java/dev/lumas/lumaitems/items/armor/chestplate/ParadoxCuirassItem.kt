@@ -3,7 +3,9 @@ package dev.lumas.lumaitems.items.armor.chestplate
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.flag
 import dev.lumas.lumaitems.util.extensions.hasPersistentKey
+import dev.lumas.lumaitems.util.extensions.isFlagged
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -12,6 +14,7 @@ import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 
@@ -55,7 +58,7 @@ class ParadoxCuirassItem : CustomItemFunctions() {
 
 
     override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
-        if (!QuickTasks.isFlagged(this, player) && !event.isCancelled) {
+        if (!player.isFlagged(this) && !event.isCancelled) {
             QuickTasks.flag(this, player.uniqueId)
             player.world.playSound(player.location, Sound.PARTICLE_SOUL_ESCAPE,2.0f, 1.0f)
             player.world.spawnParticle(Particle.SOUL, player.eyeLocation, 10, 0.5, 0.5, 0.5, 0.01)
@@ -63,10 +66,15 @@ class ParadoxCuirassItem : CustomItemFunctions() {
         }
     }
 
+    override fun onPlayerDeath(player: Player, event: PlayerDeathEvent) {
+        if (event.isCancelled || player.isFlagged(this)) return
+        player.flag(this)
+    }
+
 
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
         val item = event.offHandItem.takeIf { it.hasPersistentKey(KEY) } ?: return
-        if (QuickTasks.isFlagged(this, player)) return
+        if (player.isFlagged(this)) return
 
         event.isCancelled = true
 

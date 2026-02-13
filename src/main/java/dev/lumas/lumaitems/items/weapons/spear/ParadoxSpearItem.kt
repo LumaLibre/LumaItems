@@ -52,8 +52,8 @@ class ParadoxSpearItem : CustomItemFunctions() {
                 "receives.",
             )
             .vanillaEnchants(
-                Enchantment.SHARPNESS to 9,
-                Enchantment.SMITE to 5,
+                Enchantment.SHARPNESS to 10,
+                Enchantment.SMITE to 9,
                 Enchantment.LOOTING to 6,
                 Enchantment.KNOCKBACK to 2,
                 Enchantment.UNBREAKING to 3,
@@ -71,7 +71,7 @@ class ParadoxSpearItem : CustomItemFunctions() {
         val item = player.inventory.itemInMainHand
         event.damage *= value.coerceAtLeast(1.0)
         if (value > 0) {
-            item.damage(10, player)
+            item.damage(30, player)
         }
     }
 
@@ -93,6 +93,7 @@ class ParadoxSpearItem : CustomItemFunctions() {
     }
 
     override fun onPlayerDeath(player: Player, event: PlayerDeathEvent) {
+        if (event.isCancelled) return
         QuickTasks.flag(this, player.uniqueId, 0.0)
         player.showLife(0.0)
     }

@@ -82,7 +82,7 @@ public enum Action {
     ITEM_DAMAGE, // When an item is damaged
     PLAYER_KNOCKBACK_ENTITY, // When a player knocks back an entity
     ITEM_MERGE, // When an item with specific persistent data merges with another item
-
+    PLAYER_RESURRECT, // When a player is resurrected (e.g. from a totem of undying) while wearing specific nbt
 
     ;
 

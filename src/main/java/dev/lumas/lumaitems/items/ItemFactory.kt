@@ -80,13 +80,13 @@ class ItemFactory(
         @JvmField
         val LUMAITEM = Util.namespacedKey("lumaitem")
         private val LOGGER: ContextLogger = ContextLogger.getLogger(true)
-        private val tierFormat = listOf(
+        private val LEGACY_TIER_FORMAT = listOf(
             "",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
             "&#EEE1D5Tier • %s",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "
         )
-        private val miniMessageTierFormat = listOf(
+        val TIER_FORMAT = listOf(
             "",
             "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>",
             "<#EEE1D5>Tier •</#EEE1D5> %s",
@@ -192,13 +192,13 @@ class ItemFactory(
 
         if (!miniMessage) {
             combinedLore.addAll(lore.map { "&f$it" })
-            if (tier.isNotEmpty()) combinedLore.addAll(tierFormat.map { it.format(tier) })
+            if (tier.isNotEmpty()) combinedLore.addAll(LEGACY_TIER_FORMAT.map { it.format(tier) })
 
             meta.setDisplayName(Util.colorcode(name))
             meta.lore = Util.colorcodeList(combinedLore)
         } else {
             combinedLore.addAll(lore.map { it })
-            if (tier.isNotEmpty()) combinedLore.addAll(miniMessageTierFormat.map { it.format(tier) })
+            if (tier.isNotEmpty()) combinedLore.addAll(TIER_FORMAT.map { it.format(tier) })
 
             meta.displayName(MiniMessageUtil.mm(name))
             meta.lore(MiniMessageUtil.mml(combinedLore).map { it.colorIfAbsent(NamedTextColor.WHITE) })

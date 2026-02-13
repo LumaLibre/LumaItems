@@ -70,7 +70,7 @@ class AuraiGaleMaceItem : CustomItemFunctions() {
     override fun onJump(player: Player, event: PlayerJumpEvent) {
         if (!player.isGliding && !player.isInWater && player.isItemInSlot(KEY, EquipmentSlot.HAND)) {
             player.gustUp(true)
-            player.inventory.itemInMainHand.damage(2, player)
+            player.inventory.itemInMainHand.damage(5, player)
         }
     }
 
@@ -98,7 +98,7 @@ class AuraiGaleMaceItem : CustomItemFunctions() {
             entity.gustUp(false)
             if (entity is LivingEntity) {
                 entity.damage(impliedDamage, player)
-                item.damage(1, player)
+                item.damage(15, player)
             }
         }
     }
