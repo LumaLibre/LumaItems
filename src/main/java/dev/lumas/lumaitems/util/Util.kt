@@ -41,7 +41,7 @@ object Util {
     fun getAllEquipmentNBT(player: Player) = player.equipmentContainers()
     fun getHandNBT(player: Player) = player.handContainers()
 
-    fun formatEnchantKey(key: String): String = formatEnumerator(key.replace("minecraft:", ""))
+    fun formatEnchantKey(key: String) = formatEnumerator(key.replace("minecraft:", ""))
     fun formatEnumerator(s: String) = s.formatSnakeCase()
 
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player) = player.isItemInSlot(identifier, slot)
