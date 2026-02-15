@@ -5,6 +5,7 @@ import com.sk89q.worldguard.LocalPlayer
 import com.sk89q.worldguard.WorldGuard
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin
 import com.sk89q.worldguard.protection.flags.Flags
+import com.sk89q.worldguard.protection.flags.StateFlag
 import com.sk89q.worldguard.protection.regions.RegionQuery
 import dev.lumas.lumaitems.registry.Identifier
 import dev.lumas.lumaitems.registry.StringIdentifier
@@ -29,10 +30,12 @@ class WorldGuardHook : ProtectionHook {
         val localPlayer: LocalPlayer = WorldGuardPlugin.inst().wrapPlayer(attacker)
         val query: RegionQuery = regionContainer.createQuery()
 
-        if (entity is HumanEntity) {
-            return TriState.fromBoolean(query.testState(location, localPlayer, Flags.PVP))
-        } else if (entity !is Enemy) {
-            return TriState.fromBoolean(query.testState(location, localPlayer, Flags.DAMAGE_ANIMALS))
+
+        val flag = if (entity is HumanEntity) Flags.PVP else Flags.DAMAGE_ANIMALS
+        val state = query.queryState(location, localPlayer, flag)
+
+        if (state == StateFlag.State.DENY) {
+            return TriState.FALSE
         }
         return TriState.TRUE
     }
