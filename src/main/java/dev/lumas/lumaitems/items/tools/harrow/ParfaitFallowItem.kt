@@ -43,7 +43,14 @@ class ParfaitFallowItem : CustomItemFunctions() {
         }
 
         val direction = CardinalDirection.fromEntity(player)
-        block.getRelative(direction.leftFace).breakNaturallyWithLog(player, player.inventory.itemInMainHand, true)
-        block.getRelative(direction.rightFace).breakNaturallyWithLog(player, player.inventory.itemInMainHand, true)
+        val block1 = block.getRelative(direction.leftFace)
+        val block2 = block.getRelative(direction.rightFace)
+        val item = player.inventory.itemInMainHand
+        if (block1.type == block.type) {
+            block1.breakNaturallyWithLog(player, item, true)
+        }
+        if (block2.type == block.type) {
+            block2.breakNaturallyWithLog(player, item, true)
+        }
     }
 }
