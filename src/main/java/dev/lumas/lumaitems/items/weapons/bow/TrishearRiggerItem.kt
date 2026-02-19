@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
+import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.enums.CardinalDirection
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
@@ -168,7 +168,7 @@ class TrishearRiggerItem : CustomItemFunctions() {
             ?.let { Util.enumValueOfOrNull(ArrowCloneType::class.java, it) } ?: ArrowCloneType.CENTER
 
 
-        GlowManager.setGlowColor(projectile, type.glowColor)
+        GlowColorManager.getInstance().setTransientColor(projectile, type.glowColor)
         projectile.isGlowing = true
 
 

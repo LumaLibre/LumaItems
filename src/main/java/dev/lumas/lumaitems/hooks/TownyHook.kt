@@ -3,9 +3,9 @@ package dev.lumas.lumaitems.hooks
 import com.palmergames.bukkit.towny.`object`.TownyPermission
 import com.palmergames.bukkit.towny.utils.CombatUtil
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil
+import dev.lumas.lumaitems.enums.TriState
 import dev.lumas.lumaitems.registry.Identifier
 import dev.lumas.lumaitems.registry.StringIdentifier
-import dev.lumas.lumaitems.enums.TriState
 import org.bukkit.Location
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player

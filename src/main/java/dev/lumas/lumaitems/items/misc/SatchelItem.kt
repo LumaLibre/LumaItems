@@ -2,7 +2,6 @@ package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.syncDelayed
@@ -58,7 +57,7 @@ class SatchelItem : CustomItem {
     // satchel has been launched, set glow and itemdata to brace for hitevent, if player is falling satchel should launch after 5 ticks
     private fun satchelLaunch(projectile: Entity, p: Player) {
         projectile.persistentDataContainer.set(NamespacedKey(instance(), "satchel"), PersistentDataType.SHORT, 1)
-        GlowManager.setGlowColor(projectile, GlowManager.COLORS.random())
+        //GlowManager.setGlowColor(projectile, GlowManager.COLORS.random())
 
         if (!p.location.subtract(0.0, 0.1, 0.0).block.type.isAir || p.isFlying) return
 

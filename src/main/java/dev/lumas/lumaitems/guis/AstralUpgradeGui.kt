@@ -1,7 +1,6 @@
 package dev.lumas.lumaitems.guis
 
 import dev.lumas.lumacore.utility.Text
-import dev.lumas.lumaitems.util.extensions.sendFormatted
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.astral.upgrades.AstralSetUpgradeFactory
 import dev.lumas.lumaitems.util.MiniMessageUtil

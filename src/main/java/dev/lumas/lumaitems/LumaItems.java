@@ -7,7 +7,6 @@ import dev.lumas.lumaitems.enums.Action;
 import dev.lumas.lumaitems.events.items.PassiveListeners;
 import dev.lumas.lumaitems.guis.AbstractGui;
 import dev.lumas.lumaitems.hooks.Hook;
-import dev.lumas.lumaitems.manager.GlowManager;
 import dev.lumas.lumaitems.manager.ItemManager;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.relics.RelicCrafting;
@@ -65,7 +64,6 @@ public final class LumaItems extends JavaPlugin {
             LOGGER.info("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
-        GlowManager.initGlowTeams();
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();
 

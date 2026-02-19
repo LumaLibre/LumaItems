@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.playground
 
+import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.annotations.Ignore
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.ArmorStand

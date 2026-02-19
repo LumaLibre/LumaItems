@@ -1,6 +1,5 @@
 package dev.lumas.lumaitems.registry;
 
-import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.configuration.ConfigManager;
 import dev.lumas.lumaitems.configuration.OkaeriFile;
 import dev.lumas.lumaitems.configuration.files.AstralYml;
@@ -18,7 +17,6 @@ import dev.lumas.lumaitems.model.CustomItem;
 import dev.lumas.lumaitems.model.NamedCustomItem;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,13 +26,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Registry<T extends RegistryItem> implements Iterable<Map.Entry<Identifier, T>> {

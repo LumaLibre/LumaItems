@@ -2,11 +2,8 @@ package dev.lumas.lumaitems.items.tools.hatchet
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.PaperDataComponent
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.tiers.Tier
-import io.papermc.paper.datacomponent.DataComponentTypes
-import io.papermc.paper.datacomponent.item.DeathProtection
 import org.bukkit.Color
 import org.bukkit.EntityEffect
 import org.bukkit.Material
@@ -15,8 +12,6 @@ import org.bukkit.Tag
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.entity.EntityResurrectEvent
-import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.ItemStack
 
 

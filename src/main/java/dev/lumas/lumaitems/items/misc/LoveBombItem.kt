@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.misc
 
+import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.annotations.Ignore
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.UseCooldown
 import org.bukkit.Material

@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.playground
 
+import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.model.PaperDataComponent
-import dev.lumas.lumaitems.annotations.Ignore
 import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player

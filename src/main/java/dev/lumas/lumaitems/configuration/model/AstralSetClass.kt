@@ -11,6 +11,7 @@ class AstralSetClass(
     //dev.lumas.lumaitems.items.astral.sets.MistralSet
     //dev.lumas.lumaitems.astral.sets.MistralSet
 
+    @Suppress("UNCHECKED_CAST")
     fun getAstralSetClass(): Class<out AstralSet> {
         return this.setClass as Class<out AstralSet>
     }

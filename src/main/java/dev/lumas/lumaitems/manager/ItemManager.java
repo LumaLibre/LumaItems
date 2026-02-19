@@ -3,13 +3,13 @@ package dev.lumas.lumaitems.manager;
 import com.google.common.reflect.ClassPath;
 import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
+import dev.lumas.lumaitems.annotations.Ignore;
 import dev.lumas.lumaitems.items.astral.AstralSet;
 import dev.lumas.lumaitems.model.CustomItem;
 import dev.lumas.lumaitems.model.NamedCustomItem;
 import dev.lumas.lumaitems.registry.NamespacedIdentifier;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.registry.StringIdentifier;
-import dev.lumas.lumaitems.annotations.Ignore;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 

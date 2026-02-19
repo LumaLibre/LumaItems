@@ -26,8 +26,7 @@ class LiquoriceLoricaItem : CustomItemFunctions() {
             .persistentData(k)
             .tier(Tier.EASTER_2025)
             .attributeModifiers(
-                    AttributeContainer.of(k, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.CHEST),
-                    AttributeContainer.of(k, Attribute.FLYING_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.CHEST), // doesn't work on players
+                    AttributeContainer.of(k, Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.CHEST)
             )
             .vanillaEnchants(
                 Enchantment.PROTECTION to 7,
@@ -43,8 +42,11 @@ class LiquoriceLoricaItem : CustomItemFunctions() {
     }
 
     override fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {
-        if (Util.isItemInSlot("liquorice-lorica", EquipmentSlot.CHEST, player)) player.flySpeed = 0.125f
-        else player.flySpeed = 0.1f // default flySpeed
+        if (Util.isItemInSlot("liquorice-lorica", EquipmentSlot.CHEST, player)) {
+            player.flySpeed = 0.125f
+        } else {
+            player.flySpeed = 0.1f // default flySpeed
+        }
     }
 
 }

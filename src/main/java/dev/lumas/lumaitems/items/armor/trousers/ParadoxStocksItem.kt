@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.armor.trousers
 
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.SimpleDirection
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block

@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
+import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import org.bukkit.Material
 import org.bukkit.block.Block

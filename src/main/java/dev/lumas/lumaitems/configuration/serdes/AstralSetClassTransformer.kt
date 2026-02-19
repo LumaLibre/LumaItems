@@ -1,7 +1,6 @@
 package dev.lumas.lumaitems.configuration.serdes
 
 import dev.lumas.lumaitems.configuration.model.AstralSetClass
-import dev.lumas.lumaitems.items.astral.AstralSet
 import eu.okaeri.configs.schema.GenericsPair
 import eu.okaeri.configs.serdes.BidirectionalTransformer
 import eu.okaeri.configs.serdes.SerdesContext

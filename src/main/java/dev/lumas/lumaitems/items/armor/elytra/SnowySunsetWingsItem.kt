@@ -2,7 +2,7 @@
 package dev.lumas.lumaitems.items.armor.elytra
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
-import dev.lumas.glowapi.colormanagers.ColorManager
+import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
@@ -10,7 +10,7 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -75,13 +75,13 @@ class SnowySunsetWingsItem : CustomItemFunctions() {
 
     fun addColor(player: Player) {
         if (Registry.HOOKS.getOrThrow(McMMOHook::class).isWith()) {
-            ColorManager.setTempPlayerColor(player, ChatColor.BLACK)
+            GlowColorManager.getInstance().setTransientColor(player, NamedTextColor.BLACK)
         }
     }
 
     fun removeColor(player: Player) {
         if (Registry.HOOKS.getOrThrow(McMMOHook::class).isWith()) {
-            ColorManager.updatePlayersColor(player)
+            GlowColorManager.getInstance().update(player)
         }
     }
 }

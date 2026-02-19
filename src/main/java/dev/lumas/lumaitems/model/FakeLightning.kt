@@ -3,7 +3,6 @@ package dev.lumas.lumaitems.model
 import com.comphenix.protocol.PacketType
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.registry.Registry
-import java.lang.IllegalStateException
 import java.util.UUID
 import kotlin.random.Random
 import org.bukkit.Location

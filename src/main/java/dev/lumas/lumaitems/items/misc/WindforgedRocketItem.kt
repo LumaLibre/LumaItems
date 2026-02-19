@@ -4,9 +4,9 @@ import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.MiniMessageUtil.mm
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import org.bukkit.Material

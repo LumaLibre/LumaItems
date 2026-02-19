@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -15,7 +16,6 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
-import kotlin.random.Random
 
 class WonderBeanieItem : CustomItemFunctions() {
 

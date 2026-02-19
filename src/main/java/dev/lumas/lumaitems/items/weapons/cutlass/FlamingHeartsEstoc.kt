@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
@@ -46,7 +46,7 @@ class FlamingHeartsEstoc : CustomItem {
                 val fireBall: Fireball = player.launchProjectile(Fireball::class.java)
                 fireBall.yield = 0.0f
                 fireBall.persistentDataContainer.set(NamespacedKey(instance(), "flamingheartssword"), PersistentDataType.SHORT, 1)
-                GlowManager.setGlowColor(fireBall, NamedTextColor.DARK_RED)
+                GlowColorManager.getInstance().setTransientColor(fireBall, NamedTextColor.DARK_RED)
                 fireBall.isGlowing = true
                 fireBall.setIsIncendiary(false)
 

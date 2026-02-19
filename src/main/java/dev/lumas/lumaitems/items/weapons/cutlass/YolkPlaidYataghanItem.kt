@@ -1,14 +1,14 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.configuration.files.HeadsYml
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.syncTimer
-import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import net.kyori.adventure.text.format.NamedTextColor
@@ -96,7 +96,7 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
         livingEntity.isCollidable = false
         livingEntity.addPotionEffect(SLOWNESS)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
-        GlowManager.addToTeamForTicks(livingEntity, NamedTextColor.NAMES.values().random(), 240)
+        GlowColorManager.getInstance().setTransientColor(livingEntity, NamedTextColor.NAMES.values().random(), 240L)
 
         var totalTicks = 0
 

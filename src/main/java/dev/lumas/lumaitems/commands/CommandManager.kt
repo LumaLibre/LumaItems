@@ -4,7 +4,6 @@ import dev.lumas.lumacore.manager.commands.AbstractCommandManager
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
-import dev.lumas.lumaitems.util.extensions.sendFormatted
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.command.CommandSender

@@ -8,8 +8,6 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.sendFormatted
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender

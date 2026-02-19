@@ -9,13 +9,13 @@ import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.extensions.getOreColor
-import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.PacketGlowColors
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.getOreColor
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -201,7 +201,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
 
         val displayableBlock = DisplayableBlock(player.uniqueId, blockDisplay, RANGE.plus(2.0), block)
 
-        GlowManager.setProtocolGlowPacket(player, blockDisplay, true)
+        PacketGlowColors.setProtocolGlowPacket(player, blockDisplay, true)
         return displayableBlock
     }
 

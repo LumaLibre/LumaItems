@@ -7,9 +7,9 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.lumaitems.annotations.AllSlots
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.annotations.AllSlots
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.equipmentContainers
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
@@ -283,7 +283,7 @@ class Listeners : ItemListener() {
     }
 
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    //@EventHandler (priority = EventPriority.LOWEST) unused
     fun onPlayerChat(event: AsyncPlayerChatEvent) {
         val player = event.player
 

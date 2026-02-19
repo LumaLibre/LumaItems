@@ -46,7 +46,7 @@ dependencies {
     compileOnly("net.coreprotect:coreprotect:23.0") {
         isTransitive = false
     }
-    compileOnly("dev.lumas.glowapi:LumaGlowAPI:c57567c")
+    compileOnly("dev.lumas.glowapi:LumaGlowAPI:325d91d")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9-beta1")
     compileOnly("com.palmergames.bukkit.towny:towny:0.102.0.0")
 

@@ -1,10 +1,11 @@
 package dev.lumas.lumaitems.items.astral.sets
 
-import dev.lumas.lumaitems.items.astral.AstralSet
-import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.ToolType
+import dev.lumas.lumaitems.items.astral.AstralSet
+import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
+import kotlin.random.Random
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -15,7 +16,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import kotlin.random.Random
 
 class ValleySet : AstralSet {
 

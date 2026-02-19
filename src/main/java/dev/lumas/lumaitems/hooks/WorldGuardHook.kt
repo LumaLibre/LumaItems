@@ -7,11 +7,10 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin
 import com.sk89q.worldguard.protection.flags.Flags
 import com.sk89q.worldguard.protection.flags.StateFlag
 import com.sk89q.worldguard.protection.regions.RegionQuery
+import dev.lumas.lumaitems.enums.TriState
 import dev.lumas.lumaitems.registry.Identifier
 import dev.lumas.lumaitems.registry.StringIdentifier
-import dev.lumas.lumaitems.enums.TriState
 import org.bukkit.Location
-import org.bukkit.entity.Enemy
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player

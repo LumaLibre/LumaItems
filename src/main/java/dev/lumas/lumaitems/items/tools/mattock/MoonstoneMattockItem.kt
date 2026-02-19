@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
-import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
 import java.util.Random
 import java.util.function.Consumer
 import org.bukkit.Material

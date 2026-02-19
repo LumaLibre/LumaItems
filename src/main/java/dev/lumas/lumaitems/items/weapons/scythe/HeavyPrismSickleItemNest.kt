@@ -1,18 +1,19 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
+import dev.lumas.glowapi.model.GlowColorManager
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.GlowManager
 import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.PacketGlowColors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
@@ -422,9 +423,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         init {
             target?.let {
                 if (it !is Player) {
-                    GlowManager.setGlowColor(it, orbDecals.chatColor)
+                    GlowColorManager.getInstance().setTransientColor(it, orbDecals.chatColor)
                 }
-                GlowManager.setProtocolGlowPacket(player, it, true)
+                PacketGlowColors.setProtocolGlowPacket(player, it, true)
             }
         }
 
@@ -459,9 +460,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 }
                 if (target != null && target?.isDead == false) {
                     if (target !is Player) {
-                        GlowManager.removeGlowColor(target!!)
+                        GlowColorManager.getInstance().update(target!!)
                     }
-                    GlowManager.setProtocolGlowPacket(player, target!!, false)
+                    PacketGlowColors.setProtocolGlowPacket(player, target!!, false)
                 }
             }
         }
@@ -505,9 +506,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                     activeTargets[entity] = 1
                 }
                 if (entity !is Player) {
-                    GlowManager.setGlowColor(entity, orbDecals.chatColor)
+                    GlowColorManager.getInstance().setTransientColor(entity, orbDecals.chatColor)
                 }
-                GlowManager.setProtocolGlowPacket(player, entity, true)
+                PacketGlowColors.setProtocolGlowPacket(player, entity, true)
             }
 
             val nearbyEntities = position.getNearbyLivingEntities(AUTO_TARGET_RANGE)
