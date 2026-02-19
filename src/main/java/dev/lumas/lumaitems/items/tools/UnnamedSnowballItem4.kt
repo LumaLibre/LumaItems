@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.tools
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Player

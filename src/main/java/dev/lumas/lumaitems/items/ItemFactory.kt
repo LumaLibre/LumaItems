@@ -1,16 +1,16 @@
 package dev.lumas.lumaitems.items
 
 import com.iridium.iridiumcolorapi.IridiumColorAPI
+import dev.lumas.lumacore.utility.ContextLogger
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.enums.RomanNumeral
-import dev.lumas.lumaitems.obj.AttributeContainer
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.PaperDataComponent
+import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.UnValuedPaperDataComponent
+import dev.lumas.lumaitems.model.ValuedPaperDataComponent
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.obj.PaperDataComponent
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.obj.UnValuedPaperDataComponent
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.obj.ValuedPaperDataComponent
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentType.Valued
 import net.kyori.adventure.text.format.NamedTextColor
@@ -30,13 +30,14 @@ import org.bukkit.persistence.PersistentDataType
 // - Our constructor takes in the parameters that generally most custom items always have and builds an item based off of them.
 // - Some other options are available outside the constructor.
 
+//TODO clean up this disaster
 class ItemFactory(
     private val name: String,
-    private val customEnchants: MutableList<String>,
-    private val lore: MutableList<String>,
+    private val customEnchants: List<String>,
+    private val lore: List<String>,
     private val material: Material,
-    private val persistentData: MutableList<String>,
-    private val vanillaEnchants: MutableMap<Enchantment, Int>,
+    private val persistentData: List<String>,
+    private val vanillaEnchants: Map<Enchantment, Int>,
 
     var tier: String = "&#AC87FB&lAstral",
 
@@ -47,7 +48,7 @@ class ItemFactory(
     /**
      * Attribute modifiers.
      */
-    var attributeModifiers: MutableMap<Attribute, AttributeModifier> = mutableMapOf(),
+    var attributeContainers: MutableList<AttributeContainer> = mutableListOf(),
     /**
      * Quotes.
      */
@@ -76,19 +77,19 @@ class ItemFactory(
 
     companion object {
         val AUTO_HAT_KEY = Util.namespacedKey("autohat")
-        private val plugin: LumaItems = LumaItems.getInstance()
         @JvmField
         val LUMAITEM = Util.namespacedKey("lumaitem")
-        private val tierFormat = listOf(
+        private val LOGGER: ContextLogger = ContextLogger.getLogger(true)
+        private val LEGACY_TIER_FORMAT = listOf(
             "",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       ",
-            "&#EEE1D5Tier • <PLACEHOLDER>",
+            "&#EEE1D5Tier • %s",
             "&#EEE1D5&m       &r&#EEE1D5⋆⁺₊⋆ ★ ⋆⁺₊⋆&m       "
         )
-        private val miniMessageTierFormat = listOf(
+        val TIER_FORMAT = listOf(
             "",
             "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>",
-            "<#EEE1D5>Tier •</#EEE1D5> <PLACEHOLDER>",
+            "<#EEE1D5>Tier •</#EEE1D5> %s",
             "<#EEE1D5><st>       </st>⋆⁺₊⋆ ★ ⋆⁺₊⋆<st>       </st></#EEE1D5>"
         )
         @JvmStatic
@@ -98,7 +99,6 @@ class ItemFactory(
     val item = ItemStack(material, amount)
     val meta: Damageable? = item.itemMeta as? Damageable
     var miniMessage = false
-    var hideDefaultAttributes = true
 
     fun miniMessage(): ItemFactory {
         miniMessage = true
@@ -129,7 +129,7 @@ class ItemFactory(
     }
 
     fun addAttributeContainer(attributeContainer: AttributeContainer): ItemFactory {
-        this.attributeModifiers[attributeContainer.attribute] = AttributeModifier(attributeContainer.key, attributeContainer.amount, attributeContainer.operation, attributeContainer.slot)
+        this.attributeContainers.add(attributeContainer)
         return this
     }
 
@@ -150,7 +150,7 @@ class ItemFactory(
 
         meta.persistentDataContainer.set(LUMAITEM, PersistentDataType.SHORT, 1)
         for (name in persistentData) {
-            meta.persistentDataContainer.set(NamespacedKey(plugin, name), PersistentDataType.SHORT, persistentDataValue)
+            meta.persistentDataContainer.set(NamespacedKey(LumaItems.getInstance(), name), PersistentDataType.SHORT, persistentDataValue)
         }
 
 
@@ -189,35 +189,37 @@ class ItemFactory(
         }
 
 
+
         if (!miniMessage) {
             combinedLore.addAll(lore.map { "&f$it" })
-            combinedLore.addAll(tierFormat.map { it.replace("<PLACEHOLDER>", tier) })
+            if (tier.isNotEmpty()) combinedLore.addAll(LEGACY_TIER_FORMAT.map { it.format(tier) })
 
             meta.setDisplayName(Util.colorcode(name))
             meta.lore = Util.colorcodeList(combinedLore)
         } else {
             combinedLore.addAll(lore.map { it })
-            combinedLore.addAll(miniMessageTierFormat.map { it.replace("<PLACEHOLDER>", tier) })
+            if (tier.isNotEmpty()) combinedLore.addAll(TIER_FORMAT.map { it.format(tier) })
 
-            meta.displayName(MiniMessageUtil.mm(name)/*.decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.TRUE)*/)
+            meta.displayName(MiniMessageUtil.mm(name))
             meta.lore(MiniMessageUtil.mml(combinedLore).map { it.colorIfAbsent(NamedTextColor.WHITE) })
         }
 
         for (enchant in vanillaEnchants) {
             meta.addEnchant(enchant.key, enchant.value, true)
         }
-        if (attributeModifiers.isNotEmpty()) {
-            for (attributeModifier in attributeModifiers) {
-                meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
-            }
-        } else if (hideDefaultAttributes) {
-            val defaultAttributes = DefaultAttributes.getFromMaterial(material)
-            if (defaultAttributes != null) {
-                for (attributeModifier in defaultAttributes.attributes) {
-                    meta.addAttributeModifier(attributeModifier.key, attributeModifier.value)
-                }
-            }
+
+        val defaultAttrs = material.defaultAttributeModifiers.entries().associate { it.key to it.value }
+        val customAttrs = attributeContainers.associate { it.attribute() to it.modifier() }
+
+        val attributes = buildMap {
+            putAll(defaultAttrs)
+            putAll(customAttrs)
         }
+
+        for ((attribute, modifier) in attributes) {
+            meta.addAttributeModifier(attribute, modifier)
+        }
+
         meta.isUnbreakable = unbreakable
         if (hideEnchants) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
 
@@ -247,7 +249,7 @@ class ItemFactory(
 
     fun toReturnablePair(keyIndex: Int): Pair<String, ItemStack> {
         val key = persistentData.getOrNull(keyIndex) ?: run {
-            LumaItems.log("Error: persistentData must have exactly one value!")
+            LOGGER.error("persistentData must have exactly one value!")
             return Pair("", ItemStack(Material.AIR))
         }
         return Pair(key, this.createItem())
@@ -260,14 +262,14 @@ class ItemFactory(
         private var lore: MutableList<String> = mutableListOf()
         private var material: Material = Material.AIR
         private var persistentData: MutableList<String> = mutableListOf()
-        private var vanillaEnchants: MutableMap<Enchantment, Int> = mutableMapOf()
+        private var vanillaEnchants: Map<Enchantment, Int> = mutableMapOf()
         private var tier: String = Tier.ASTRAL.toString()
         private var unbreakable: Boolean = false
         private var hideEnchants: Boolean = false
         private var addSpace: Boolean = true
         private var autoHat: Boolean = false
-        private var attributeModifiers: MutableMap<Attribute, AttributeModifier> = mutableMapOf()
-        private var quotes: MutableList<String> = mutableListOf()
+        private var attributeContainers: MutableList<AttributeContainer> = mutableListOf()
+        private var taglines: MutableList<String> = mutableListOf()
         private var b64PHead: String? = null
         private var spoofEnchants: Boolean = false
         private var persistentDataValue: Short = 1
@@ -294,7 +296,7 @@ class ItemFactory(
         fun persistentDataRecords(vararg persistentData: PersistentDataRecord<*, *>) = apply { this.persistentDataRecords = persistentData.toMutableList() }
         @SafeVarargs
         fun paperDataComponents(vararg paperDataComponents: PaperDataComponent) = apply { this.paperDataComponents = paperDataComponents.toMutableList() }
-        fun vanillaEnchants(vanillaEnchants: MutableMap<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
+        fun vanillaEnchants(vanillaEnchants: Map<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants }
         @SafeVarargs
         fun vanillaEnchants(vararg vanillaEnchants: Pair<Enchantment, Int>) = apply { this.vanillaEnchants = vanillaEnchants.toMap().toMutableMap() }
         fun tier(tier: String) = apply { this.tier = tier }
@@ -303,15 +305,13 @@ class ItemFactory(
         fun hideEnchants(hideEnchants: Boolean) = apply { this.hideEnchants = hideEnchants }
         fun addSpace(addSpace: Boolean) = apply { this.addSpace = addSpace }
         fun autoHat(autoHat: Boolean) = apply { this.autoHat = autoHat }
-        fun attributeModifiers(attributeModifiers: MutableMap<Attribute, AttributeModifier>) = apply { this.attributeModifiers = attributeModifiers }
-        fun attributeModifiers(vararg containers: AttributeContainer) = apply {
-            this.attributeModifiers = containers.associate {
-                it.attribute to AttributeModifier(it.key, it.amount, it.operation, it.slot)
-            }.toMutableMap()
-        }
-        fun quotes(quotes: MutableList<String>) = apply { this.quotes = quotes }
+        fun attributeModifiers(attributeModifiers: MutableMap<Attribute, AttributeModifier>) = apply { this.attributeContainers = attributeModifiers.map { AttributeContainer.from(it.key, it.value) }.toMutableList() }
+        fun attributeModifiers(vararg containers: AttributeContainer) = apply { this.attributeContainers = containers.toMutableList() }
+        fun tagline(quotes: MutableList<String>) = apply { this.taglines = quotes }
         @SafeVarargs
-        fun quotes(vararg quotes: String) = apply { this.quotes = quotes.toMutableList() }
+        fun tagline(tagline: String) = apply { this.taglines = mutableListOf(tagline) }
+        fun tagline(hex: String, tagline: String) = apply { this.taglines = mutableListOf("<${hex}>\"$tagline\"") }
+
         fun b64PHead(b64PHead: String) = apply { this.b64PHead = b64PHead }
         fun spoofEnchants(spoofEnchants: Boolean) = apply { this.spoofEnchants = spoofEnchants }
         fun persistentDataValue(persistentDataValue: Short) = apply { this.persistentDataValue = persistentDataValue }
@@ -319,7 +319,7 @@ class ItemFactory(
 
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
-            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeModifiers, quotes, b64PHead,
+            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeContainers, taglines, b64PHead,
             spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount
         )
 
@@ -327,7 +327,7 @@ class ItemFactory(
 
         fun buildPair(): Pair<String, ItemStack> {
             if (persistentData.size != 1) {
-                LumaItems.log("Error: persistentData must have exactly one value!")
+                LOGGER.error("persistentData must have exactly one value!")
                 return Pair("", ItemStack(Material.AIR))
             }
             return Pair(persistentData[0], build().createItem())

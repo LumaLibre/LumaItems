@@ -1,6 +1,6 @@
 package dev.lumas.lumaitems.items.astral
 
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
@@ -15,11 +15,11 @@ interface AstralSet : CustomItem {
      * @see setItems
      */
     override fun createItem(): Pair<String, ItemStack> {
-        return Pair(identifier(), BLANK_ITEMSTACK)
+        return Pair(setIdentifier(), BLANK_ITEMSTACK)
     }
 
     /**
-     * Set the items for the set
+     * Set of items
      * @return A list of itemstacks
      */
     fun setItems(): List<ItemStack>
@@ -28,6 +28,6 @@ interface AstralSet : CustomItem {
      * Set the identifier for the set
      * @return A string identifier
      */
-    fun identifier(): String
+    fun setIdentifier(): String
 
 }

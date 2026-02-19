@@ -1,19 +1,18 @@
 package dev.lumas.lumaitems.items.tools.nests
 
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
-import dev.lumas.lumaitems.obj.PersistentDataRecord
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.dialogue.DialogueText
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import kotlin.random.Random
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
@@ -109,7 +108,7 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
                 Enchantment.LOOTING to 4,
                 Enchantment.MENDING to 1,
             )
-            .quotes(
+            .tagline(
                 "<$color>\"Don't listen to the voices...\""
             )
             .lore(
@@ -189,6 +188,7 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
 
     override fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {
         val item = event.item
+        player.sendViewDistance
         if (item.type != Material.SHEARS) return
 
         // Only damage shears 11.71% of the time to match the health of Netherite gear
@@ -402,9 +402,9 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
             val messages = this.messages[personality]?.random()?.split("#") ?: return
             dialogue.queueText(messages)
             dialogue.sendQueuedText {
-                Bukkit.getScheduler().runTask(LumaItems.getInstance(), Runnable {
+                player.sync {
                     this.block.invoke(player, personality)
-                })
+                }
             }
         }
 
@@ -418,9 +418,9 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
             )
             dialogue.queueText(messages)
             dialogue.sendQueuedText {
-                Bukkit.getScheduler().runTask(LumaItems.getInstance(), Runnable {
+                player.sync {
                     this.block.invoke(player, personality)
-                })
+                }
             }
 
             if (this.result == MoodyActionResult.HOLD_ACTION) {

@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.tools.harrow
 
-import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.util.extensions.determineMostCommon
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import kotlin.random.Random
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -18,7 +19,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import kotlin.random.Random
 
 @Disable(WorldName.EVENT_NEW)
 class AutumnsHarrowerItem : CustomItem {
@@ -62,7 +62,7 @@ class AutumnsHarrowerItem : CustomItem {
 
     private fun fullHarvest(block: Block, drops: Collection<ItemStack>) {
         if (drops.isEmpty()) return
-        val item = AbilityUtil.findMostCommonItem(drops)
+        val item = drops.determineMostCommon()
 
         if (crops.containsKey(item.type)) {
             block.world.spawnParticle(
@@ -79,14 +79,17 @@ class AutumnsHarrowerItem : CustomItem {
 
     private fun topHarvestAnimation(location: Location, material: Material, dustOptions: DustOptions) {
         val loc = location.add(0.0,0.2,0.0).toCenterLocation()
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
+        var count = 0
+
+        location.syncTimer(0, 5) {
+            if (++count > 150) {
+                it.cancel()
+                return@syncTimer
+            }
+
             loc.world.dropItem(loc, ItemStack(material))
             loc.world.spawnParticle(Particle.DUST, loc, 30, 0.2, 0.2, 0.2, dustOptions)
-        }, 0, 5)
-
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-            Bukkit.getScheduler().cancelTask(task)
-        }, 150)
+        }
     }
 
 }

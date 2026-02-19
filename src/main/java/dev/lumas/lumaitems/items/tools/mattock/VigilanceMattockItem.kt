@@ -6,14 +6,16 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.BlockConstants
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.extensions.BlockUtil.getOreColor
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.PacketGlowColors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.ItemUtil.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.getOreColor
+import dev.lumas.lumaitems.util.extensions.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -47,7 +49,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
 
 
         init {
-            LumaItems.getProtocolManager()?.addPacketListener(
+            Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager()?.addPacketListener(
                 object: PacketAdapter(LumaItems.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_SOUND_EFFECT, PacketType.Play.Server.ENTITY_SOUND) {
                     override fun onPacketSending(event: PacketEvent) {
                         if (event.player.inventory.itemInMainHand.itemMeta?.persistentDataContainer?.has(KEY) == true) {
@@ -106,7 +108,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
             }
         }
         if (player.inventory.itemInMainHand.isMatchingItem(KEY)) {
-            Executors.sync {
+            player.sync {
                 getNearbyOreDisplayableBlocks(player)
                     .takeIf { it.isNotEmpty() }
                     ?.apply { DISPLAYABLE_BLOCKS.addAll(this) }
@@ -157,11 +159,11 @@ class VigilanceMattockItem : CustomItemFunctions() {
     }
 
     private fun addPotionEffects(player: Player) {
-        Executors.sync { player.addPotionEffect(BLINDNESS) }
+        player.sync { player.addPotionEffect(BLINDNESS) }
     }
 
     private fun clearPotionEffects(player: Player) {
-        Executors.sync { player.removePotionEffect(PotionEffectType.BLINDNESS) }
+        player.sync { player.removePotionEffect(PotionEffectType.BLINDNESS) }
     }
 
 
@@ -199,7 +201,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
 
         val displayableBlock = DisplayableBlock(player.uniqueId, blockDisplay, RANGE.plus(2.0), block)
 
-        GlowManager.setProtocolGlowPacket(player, blockDisplay, true)
+        PacketGlowColors.setProtocolGlowPacket(player, blockDisplay, true)
         return displayableBlock
     }
 
@@ -225,7 +227,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
         fun ownerAsPlayer(): Player? = Bukkit.getPlayer(owner)
 
         fun remove() {
-            Executors.sync { blockDisplay.remove() }
+            blockDisplay.sync { blockDisplay.remove() }
             DISPLAYABLE_BLOCKS.remove(this)
         }
 

@@ -1,16 +1,21 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.util.concurrent.TimeUnit
 import org.bukkit.Bukkit
+import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -29,8 +34,6 @@ import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.concurrent.TimeUnit
-import org.bukkit.Color
 
 @Disable(WorldName.PINATA)
 class SpringtideScytheItem : CustomItemFunctions() {
@@ -158,10 +161,10 @@ class SpringtideScytheItem : CustomItemFunctions() {
             player.world.addEntity(snowball)
         }
 
-        Bukkit.getAsyncScheduler().runAtFixedRate(instance(), { task ->
+        Executors.asyncTimer(0, 1) { task ->
             if (snowballs.isEmpty() || ticksRan++ > 80) {
                 task.cancel()
-                return@runAtFixedRate
+                return@asyncTimer
             }
             snowballs.removeIf {
                 if (it.isDead) {
@@ -178,17 +181,16 @@ class SpringtideScytheItem : CustomItemFunctions() {
                     entityOrLocation as Location
                 }
 
-                it.velocity = AbilityUtil.getDirectionBetweenLocations(it.location, loc).multiply(0.1).normalize()
+                it.velocity = BukkitVectors.direction(it.location, loc).multiply(0.1).normalize()
                 it.world.spawnParticle(Particle.DUST, it.location, 50, 0.7, 0.7, 0.7, 0.1, WHITE_DUST)
                 it.world.spawnParticle(Particle.WAX_OFF, it.location, 10, 0.7, 0.7, 0.7, 0.1)
 
-                Bukkit.getScheduler().runTask(instance(), Runnable {
+                it.sync {
                     it.world.playSound(it.location, Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1f, 1f)
-                })
+                }
                 return@removeIf false
             }
-
-        }, 0, 50, TimeUnit.MILLISECONDS)
+        }
     }
 
     private fun downPour(location: Location, player: Player) {
@@ -226,9 +228,9 @@ class SpringtideScytheItem : CustomItemFunctions() {
             )
             val projectile = fallingProjectile(spawnLocation, player, SpellType.NIGHTFALL_DOWNPOUR)
             snowballs.add(projectile)
-            Bukkit.getScheduler().runTask(instance(), Runnable {
+            location.sync {
                 location.world.addEntity(projectile)
-            })
+            }
         }, 0, 50, TimeUnit.MILLISECONDS)
     }
 

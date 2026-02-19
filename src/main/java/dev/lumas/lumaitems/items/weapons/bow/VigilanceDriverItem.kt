@@ -6,11 +6,15 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.EnumWrappers
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.manager.GlowManager
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.PacketGlowColors
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.isItemInSlots
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -36,12 +40,12 @@ class VigilanceDriverItem : CustomItemFunctions() {
         private val referencedEntities: ConcurrentHashMap<UUID, List<LivingEntity>> = ConcurrentHashMap()
         private val KEY = Util.namespacedKey("vigilance-driver")
         private val BLINDNESS = PotionEffect(PotionEffectType.BLINDNESS, 300, 0, true, false, false)
-        private val COLORS = GlowManager.PACKET_COLORS.filter { it != EnumWrappers.ChatFormatting.WHITE }
+        private val COLORS by lazy { PacketGlowColors.PACKET_COLORS.filter { it != EnumWrappers.ChatFormatting.WHITE } }
         private const val RANGE = 80.0
 
 
         init {
-            LumaItems.getProtocolManager()?.addPacketListener(
+            Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager()?.addPacketListener(
                 object: PacketAdapter(LumaItems.getInstance(), ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_SOUND_EFFECT, PacketType.Play.Server.ENTITY_SOUND) {
                     override fun onPacketSending(event: PacketEvent) {
                         if (Util.isItemInSlot(KEY, EquipmentSlot.HAND, event.player)) {
@@ -85,8 +89,8 @@ class VigilanceDriverItem : CustomItemFunctions() {
     override fun asyncGlobalTask() {
         referencedEntities.forEach { (playerUUID, entities) ->
             val player = Bukkit.getPlayer(playerUUID) ?: run { referencedEntities.remove(playerUUID); return@forEach }
-            if (!Util.isItemInSlots(KEY, listOf(EquipmentSlot.HAND, EquipmentSlot.OFF_HAND), player)) {
-                Executors.sync {
+            if (!player.isItemInSlots(KEY, EquipmentSlot.HAND, EquipmentSlot.OFF_HAND)) {
+                player.sync {
                     this.removePlayer(player, entities)
                 }
             }
@@ -116,7 +120,7 @@ class VigilanceDriverItem : CustomItemFunctions() {
 
         Executors.asyncTimer(0, 2) {
             if (arrow.location.distanceSquared(player.location) >= RANGE * RANGE || arrow.isDead || ++count > 5) {
-                Executors.sync { arrow.remove() }
+                arrow.sync { arrow.remove() }
                 it.cancel()
             }
         }
@@ -163,11 +167,11 @@ class VigilanceDriverItem : CustomItemFunctions() {
         // Remove glow from all entities
         for (entity in entities) {
             if (entity !is Player) {
-                GlowManager.removeProtocolTeam(player, entity)
+                PacketGlowColors.removeProtocolTeam(player, entity)
             }
 
             if (!entity.isGlowing && !entity.hasPotionEffect(PotionEffectType.GLOWING)) {
-                GlowManager.setProtocolGlowPacket(player, entity, false)
+                PacketGlowColors.setProtocolGlowPacket(player, entity, false)
             }
 
         }
@@ -187,10 +191,10 @@ class VigilanceDriverItem : CustomItemFunctions() {
 
 
             if (entity !is Player) {
-                GlowManager.setProtocolTeamColor(player, entity, COLORS.random())
+                PacketGlowColors.setProtocolTeamColor(player, entity, COLORS.random())
             }
             if (!entity.isGlowing && !entity.hasPotionEffect(PotionEffectType.GLOWING)) {
-                GlowManager.setProtocolGlowPacket(player, entity, true)
+                PacketGlowColors.setProtocolGlowPacket(player, entity, true)
             }
         }
     }

@@ -3,13 +3,13 @@ package dev.lumas.lumaitems.items.armor.boots
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.lumas.lumaitems.events.items.BlockCacheManager
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
-import kotlin.random.Random
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -96,7 +96,7 @@ class HellStridersItem : CustomItemFunctions() {
 
         if (blocks.size >= 40) {
             for (index in 0 until blocks.size / 4) {
-                Bukkit.getScheduler().runTask(instance(), Runnable {
+                player.sync {
                     val block = blocks[index]
                     if (block.type == Material.OBSIDIAN) {
                         block.type = Material.CRYING_OBSIDIAN
@@ -104,12 +104,12 @@ class HellStridersItem : CustomItemFunctions() {
                         block.type = Material.LAVA
                         BlockCacheManager.unCacheBlock(player.uniqueId, block)
                     }
-                })
+                }
             }
         }
 
         for (i in 0 until 3) {
-            Bukkit.getScheduler().runTaskLater(instance(), Runnable {
+            player.syncDelayed(random().nextLong(1, 10)) {
                 for (e in 0 until 6) {
                     val block = blocks.random()
                     if (block.world != player.world || block.location.distance(player.location) > 10) {
@@ -133,7 +133,7 @@ class HellStridersItem : CustomItemFunctions() {
                         else -> continue
                     }
                 }
-            }, Random.Default.nextLong(1, 10))
+            }
         }
     }
 

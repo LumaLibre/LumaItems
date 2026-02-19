@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.PaperDataComponent
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.PaperDataComponent
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import kotlin.jvm.optionals.getOrNull

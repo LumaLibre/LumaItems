@@ -57,6 +57,11 @@ object BukkitVectors {
     }
 
 
+    fun direction(from: Location, to: Location): Vector {
+        return to.toVector().subtract(from.toVector()).normalize()
+    }
+
+
     fun bounceWithBlockFace(entity: Entity, surface: BlockFace, magnitude: Double = 2.0): Vector {
         val velocity = entity.velocity
         val normal = Vector(surface.modX.toDouble(), surface.modY.toDouble(), surface.modZ.toDouble()).normalize()
@@ -156,5 +161,21 @@ object BukkitVectors {
         val yAdd = if (yRange > 0.0) Random.nextDouble(-yRange, yRange) else 0.0
 
         return center.clone().add(xAdd, yAdd, zAdd)
+    }
+
+    fun line(start: Location, end: Location, step: Double = 0.5): List<Location> {
+        val points = mutableListOf<Location>()
+        val direction = end.toVector().subtract(start.toVector())
+        val length = direction.length()
+        val normalizedDirection = direction.normalize()
+
+        var currentDistance = 0.0
+        while (currentDistance <= length) {
+            val point = start.clone().add(normalizedDirection.clone().multiply(currentDistance))
+            points.add(point)
+            currentDistance += step
+        }
+
+        return points
     }
 }

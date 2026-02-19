@@ -22,34 +22,39 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
     maven("https://jitpack.io")
-    maven("https://maven.enginehub.org/repo/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://nexus.neetgames.com/repository/maven-releases/")
     maven("https://repo.jsinco.dev/releases")
     maven("https://maven.playpro.com/")
+    maven("https://repo.okaeri.cloud/releases")
+    maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.glaremasters.me/repository/towny/")
 }
 
 dependencies {
-    compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.github.Zrips:jobs:v4.17.2") {
+    compileOnly("com.github.Zrips:Jobs:v5.2.6.2") {
         isTransitive = false
     }
     compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
-    compileOnly("dev.lumas.lumacore:LumaCore:d56563b")
+    compileOnly("dev.lumas.lumacore:LumaCore:d774bc6")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.047-CUSTOM") {
         isTransitive = false
     }
-    compileOnly("net.coreprotect:coreprotect:23.0")
-    compileOnly("dev.lumas.glowapi:LumaGlowAPI:c57567c")
+    compileOnly("net.coreprotect:coreprotect:23.0") {
+        isTransitive = false
+    }
+    compileOnly("dev.lumas.glowapi:LumaGlowAPI:325d91d")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9-beta1")
+    compileOnly("com.palmergames.bukkit.towny:towny:0.102.0.0")
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
+    implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.10-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 }
 
 tasks {
@@ -66,6 +71,7 @@ tasks {
     shadowJar {
         val pack = "dev.lumas.lumaitems.shaded"
         relocate("com.iridium.iridiumcolorapi", "$pack.iridiumcolorapi")
+        relocate("eu.okaeri", "$pack.okaeri")
         exclude("kotlin/**")
         minimize()
         archiveClassifier.set("")

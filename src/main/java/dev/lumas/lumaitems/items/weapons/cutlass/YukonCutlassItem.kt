@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.Util.isItemInSlot
-import dev.lumas.lumaitems.util.extensions.ColorUtil.toBukkitColor
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.random.asJavaRandom
 import org.bukkit.Location
@@ -161,7 +162,7 @@ class YukonCutlassItem : CustomItemFunctions() {
                 if (snowball.isDead || !snowball.isValid) {
                     iterator.remove()
                 } else if (snowball.isInWater || snowball.isInLava) {
-                    sync { snowball.dropAndRemove() }
+                    snowball.sync { snowball.dropAndRemove() }
                     iterator.remove()
                     continue
                 }
@@ -176,7 +177,7 @@ class YukonCutlassItem : CustomItemFunctions() {
                 task.cancel()
                 return@asyncTimer
             } else if (this.isInWater || this.isInLava) {
-                sync { this.dropAndRemove() }
+                this.sync { this.dropAndRemove() }
                 task.cancel()
                 return@asyncTimer
             }

@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.events.items
 
-import dev.lumas.lumaitems.obj.PlayerCachedBlocks
-import org.bukkit.block.Block
+import dev.lumas.lumaitems.model.PlayerCachedBlocks
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import org.bukkit.block.Block
 
 object BlockCacheManager {
 

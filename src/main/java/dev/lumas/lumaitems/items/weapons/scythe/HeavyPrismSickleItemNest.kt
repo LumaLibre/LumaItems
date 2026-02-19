@@ -1,20 +1,22 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
+import dev.lumas.glowapi.model.GlowColorManager
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.manager.GlowManager
-import dev.lumas.lumaitems.obj.AttributeContainer
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.util.PacketGlowColors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.Util.isItemInSlot
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.awt.Color
@@ -146,9 +148,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 PersistentDataRecord.create(nameSpace, PersistentDataType.STRING, colorKit.name)
             )
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_HOE.appendThenGetAttributes(
-                    AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-3.3, EquipmentSlotGroup.MAINHAND)
-                )
+                AttributeContainer.of(nameSpace, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-3.3, EquipmentSlotGroup.MAINHAND)
             )
             .buildPair()
     }
@@ -216,7 +216,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                     // Prune orbs that are no longer valid
                     if (count >= FIRE_TIME || orbGroup.orbs.all { !it.valid }) {
                         task.cancel()
-                        Executors.sync { orbGroup.destroy() }
+                        orbGroup.destroy()
                         whenDone()
                         return@asyncTimer
                     }
@@ -224,7 +224,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
                     orbGroup.moveGroup(count)
 
-                    Executors.sync {
+                    player.sync {
                         orbGroup.orbs.forEach { orb ->
                             if (orb.fireTime < count) {
                                 if (!orb.autoTarget(orbGroup.activeTargets)) {
@@ -423,9 +423,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         init {
             target?.let {
                 if (it !is Player) {
-                    GlowManager.setGlowColor(it, orbDecals.chatColor)
+                    GlowColorManager.getInstance().setTransientColor(it, orbDecals.chatColor)
                 }
-                GlowManager.setProtocolGlowPacket(player, it, true)
+                PacketGlowColors.setProtocolGlowPacket(player, it, true)
             }
         }
 
@@ -447,28 +447,29 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                 this.valid = true
             }
 
-            Executors.sync {
+            spawnLocation.sync {
                 createSnowball(spawnLocation)
             }
         }
 
         fun despawn() {
             this.valid = false
-            if (!snowball.isDead) {
-                snowball.setGravity(true)
-                //snowball.world.spawnParticle(Particle.WAX_OFF, snowball.location, 4, 0.2, 0.2, 0.2, 0.9)
-            }
-            if (target != null && target?.isDead == false) {
-                if (target !is Player) {
-                    GlowManager.removeGlowColor(target!!)
+            snowball.sync {
+                if (!snowball.isDead) {
+                    snowball.setGravity(true)
                 }
-                GlowManager.setProtocolGlowPacket(player, target!!, false)
+                if (target != null && target?.isDead == false) {
+                    if (target !is Player) {
+                        GlowColorManager.getInstance().update(target!!)
+                    }
+                    PacketGlowColors.setProtocolGlowPacket(player, target!!, false)
+                }
             }
         }
 
         fun move() { //
             var smallCount = 40
-            Executors.syncTimer(0, 1) { task ->
+            snowball.syncTimer(0, 1) { task ->
                 if (snowball.isDead) {
                     if (valid) {
                         createSnowball(snowball.location)
@@ -505,9 +506,9 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                     activeTargets[entity] = 1
                 }
                 if (entity !is Player) {
-                    GlowManager.setGlowColor(entity, orbDecals.chatColor)
+                    GlowColorManager.getInstance().setTransientColor(entity, orbDecals.chatColor)
                 }
-                GlowManager.setProtocolGlowPacket(player, entity, true)
+                PacketGlowColors.setProtocolGlowPacket(player, entity, true)
             }
 
             val nearbyEntities = position.getNearbyLivingEntities(AUTO_TARGET_RANGE)
@@ -566,7 +567,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             val start = snowball.location.clone()
             Particles.line(start, lineCurrentEnd!!, 0.45, rayTraceParticle)
 
-            Executors.sync {
+            start.sync {
                 val direction = lineCurrentEnd!!.clone().subtract(start).toVector().normalize()
                 val distanceToEnd = start.distance(lineCurrentEnd!!)
                 raytrace(start, direction, distanceToEnd, getPredicate(player))

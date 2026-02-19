@@ -2,16 +2,18 @@ package dev.lumas.lumaitems.items.misc.magical
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.obj.MagicItemCooldown
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.model.MagicItemCooldown
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -25,9 +27,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.concurrent.ConcurrentLinkedQueue
 
 @Suppress("Duplicates")
 class MagicWandItem : CustomItem {
@@ -160,18 +160,17 @@ class MagicWandItem : CustomItem {
         val particleDisplay = ParticleDisplay.of(Particle.DUST).withColor(Util.getRandomColor())
         for (livingEntity in entities) {
             if (AbilityUtil.noDamagePermission(player, livingEntity)) continue
-            object : BukkitRunnable() {
-                var i = 0
-                override fun run() {
-                    if (i++ > 2) {
-                        cancel()
-                    }
-                    livingEntity.velocity = livingEntity.location.toVector().subtract(loc.toVector()).add(Vector(0.0,5.0,0.0)).multiply(23.5).normalize()
 
-                    Particles.line(livingEntity.location, loc, 0.2, particleDisplay)
-                    livingEntity.damage(5.0)
+            var i = 0
+            livingEntity.syncTimer(0, 2) {
+                if (i++ > 2) {
+                    it.cancel()
                 }
-            }.runTaskTimer(instance(), 0, 2)
+                livingEntity.velocity = livingEntity.location.toVector().subtract(loc.toVector()).add(Vector(0.0,5.0,0.0)).multiply(23.5).normalize()
+
+                Particles.line(livingEntity.location, loc, 0.2, particleDisplay)
+                livingEntity.damage(5.0)
+            }
         }
     }
 

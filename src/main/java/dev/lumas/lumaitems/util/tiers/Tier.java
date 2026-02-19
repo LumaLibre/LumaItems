@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 
 public class Tier {
 
+    public static final Tier BLANK = new Tier("");
     public static final Tier DEPRECATED = new Tier("<b><yellow>Deprecated</yellow></b>");
     public static final Tier DEBUG = new Tier("<b><green>Debug</green></b>");
     public static final Tier ASTRAL = new Tier("<b><#AC87FB>Astral</#AC87FB></b>");
@@ -16,6 +17,7 @@ public class Tier {
     public static final Tier SUMMER_2025 = new Tier("<b><gradient:#ff4e50:#fc913a:#f9d62e:#eae374:#97c753>Lumalympics 2025</gradient></b>");
     public static final Tier HALLOWEEN_2025 = new Tier("<b><gradient:#602749:#b14623:#f6921d>Lumaween 2025</gradient></b>");
     public static final Tier CHRISTMAS_2025 = new Tier("<b><gradient:#1d7240:#5e9f52:#e4ba58:#f2b054:#f06f3f:#ee4631:#e4352b:#a61e20>Christmas 2025</gradient></b>");
+    public static final Tier VALENTIDE_2026 = new Tier("<b><gradient:#954381:#ee78c0:#ec6e95:#cb354e>Valentide 2026</gradient></b>");
 
 
     private final String mmTierString;

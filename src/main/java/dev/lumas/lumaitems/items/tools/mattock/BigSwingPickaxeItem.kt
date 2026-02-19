@@ -1,15 +1,14 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.enums.CardinalDirection
-import dev.lumas.lumaitems.enums.DefaultAttributes
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.AttributeContainer
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Ellipsoid
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -50,12 +49,10 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
                 Enchantment.MENDING to 1
             )
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_PICKAXE.appendThenGetAttributes(
-                    AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.75, EquipmentSlotGroup.ANY),
-                    AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.4, EquipmentSlotGroup.ANY),
-                    AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND),
-                    AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND)
-                )
+                AttributeContainer.of(key, Attribute.BLOCK_BREAK_SPEED, AttributeModifier.Operation.ADD_NUMBER,-0.75, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(key, Attribute.ATTACK_SPEED, AttributeModifier.Operation.ADD_NUMBER, -3.4, EquipmentSlotGroup.ANY),
+                AttributeContainer.of(key, Attribute.BLOCK_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND),
+                AttributeContainer.of(key, Attribute.ENTITY_INTERACTION_RANGE, AttributeModifier.Operation.ADD_NUMBER, 2.0, EquipmentSlotGroup.MAINHAND)
             )
             .buildPair()
     }
@@ -63,7 +60,7 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val item = player.inventory.itemInMainHand
-        val cardinalDirection = CardinalDirection.fromEntityYaw(player)
+        val cardinalDirection = CardinalDirection.fromEntity(player)
 
         val block = event.block
         if (block.getBreakSpeed(player) >= Float.POSITIVE_INFINITY) {

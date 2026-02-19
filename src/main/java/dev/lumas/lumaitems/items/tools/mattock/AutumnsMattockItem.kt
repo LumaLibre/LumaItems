@@ -1,13 +1,13 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.BlockConstants
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
-import dev.lumas.lumaitems.util.extensions.BlockUtil.getOreColor
+import dev.lumas.lumaitems.util.extensions.getOreColor
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Color
 import org.bukkit.Location
@@ -88,7 +88,7 @@ class AutumnsMattockItem : CustomItemFunctions() {
         val item = location.world.dropItem(location, itemStack)
         item.thrower = player.uniqueId
         Util.setPersistentKey(item, KEY, PersistentDataType.SHORT, 1)
-        Executors.syncDelayed(20) {
+        item.syncDelayed(20) {
             Util.removePersistentKey(item, KEY)
         }
     }

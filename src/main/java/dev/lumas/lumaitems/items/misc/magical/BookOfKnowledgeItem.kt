@@ -2,15 +2,17 @@ package dev.lumas.lumaitems.items.misc.magical
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.obj.MagicItemCooldown
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.MagicItemCooldown
+import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -25,9 +27,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.concurrent.ConcurrentLinkedQueue
 
 @Suppress("Duplicates")
 class BookOfKnowledgeItem : CustomItemFunctions() {
@@ -152,25 +152,24 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
         val particleDisplay = ParticleDisplay.of(Particle.DUST).withColor(Util.getRandomColor())
         val entities: List<LivingEntity> = player.getNearbyEntities(15.0, 15.0,15.0).filterIsInstance<LivingEntity>()
         var i = 0
-        object : BukkitRunnable() {
-            override fun run() {
-                if (i++ > 5) {
-                    cancel()
-                    return
-                }
 
-                for (entity in entities) {
-                    if (AbilityUtil.noDamagePermission(player, entity) || entity.isDead) {
-                        continue
-                    }
-
-                    entity.damage(2.0)
-                    entity.world.playSound(entity.location, Sound.ENTITY_PLAYER_HURT, 1.0f, 1.0f)
-                    player.heal(2.0)
-                    Particles.line(player.boundingBox.center.toLocation(player.world), entity.boundingBox.center.toLocation(entity.world), 0.2, particleDisplay)
-                }
+        entities.syncTimer(0, 20) {
+            if (i++ > 5) {
+                it.cancel()
+                return@syncTimer
             }
-        }.runTaskTimer(instance(), 0, 20)
+
+            for (entity in entities) {
+                if (AbilityUtil.noDamagePermission(player, entity) || entity.isDead) {
+                    continue
+                }
+
+                entity.damage(2.0)
+                entity.world.playSound(entity.location, Sound.ENTITY_PLAYER_HURT, 1.0f, 1.0f)
+                player.heal(2.0)
+                Particles.line(player.boundingBox.center.toLocation(player.world), entity.boundingBox.center.toLocation(entity.world), 0.2, particleDisplay)
+            }
+        }
     }
 
     private fun valiantExplodeSpell(player: Player, target: LivingEntity) {

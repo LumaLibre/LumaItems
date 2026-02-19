@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.weapons
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.entity.Trident
@@ -36,7 +36,7 @@ class UnusedTridentItem : CustomItemFunctions() {
 
     private fun flyToProjectile(trident: Trident, player: Player) {
         val i = 9
-        Executors.syncTimer(0, 1) {
+        player.syncTimer(0, 1) {
 
             val tridentPos = trident.location.toVector()
             val eyePos = player.eyeLocation.toVector()

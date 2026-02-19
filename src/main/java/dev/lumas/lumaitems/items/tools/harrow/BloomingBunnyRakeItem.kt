@@ -1,10 +1,12 @@
 package dev.lumas.lumaitems.items.tools.harrow
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.time.LocalDate
+import org.bukkit.Color as BukkitColor
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
@@ -12,8 +14,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.inventory.ItemStack
-import java.time.LocalDate
-import org.bukkit.Color as BukkitColor
 
 class BloomingBunnyRakeItem : CustomItemFunctions() {
 
@@ -52,7 +52,7 @@ class BloomingBunnyRakeItem : CustomItemFunctions() {
         return ItemFactory.builder()
             .name("<b><gradient:#ABF2F9:#BEB4E6:#FFBAC3:#FFE8BA:#A3EABD>Blooming Bunny Rake</gradient></b>")
             .customEnchants("<#ABF2F9>Stalk Days")
-            .quotes("<gradient:#FFBAC3:#FFE8BA:#A3EABD>\"Get yer favorite crop!\"</gradient>")
+            .tagline("<gradient:#FFBAC3:#FFE8BA:#A3EABD>\"Get yer favorite crop!\"</gradient>")
             .material(Material.NETHERITE_HOE)
             .persistentData("blooming-bunny-rake")
             .tier(Tier.EASTER_2025)

@@ -1,14 +1,16 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.Util.isItemInSlot
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
+import java.util.function.Consumer
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -18,12 +20,11 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
-import java.util.function.Consumer
-import org.bukkit.inventory.EquipmentSlot
 
 @Disable(WorldName.PINATA)
 class DazzlingHeartsScytheItem : CustomItemFunctions() {
@@ -85,7 +86,7 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
 
         // runnables
         // i want to clean this up but ehhh
-        val slashes = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
+        val slashes = loc.syncTimer(0, 1) { task ->
             loc.getWorld().playSound(loc, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1f, 1.23f)
             loc.getWorld().spawnParticle(
                 Particle.SWEEP_ATTACK,
@@ -95,9 +96,9 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
                 random().nextDouble(0.1),
                 random().nextDouble(1.5)
             )
-        }, 0, 1)
+        }
         for (i in 0..5) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+            loc.syncDelayed((7 * (i + 1)).toLong()) {
                 loc.getWorld().getNearbyEntities(loc, 2.0, 2.5, 2.0)
                     .forEach(Consumer { e: Entity ->
                         if (e is LivingEntity && e != p) {
@@ -107,8 +108,8 @@ class DazzlingHeartsScytheItem : CustomItemFunctions() {
                 entities.forEach(Consumer { livingEntity: LivingEntity ->
                     livingEntity.damage(14.0, p)
                 })
-                if (i == 5) Bukkit.getScheduler().cancelTask(slashes)
-            }, (7 * (i + 1)).toLong())
+                if (i == 5) slashes.cancel()
+            }
         }
     }
 }

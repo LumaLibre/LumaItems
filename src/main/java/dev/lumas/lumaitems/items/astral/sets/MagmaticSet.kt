@@ -1,14 +1,14 @@
 package dev.lumas.lumaitems.items.astral.sets
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.enums.ToolType
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
-import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.enums.ToolType
-import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.QuickTasks
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -66,7 +66,7 @@ class MagmaticSet : AstralSet {
         return factory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "magmatic-set"
     }
 

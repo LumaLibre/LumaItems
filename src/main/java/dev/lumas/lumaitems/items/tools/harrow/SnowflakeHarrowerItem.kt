@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.tools.harrow
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.extensions.BlockUtil.relatives
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.extensions.relatives
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.block.Block

@@ -1,12 +1,11 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
+import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.AbilityUtil.breakRelativeBlock
-import dev.lumas.lumaitems.util.disabling.Ignore
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
@@ -53,11 +52,12 @@ class CrescentMoonHatchetItem : CustomItem {
             val b: Block = cuboid.blockList().get(i)
             if (b.type.toString().contains("LOG")) {
                 player.breakBlock(b)
-                breakRelativeBlock(b, player, null, "leaves", 0)
+                //breakRelativeBlock(b, player, null, "leaves", 0)
             }
         }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(),
-            { player.removeMetadata("BlockTreeFeller", instance()) }, 35L
-        )
+
+        player.syncDelayed(35) {
+            player.removeMetadata("BlockTreeFeller", instance())
+        }
     }
 }

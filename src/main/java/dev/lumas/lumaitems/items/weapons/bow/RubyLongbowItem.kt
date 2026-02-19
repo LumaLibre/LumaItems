@@ -1,9 +1,11 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import java.util.Random
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -17,7 +19,6 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
-import java.util.Random
 
 class RubyLongbowItem : CustomItem {
     
@@ -64,22 +65,28 @@ class RubyLongbowItem : CustomItem {
         } else {
             proj2 = null
         }
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
+
+
+        var count = 0
+        Executors.asyncTimer(0, 1) {
+            if (++count > 45) {
+                it.cancel()
+                return@asyncTimer
+            }
             proj.world.spawnParticle(Particle.DUST, proj.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(255, 83, 114), 1f))
             proj.world.spawnParticle(Particle.DUST, proj.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(207, 74, 253), 1f))
             if (proj2 != null) {
                 proj2.world.spawnParticle(Particle.DUST, proj2.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(255, 83, 114), 1f))
                 proj2.world.spawnParticle(Particle.DUST, proj2.location, 1, 0.0, 0.0, 0.0, 0.1, DustOptions(Color.fromRGB(207, 74, 253), 1f))
             }
-        }, 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), { Bukkit.getScheduler().cancelTask(task) }, 45L)
+        }
     }
 
 
     private fun despawnArrow(arrow: Projectile) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-            if (arrow.isDead) return@scheduleSyncDelayedTask
+        arrow.syncDelayed(20) {
+            if (arrow.isDead) return@syncDelayed
             arrow.remove()
-        }, 20L)
+        }
     }
 }

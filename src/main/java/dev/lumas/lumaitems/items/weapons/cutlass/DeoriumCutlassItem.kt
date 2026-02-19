@@ -1,13 +1,16 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
+import kotlin.math.cos
+import kotlin.math.sin
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -22,10 +25,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import kotlin.math.cos
-import kotlin.math.sin
 
 @Disable(WorldName.PINATA, WorldName.SPAWN, WorldName.EVENT_NEW)
 class DeoriumCutlassItem : CustomItemFunctions() {
@@ -65,53 +65,51 @@ class DeoriumCutlassItem : CustomItemFunctions() {
         armorStand.isSmall = true
         armorStand.spawnAt(location)
 
-        object : BukkitRunnable() {
-            var ticksRan = 0
+        var ticksRan = 0
 
-            override fun run() {
-                ticksRan += 5
-                if (ticksRan >= 120) {
-                    armorStand.remove()
-                    cancel()
-                }
-
-                val nearbyEntities = armorStand.getNearbyEntities(10.0, 10.0, 10.0)
-
-                if (AbilityUtil.noDamagePermission(p, nearbyEntities.firstOrNull() ?: return)) {
-                    armorStand.remove()
-                    cancel()
-                    return
-                }
-
-                for (entity in armorStand.getNearbyEntities(10.0,10.0,10.0)) {
-                    if (entity.type == EntityType.ARMOR_STAND || entity.type == EntityType.PLAYER) continue
-                    val direction: Vector = armorStand.location.subtract(entity.location).toVector()
-                    val distance: Double = entity.location.distance(armorStand.location)
-
-                    if (distance <= 2.5 && entity is LivingEntity) {
-                        entity.damage(5.0, p)
-                        entity.velocity = Vector(0, 0, 0)
-
-                        entity.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 40, 1, false, false, false))
-                        entity.world.spawnParticle(
-                            Particle.DUST, entity.location, 5, 0.6, 0.6, 0.6, 0.8,
-                            Particle.DustOptions(color, 1f)
-                        )
-                    }
-                    entity.velocity = direction.normalize().multiply(distance / 20)
-                }
-
-                for (i in 0 until points) {
-                    val dx: Double = cos(step + Math.PI * 2 * (i.toDouble() / points))
-                    val dz: Double = sin(step + Math.PI * 2 * (i.toDouble() / points))
-                    armorStand.location.world.spawnParticle(Particle.INSTANT_EFFECT, armorStand.location.x + dx, armorStand.location.y, armorStand.location.z + dz, 1, 0.0, 0.0, 0.0, 0.1, Particle.Spell(color, 1f))
-                    armorStand.location.world.spawnParticle(
-                        Particle.DUST, armorStand.location.x + dx, armorStand.location.y, armorStand.location.z + dz, 1, 0.0, 0.0, 0.0, 0.5, Particle.DustOptions(
-                            color, 1f))
-                }
-                armorStand.location.world.playSound(armorStand.location, Sound.ENTITY_WITHER_AMBIENT, 0.08f, 2f)
-
+        armorStand.syncTimer(0, 5) { task ->
+            ticksRan += 5
+            if (ticksRan >= 120) {
+                armorStand.remove()
+                task.cancel()
             }
-        }.runTaskTimer(instance(), 0L, 5L)
+
+            val nearbyEntities = armorStand.getNearbyEntities(10.0, 10.0, 10.0)
+
+            if (AbilityUtil.noDamagePermission(p, nearbyEntities.firstOrNull() ?: return@syncTimer)) {
+                armorStand.remove()
+                task.cancel()
+                return@syncTimer
+            }
+
+            for (entity in armorStand.getNearbyEntities(10.0,10.0,10.0)) {
+                if (entity.type == EntityType.ARMOR_STAND || entity.type == EntityType.PLAYER) continue
+                val direction: Vector = armorStand.location.subtract(entity.location).toVector()
+                val distance: Double = entity.location.distance(armorStand.location)
+
+                if (distance <= 2.5 && entity is LivingEntity) {
+                    entity.damage(5.0, p)
+                    entity.velocity = Vector(0, 0, 0)
+
+                    entity.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 40, 1, false, false, false))
+                    entity.world.spawnParticle(
+                        Particle.DUST, entity.location, 5, 0.6, 0.6, 0.6, 0.8,
+                        Particle.DustOptions(color, 1f)
+                    )
+                }
+                entity.velocity = direction.normalize().multiply(distance / 20)
+            }
+
+            for (i in 0 until points) {
+                val dx: Double = cos(step + Math.PI * 2 * (i.toDouble() / points))
+                val dz: Double = sin(step + Math.PI * 2 * (i.toDouble() / points))
+                armorStand.location.world.spawnParticle(Particle.INSTANT_EFFECT, armorStand.location.x + dx, armorStand.location.y, armorStand.location.z + dz, 1, 0.0, 0.0, 0.0, 0.1, Particle.Spell(color, 1f))
+                armorStand.location.world.spawnParticle(
+                    Particle.DUST, armorStand.location.x + dx, armorStand.location.y, armorStand.location.z + dz, 1, 0.0, 0.0, 0.0, 0.5, Particle.DustOptions(
+                        color, 1f))
+            }
+            armorStand.location.world.playSound(armorStand.location, Sound.ENTITY_WITHER_AMBIENT, 0.08f, 2f)
+        }
+
     }
 }

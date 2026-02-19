@@ -1,13 +1,16 @@
 package dev.lumas.lumaitems.items.armor.chestplate
 
-import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.glowapi.model.GlowColorManager
+import dev.lumas.lumaitems.configuration.files.HeadsYml
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.manager.FileManager
-import dev.lumas.lumaitems.manager.GlowManager
-import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.hooks.MythicMobsHook
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
-import org.bukkit.ChatColor
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import kotlin.random.Random
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -22,15 +25,12 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Transformation
 import org.joml.Vector3f
-import kotlin.random.Random
 
 class YolkplaidYarweaveItem : CustomItem {
 
     companion object {
-        private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
         private val SLOWNESS = PotionEffect(PotionEffectType.SLOWNESS, 240, 200, false, false, false)
     }
 
@@ -90,7 +90,8 @@ class YolkplaidYarweaveItem : CustomItem {
     }
 
     private fun encase(livingEntity: LivingEntity, attacker: Player) {
-        if (AbilityUtil.isMythicMob(livingEntity)) return
+        if (Registry.HOOKS.getOrThrow(MythicMobsHook::class).isMythicMob(livingEntity)) return
+        val eggTextures = Registry.CONFIGS.getOrThrow(HeadsYml::class).easterEgg
 
         val loc = livingEntity.eyeLocation.add(0.0, 0.5, 0.0); loc.yaw = 0.0f; loc.pitch = 0.0f
         val egg = livingEntity.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
@@ -111,28 +112,27 @@ class YolkplaidYarweaveItem : CustomItem {
         livingEntity.isCollidable = false
         livingEntity.addPotionEffect(SLOWNESS)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
-        GlowManager.addToTeamForTicks(livingEntity, ChatColor.RED, 240)
-        object: BukkitRunnable() {
-            var totalTicks = 0
+        GlowColorManager.getInstance().setTransientColor(livingEntity, NamedTextColor.RED, 240L)
 
-            override fun run() {
-                var stop = false
-                if (totalTicks >= 240) {
-                    livingEntity.isCollidable = true
-                    stop = true
-                } else if (livingEntity.isDead) {
-                    stop = true
-                }
+        var totalTicks = 0
 
-                livingEntity.damage(4.0, attacker)
-                livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 2f, 7.7f)
-
-                if (stop) {
-                    egg.remove()
-                    this.cancel()
-                }
-                totalTicks+=20
+        livingEntity.syncTimer(0, 20) { task ->
+            var stop = false
+            if (totalTicks >= 240) {
+                livingEntity.isCollidable = true
+                stop = true
+            } else if (livingEntity.isDead) {
+                stop = true
             }
-        }.runTaskTimer(instance(), 0L, 20L)
+
+            livingEntity.damage(4.0, attacker)
+            livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 2f, 7.7f)
+
+            if (stop) {
+                egg.remove()
+                task.cancel()
+            }
+            totalTicks += 20
+        }
     }
 }

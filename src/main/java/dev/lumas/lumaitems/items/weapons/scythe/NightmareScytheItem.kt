@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.awt.Color
 import java.util.UUID
 import kotlin.random.Random
@@ -19,7 +20,6 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitTask
 
 class NightmareScytheItem : CustomItemFunctions() {
 
@@ -70,7 +70,7 @@ class NightmareScytheItem : CustomItemFunctions() {
 
 
 
-        var task: BukkitTask? = null
+        var task: ScheduledTask? = null
 
         fun startTicking() {
             var entities: List<LivingEntity> = pin.world.getNearbyLivingEntities(pin, radius)
@@ -94,7 +94,7 @@ class NightmareScytheItem : CustomItemFunctions() {
 
             pin.world.playSound(pin, Sound.ITEM_LEAD_BREAK, 2.0f, Random.Default.nextDouble(0.5, 0.8).toFloat())
 
-            this.task = Executors.syncTimer(0, 1) { task ->
+            this.task = pin.syncTimer(0, 1) { task ->
                 if (++count > durationTicks || entities.all { it.isDead }) {
                     Particles.spikeSphere(0.2, 30.0, 50, 1.0, 3.0, newDisplay)
                     this.stopTicking()

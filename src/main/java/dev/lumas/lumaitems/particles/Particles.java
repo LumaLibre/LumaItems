@@ -1,13 +1,16 @@
 package dev.lumas.lumaitems.particles;
 
-import dev.lumas.lumaitems.LumaItems;
+import dev.lumas.lumacore.utility.ContextLogger;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 
@@ -20,12 +23,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -118,6 +128,8 @@ public final class  Particles {
             PII = 2 * Math.PI,
             R270 = Math.toRadians(270),
             R90 = Math.PI / 2;
+
+    private static final ContextLogger LOGGER = ContextLogger.getLogger(true);
 
     private Particles() {
     }
@@ -359,8 +371,8 @@ public final class  Particles {
      * @see #magicCircles(Plugin, double, double, double, double, ParticleDisplay)
      * @since 3.0.0
      */
-    public static BukkitTask circularBeam(Plugin plugin, double maxRadius, double rate, double radiusRate, double extend, ParticleDisplay display) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, circularBeam(maxRadius, rate, radiusRate, extend, display), 0, 1);
+    public static ScheduledTask circularBeam(Plugin plugin, double maxRadius, double rate, double radiusRate, double extend, ParticleDisplay display) {
+        return runTaskTimerAsynchronously(plugin, circularBeam(maxRadius, rate, radiusRate, extend, display), 0, 1);
     }
 
     /**
@@ -519,10 +531,10 @@ public final class  Particles {
      * @return the animation handler.
      * @since 4.0.0
      */
-    public static BukkitTask chaoticDoublePendulum(Plugin plugin, double radius, double gravity, double length, double length2,
+    public static ScheduledTask chaoticDoublePendulum(Plugin plugin, double radius, double gravity, double length, double length2,
                                                    double mass1, double mass2,
                                                    boolean dimension3, int speed, ParticleDisplay display) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, chaoticDoublePendulum(radius, gravity, length, length2, mass1, mass2, dimension3, speed, display), 0, 1);
+        return runTaskTimerAsynchronously(plugin, chaoticDoublePendulum(radius, gravity, length, length2, mass1, mass2, dimension3, speed, display), 0, 1);
     }
 
     /**
@@ -571,8 +583,8 @@ public final class  Particles {
      * @see #circularBeam(Plugin, double, double, double, double, ParticleDisplay)
      * @since 3.0.0
      */
-    public static BukkitTask magicCircles(Plugin plugin, double radius, double rate, double radiusRate, double distance, ParticleDisplay display) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, magicCircles(radius, rate, radiusRate, distance, display), 0, 1);
+    public static ScheduledTask magicCircles(Plugin plugin, double radius, double rate, double radiusRate, double distance, ParticleDisplay display) {
+        return runTaskTimerAsynchronously(plugin, magicCircles(radius, rate, radiusRate, distance, display), 0, 1);
     }
 
     /**
@@ -652,19 +664,17 @@ public final class  Particles {
 
     public static void slash(Plugin plugin, double distance, boolean useWideSide,
                              Supplier<Double> size, Supplier<Double> speed, ParticleDisplay display) {
-        new BukkitRunnable() {
-            double distanceTraveled = 0;
 
-            @Override
-            public void run() {
-                slash(size.get(), useWideSide, display);
-                double speedConst = speed.get();
-                distanceTraveled += speedConst;
+        AtomicReference<Double> distanceTraveled = new AtomicReference<>((double) 0);
 
-                if (distanceTraveled >= distance) cancel();
-                else display.advanceInDirection(speedConst);
-            }
-        }.runTaskTimerAsynchronously(plugin, 1L, 1L);
+        runTaskTimerAsynchronously(plugin, (task) -> {
+            slash(size.get(), useWideSide, display);
+            double speedConst = speed.get();
+            distanceTraveled.updateAndGet(v -> v + speedConst);
+
+            if (distanceTraveled.get() >= distance) task.cancel();
+            else display.advanceInDirection(speedConst);
+        }, 1, 1);
     }
 
     /**
@@ -762,14 +772,12 @@ public final class  Particles {
      * @param time   the amount of ticks to keep the blackhole.
      * @since 3.0.0
      */
-    public static BukkitTask blackhole(Plugin plugin, int points, double radius, double rate, int mode, int time, ParticleDisplay display) {
+    public static ScheduledTask blackhole(Plugin plugin, int points, double radius, double rate, int mode, int time, ParticleDisplay display) {
         BooleanSupplier blackhole = blackhole(points, radius, rate, mode, time, display);
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!blackhole.getAsBoolean()) cancel();
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, 1);
+
+        return runTaskTimerAsynchronously(plugin, (task) -> {
+            if (!blackhole.getAsBoolean()) task.cancel();
+        }, 0, 1);
     }
 
     /**
@@ -936,8 +944,8 @@ public final class  Particles {
      * @return the task handling the animation.
      * @since 2.0.0
      */
-    public static BukkitTask vortex(Plugin plugin, int points, double rate, ParticleDisplay display) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, vortex(points, rate, display), 0, 1);
+    public static ScheduledTask vortex(Plugin plugin, int points, double rate, ParticleDisplay display) {
+        return runTaskTimerAsynchronously(plugin, vortex(points, rate, display), 0, 1);
     }
 
     /**
@@ -1009,9 +1017,9 @@ public final class  Particles {
      * @see #guard(Plugin, long, double, double, double, double, Runnable, ParticleDisplay...)
      * @since 1.0.0
      */
-    public static BukkitTask moveRotatingAround(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
+    public static ScheduledTask moveRotatingAround(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
                                                 Runnable runnable, ParticleDisplay... displays) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, moveRotatingAround(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
+        return runTaskTimerAsynchronously(plugin, moveRotatingAround(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
     }
 
     /**
@@ -1068,9 +1076,9 @@ public final class  Particles {
      * @see #guard(Plugin, long, double, double, double, double, Runnable, ParticleDisplay...)
      * @since 1.0.0
      */
-    public static BukkitTask moveAround(Plugin plugin, long update, double rate, double endRate, double offsetx, double offsety, double offsetz,
+    public static ScheduledTask moveAround(Plugin plugin, long update, double rate, double endRate, double offsetx, double offsety, double offsetz,
                                         Runnable runnable, ParticleDisplay... displays) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, moveAround(rate, endRate, offsetx, offsety, offsetz, runnable, displays), 0, update);
+        return runTaskTimerAsynchronously(plugin, moveAround(rate, endRate, offsetx, offsety, offsetz, runnable, displays), 0, update);
     }
 
     /**
@@ -1081,8 +1089,8 @@ public final class  Particles {
      * @return the timer task handling the displays.
      * @since 1.0.0
      */
-    public static BukkitTask testDisplay(Plugin plugin, Runnable runnable) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, 0L, 1L);
+    public static ScheduledTask testDisplay(Plugin plugin, Runnable runnable) {
+        return runTaskTimerAsynchronously(plugin, runnable, 0L, 1L);
     }
 
     /**
@@ -1129,9 +1137,9 @@ public final class  Particles {
      * @see #guard(Plugin, long, double, double, double, double, Runnable, ParticleDisplay...)
      * @since 1.0.0
      */
-    public static BukkitTask rotateAround(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
+    public static ScheduledTask rotateAround(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
                                           Runnable runnable, ParticleDisplay... displays) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, rotateAround(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
+        return runTaskTimerAsynchronously(plugin, rotateAround(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
     }
 
     /**
@@ -1201,9 +1209,9 @@ public final class  Particles {
      * @see #moveRotatingAround(Plugin, long, double, double, double, double, Runnable, ParticleDisplay...)
      * @since 1.0.0
      */
-    public static BukkitTask guard(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
+    public static ScheduledTask guard(Plugin plugin, long update, double rate, double offsetx, double offsety, double offsetz,
                                    Runnable runnable, ParticleDisplay... displays) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, guard(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
+        return runTaskTimerAsynchronously(plugin, guard(rate, offsetx, offsety, offsetz, runnable, displays), 0, update);
     }
 
     /**
@@ -1365,17 +1373,15 @@ public final class  Particles {
      * @param originEnd end location of spikes.
      * @since 1.0.0
      */
-    public static BukkitTask spread(Plugin plugin, int amount, int rate, Location start, Location originEnd,
+    public static ScheduledTask spread(Plugin plugin, int amount, int rate, Location start, Location originEnd,
                                     double offsetx, double offsety, double offsetz, ParticleDisplay display) {
         BooleanSupplier spread = spread(amount, rate, start, originEnd, offsetx, offsety, offsetz, display);
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!spread.getAsBoolean()) {
-                    cancel();
-                }
+
+        return runTaskTimerAsynchronously(plugin, (task) -> {
+            if (!spread.getAsBoolean()) {
+                task.cancel();
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 1);
+        }, 0, 1);
     }
 
     /**
@@ -1445,8 +1451,8 @@ public final class  Particles {
      * @see #atom(int, double, double, ParticleDisplay, ParticleDisplay)
      * @since 1.0.0
      */
-    public static BukkitTask atomic(Plugin plugin, int orbits, double radius, double rate, ParticleDisplay orbit) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, atomic(orbits, radius, rate, orbit), 0, 1);
+    public static ScheduledTask atomic(Plugin plugin, int orbits, double radius, double rate, ParticleDisplay orbit) {
+        return runTaskTimerAsynchronously(plugin, atomic(orbits, radius, rate, orbit), 0, 1);
     }
 
     /**
@@ -1529,16 +1535,14 @@ public final class  Particles {
      * @see #dnaReplication(Plugin, double, double, int, double, int, int, ParticleDisplay)
      * @since 3.0.0
      */
-    public static BukkitTask helix(Plugin plugin, int strings, double radius, double rate,
+    public static ScheduledTask helix(Plugin plugin, int strings, double radius, double rate,
                                    double extension, double height, double speed, double rotationRate,
                                    boolean fadeUp, boolean fadeDown, ParticleDisplay display) {
         BooleanSupplier helix = helix(strings, radius, rate, extension, height, speed, rotationRate, fadeUp, fadeDown, display);
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!helix.getAsBoolean()) cancel();
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, 1);
+
+        return runTaskTimerAsynchronously(plugin, (task) -> {
+            if (!helix.getAsBoolean()) task.cancel();
+        }, 0, 1);
     }
 
     /**
@@ -1736,17 +1740,15 @@ public final class  Particles {
      * @see #dna(double, double, double, int, int, ParticleDisplay, ParticleDisplay)
      * @since 3.0.0
      */
-    public static BukkitTask dnaReplication(Plugin plugin, double radius, double rate, int speed, double extension,
+    public static ScheduledTask dnaReplication(Plugin plugin, double radius, double rate, int speed, double extension,
                                             int height, int hydrogenBondDist, ParticleDisplay display) {
         BooleanSupplier dnaReplication = dnaReplication(radius, rate, speed, extension, height, hydrogenBondDist, display);
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!dnaReplication.getAsBoolean()) {
-                    cancel();
-                }
+
+        return runTaskTimerAsynchronously(plugin, (task) -> {
+            if (!dnaReplication.getAsBoolean()) {
+                task.cancel();
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 1);
+        }, 0, 1);
     }
 
     /**
@@ -1787,8 +1789,8 @@ public final class  Particles {
      * @return the timer task handling the animation.
      * @since 1.0.0
      */
-    public static BukkitTask cloud(Plugin plugin, ParticleDisplay cloud, ParticleDisplay rain) {
-        return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, cloud(cloud, rain), 0, 1);
+    public static ScheduledTask cloud(Plugin plugin, ParticleDisplay cloud, ParticleDisplay rain) {
+        return runTaskTimerAsynchronously(plugin, cloud(cloud, rain), 0, 1);
     }
 
     /**
@@ -2234,14 +2236,12 @@ public final class  Particles {
      * @see #hypercube(Location, Location, double, double, int, ParticleDisplay)
      * @since 4.0.0
      */
-    public static BukkitTask tesseract(Plugin plugin, double size, double rate, double speed, long ticks, ParticleDisplay display) {
+    public static ScheduledTask tesseract(Plugin plugin, double size, double rate, double speed, long ticks, ParticleDisplay display) {
         BooleanSupplier tesseract = tesseract(size, rate, speed, ticks, display);
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!tesseract.getAsBoolean()) cancel();
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, 1);
+
+        return runTaskTimerAsynchronously(plugin, (task) -> {
+            if (!tesseract.getAsBoolean()) task.cancel();
+        }, 0, 1);
     }
 
     /**
@@ -2444,16 +2444,13 @@ public final class  Particles {
      * @see #spikeSphere(double, double, int, double, double, ParticleDisplay)
      * @since 3.0.0
      */
-    public static List<BukkitTask> star(Plugin plugin, int points, int spikes, double rate, double spikeLength, double coreRadius,
+    public static List<ScheduledTask> star(Plugin plugin, int points, int spikes, double rate, double spikeLength, double coreRadius,
                                         double neuron, boolean prototype, int speed, ParticleDisplay display) {
-        List<BukkitTask> tasks = new ArrayList<>();
+        List<ScheduledTask> tasks = new ArrayList<>();
         for (BooleanSupplier task : star(points, spikes, rate, spikeLength, coreRadius, neuron, prototype, speed, display)) {
-            tasks.add(new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!task.getAsBoolean()) cancel();
-                }
-            }.runTaskTimerAsynchronously(plugin, 0, 1));
+            tasks.add(runTaskTimerAsynchronously(plugin, (t) -> {
+                if (!task.getAsBoolean()) t.cancel();
+            }, 0, 1));
         }
         return tasks;
     }
@@ -2613,16 +2610,12 @@ public final class  Particles {
      * @see #circle(double, double, ParticleDisplay)
      * @since 1.0.0
      */
-    public static BukkitTask meguminExplosion(Plugin plugin, double size, ParticleDisplay display) {
+    public static ScheduledTask meguminExplosion(Plugin plugin, double size, ParticleDisplay display) {
         BooleanSupplier explosion = meguminExplosion(size, display);
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!explosion.getAsBoolean()) {
-                    cancel();
-                }
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, 1);
+
+        return runTaskTimerAsynchronously(plugin, (task) -> {
+            if (!explosion.getAsBoolean()) task.cancel();
+        }, 0, 1);
     }
 
     /**
@@ -2673,14 +2666,12 @@ public final class  Particles {
      * @param rate the distance between each cos/sin lines.
      * @since 1.0.0
      */
-    public static BukkitTask explosionWave(Plugin plugin, double rate, ParticleDisplay display, ParticleDisplay secDisplay) {
+    public static ScheduledTask explosionWave(Plugin plugin, double rate, ParticleDisplay display, ParticleDisplay secDisplay) {
         BooleanSupplier explosionWave = explosionWave(rate, display, secDisplay);
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!explosionWave.getAsBoolean()) cancel();
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, 1);
+
+        return runTaskTimerAsynchronously(plugin, (task) -> {
+            if (!explosionWave.getAsBoolean()) task.cancel();
+        }, 0, 1);
     }
 
     /**
@@ -2695,7 +2686,7 @@ public final class  Particles {
         try {
             return ImageIO.read(Files.newInputStream(path, StandardOpenOption.READ));
         } catch (IOException e) {
-            LumaItems.log("Failed to read image from path: " + path, e);
+            LOGGER.error("Failed to read image from path: " + path, e);
             return null;
         }
     }
@@ -2821,7 +2812,7 @@ public final class  Particles {
                 try {
                     displayRenderedImage(render, location.call(), quality, speed, size);
                 } catch (Exception e) {
-                    LumaItems.log("Failed to display rendered image.", e);
+                    LOGGER.error("Failed to display rendered image.", e);
                 }
 
                 if (times-- <= 0) {
@@ -2847,15 +2838,13 @@ public final class  Particles {
      * @return the async bukkit task displaying the image.
      * @since 1.0.0
      */
-    public static BukkitTask displayRenderedImage(Plugin plugin, Map<double[], Color> render, Callable<Location> location,
+    public static ScheduledTask displayRenderedImage(Plugin plugin, Map<double[], Color> render, Callable<Location> location,
                                                   int repeat, long period, int quality, int speed, float size) {
         BooleanSupplier displayRenderedImage = displayRenderedImage(render, location, repeat, quality, speed, size);
-        return new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!displayRenderedImage.getAsBoolean()) cancel();
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, period);
+
+        return runTaskTimerAsynchronously(plugin, (task) -> {
+            if (!displayRenderedImage.getAsBoolean()) task.cancel();
+        }, 0, period);
     }
 
     /**
@@ -2928,7 +2917,7 @@ public final class  Particles {
         try {
             ImageIO.write(image, "png", Files.newOutputStream(path, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE));
         } catch (IOException e) {
-            LumaItems.log("Failed to save image to path: " + path, e);
+            LOGGER.error("Failed to save image to path: " + path, e);
         }
     }
 
@@ -2972,6 +2961,18 @@ public final class  Particles {
 
             return image;
         });
+    }
+
+    private static ScheduledTask runTaskTimerAsynchronously(Plugin plugin, Runnable runnable, long delay, long period) {
+        long delayInMillis = delay * 50;
+        long periodInMillis = period * 50;
+        return Bukkit.getAsyncScheduler().runAtFixedRate(plugin, task -> runnable.run(), delayInMillis, periodInMillis, TimeUnit.MILLISECONDS);
+    }
+
+    private static ScheduledTask runTaskTimerAsynchronously(Plugin plugin, Consumer<ScheduledTask> task, long delay, long period) {
+        long delayInMillis = delay * 50;
+        long periodInMillis = period * 50;
+        return Bukkit.getAsyncScheduler().runAtFixedRate(plugin, task, delayInMillis, periodInMillis, TimeUnit.MILLISECONDS);
     }
 
 

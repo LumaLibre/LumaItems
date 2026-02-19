@@ -1,18 +1,20 @@
 package dev.lumas.lumaitems.items.weapons
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.FireAnyways
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.awt.Color
 import java.util.UUID
 import kotlin.random.Random
@@ -31,7 +33,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitTask
 
 
 @FireAnyways(Action.ENTITY_DAMAGE)
@@ -133,7 +134,7 @@ class NightmareGlaiveItem : CustomItemFunctions() {
             }
             .toMutableList()
 
-        var task: BukkitTask? = null
+        var task: ScheduledTask? = null
 
         fun startTicking() {
             if (entities.isEmpty()) return
@@ -150,7 +151,7 @@ class NightmareGlaiveItem : CustomItemFunctions() {
             }
             pin.world.playSound(pin, Sound.ITEM_LEAD_BREAK, 2.0f, Random.nextDouble(0.5, 0.8).toFloat())
 
-            this.task = Executors.syncTimer(0, 1) { task ->
+            this.task = player.syncTimer(0, 1) { task ->
                 this.entities.removeIf { !it.isValid || (it is Player && player.isSneaking) }
                 if (++count > durationTicks || this.entities.isEmpty()) {
                     this.stopTicking()

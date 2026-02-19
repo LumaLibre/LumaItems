@@ -1,10 +1,11 @@
 package dev.lumas.lumaitems.items.misc
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.QuickTasks
 //import io.papermc.paper.datacomponent.item.TooltipDisplay
+import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import kotlin.random.Random
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -15,7 +16,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import kotlin.random.Random
 
 class WitchsBrewItem : CustomItem {
 

@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.armor.elytra
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
 import org.bukkit.Material

@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.enums.DefaultAttributes
-import dev.lumas.lumaitems.util.tiers.Tier
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -38,7 +38,7 @@ class WizardsHatItem : CustomItem {
             .unbreakable(true)
             .vanillaEnchants(mutableMapOf(Enchantment.MENDING to 1))
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
+                AttributeContainer.ofMap(
                 Attribute.MAX_HEALTH, key, 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD))
             .build().createItem()
 

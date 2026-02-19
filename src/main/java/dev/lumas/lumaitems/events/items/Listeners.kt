@@ -7,15 +7,15 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.lumaitems.annotations.AllSlots
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.ItemManager
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.FireForAllNBT
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.equipmentContainers
+import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
 import org.bukkit.event.EventHandler
@@ -31,10 +31,12 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
+import org.bukkit.event.entity.EntityResurrectEvent
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.entity.ItemMergeEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -61,7 +63,6 @@ import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataContainer
-import org.bukkit.persistence.PersistentDataType
 
 /**
  * Main listeners class for LumaItems
@@ -88,7 +89,7 @@ class Listeners : ItemListener() {
         fire(data, Action.PLAYER_SHOOT_BOW, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onProjectileLaunch(event: ProjectileLaunchEvent) {
         val player: Player = event.entity.shooter as? Player ?: return
@@ -103,7 +104,7 @@ class Listeners : ItemListener() {
         fire(data, Action.PROJECTILE_LAND, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
         val player = event.player
@@ -113,7 +114,7 @@ class Listeners : ItemListener() {
         fire(dataContainers, action, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerSwapHandItems(event: PlayerSwapHandItemsEvent) {
         val player = event.player
@@ -124,8 +125,8 @@ class Listeners : ItemListener() {
         fire(data, Action.SWAP_HAND, player, event)
     }
 
-    @FireForAllNBT
-    @EventHandler
+    @AllSlots
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityDeath(event: EntityDeathEvent) {
         val entity = event.entity
 
@@ -139,7 +140,15 @@ class Listeners : ItemListener() {
         fire(data, Action.ENTITY_DEATH, getDummyPlayer(), event)
     }
 
-    @FireForAllNBT
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onPlayerDeath(event: PlayerDeathEvent) {
+        val player = event.entity
+        val data = Util.getAllEquipmentNBT(player)
+
+        fire(data, Action.PLAYER_DEATH, player, event)
+    }
+
+    @AllSlots
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
         val player: Player = when (event.damager) {
@@ -152,12 +161,7 @@ class Listeners : ItemListener() {
             (event.damager as? Projectile)?.persistentDataContainer?.let { add(it) }
         }
 
-        // TODO: Add special Ability type for when players are damaging an entity with no permission to damage them
-        if (player.inventory.itemInMainHand.type == Material.MACE && player.fallDistance >= 1.5f) {
-            fire(data, Action.MACE_SMASH_ATTACK, player, event)
-        } else {
-            fire(data, Action.ENTITY_DAMAGE, player, event)
-        }
+        fire(data, Action.ENTITY_DAMAGE, player, event)
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -220,7 +224,7 @@ class Listeners : ItemListener() {
     }
 
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerPlaceBlock(event: BlockPlaceEvent) {
         val player = event.player
@@ -229,7 +233,7 @@ class Listeners : ItemListener() {
         fire(data, Action.PLACE_BLOCK, player, event)
     }
 
-    //@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBlockDamage(event: BlockDamageEvent) {
         val player = event.player
         val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
@@ -246,16 +250,16 @@ class Listeners : ItemListener() {
 
         if (!item.hasItemMeta() && !offHandItem.hasItemMeta()) return
 
+        // TODO: Look into why this listener is written this way instead of using Util.getHandNBT()
         val data: PersistentDataContainer? = item.itemMeta?.persistentDataContainer
         val offHandData: PersistentDataContainer? = offHandItem.itemMeta?.persistentDataContainer
-        for (customItem in ItemManager.CUSTOM_ITEMS) {
-            if (data?.has(customItem.key, PersistentDataType.SHORT) == true) {
-                val customItemClass = customItem.value
-                customItemClass.executeActions(Action.FISH, player, event)
+        for (entry in Registry.CUSTOM_ITEMS) {
+            val key = entry.key.asNameSpacedKey()
+            if (data?.has(key) == true) {
+                entry.value.executeActions(Action.FISH, player, event)
                 break
-            } else if (offHandData?.has(customItem.key, PersistentDataType.SHORT) == true) {
-                val customItemClass = customItem.value
-                customItemClass.executeActions(Action.FISH, player, event)
+            } else if (offHandData?.has(key) == true) {
+                entry.value.executeActions(Action.FISH, player, event)
                 break
             }
         }
@@ -271,7 +275,7 @@ class Listeners : ItemListener() {
         fire(data, Action.ELYTRA_BOOST, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerCrouch(event: PlayerToggleSneakEvent) {
         val player = event.player
@@ -279,7 +283,7 @@ class Listeners : ItemListener() {
     }
 
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    //@EventHandler (priority = EventPriority.LOWEST) unused
     fun onPlayerChat(event: AsyncPlayerChatEvent) {
         val player = event.player
 
@@ -288,16 +292,14 @@ class Listeners : ItemListener() {
         fire(data, Action.ASYNC_CHAT, player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (!event.hasChangedPosition()) return
-        Executors.async {
-            fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
-        }
+        fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     //@EventHandler
     fun onPlayerInput(event: PlayerInputEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.INPUT, event.player, event)
@@ -312,9 +314,7 @@ class Listeners : ItemListener() {
         val container: PersistentDataContainer = event.entity.persistentDataContainer
         if (container.isEmpty) return
 
-        Executors.async {
-            fire(container, action, null, event)
-        }
+        fire(container, action, null, event)
     }
 
     @EventHandler
@@ -340,7 +340,7 @@ class Listeners : ItemListener() {
         fire(data, Action.CONSUME_ITEM, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onEntityPotionEffect(event: EntityPotionEffectEvent) {
         val player = event.entity as? Player ?: return
@@ -396,25 +396,25 @@ class Listeners : ItemListener() {
         fire(data, Action.BLOCK_SHEAR_ENTITY, null, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerTeleport(event: PlayerTeleportEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_TELEPORT, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerQuit(event: PlayerQuitEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_QUIT, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerJoin(event: PlayerJoinEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_JOIN, event.player, event)
     }
 
-    @FireForAllNBT
+    @AllSlots
     @EventHandler
     fun onPlayerPickupExp(event: PlayerPickupExperienceEvent) {
         fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_PICKUP_EXP, event.player, event)
@@ -459,15 +459,14 @@ class Listeners : ItemListener() {
         fire(data, Action.EMPTY_BUCKET, player, event)
     }
 
+    @AllSlots
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPlayerPickupItem(event: PlayerAttemptPickupItemEvent) {
         val player = event.player
         val action = Action.PICKUP_ITEM
         if (!action.canFireRightNow()) return
 
-        Executors.async {
-            fire(Util.getAllEquipmentNBT(player), action, player, event, true)
-        }
+        fire(Util.getAllEquipmentNBT(player), action, player, event, true)
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) // if you modify this event to include previous slot, items that use this need a conditional added to their logic
@@ -502,5 +501,20 @@ class Listeners : ItemListener() {
         val player = event.target.thrower?.let { Bukkit.getPlayer(it) } ?: return
         val data = event.target.persistentDataContainer
         fire(data, Action.ITEM_MERGE, player, event)
+    }
+
+    @EventHandler
+    fun onSmashAttack(event: EntityAttemptSmashAttackEvent) {
+        val player = event.entity as? Player ?: return
+        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+
+        fire(data, Action.MACE_SMASH_ATTACK, player, event)
+    }
+
+    @AllSlots
+    //@EventHandler Unused
+    fun onPlayerResurrect(event: EntityResurrectEvent) {
+        val player = event.entity as? Player ?: return
+        fire(player.equipmentContainers(), Action.PLAYER_RESURRECT, player, event)
     }
 }

@@ -2,18 +2,19 @@ package dev.lumas.lumaitems.items.tools.rod
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
-import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.hooks.ProtocolLibHook
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.extensions.Executors
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.inventory.ItemStack
-import kotlin.random.Random
 
 class LoversAlluringItem : CustomItem {
 
@@ -36,9 +37,10 @@ class LoversAlluringItem : CustomItem {
                 event as PlayerFishEvent
                 when (event.state) {
                     PlayerFishEvent.State.BITE -> {
-                        Bukkit.getScheduler().runTaskLaterAsynchronously(instance(), Runnable {
-                            LumaItems.getProtocolManager()?.receiveClientPacket(player, PacketContainer(PacketType.Play.Client.USE_ITEM))
-                        }, 1L)
+                        Executors.asyncDelayed(1) {
+                            Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager()?.receiveClientPacket(player, PacketContainer(PacketType.Play.Client.USE_ITEM))
+                        }
+
                     }
                     PlayerFishEvent.State.CAUGHT_FISH -> {
                         if (Random.nextInt(100) > 10) return false

@@ -1,11 +1,12 @@
 package dev.lumas.lumaitems.items.astral
 
 import dev.lumas.lumaitems.enums.Rarity
+import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.obj.AttributeContainer
-import dev.lumas.lumaitems.obj.PaperDataComponent
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.PaperDataComponent
+import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.util.extensions.formatEnumerator
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
@@ -13,7 +14,7 @@ import org.bukkit.persistence.PersistentDataType
 
 class ModernAstralSetFactory(val identifier: String) {
 
-    constructor(caller: AstralSet) : this(caller.identifier())
+    constructor(caller: AstralSet) : this(caller.setIdentifier())
 
     companion object {
         private val ASTRAL_PDC = PersistentDataRecord.create("relic-rarity", PersistentDataType.STRING, Rarity.ASTRAL.name)
@@ -74,8 +75,10 @@ class ModernAstralSetFactory(val identifier: String) {
 
 
         fun add(): ItemStack {
+            val gearType = ToolType.getToolType(material)?.formatEnumerator() ?: "???"
+
             val factory = ItemFactory.builder()
-                .name(overrideName ?: "<b><#AC87FB>${this.parent.name}</#AC87FB></b> <white>${Util.getGearType(material)}</white>")
+                .name(overrideName ?: "<b><#AC87FB>${this.parent.name}</#AC87FB></b> <white>${gearType}</white>")
                 .customEnchants(overrideCustomEnchants ?: this.parent.customEnchants.map { "<#AC87FB>$it</#AC87FB>" }.toMutableList())
                 .lore(overrideLore.ifEmpty { this.parent.lore })
                 .material(material)

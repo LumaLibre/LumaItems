@@ -1,12 +1,15 @@
 package dev.lumas.lumaitems.manager;
 
 import com.google.common.reflect.ClassPath;
+import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
+import dev.lumas.lumaitems.annotations.Ignore;
 import dev.lumas.lumaitems.items.astral.AstralSet;
-import dev.lumas.lumaitems.util.NeedsEdits;
-import dev.lumas.lumaitems.util.disabling.Ignore;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.NamespacedKey;
+import dev.lumas.lumaitems.model.CustomItem;
+import dev.lumas.lumaitems.model.NamedCustomItem;
+import dev.lumas.lumaitems.registry.NamespacedIdentifier;
+import dev.lumas.lumaitems.registry.Registry;
+import dev.lumas.lumaitems.registry.StringIdentifier;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,25 +18,18 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class ItemManager {
 
-    private final LumaItems plugin;
-
-    /**
-     * Map of all LumaItems Custom Items
-     * Key: Custom Item NBT Key
-     * Value: Custom Item Class
-     */
-    public final static Map<NamespacedKey, CustomItem> CUSTOM_ITEMS = new HashMap<>();
 
 
-    public final static Map<String, CustomItem> CUSTOM_ITEMS_BY_NAME = new HashMap<>();
-
-
-    public final static String BASE_PACKAGE = "dev.lumas.lumaitems.items";
+    private static final ContextLogger LOGGER = ContextLogger.getLogger(true);
+    private static final String BASE_PACKAGE = "dev.lumas.lumaitems.items";
 
 
     /**
@@ -44,16 +40,16 @@ public final class ItemManager {
      */
     @Nullable
     public static ItemStack getItemByName(String name) {
-        var customItem = CUSTOM_ITEMS_BY_NAME.get(name.replace(" ", "_").toLowerCase());
+        var customItem = Registry.NAMED_CUSTOM_ITEMS.get(StringIdentifier.normalized(name));
         if (customItem == null) {
             return null;
         }
-        return customItem.createItem().component2();
+        return customItem.getCustomItem().createItem().component2();
     }
 
     @Nullable
     public static ItemStack getItemByKey(String key) {
-        var customItem = CUSTOM_ITEMS.get(new NamespacedKey(LumaItems.getInstance(), key));
+        var customItem = Registry.CUSTOM_ITEMS.get(NamespacedIdentifier.lumaitems(key));
         if (customItem == null) {
             return null;
         }
@@ -67,7 +63,7 @@ public final class ItemManager {
      */
     @Nullable
     public static CustomItem getCustomItem(String key) {
-        return CUSTOM_ITEMS.get(new NamespacedKey(LumaItems.getInstance(), key));
+        return Registry.CUSTOM_ITEMS.get(NamespacedIdentifier.lumaitems(key));
     }
 
     /**
@@ -75,26 +71,26 @@ public final class ItemManager {
      */
     public static List<ItemStack> getAllItems() {
         List<ItemStack> list = new ArrayList<>();
-        for (CustomItem item : CUSTOM_ITEMS.values()) {
+        for (CustomItem item : Registry.CUSTOM_ITEMS.values()) {
             try {
                 list.add(item.createItem().component2());
             } catch (Exception e) {
-                LumaItems.log("Failed to create item for " + item.getClass().getSimpleName(), e);
+                LOGGER.error("Failed to create item for " + item.getClass().getSimpleName(), e);
             }
         }
         return list;
     }
 
 
-    public ItemManager(LumaItems plugin) {
-        this.plugin = plugin;
-    }
+//    public ItemManager(LumaItems plugin) {
+//        this.plugin = plugin;
+//    }
 
 
     /**
      * Registers all Custom Items in the packages list
      */
-    public void registerItems() throws IOException {
+    public void registerItems(Runnable callback) throws IOException {
         File file = LumaItems.getInstance().getFile();
 
         try (URLClassLoader classLoader = new URLClassLoader(new URL[] { file.toURI().toURL() }, this.getClass().getClassLoader())) {
@@ -103,7 +99,7 @@ public final class ItemManager {
             for (String pack : packages) {
                 registerForPackage(pack, classPath);
             }
-            LumaItems.log("Registered &6" + CUSTOM_ITEMS.size() + " &2classes through reflection");
+            callback.run();
         }
     }
 
@@ -119,50 +115,21 @@ public final class ItemManager {
                     registerItem(item);
                 }
             } catch (Throwable e) {
-                LumaItems.log("Failed to register class " + clazz.getSimpleName(), e);
-                e.printStackTrace();
+                LOGGER.error("Failed to register class " + clazz.getSimpleName(), e);
             }
         }
     }
 
     public void registerItem(CustomItem item) {
-        CUSTOM_ITEMS.put(new NamespacedKey(plugin, item.createItem().component1()), item);
-        registerForName(item);
-        Class<?> clazz = item.getClass();
-        NeedsEdits edits = clazz.getAnnotation(NeedsEdits.class);
-        if (edits != null) {
-            if (!edits.review()) {
-                LumaItems.log("&cClass &6" + clazz.getSimpleName() + " &cneeds edits!");
-            } else {
-                LumaItems.log("&aClass &6" + clazz.getSimpleName() + " &ais ready for review!");
-            }
+        Registry.CUSTOM_ITEMS.put(item);
+
+        if (!AstralSet.class.isAssignableFrom(item.getClass())) {
+            String customTabName = item.tabCompleteName();
+            NamedCustomItem namedCustomItem = new NamedCustomItem(item, customTabName);
+            Registry.NAMED_CUSTOM_ITEMS.put(namedCustomItem);
         }
     }
 
-    public void registerForName(CustomItem item) {
-        String customTabName = item.tabCompleteName();
-        if (customTabName != null) {
-            CUSTOM_ITEMS_BY_NAME.put(customTabName, item);
-            return;
-        }
-
-        ItemStack itemStack;
-        try {
-            itemStack = item.createItem().component2();
-        } catch (Exception e) {
-            LumaItems.log("Failed to create item for " + item.getClass().getSimpleName(), e);
-            return;
-        }
-        if (AstralSet.class.isAssignableFrom(item.getClass())) {
-            return;
-        } else if (!itemStack.hasItemMeta() || !itemStack.getItemMeta().hasDisplayName()) {
-            LumaItems.log("Item " + itemStack.getType() + " does not have a display name or meta!");
-            return;
-        }
-        String formattedName = PlainTextComponentSerializer.plainText().serialize(itemStack.getItemMeta().displayName())
-                .replace(" ", "_").toLowerCase();
-        CUSTOM_ITEMS_BY_NAME.put(formattedName, item);
-    }
 
 
     /**
@@ -195,10 +162,10 @@ public final class ItemManager {
                     try {
                         return it.load();
                     } catch (NoClassDefFoundError e) {
-                        LumaItems.log("Failed to load class " + it.getName() + " due to missing dependency: " + e.getMessage());
+                        LOGGER.warning("Failed to load class " + it.getName() + " due to missing dependency: " + e.getMessage());
                         return null;
                     } catch (Throwable e) {
-                        LumaItems.log("Failed to load class " + it.getName(), e);
+                        LOGGER.error("Failed to load class " + it.getName(), e);
                         return null;
                     }
                 })

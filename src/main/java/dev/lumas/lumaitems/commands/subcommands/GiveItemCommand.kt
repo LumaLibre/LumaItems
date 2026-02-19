@@ -7,8 +7,11 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.manager.ItemManager
+import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.registry.StringIdentifier
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -55,7 +58,7 @@ class GiveItemCommand : SubCommand {
             for (customItem in ItemManager.getAllItems()) {
                 Util.giveItem(player, customItem)
             }
-            player.sendMessage("${Util.legacyPrefix} You have been given all custom items!")
+            player.sendFormatted("You have been given all custom items!")
         }
         return true
     }
@@ -63,7 +66,7 @@ class GiveItemCommand : SubCommand {
     override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
         return when (args.size) {
             1 -> {
-                val list: MutableList<String> = ItemManager.CUSTOM_ITEMS_BY_NAME.keys.toMutableList()
+                val list: MutableList<String> = Registry.NAMED_CUSTOM_ITEMS.keySet(StringIdentifier::class).map { it.key() }.toMutableList()
                 list.add("all")
                 list
             }

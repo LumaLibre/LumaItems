@@ -1,10 +1,11 @@
 package dev.lumas.lumaitems.items.armor.elytra
 
-import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import java.util.UUID
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -13,8 +14,6 @@ import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
-import java.util.UUID
 
 class AmorCeralytrasItem : CustomItem {
 
@@ -39,26 +38,25 @@ class AmorCeralytrasItem : CustomItem {
         when (type) {
             Action.PLAYER_CROUCH -> {
                 if (!player.isSneaking && AbilityUtil.isOnGround(player)) {
-                    object : BukkitRunnable() {
-                        override fun run() {
-                            if (!player.isSneaking || !AbilityUtil.isOnGround(player)) {
-                                if (boostCounter.contains(player.uniqueId) && boostCounter[player.uniqueId]!! >= 80) {
-                                    player.velocity = player.velocity.multiply(8.2).setY(3.0)
-                                }
-                                boostCounter.remove(player.uniqueId)
-                                cancel()
-                                return
+
+                    player.syncTimer(0, 5) { task ->
+                        if (!player.isSneaking || !AbilityUtil.isOnGround(player)) {
+                            if (boostCounter.contains(player.uniqueId) && boostCounter[player.uniqueId]!! >= 80) {
+                                player.velocity = player.velocity.multiply(8.2).setY(3.0)
                             }
-
-                            boostCounter[player.uniqueId] = boostCounter.getOrDefault(player.uniqueId, 0) + 5
-
-
-                            if (boostCounter[player.uniqueId]!! % 80 == 0) {
-                                player.world.spawnParticle(Particle.DUST, player.location, 40, 0.5, 0.0, 0.5, 0.5, DustOptions(Color.RED, 1f))
-                                player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1f)
-                            }
+                            boostCounter.remove(player.uniqueId)
+                            task.cancel()
+                            return@syncTimer
                         }
-                    }.runTaskTimer(LumaItems.getInstance(), 0L, 5L)
+
+                        boostCounter[player.uniqueId] = boostCounter.getOrDefault(player.uniqueId, 0) + 5
+
+
+                        if (boostCounter[player.uniqueId]!! % 80 == 0) {
+                            player.world.spawnParticle(Particle.DUST, player.location, 40, 0.5, 0.0, 0.5, 0.5, DustOptions(Color.RED, 1f))
+                            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1f)
+                        }
+                    }
                 }
 
                 if (player.isSneaking || player.isFlying || AbilityUtil.isOnGround(player) ||

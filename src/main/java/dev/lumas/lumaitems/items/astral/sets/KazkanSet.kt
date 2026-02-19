@@ -6,9 +6,9 @@ import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -78,7 +78,7 @@ class KazkanSet : AstralSet {
         return factory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "kazkan-set"
     }
 
@@ -157,14 +157,14 @@ class KazkanSet : AstralSet {
 
                 playerLinkedArrows[player] = linkedArrows.plus(projectile)
 
-                Bukkit.getScheduler().runTaskLater(instance(), Runnable {
+                player.syncDelayed(150) {
                     if (!projectile.isOnGround) {
                         projectile.setGravity(true)
-                        val arrows = playerLinkedArrows[player]?.toMutableList() ?: return@Runnable
+                        val arrows = playerLinkedArrows[player]?.toMutableList() ?: return@syncDelayed
                         arrows.remove(projectile)
                         playerLinkedArrows[player] = arrows
                     }
-                }, 150)
+                }
             }
 
             Action.PROJECTILE_LAND -> {

@@ -1,12 +1,12 @@
 package dev.lumas.lumaitems.items.astral.sets
 
+import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.enums.GenericToolType
+import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
-import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.relics.RelicCrafting
-import dev.lumas.lumaitems.enums.DefaultAttributes
-import dev.lumas.lumaitems.enums.ToolType
-import dev.lumas.lumaitems.enums.GenericToolType
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -47,30 +47,13 @@ class MistralSet : AstralSet {
                 } else {
                     mutableListOf("Grants extra speed", "while being held.")
                 },
-
-                when (genericMCToolType) {
-                    ToolType.SWORD -> {
-                        DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
-                            Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
-                        )
-                    }
-                    ToolType.PICKAXE -> {
-                        DefaultAttributes.NETHERITE_PICKAXE.appendThenGetAttributes(
-                            Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER
-                        )
-                    }
-                    ToolType.FISHING_ROD -> {
-                        DefaultAttributes.of(Attribute.MOVEMENT_SPEED, identifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY)
-                    }
-                    else -> null
-                }
-            )
+                AttributeContainer.ofMap(Attribute.MOVEMENT_SPEED, setIdentifier(), 0.025, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY))
         }
 
         return astralSetFactory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "mistral-set"
     }
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {

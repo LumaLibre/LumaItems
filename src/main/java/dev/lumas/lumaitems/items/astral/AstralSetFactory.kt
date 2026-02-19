@@ -1,9 +1,11 @@
 package dev.lumas.lumaitems.items.astral
 
 import dev.lumas.lumaitems.enums.Rarity
+import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.obj.PersistentDataRecord
-import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.util.extensions.formatEnumerator
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -57,8 +59,10 @@ open class AstralSetFactory (val identifier: String, val name: String, val custo
             vanillaEnchants
         }
 
+        val gearType = ToolType.getToolType(material)?.formatEnumerator() ?: "???"
+
         val item = ItemFactory(
-            customName ?: "&#AC87FB&l$name &f${Util.getGearType(material)}",
+            customName ?: "&#AC87FB&l$name &f${gearType}",
             customEnchants?.toMutableList() ?: (this.customEnchantNames?.toMutableList() ?: mutableListOf()),
             lore.toMutableList(),
             material,
@@ -67,7 +71,15 @@ open class AstralSetFactory (val identifier: String, val name: String, val custo
         )
 
         if (attributeModifiers != null) {
-            item.attributeModifiers = attributeModifiers
+            item.attributeContainers = attributeModifiers.map {
+                AttributeContainer.builder()
+                    .setAttribute(it.key)
+                    .setKey(identifier)
+                    .setAmount(it.value.amount)
+                    .setOperation(it.value.operation)
+                    .setSlot(it.value.slotGroup)
+                    .build()
+            }.toMutableList()
         }
 
 

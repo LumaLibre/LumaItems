@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.manager.GlowManager
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import java.util.Random
+import java.util.function.Consumer
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
@@ -22,8 +23,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.Random
-import java.util.function.Consumer
 
 
 class SunlightBladeItem : CustomItem {
@@ -89,11 +88,11 @@ class SunlightBladeItem : CustomItem {
 
         val colors = listOf(ChatColor.YELLOW, ChatColor.GOLD, ChatColor.RED)
         val rand = Random().nextInt(3)
-        GlowManager.setGlowColor(fireball, colors[rand])
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+        //GlowManager.setGlowColor(fireball, colors[rand])
+        armorStand.syncDelayed(100) {
             armorStand.remove()
             fireball.remove()
-        }, 100L)
+        }
     }
 
 }

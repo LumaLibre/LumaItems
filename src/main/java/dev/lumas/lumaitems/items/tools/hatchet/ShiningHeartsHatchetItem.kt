@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
-import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import java.util.UUID
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -17,8 +18,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
-import kotlin.random.Random
 
 @Disable(WorldName.EVENT_NEW)
 class ShiningHeartsHatchetItem : CustomItem {
@@ -76,7 +75,7 @@ class ShiningHeartsHatchetItem : CustomItem {
                 entity.world.playSound(entity.location, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.7f, 0.9f)
 
                 blockAbility.add(player.uniqueId)
-                for (entity1: LivingEntity in Util.splitRandomList(entities, entities.size / 2) as List<LivingEntity>) {
+                for (entity1: LivingEntity in splitRandomList(entities, entities.size / 2) as List<LivingEntity>) {
                     if (entity1 == player || AbilityUtil.noDamagePermission(player, entity1)) continue
                     entity1.world.spawnParticle(Particle.SWEEP_ATTACK, entity.location, 3, 0.5, 0.5, 0.5, 0.1)
                     entity1.damage(6.0, player)
@@ -87,5 +86,15 @@ class ShiningHeartsHatchetItem : CustomItem {
             else -> return false
         }
         return true
+    }
+
+    private fun splitRandomList(list: MutableList<*>, retain: Int): MutableList<*> {
+        val newList: MutableList<Any> = mutableListOf()
+        for (i in 0 until retain) {
+            val random = list.indices.random()
+            list[random]?.let { newList.add(it) }
+            list.removeAt(random)
+        }
+        return newList
     }
 }

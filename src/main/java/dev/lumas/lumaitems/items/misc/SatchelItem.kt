@@ -2,10 +2,10 @@ package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import java.util.function.Consumer
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -19,7 +19,6 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
-import java.util.function.Consumer
 
 class SatchelItem : CustomItem {
 
@@ -58,14 +57,15 @@ class SatchelItem : CustomItem {
     // satchel has been launched, set glow and itemdata to brace for hitevent, if player is falling satchel should launch after 5 ticks
     private fun satchelLaunch(projectile: Entity, p: Player) {
         projectile.persistentDataContainer.set(NamespacedKey(instance(), "satchel"), PersistentDataType.SHORT, 1)
-        GlowManager.setGlowColor(projectile, GlowManager.COLORS.random())
+        //GlowManager.setGlowColor(projectile, GlowManager.COLORS.random())
 
         if (!p.location.subtract(0.0, 0.1, 0.0).block.type.isAir || p.isFlying) return
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+
+        projectile.syncDelayed(5) {
             if (!projectile.isDead) {
                 satchelDetonate(projectile, p)
             }
-        }, 5L)
+        }
     }
 
     private fun satchelDetonate(satchelEntity: Entity, p: Player) {

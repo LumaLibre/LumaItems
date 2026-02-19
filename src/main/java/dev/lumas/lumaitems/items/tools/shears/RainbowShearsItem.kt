@@ -1,16 +1,16 @@
 package dev.lumas.lumaitems.items.tools.shears
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.tiers.Tier
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockShearEntityEvent
 import org.bukkit.event.player.PlayerShearEntityEvent
 import org.bukkit.inventory.ItemStack
-import kotlin.random.Random
 
 class RainbowShearsItem : CustomItem {
 
@@ -34,7 +34,7 @@ class RainbowShearsItem : CustomItem {
                 Enchantment.EFFICIENCY to 7,
                 Enchantment.MENDING to 1
             )
-            .quotes("<gray>\"Shear to your heart's content!\"")
+            .tagline("<gray>\"Shear to your heart's content!\"")
             .material(Material.SHEARS)
             .tier(Tier.PRIDE_2025)
             .buildPair()

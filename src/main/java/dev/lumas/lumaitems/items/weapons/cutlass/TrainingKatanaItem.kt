@@ -1,10 +1,11 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
-import dev.lumas.lumaitems.util.Executors
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Material
@@ -20,7 +21,6 @@ import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 
 class TrainingKatanaItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
@@ -32,7 +32,7 @@ class TrainingKatanaItem : CustomItemFunctions() {
             .persistentData(k)
             .vanillaEnchants()
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_SWORD.appendThenGetAttributes(
+                AttributeContainer.ofMap(
                     Attribute.ATTACK_SPEED, k, 4.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY
                 )
             )
@@ -84,14 +84,12 @@ class TrainingKatanaItem : CustomItemFunctions() {
         clickedEntity.addPotionEffect(darkness)
         player.addPotionEffect(darkness)
 
-        object : BukkitRunnable() {
-            var t = 0
-            override fun run() {
-                clickedEntity.damage(3.0, player)
-                if (t++ > 10) {
-                    this.cancel()
-                }
+        var t = 0
+        player.syncTimer(0, 25) {
+            clickedEntity.damage(3.0, player)
+            if (t++ > 10) {
+                it.cancel()
             }
-        }.runTaskTimer(instance(), 0, 25)
+        }
     }
 }

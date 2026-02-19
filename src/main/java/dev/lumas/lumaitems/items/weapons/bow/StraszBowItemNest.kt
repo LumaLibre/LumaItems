@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -26,7 +27,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
-import java.util.concurrent.TimeUnit
 
 abstract class StraszBowItemNest : CustomItemFunctions() {
 
@@ -83,7 +83,7 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
         hitLivingEntity.getNearbyEntities(20.0, 20.0, 20.0).forEach {
             if (it !is LivingEntity || it is Player || !hitLivingEntity.hasLineOfSight(it)) return@forEach
             else if (i++ > MAX_DUPLICATE_ARROWS) return
-            val vector: Vector = AbilityUtil.getDirectionBetweenLocations(hitLivingEntity.eyeLocation, it.eyeLocation)
+            val vector: Vector = BukkitVectors.direction(hitLivingEntity.eyeLocation, it.eyeLocation)
             spawnProjectile(vector.multiply(0.5), hitLivingEntity.eyeLocation.add(0.0,0.4,0.0), true, player, true)
         }
     }
@@ -104,17 +104,17 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
             snowball.setMetadata(DUPLICATE, metaDataValue)
         }
 
-        Bukkit.getAsyncScheduler().runAtFixedRate(instance(), { task ->
+        Executors.asyncTimer(0, 1) { task ->
             if (snowball.isDead || snowball.ticksLived > 110) {
                 if (!snowball.isDead && !snowball.hasGravity()) {
-                    Bukkit.getScheduler().runTask(instance(), Runnable { snowball.setGravity(true) })
+                    snowball.sync { snowball.setGravity(true) }
                 }
                 task.cancel()
-                return@runAtFixedRate
+                return@asyncTimer
             }
             snowball.world.spawnParticle(Particle.DUST, snowball.location, 5, 0.2, 0.2, 0.2, 0.1, dustOptions)
             snowball.world.spawnParticle(Particle.WITCH, snowball.location, 5, 0.2, 0.2, 0.2, 0.1)
-        }, 0, 50, TimeUnit.MILLISECONDS)
+        }
         return snowball
     }
 }

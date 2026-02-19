@@ -2,12 +2,12 @@ package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.extensions.BlockUtil
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.extensions.BlockUtil.determineHighestBreakSpeed
-import dev.lumas.lumaitems.util.extensions.BlockUtil.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.BLOCK_FACE_RELATIVES
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.determineHighestBreakSpeed
+import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -101,7 +101,7 @@ class VioletGarnetMattockItem : CustomItemFunctions() {
     }
 
     private fun Block.checkRelatives(): Boolean {
-        for (face in BlockUtil.BLOCK_FACE_RELATIVES) {
+        for (face in BLOCK_FACE_RELATIVES) {
             val relative = this.getRelative(face)
             if (AMETHYST_CLUSTER_PATTERN.matches(relative.type.name)) {
                 return true

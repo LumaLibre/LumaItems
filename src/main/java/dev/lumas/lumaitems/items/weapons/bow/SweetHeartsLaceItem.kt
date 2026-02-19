@@ -2,9 +2,10 @@ package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import kotlin.random.Random
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -19,7 +20,6 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
 
 class SweetHeartsLaceItem : CustomItem {
 
@@ -60,16 +60,15 @@ class SweetHeartsLaceItem : CustomItem {
                 }
                 snowball.persistentDataContainer.set(NamespacedKey(instance(), "sweetheartslace"), PersistentDataType.SHORT, 1)
                 snowball.shooter = player
-                object : BukkitRunnable() {
-                    override fun run() {
-                        if (snowball.isDead || snowball.ticksLived > 200) {
-                            this.cancel()
-                            if (!snowball.isDead) snowball.remove()
-                            return
-                        }
-                        snowball.world.spawnParticle(Particle.HEART, snowball.location, 2, 0.3, 0.2, 0.3, 0.3)
+
+                snowball.syncTimer(0, 1) {
+                    if (snowball.isDead || snowball.ticksLived > 200) {
+                        it.cancel()
+                        if (!snowball.isDead) snowball.remove()
+                        return@syncTimer
                     }
-                }.runTaskTimer(instance(), 0L, 1L);
+                    snowball.world.spawnParticle(Particle.HEART, snowball.location, 2, 0.3, 0.2, 0.3, 0.3)
+                }
 
             }
             Action.PROJECTILE_LAND -> {
@@ -80,10 +79,10 @@ class SweetHeartsLaceItem : CustomItem {
 
                 if (entity is Enemy && Random.Default.nextInt(100) <= 40) {
                     entity.persistentDataContainer.set(NamespacedKey(instance(), "sweetheartslace"), PersistentDataType.SHORT, 1.toShort())
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
-                        if (entity.isDead) return@scheduleSyncDelayedTask
+                    entity.syncDelayed(600) {
+                        if (entity.isDead) return@syncDelayed
                         entity.persistentDataContainer.remove(NamespacedKey(instance(), "sweetheartslace"))
-                    }, 600L)
+                    }
                 }
             }
             Action.ENTITY_TARGET_PLAYER -> {

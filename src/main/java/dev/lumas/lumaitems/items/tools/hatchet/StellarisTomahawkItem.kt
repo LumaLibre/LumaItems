@@ -1,15 +1,13 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
-import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
 @Disable(WorldName.EVENT_NEW)
@@ -27,14 +25,6 @@ class StellarisTomahawkItem : CustomItem {
     }
 
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        val blockBreakEvent: BlockBreakEvent? = event as? BlockBreakEvent
-        when (type) {
-            Action.BREAK_BLOCK -> {
-                AbilityUtil.pinataAbility(blockBreakEvent!!.block)
-            }
-
-            else -> return false
-        }
         return true
     }
 }

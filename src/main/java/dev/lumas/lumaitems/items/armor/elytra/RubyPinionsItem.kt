@@ -3,9 +3,9 @@ package dev.lumas.lumaitems.items.armor.elytra
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.Random
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -66,7 +66,13 @@ class RubyPinionsItem : CustomItem {
                 player.inventory.itemInOffHand.amount -= 1
             }
         }
-        val task = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance(), {
+
+        var count = 0
+        player.syncTimer(0, 1) { task ->
+            if (count++ > 35) {
+                task.cancel()
+                return@syncTimer
+            }
             player.world.spawnParticle(
                 Particle.DUST, player.location.add(0.0, 1.0, 0.0), 1, 0.5, 0.5, 0.5, 0.1, Particle.DustOptions(
                     Color.fromRGB(255, 83, 114), 2f
@@ -76,7 +82,6 @@ class RubyPinionsItem : CustomItem {
                 Particle.DUST, player.location.add(0.0, 1.0, 0.0), 1, 0.5, 0.5, 0.5, 0.1,
                 Particle.DustOptions(Color.fromRGB(207, 74, 253), 2f)
             )
-        }, 0L, 1L)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), { Bukkit.getScheduler().cancelTask(task) }, 35L)
+        }
     }
 }

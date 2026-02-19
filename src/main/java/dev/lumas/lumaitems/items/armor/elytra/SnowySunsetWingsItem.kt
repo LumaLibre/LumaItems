@@ -2,14 +2,15 @@
 package dev.lumas.lumaitems.items.armor.elytra
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
-import dev.lumas.lumaitems.LumaItems
+import dev.lumas.glowapi.model.GlowColorManager
+import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.Util.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.tiers.Tier
-import dev.lumas.glowapi.colormanagers.ColorManager
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -73,14 +74,14 @@ class SnowySunsetWingsItem : CustomItemFunctions() {
     }
 
     fun addColor(player: Player) {
-        if (LumaItems.isWithLumaGlowAPI()) {
-            ColorManager.setTempPlayerColor(player, ChatColor.BLACK)
+        if (Registry.HOOKS.getOrThrow(McMMOHook::class).isWith()) {
+            GlowColorManager.getInstance().setTransientColor(player, NamedTextColor.BLACK)
         }
     }
 
     fun removeColor(player: Player) {
-        if (LumaItems.isWithLumaGlowAPI()) {
-            ColorManager.updatePlayersColor(player)
+        if (Registry.HOOKS.getOrThrow(McMMOHook::class).isWith()) {
+            GlowColorManager.getInstance().update(player)
         }
     }
 }

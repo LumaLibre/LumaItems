@@ -1,16 +1,12 @@
 package dev.lumas.lumaitems.items.armor.chestplate
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import org.bukkit.Material
-import org.bukkit.attribute.Attribute
-import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
 
 class StarweaveAegisItem : CustomItem {
     override fun createItem(): Pair<String, ItemStack> {
@@ -22,9 +18,9 @@ class StarweaveAegisItem : CustomItem {
             mutableListOf("starweaveaegis"),
             mutableMapOf(Enchantment.PROTECTION to 7, Enchantment.FIRE_PROTECTION to 5, Enchantment.PROJECTILE_PROTECTION to 5, Enchantment.BLAST_PROTECTION to 5, Enchantment.UNBREAKING to 10, Enchantment.MENDING to 1)
         )
-        item.attributeModifiers[Attribute.ARMOR] = AttributeModifier(UUID.randomUUID(), "generic.armor", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
-        item.attributeModifiers[Attribute.KNOCKBACK_RESISTANCE] = AttributeModifier(UUID.randomUUID(), "generic.knockbackResistance", 1000.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
-        item.attributeModifiers[Attribute.ARMOR_TOUGHNESS] = AttributeModifier(UUID.randomUUID(), "generic.armorToughness", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
+//        item.attributeContainers[Attribute.ARMOR] = AttributeModifier(UUID.randomUUID(), "generic.armor", 8.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
+//        item.attributeContainers[Attribute.KNOCKBACK_RESISTANCE] = AttributeModifier(UUID.randomUUID(), "generic.knockbackResistance", 1000.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
+//        item.attributeContainers[Attribute.ARMOR_TOUGHNESS] = AttributeModifier(UUID.randomUUID(), "generic.armorToughness", 3.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlot.CHEST)
         return Pair("starweaveaegis", item.createItem())
     }
 

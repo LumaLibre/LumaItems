@@ -1,13 +1,16 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.blend
 import dev.lumas.lumaitems.util.tiers.Tier
+import java.awt.Color
+import java.util.UUID
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -17,9 +20,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
-import java.awt.Color
-import java.util.UUID
 
 class RosethornRapierItem : CustomItemFunctions() {
 
@@ -65,18 +65,17 @@ class RosethornRapierItem : CustomItemFunctions() {
         cachedDamagers[player.uniqueId] = rosethornRecord
         val d = rosethornRecord.display
         player.playSound(player.location, Sound.ITEM_ELYTRA_FLYING, 0.2f, 0.4f)
-        object : BukkitRunnable() {
-            var ticksRan = 0
-            override fun run() {
-                if (ticksRan++ >= 200) {
-                    cachedDamagers.remove(player.uniqueId)
-                    player.stopSound(Sound.ITEM_ELYTRA_FLYING)
-                    this.cancel()
-                    return
-                }
-                Particles.neopaganPentagram(5.0, 0.05, 0.0, d, d)
+
+        var ticksRan = 0
+        Executors.asyncTimer(0, 1) {
+            if (ticksRan++ >= 200) {
+                cachedDamagers.remove(player.uniqueId)
+                player.stopSound(Sound.ITEM_ELYTRA_FLYING)
+                it.cancel()
+                return@asyncTimer
             }
-        }.runTaskTimerAsynchronously(instance(), 0L, 1L)
+            Particles.neopaganPentagram(5.0, 0.05, 0.0, d, d)
+        }
     }
 
     override fun onEntityDeath(player: Player, event: EntityDeathEvent) {
@@ -88,7 +87,7 @@ class RosethornRapierItem : CustomItemFunctions() {
         if (rosethornRecordedPlayer.damageDealt < 200.0) {
             rosethornRecordedPlayer.damageDealt += event.entity.getAttribute(Attribute.MAX_HEALTH)?.value ?: 0.0
             val blend = if (rosethornRecordedPlayer.damageDealt < 130.0) {
-                Util.blend(Color.WHITE, Color.RED)
+                blend(Color.WHITE, Color.RED)
             } else {
                 Color.RED
             }

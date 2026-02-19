@@ -1,15 +1,15 @@
 package dev.lumas.lumaitems.items.tools.spade
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.inventory.ItemStack
-import kotlin.random.Random
 
 class PlasticToyShovelItem : CustomItem {
     override fun createItem(): Pair<String, ItemStack> {

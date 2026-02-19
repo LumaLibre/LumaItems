@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.astral.sets
 
 import com.gamingmesh.jobs.Jobs
-import dev.lumas.lumaitems.items.astral.AstralSet
-import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.ToolType
+import dev.lumas.lumaitems.items.astral.AstralSet
+import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -49,7 +49,7 @@ class FalterSet : AstralSet {
         return astralSetFactory.createdAstralItems
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "falter-set"
     }
 

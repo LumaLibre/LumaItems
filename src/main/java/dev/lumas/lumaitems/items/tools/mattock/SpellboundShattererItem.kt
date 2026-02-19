@@ -1,12 +1,13 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.BlockConstants
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import java.util.Random
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -18,7 +19,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
-import java.util.Random
 
 @Disable(WorldName.EVENT_NEW)
 class SpellboundShattererItem : CustomItem {

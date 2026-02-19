@@ -1,11 +1,9 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
-import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
-import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -71,7 +69,7 @@ class CannonBowItem : CustomItem {
         }
 
         val cannonBall = p.world.spawn(projectile.location, EnderPearl::class.java)
-        GlowManager.setGlowColor(cannonBall, ChatColor.BLACK)
+        //GlowManager.setGlowColor(cannonBall, ChatColor.BLACK)
         cannonBall.isGlowing = true
         cannonBall.persistentDataContainer.set(NamespacedKey(instance(), "cannonbow"), PersistentDataType.SHORT, 1)
         cannonBall.velocity = projectile.velocity

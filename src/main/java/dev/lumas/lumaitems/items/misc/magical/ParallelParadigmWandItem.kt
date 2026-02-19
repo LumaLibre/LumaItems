@@ -1,10 +1,11 @@
 package dev.lumas.lumaitems.items.misc.magical
 
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -18,7 +19,6 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import kotlin.random.Random
 
 class ParallelParadigmWandItem : CustomItem {
 
@@ -97,13 +97,14 @@ class ParallelParadigmWandItem : CustomItem {
             tnts.add(tnt)
         }
         entity.world.playSound(entity.location, Sound.ENTITY_TNT_PRIMED, 1f, 0.9f)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(instance(), {
+
+        entity.syncDelayed(19) {
             entity.damage(30.0)
             entity.world.createExplosion(entity.location, 3f, false, false)
             for (tnt in tnts) {
                 tnt.remove()
             }
-        }, 19)
+        }
     }
 
     private fun swapEntityLocations(entity: LivingEntity, entity2: LivingEntity) {

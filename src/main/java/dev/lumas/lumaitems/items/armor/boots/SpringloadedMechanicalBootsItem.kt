@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.armor.boots
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 

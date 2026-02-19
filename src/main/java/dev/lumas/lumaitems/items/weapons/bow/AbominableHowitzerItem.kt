@@ -1,10 +1,11 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.QuickTasks
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -69,7 +70,7 @@ class AbominableHowitzerItem : CustomItemFunctions() {
             if (snowman.isDead) {
                 task.cancel()
             } else if (snowman.hasHitBlock()) {
-                Executors.sync {
+                snowman.sync {
                     snowman.world.createExplosion(snowman.location, 2.4f, false, false)
                     snowman.remove()
                 }

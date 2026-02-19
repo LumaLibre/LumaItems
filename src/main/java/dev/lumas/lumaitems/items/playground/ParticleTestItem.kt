@@ -1,15 +1,15 @@
 package dev.lumas.lumaitems.items.playground
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
+import java.awt.Color
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import java.awt.Color
 
 class ParticleTestItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {

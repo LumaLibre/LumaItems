@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.astral.sets
 
+import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
-import dev.lumas.lumaitems.enums.Action
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -32,7 +32,7 @@ class ArchaelSet : AstralSet {
         return false
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "archael-set"
     }
 }

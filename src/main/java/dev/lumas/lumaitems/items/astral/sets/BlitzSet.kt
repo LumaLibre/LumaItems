@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.astral.sets
 
-import dev.lumas.lumaitems.items.astral.AstralSet
-import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.ToolType
+import dev.lumas.lumaitems.items.astral.AstralSet
+import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.util.Util
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -63,7 +63,7 @@ class BlitzSet : AstralSet {
         return true
     }
 
-    override fun identifier(): String {
+    override fun setIdentifier(): String {
         return "blitz-set"
     }
 }

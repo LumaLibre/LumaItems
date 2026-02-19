@@ -1,11 +1,14 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.glowapi.model.GlowColorManager
+import dev.lumas.lumaitems.configuration.files.HeadsYml
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.manager.FileManager
-import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
 import net.kyori.adventure.text.format.NamedTextColor
@@ -21,14 +24,12 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Transformation
 import org.joml.Vector3f
 
 class YolkPlaidYataghanItem : CustomItemFunctions() {
 
     companion object {
-        private val eggTextures: List<String> = FileManager("heads.yml").generateYamlFile().getStringList("easter-egg")
         private val coolingDownEggs: MutableMap<UUID, Int> = mutableMapOf()
         private val SLOWNESS = PotionEffect(PotionEffectType.SLOWNESS, 240, 150, false, false, false)
     }
@@ -75,6 +76,7 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
     }
 
     private fun trapMobInEgg(livingEntity: LivingEntity, attacker: Player) {
+        val eggTextures = Registry.CONFIGS.getOrThrow(HeadsYml::class).easterEgg
         val loc = livingEntity.eyeLocation.add(0.0, 0.5, 0.0); loc.yaw = 0.0f; loc.pitch = 0.0f
         val boundingBox = livingEntity.boundingBox
         val egg = livingEntity.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
@@ -94,29 +96,28 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
         livingEntity.isCollidable = false
         livingEntity.addPotionEffect(SLOWNESS)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
-        GlowManager.addToTeamForTicks(livingEntity, NamedTextColor.NAMES.values().random(), 240)
-        object: BukkitRunnable() {
-            var totalTicks = 0
+        GlowColorManager.getInstance().setTransientColor(livingEntity, NamedTextColor.NAMES.values().random(), 240L)
 
-            override fun run() {
-                livingEntity.damage(4.0, attacker)
-                livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 2f, 7.7f)
+        var totalTicks = 0
 
-                var stop = false
-                if (totalTicks >= 240) {
-                    livingEntity.isCollidable = true
-                    stop = true
-                } else if (livingEntity.isDead) {
-                    stop = true
-                }
+        livingEntity.syncTimer(0, 20) {
+            livingEntity.damage(4.0, attacker)
+            livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 2f, 7.7f)
 
-                if (stop) {
-                    egg.remove()
-                    this.cancel()
-                }
-                totalTicks+=20
+            var stop = false
+            if (totalTicks >= 240) {
+                livingEntity.isCollidable = true
+                stop = true
+            } else if (livingEntity.isDead) {
+                stop = true
             }
-        }.runTaskTimer(instance(), 0L, 20L)
+
+            if (stop) {
+                egg.remove()
+                it.cancel()
+            }
+            totalTicks += 20
+        }
     }
 
     private fun cooldownTaskPlayer(player: Player): Boolean {
@@ -125,18 +126,16 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
             return false
         } else {
             coolingDownEggs[player.uniqueId] = amountOfCoolingDownEggs + 1
-            object: BukkitRunnable() {
-                override fun run() {
-                    var coolingDownEggsAmount = coolingDownEggs[player.uniqueId] ?: return
-                    coolingDownEggsAmount -= 1
+            Executors.asyncDelayed(400) {
+                var coolingDownEggsAmount = coolingDownEggs[player.uniqueId] ?: return@asyncDelayed
+                coolingDownEggsAmount -= 1
 
-                    if (coolingDownEggsAmount > 0) {
-                        coolingDownEggs[player.uniqueId] = coolingDownEggsAmount
-                    } else {
-                        coolingDownEggs.remove(player.uniqueId)
-                    }
+                if (coolingDownEggsAmount > 0) {
+                    coolingDownEggs[player.uniqueId] = coolingDownEggsAmount
+                } else {
+                    coolingDownEggs.remove(player.uniqueId)
                 }
-            }.runTaskLater(instance(), 400)
+            }
         }
         return true
     }

@@ -3,17 +3,14 @@ version: '${version}'
 main: dev.lumas.lumaitems.LumaItems
 api-version: '1.21'
 author: 'Jsinco'
+folia-supported: true
 depend:
   - LumaCore
 softdepend:
-- PlaceHolderAPI
-- EvenMoreFish # Softdepending EMF to register listeners after it
-- ProtocolLib
-- MythicMobs
-- Jobs
-- mcMMO
-- CoreProtect
-- LumaGlowAPI
+  - ProtocolLib
+  - EvenMoreFish # Softdepending EMF to register listeners after it
+  - Jobs
+  - mcMMO
 permissions:
   lumaitems.disassemblergui:
     description: Permission to open the disassembler GUI

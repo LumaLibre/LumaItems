@@ -1,13 +1,15 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.manager.CustomItem
+import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.disabling.Disable
-import dev.lumas.lumaitems.util.disabling.WorldName
+import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import java.util.Locale
+import java.util.Random
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -16,10 +18,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.Locale
-import java.util.Random
 
 @Disable(WorldName.EVENT_NEW)
 class MistralMattockItem : CustomItem {
@@ -50,7 +49,7 @@ class MistralMattockItem : CustomItem {
 
     private fun seeker(block: Block, player: Player) {
         if (block.type.toString().lowercase().contains("ore")) {
-            AbilityUtil.breakRelativeBlock(block, player, Particle.GLOW, "ore", 0)
+            //AbilityUtil.breakRelativeBlock(block, player, Particle.GLOW, "ore", 0)
         } else {
             val chance = Random().nextInt(100)
             if (chance <= 5) seekOres(block)
@@ -75,23 +74,22 @@ class MistralMattockItem : CustomItem {
         val Loc1 = blockBroken.location
         val Loc2 = seekedBlock.location
         val repeatTracker = intArrayOf(0)
-        object : BukkitRunnable() {
-            override fun run() {
-                val vector: Vector = AbilityUtil.getDirectionBetweenLocations(Loc1, Loc2)
-                var i = 1.0
-                while (i <= blockBroken.location.distance(Loc2)) {
-                    vector.multiply(i)
-                    Loc1.add(vector)
-                    Loc1.getWorld().spawnParticle(Particle.GLOW, Loc1, 1, 0.1, 0.1, 0.1, 0.1)
-                    Loc1.subtract(vector)
-                    vector.normalize()
-                    i += 0.5
-                }
-                if (repeatTracker[0] == 5) {
-                    cancel()
-                } else repeatTracker[0]++
+
+        Loc1.syncTimer(0, 1) {
+            val vector: Vector = BukkitVectors.direction(Loc1, Loc2)
+            var i = 1.0
+            while (i <= blockBroken.location.distance(Loc2)) {
+                vector.multiply(i)
+                Loc1.add(vector)
+                Loc1.getWorld().spawnParticle(Particle.GLOW, Loc1, 1, 0.1, 0.1, 0.1, 0.1)
+                Loc1.subtract(vector)
+                vector.normalize()
+                i += 0.5
             }
-        }.runTaskTimer(LumaItems.getInstance(), 0L, 1L)
+            if (repeatTracker[0] == 5) {
+                it.cancel()
+            } else repeatTracker[0]++
+        }
         seekedBlock.world.playSound(seekedBlock.location, Sound.ENTITY_ALLAY_ITEM_TAKEN, 1f, 1f)
     }
 }

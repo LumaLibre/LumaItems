@@ -1,15 +1,16 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
+import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.enums.CardinalDirection
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
-import dev.lumas.lumaitems.manager.GlowManager
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
 import net.kyori.adventure.text.format.NamedTextColor
@@ -53,7 +54,7 @@ class TrishearRiggerItem : CustomItemFunctions() {
             val originalDir = originalArrow.velocity.clone().normalize()
             val speed = originalArrow.velocity.length()
 
-            val cardinalDirection = CardinalDirection.fromEntityYaw(originalArrow)
+            val cardinalDirection = CardinalDirection.fromEntity(originalArrow)
             val angle = Math.toRadians(-5.0) // negative angle = up
 
             val upDir = if (cardinalDirection == CardinalDirection.NORTH || cardinalDirection == CardinalDirection.SOUTH) {
@@ -69,7 +70,7 @@ class TrishearRiggerItem : CustomItemFunctions() {
             val speed = originalArrow.velocity.length()
             val angle = Math.toRadians(5.0) // positive angle = down
 
-            val cardinalDirection = CardinalDirection.fromEntityYaw(originalArrow)
+            val cardinalDirection = CardinalDirection.fromEntity(originalArrow)
             val downDir = if (cardinalDirection == CardinalDirection.NORTH || cardinalDirection == CardinalDirection.SOUTH) {
                 BukkitVectors.rotateVectorX(originalDir, angle)
             } else {
@@ -167,11 +168,11 @@ class TrishearRiggerItem : CustomItemFunctions() {
             ?.let { Util.enumValueOfOrNull(ArrowCloneType::class.java, it) } ?: ArrowCloneType.CENTER
 
 
-        GlowManager.setGlowColor(projectile, type.glowColor)
+        GlowColorManager.getInstance().setTransientColor(projectile, type.glowColor)
         projectile.isGlowing = true
 
 
-        Executors.syncDelayed(20) {
+        projectile.syncDelayed(20) {
             val particleDisplay = ParticleDisplay.of(Particle.DUST)
                 .withColor(type.color).withLocation(projectile.location)
             Particles.spikeSphere(1.0, 10.0, 3, 0.1, 0.6, particleDisplay)

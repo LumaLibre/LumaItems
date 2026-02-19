@@ -1,11 +1,12 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -17,7 +18,6 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
 
 class CandyCannonItem : CustomItemFunctions() {
 
@@ -55,23 +55,21 @@ class CandyCannonItem : CustomItemFunctions() {
         arrow.persistentDataContainer.set(NamespacedKey(instance(), "candycannon"), PersistentDataType.SHORT, 1)
         player.hideEntity(instance(), arrow)
 
-        object : BukkitRunnable() {
-            var ticks = 0
-            override fun run() {
-                itemDisplay.teleportAsync(arrow.location)
-                itemDisplay.world.spawnParticle(Particle.DUST, itemDisplay.location, 2, 0.0, 0.0, 0.0, 1.0, Particle.DustOptions(rand.value, 1.0f))
-
-                if (arrow.isDead || itemDisplay.isDead || ticks++ >= 300) {
-                    cancel()
-                    Bukkit.getScheduler().runTask(instance(), Runnable {
-                        itemDisplay.remove()
-                        arrow.remove()
-                    })
-                }
-            }
-        }.runTaskTimerAsynchronously(instance(), 0L, 1L)
 
         // Despawn if it doesn't land
+        var ticks = 0
+        Executors.asyncTimer(0, 1) {
+            itemDisplay.teleportAsync(arrow.location)
+            itemDisplay.world.spawnParticle(Particle.DUST, itemDisplay.location, 2, 0.0, 0.0, 0.0, 1.0, Particle.DustOptions(rand.value, 1.0f))
+
+            if (arrow.isDead || itemDisplay.isDead || ticks++ >= 300) {
+                it.cancel()
+                arrow.sync {
+                    itemDisplay.remove()
+                    arrow.remove()
+                }
+            }
+        }
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {

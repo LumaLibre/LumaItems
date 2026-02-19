@@ -2,14 +2,16 @@ package dev.lumas.lumaitems.items.tools.spade
 
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.extensions.BlockUtil.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
 import kotlin.math.abs
@@ -117,7 +119,7 @@ class HailstormShovelItem : CustomItemFunctions() {
         }
 
         block.breakNaturallyWithLog(player, SHOVEL_ITEM_STACK)
-        Executors.syncDelayed(1) {
+        block.location.syncDelayed(1) {
             block.location.getNearbyEntitiesByType(Item::class.java, 1.5, 1.0, 1.5)
                 .forEach {
                     propelToPlayer(player, it)
@@ -194,7 +196,7 @@ class HailstormShovelItem : CustomItemFunctions() {
             )
 
             val randLoc = spawnLocation.clone().add(random().nextDouble(-6.0, 6.0), 0.0, random().nextDouble(-6.0, 6.0))
-            Executors.sync {
+            spawnLocation.sync {
                 val snowball = fallingProjectile(randLoc, player)
                 //snowball.velocity = direction.clone().multiply(0.2)
                 // go in the player's facing direction

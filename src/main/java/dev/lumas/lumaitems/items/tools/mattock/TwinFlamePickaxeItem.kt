@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -19,7 +19,7 @@ class TwinFlamePickaxeItem : CustomItemFunctions() {
         return ItemFactory.builder()
             .name("<b><#FF4B91>T<#FF5A9D>w<#FF6AA8>i<#FF89C0>n <#FFA8D7>F<#FF98CB>l<#FFA8D7>a<#E2AEE5>m<#C9B4F2>e <#B5BEFF>P<#C9B4F2>i<#E2AEE5>c<#FFA8D7>k<#FF98CB>a<#FF6AA8>x<#FF4B91>e")
             .customEnchants("<#FF6AA8>Harmony")
-            .quotes("<gradient:#FF6AA8:#FFA8D7>\"One heart, two souls.\"")
+            .tagline("<gradient:#FF6AA8:#FFA8D7>\"One heart, two souls.\"")
             .material(Material.NETHERITE_PICKAXE)
             .lore(
                 "Press your <#FFA8D7>swap key (F)",

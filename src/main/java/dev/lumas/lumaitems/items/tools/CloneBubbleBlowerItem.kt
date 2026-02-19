@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.tools
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.BlockUtil.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import org.bukkit.Material
 import org.bukkit.Tag
 import org.bukkit.entity.Interaction

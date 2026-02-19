@@ -1,16 +1,18 @@
 package dev.lumas.lumaitems.items.tools.nests
 
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Executors
-import dev.lumas.lumaitems.util.QuickTasks
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.BlockUtil.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
 import kotlin.random.Random
@@ -34,7 +36,8 @@ import org.bukkit.persistence.PersistentDataType
 abstract class EquinoxItemNest : CustomItemFunctions() {
 
     companion object {
-        private val DYES = Material.entries.filter { it.name.matches(Regex(".*_DYE")) }
+        private val REGEX = Regex(".*_DYE")
+        private val DYES = Material.entries.filter { it.name.matches(REGEX) }
         private val COLORS = listOf("#feb17d", "#f9ce90", "#f9f2db", "#b8d1c0", "#af97c7", "#ed9bb0")
             .map { Color.decode(it) }
         private val ACTIVATOR_KEY = Util.namespacedKey("equinox-nest-activator")
@@ -111,7 +114,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
     private fun flyToPlayerExecutor(items: List<Item>, player: Player) {
         var count = 0
 
-        Executors.syncTimer(0, 1) { task ->
+        player.syncTimer(0, 1) { task ->
             if (++count > MAX_FLY_TIME || items.all { isWithinDistance(it, player, 2.0) || !it.isValid }) {
                 task.cancel()
             } else {
@@ -157,7 +160,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
 
 
             val amt = Random.Default.nextInt(snowballCountRange.first, snowballCountRange.second)
-            Executors.sync {
+            pin.sync {
                 pin.world.playSound(pin, Sound.ENTITY_WARDEN_HEARTBEAT, 0.5f, 7f)
                 repeat(amt) {
                     val loc = BukkitVectors.randomGoalLocation(pin, 0.35, 1.0, 0.0)

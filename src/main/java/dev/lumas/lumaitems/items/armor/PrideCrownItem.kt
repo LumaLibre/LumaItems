@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.armor
 
-import dev.lumas.lumaitems.enums.DefaultAttributes
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.CustomItemFunctions
+import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -48,7 +48,7 @@ class PrideCrownItem : CustomItemFunctions() {
             .autoHat(true)
             .tier(Tier.PRIDE_2025)
             .attributeModifiers(
-                DefaultAttributes.NETHERITE_HELMET.appendThenGetAttributes(
+                AttributeContainer.ofMap(
                     key, Attribute.MAX_HEALTH, 6.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD
                 )
             )
