@@ -10,6 +10,7 @@ import com.comphenix.protocol.wrappers.WrappedWatchableObject
 import com.google.common.collect.Lists
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.extensions.sync
 import java.lang.Byte
 import java.lang.reflect.Type
 import java.util.Optional
@@ -55,59 +56,63 @@ object PacketGlowColors {
     }
 
     fun setProtocolTeamColor(player: Player, entity: Entity, color: EnumWrappers.ChatFormatting) {
-        val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return
-        val teamName = "glow_${entity.entityId}"
-        val entry = if (entity is Player) entity.name else entity.uniqueId.toString()
-        val teamParams = WrappedTeamParameters.newBuilder()
-            .displayName(WrappedChatComponent.fromText(teamName))
-            .prefix(WrappedChatComponent.fromText(""))
-            .suffix(WrappedChatComponent.fromText(""))
-            .color(color)
-            .nametagVisibility(EnumWrappers.TeamVisibility.ALWAYS)
-            .collisionRule(EnumWrappers.TeamCollisionRule.ALWAYS)
-            .build()
+        entity.sync {
+            val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return@sync
+            val teamName = "glow_${entity.entityId}"
+            val entry = if (entity is Player) entity.name else entity.uniqueId.toString()
+            val teamParams = WrappedTeamParameters.newBuilder()
+                .displayName(WrappedChatComponent.fromText(teamName))
+                .prefix(WrappedChatComponent.fromText(""))
+                .suffix(WrappedChatComponent.fromText(""))
+                .color(color)
+                .nametagVisibility(EnumWrappers.TeamVisibility.ALWAYS)
+                .collisionRule(EnumWrappers.TeamCollisionRule.ALWAYS)
+                .build()
 
 
-        // Create team
-        val createPacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
-        createPacket.strings.write(0, teamName)
-        createPacket.integers.write(0, 0) // CREATE/UPDATE = 0, REMOVE = 1
-        createPacket.optionalTeamParameters.write(0, Optional.of(teamParams))
-        protocolManager.sendServerPacket(player, createPacket)
+            // Create team
+            val createPacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
+            createPacket.strings.write(0, teamName)
+            createPacket.integers.write(0, 0) // CREATE/UPDATE = 0, REMOVE = 1
+            createPacket.optionalTeamParameters.write(0, Optional.of(teamParams))
+            protocolManager.sendServerPacket(player, createPacket)
 
-        // Add entity to the team
-        val addPacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
-        addPacket.strings.write(0, teamName)
-        addPacket.integers.write(0, 3) // ADD_PLAYERS
-        addPacket.getSpecificModifier(Collection::class.java).write(0, listOf(entry))
-        protocolManager.sendServerPacket(player, addPacket)
+            // Add entity to the team
+            val addPacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
+            addPacket.strings.write(0, teamName)
+            addPacket.integers.write(0, 3) // ADD_PLAYERS
+            addPacket.getSpecificModifier(Collection::class.java).write(0, listOf(entry))
+            protocolManager.sendServerPacket(player, addPacket)
+        }
     }
 
     // liberally borrowed from: https://www.spigotmc.org/threads/i-want-to-use-protocollib-to-make-fake-entity-glow.589919/
     fun setProtocolGlowPacket(player: Player, entity: Entity, glow: Boolean) {
-        val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return
+        entity.sync {
+            val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return@sync
 
-        val packet = protocolManager.createPacket(PacketType.Play.Server.ENTITY_METADATA) // metadata packet
-        packet.integers.write(0, entity.entityId) //Set entity id from packet above
-        val watcher = WrappedDataWatcher() //Create data watcher, the Entity Metadata packet requires this
-        val type: Type = Byte::class.java
-        val serializer = WrappedDataWatcher.Registry.get(type) // java.lang.Byte::class.java
-        watcher.entity = player //Set the new data watcher's target
-        watcher.setObject(0, serializer, (if (glow) 0x40 else 0).toByte()) //Set status to glowing, found on protocol page
+            val packet = protocolManager.createPacket(PacketType.Play.Server.ENTITY_METADATA) // metadata packet
+            packet.integers.write(0, entity.entityId) //Set entity id from packet above
+            val watcher = WrappedDataWatcher() //Create data watcher, the Entity Metadata packet requires this
+            val type: Type = Byte::class.java
+            val serializer = WrappedDataWatcher.Registry.get(type) // java.lang.Byte::class.java
+            watcher.entity = player //Set the new data watcher's target
+            watcher.setObject(0, serializer, (if (glow) 0x40 else 0).toByte()) //Set status to glowing, found on protocol page
 
-        val wrappedDataValueList: MutableList<WrappedDataValue> = Lists.newArrayList()
-        watcher.watchableObjects.filterNotNull().forEach { entry: WrappedWatchableObject ->
-            val dataWatcherObject = entry.watcherObject
-            wrappedDataValueList.add(
-                WrappedDataValue(
-                    dataWatcherObject.index,
-                    dataWatcherObject.serializer,
-                    entry.rawValue
+            val wrappedDataValueList: MutableList<WrappedDataValue> = Lists.newArrayList()
+            watcher.watchableObjects.filterNotNull().forEach { entry: WrappedWatchableObject ->
+                val dataWatcherObject = entry.watcherObject
+                wrappedDataValueList.add(
+                    WrappedDataValue(
+                        dataWatcherObject.index,
+                        dataWatcherObject.serializer,
+                        entry.rawValue
+                    )
                 )
-            )
+            }
+            packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
+            protocolManager.sendServerPacket(player, packet)
         }
-        packet.dataValueCollectionModifier.write(0, wrappedDataValueList)
-        protocolManager.sendServerPacket(player, packet)
     }
 
 }

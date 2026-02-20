@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.sync
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -52,8 +53,10 @@ class FlamingHeartsEstoc : CustomItem {
 
 
                 QuickTasks.addCooldown(this, player.uniqueId, 600L) {
-                    if (fireBall.isValid) {
-                        fireBall.remove()
+                    fireBall.sync {
+                        if (fireBall.isValid) {
+                            fireBall.remove()
+                        }
                     }
                 }
             }

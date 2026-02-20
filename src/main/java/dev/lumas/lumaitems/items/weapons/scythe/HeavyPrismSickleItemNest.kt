@@ -21,6 +21,7 @@ import dev.lumas.lumaitems.util.tiers.Tier
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.awt.Color
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.BiConsumer
 import java.util.function.Predicate
 import kotlin.math.abs
@@ -248,9 +249,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
                                 }
 
 
-                                Executors.async {
-                                    orb.drawLine()
-                                }
+                                orb.drawLine()
                             }
                         }
                     }
@@ -294,21 +293,28 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
         fun create(whenFinished: () -> Unit = {}) {
             val location = player.eyeLocation.clone().add(player.eyeLocation.direction.clone().multiply(DIRECTION_FACTOR))
-            // Groups of two, so two orbs at a time should have the same fireTime, then add 50
 
             val orbDecalList = colorKit.getOrbDecalList()
-            calculateLocations(location, whenFinished) { index, loc ->
-                if (orbs.size >= MAX_ORBS) return@calculateLocations // limit to 6 orbs
+            val toSpawn = AtomicInteger(0)
+            val spawned = AtomicInteger(0)
+
+            calculateLocations(location) { index, loc ->
+                if (orbs.size >= MAX_ORBS) return@calculateLocations
                 val fireTime = if (initialTarget == null) {
-                    50L + (index / 2) * 15 // every two orbs have the same fireTime
+                    50L + (index / 2) * 15
                 } else {
                     15L
                 }
                 val orb = Orb(initialTarget, player, orbDecalList[index], loc, fireTime, DIRECTION_FACTOR)
-                orb.spawn()
-                //orb.autoTarget(activeTargets) // auto-target entities around the orb
-                orb.move()
                 orbs.add(orb)
+                toSpawn.incrementAndGet()
+
+                orb.spawn {
+                    orb.move()
+                    if (spawned.incrementAndGet() >= toSpawn.get()) {
+                        whenFinished()
+                    }
+                }
             }
         }
 
@@ -442,13 +448,14 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
             snowball.persistentDataContainer.set(nameSpace, PersistentDataType.SHORT, 0)
         }
 
-        fun spawn() {
+        fun spawn(callback: () -> Unit) {
             if (!valid) {
                 this.valid = true
             }
 
             spawnLocation.sync {
                 createSnowball(spawnLocation)
+                callback()
             }
         }
 
@@ -532,45 +539,49 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
         fun drawLine() {
             if (!valid || target == null) return
 
-            val targetLoc = target!!.boundingBox.center.toLocation(target!!.world).clone()
-            if (targetLoc.world != position.world) {
-                this.target = null // Probably a player going to another world
-                return
-            }
-            val directionToTarget = targetLoc.clone().subtract(position).toVector().normalize()
-            val destination = position.clone().add(directionToTarget.multiply(RANGE))
-
-            if (lineCurrentEnd == null) {
-                lineCurrentEnd = destination.clone()
-            }
-
-            val toDestination = destination.clone().subtract(lineCurrentEnd!!)
-            val distance = toDestination.length()
-
-            if (distance > SNAP) {
-                // Move currentEnd 'SPEED' blocks toward destination
-                // If we're really far away from our target, we'll increase our speed a bit more than normal
-                val directionStep = toDestination.toVector().normalize().multiply(
-                    if (distance > 18.0) {
-                        SPEED * SPEED_MULTIPLIER // increase speed if we're far away
-                    } else {
-                        SPEED
+            target!!.sync {
+                val targetLoc = target!!.boundingBox.center.toLocation(target!!.world).clone()
+                Executors.async {
+                    if (targetLoc.world != position.world) {
+                        this.target = null // Probably a player going to another world
+                        return@async
                     }
-                )
-                lineCurrentEnd!!.add(directionStep)
-            } else {
-                // Snap to destination if we're close enough
-                lineCurrentEnd = destination.clone()
-            }
+                    val directionToTarget = targetLoc.clone().subtract(position).toVector().normalize()
+                    val destination = position.clone().add(directionToTarget.multiply(RANGE))
 
-            // Draw line from snowball to the current extended endpoint
-            val start = snowball.location.clone()
-            Particles.line(start, lineCurrentEnd!!, 0.45, rayTraceParticle)
+                    if (lineCurrentEnd == null) {
+                        lineCurrentEnd = destination.clone()
+                    }
 
-            start.sync {
-                val direction = lineCurrentEnd!!.clone().subtract(start).toVector().normalize()
-                val distanceToEnd = start.distance(lineCurrentEnd!!)
-                raytrace(start, direction, distanceToEnd, getPredicate(player))
+                    val toDestination = destination.clone().subtract(lineCurrentEnd!!)
+                    val distance = toDestination.length()
+
+                    if (distance > SNAP) {
+                        // Move currentEnd 'SPEED' blocks toward destination
+                        // If we're really far away from our target, we'll increase our speed a bit more than normal
+                        val directionStep = toDestination.toVector().normalize().multiply(
+                            if (distance > 18.0) {
+                                SPEED * SPEED_MULTIPLIER // increase speed if we're far away
+                            } else {
+                                SPEED
+                            }
+                        )
+                        lineCurrentEnd!!.add(directionStep)
+                    } else {
+                        // Snap to destination if we're close enough
+                        lineCurrentEnd = destination.clone()
+                    }
+
+                    // Draw line from snowball to the current extended endpoint
+                    val start = snowball.location.clone()
+                    Particles.line(start, lineCurrentEnd!!, 0.45, rayTraceParticle)
+
+                    start.sync {
+                        val direction = lineCurrentEnd!!.clone().subtract(start).toVector().normalize()
+                        val distanceToEnd = start.distance(lineCurrentEnd!!)
+                        raytrace(start, direction, distanceToEnd, getPredicate(player))
+                    }
+                }
             }
         }
 
@@ -584,7 +595,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
 
             if (hitEntity is LivingEntity) {
-                if (!AbilityUtil.noDamagePermission(player, hitEntity)) {
+                if (AbilityUtil.noDamagePermission(player, hitEntity)) {
                     this.despawn()
                     return
                 }
