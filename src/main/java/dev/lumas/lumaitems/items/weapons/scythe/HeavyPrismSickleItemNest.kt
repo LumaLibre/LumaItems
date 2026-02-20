@@ -14,6 +14,7 @@ import dev.lumas.lumaitems.util.PacketGlowColors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.canDamage
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
@@ -29,6 +30,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -476,8 +478,8 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
         fun move() { //
             var smallCount = 40
-            snowball.syncTimer(0, 1) { task ->
-                if (snowball.isDead) {
+            snowball.location.syncTimer(0, 1) { task ->
+                if (!snowball.isValid || snowball.isDead) {
                     if (valid) {
                         createSnowball(snowball.location)
                     } else {
@@ -595,7 +597,7 @@ class HeavyPrismSickleItem : CustomItemFunctions() {
 
 
             if (hitEntity is LivingEntity) {
-                if (AbilityUtil.noDamagePermission(player, hitEntity)) {
+                if (!player.canDamage(hitEntity)) {
                     this.despawn()
                     return
                 }
