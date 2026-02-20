@@ -24,6 +24,7 @@ import org.bukkit.event.block.EntityBlockFormEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
+import org.bukkit.event.entity.EntityExhaustionEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
 import org.bukkit.event.entity.EntityResurrectEvent
@@ -132,6 +133,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ITEM_MERGE -> onItemMerge(player, event as ItemMergeEvent)
             Action.MCMMO_TREE_FELLER_DESTROY_TREE -> onMcMMOTreeFellerDestroyTree(player, event as TreeFellerDestroyTreeEvent)
             Action.PLAYER_RESURRECT -> onPlayerResurrect(player, event as EntityResurrectEvent)
+            Action.ENTITY_EXHAUSTION -> onEntityExhaustion(player, event as EntityExhaustionEvent)
         }
         return true
     }
@@ -202,6 +204,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onItemMerge(player: Player, event: ItemMergeEvent) {}
     open fun onMcMMOTreeFellerDestroyTree(player: Player, event: TreeFellerDestroyTreeEvent) {}
     open fun onPlayerResurrect(player: Player, event: EntityResurrectEvent) {}
+    open fun onEntityExhaustion(player: Player, event: EntityExhaustionEvent) {}
 
 
     // FIXME: Optimize this with a static map in a companion object?

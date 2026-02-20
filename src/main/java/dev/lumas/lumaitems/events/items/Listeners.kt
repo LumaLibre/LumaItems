@@ -29,6 +29,7 @@ import org.bukkit.event.block.EntityBlockFormEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
+import org.bukkit.event.entity.EntityExhaustionEvent
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.entity.EntityPotionEffectEvent
 import org.bukkit.event.entity.EntityResurrectEvent
@@ -516,5 +517,12 @@ class Listeners : ItemListener() {
     fun onPlayerResurrect(event: EntityResurrectEvent) {
         val player = event.entity as? Player ?: return
         fire(player.equipmentContainers(), Action.PLAYER_RESURRECT, player, event)
+    }
+
+    @AllSlots
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onEntityExhaustion(event: EntityExhaustionEvent) {
+        val player = event.entity as? Player ?: return
+        fire(Util.getAllEquipmentNBT(player), Action.ENTITY_EXHAUSTION, player, event)
     }
 }
