@@ -40,8 +40,10 @@ import org.bukkit.event.entity.ItemMergeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
+import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
+import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
@@ -433,12 +435,13 @@ class Listeners : ItemListener() {
         fire(event.item.itemStack.persistentDataContainer, Action.HOPPER_PICKUP_ITEM, null, event)
     }
 
-    //@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onInventoryClickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
-        val datas = Util.getAllEquipmentNBT(player)
-
-        fire(datas, Action.INVENTORY_CLICK, player, event)
+        val data = mutableListOf<PersistentDataContainer>()
+        event.currentItem?.itemMeta?.persistentDataContainer.let { data.add(it ?: return) }
+        event.cursor.itemMeta?.persistentDataContainer.let { data.add(it ?: return) }
+        fire(data, Action.INVENTORY_CLICK, player, event)
     }
 
     @EventHandler
@@ -524,5 +527,23 @@ class Listeners : ItemListener() {
     fun onEntityExhaustion(event: EntityExhaustionEvent) {
         val player = event.entity as? Player ?: return
         fire(Util.getAllEquipmentNBT(player), Action.ENTITY_EXHAUSTION, player, event)
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onPrepareCraft(event: PrepareItemCraftEvent) {
+        val player = event.view.player as? Player ?: return
+        val datas = event.inventory.matrix
+            .mapNotNull { it?.itemMeta?.persistentDataContainer }
+            .ifEmpty { return }
+        fire(datas, Action.PREPARE_CRAFT, player, event)
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onCraftItem(event: CraftItemEvent) {
+        val player = event.whoClicked as? Player ?: return
+        val datas = event.inventory.matrix
+            .mapNotNull { it?.itemMeta?.persistentDataContainer }
+            .ifEmpty { return }
+        fire(datas, Action.CRAFT_ITEM, player, event)
     }
 }

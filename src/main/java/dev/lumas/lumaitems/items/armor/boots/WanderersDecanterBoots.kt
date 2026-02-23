@@ -49,10 +49,10 @@ class WanderersDecanterBoots : CustomItemFunctions() {
                 "Journeys leave more",
                 "than footprints.",
                 "",
-                "Walk or sprint to",
+                "<#A7DCEB>Walk</#A7DCEB> or <#A7DCEB>sprint</#A7DCEB> to",
                 "slowly condense your",
-                "<#F3E3B1>experience</#F3E3B1> into",
-                "<#A7DCEB>XP bottles</#A7DCEB>."
+                "experience into",
+                "XP bottles."
             )
             .vanillaEnchants(
                 // Max vanilla-ish enchantments (not all of them)

@@ -1,7 +1,5 @@
 package dev.lumas.lumaitems.items.misc
 
-import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.MiniMessageUtil
@@ -33,7 +31,7 @@ class RecallCompass : CustomItemFunctions() {
                 "",
                 "<#D7C2F2>Shift + Right-Click</#D7C2F2>",
                 "to recall to your",
-                "<#F4B6C2>spawnpoint</#F4B6C2>."
+                "spawnpoint."
             )
             .tier(Tier.VALENTIDE_2026)
             .persistentData(key)

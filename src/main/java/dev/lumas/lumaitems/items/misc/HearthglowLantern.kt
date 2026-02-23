@@ -41,7 +41,7 @@ class HearthglowLantern : CustomItemFunctions() {
                 "",
                 "While held, nearby entities",
                 "within <#F1C48D>5 blocks</#F1C48D> begin to",
-                "<#F7B6A6>glow</#F7B6A6> softly."
+                "glow softly."
             )
             .buildPair()
     }

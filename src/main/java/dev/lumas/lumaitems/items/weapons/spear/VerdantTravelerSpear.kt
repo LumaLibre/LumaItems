@@ -29,7 +29,7 @@ class VerdantTravelerSpear : CustomItemFunctions() {
                 "not the destination.",
                 "",
                 "Lunge forward without",
-                "draining your <#F3E3B1>hunger</#F3E3B1>."
+                "draining your hunger."
             )
             .vanillaEnchants(
                 // Max VANILLA enchants, no more

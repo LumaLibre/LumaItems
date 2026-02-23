@@ -35,8 +35,10 @@ import org.bukkit.event.entity.ItemMergeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
+import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
+import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
@@ -134,6 +136,8 @@ abstract class CustomItemFunctions : CustomItem {
             Action.MCMMO_TREE_FELLER_DESTROY_TREE -> onMcMMOTreeFellerDestroyTree(player, event as TreeFellerDestroyTreeEvent)
             Action.PLAYER_RESURRECT -> onPlayerResurrect(player, event as EntityResurrectEvent)
             Action.ENTITY_EXHAUSTION -> onEntityExhaustion(player, event as EntityExhaustionEvent)
+            Action.PREPARE_CRAFT -> onPrepareCraft(player, event as PrepareItemCraftEvent)
+            Action.CRAFT_ITEM -> onCraftItem(player, event as CraftItemEvent)
         }
         return true
     }
@@ -205,6 +209,8 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onMcMMOTreeFellerDestroyTree(player: Player, event: TreeFellerDestroyTreeEvent) {}
     open fun onPlayerResurrect(player: Player, event: EntityResurrectEvent) {}
     open fun onEntityExhaustion(player: Player, event: EntityExhaustionEvent) {}
+    open fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {}
+    open fun onCraftItem(player: Player, event: CraftItemEvent) {}
 
 
     // FIXME: Optimize this with a static map in a companion object?

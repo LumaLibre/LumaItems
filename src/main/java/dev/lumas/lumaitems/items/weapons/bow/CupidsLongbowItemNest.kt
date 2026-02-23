@@ -25,7 +25,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-abstract class HeartstringBowItemNest : CustomItemFunctions() {
+abstract class CupidsLongbowItemNest : CustomItemFunctions() {
 
     companion object {
         private val KEY = Util.namespacedKey("cupids-longbow")
@@ -37,7 +37,7 @@ abstract class HeartstringBowItemNest : CustomItemFunctions() {
     protected val base = ItemFactory.builder()
         .persistentData(KEY)
         .tier(Tier.VALENTIDE_2026)
-        .customEnchants("<gradient:#F6C1D1:#E8B7E8:#D7C2F2:#F4B6C2>Attraction</gradient>")
+        .customEnchants("<gradient:#E85C6F:#F29AA8:#F59CAB:#F07A8A>Attraction</gradient>")
         .lore(
             "Love pulls gently,",
             "but surely.",
@@ -127,10 +127,10 @@ abstract class HeartstringBowItemNest : CustomItemFunctions() {
 
 @Disable(WorldName.PINATA)
 @FireAnyways(Action.PROJECTILE_LAND)
-class HeartstringBow : HeartstringBowItemNest() {
+class CupidsLongbow : CupidsLongbowItemNest() {
     override fun createItem(): Pair<String, ItemStack> {
         return base
-            .name("<b><gradient:#F6C1D1:#E8B7E8:#D7C2F2:#F4B6C2>Cupid's Longbow</gradient></b>")
+            .name("<b><gradient:#E85C6F:#F29AA8:#F59CAB:#F07A8A>Cupid's Longbow</gradient></b>")
             .material(Material.BOW)
             .vanillaEnchants(
                 Enchantment.UNBREAKING to 5,

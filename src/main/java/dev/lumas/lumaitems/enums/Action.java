@@ -84,6 +84,8 @@ public enum Action {
     ITEM_MERGE, // When an item with specific persistent data merges with another item
     PLAYER_RESURRECT, // When a player is resurrected (e.g. from a totem of undying) while wearing specific nbt
     ENTITY_EXHAUSTION, // When a player gains exhaustion (hunger drain)
+    PREPARE_CRAFT, // When crafting grid updates (preview result)
+    CRAFT_ITEM, // When the player takes the crafted item
 
     ;
 
