@@ -23,10 +23,12 @@ class WanderersDecanterBoots : CustomItemFunctions() {
 
     companion object {
         private val KEY = Util.namespacedKey("wanderers-decanter-boots")
+        val BOTTLE = ItemStack(Material.EXPERIENCE_BOTTLE, 1)
 
         private const val XP_COST_PER_BOTTLE = 8
         private const val WALK_BLOCKS_PER_BOTTLE = 32.0
         private const val SPRINT_BLOCKS_PER_BOTTLE = 24.0
+
 
         private data class WalkState(
             var lastX: Double,
@@ -66,43 +68,47 @@ class WanderersDecanterBoots : CustomItemFunctions() {
             .buildPair()
     }
 
+    // TODO: This is doing too many operations in onMove. onMove is pretty hot and
+    //   sqrt() shouldnt be called in it
     override fun onMove(player: Player, event: PlayerMoveEvent) {
+        if (true) return // TODO temporarily disabled because of the sqrt() in this hot method
+
+        if (!event.hasExplicitlyChangedBlock()) return
+
         val to = event.to
         val from = event.from
 
-        // Don't process movement unless the player has moved from one block to another
-        if (to.blockX == from.blockX && to.blockZ == from.blockZ) return
-
+        // TODO unnecessary overhead, we're in onMove()
+        //  -> If you want to do these checks this should/can be moved to another thread
         val boots = player.inventory.boots
         if (boots == null || !boots.isMatchingItem(KEY)) {
             STATE.remove(player.uniqueId)
             return
         }
 
-        if (!player.isOnline) return
+        // same as comment above
         if (player.gameMode == GameMode.CREATIVE || player.gameMode == GameMode.SPECTATOR) {
             STATE.remove(player.uniqueId)
             return
         }
 
-        if (player.isGliding) return
-        if (player.allowFlight && player.isFlying) return
-        if (player.isInsideVehicle) return
-        if (to.block.isLiquid) return
+        if (player.isGliding || player.isFlying || player.isInsideVehicle || player.isInWater) return
+
 
         val dx = to.x - from.x
         val dz = to.z - from.z
-        val hDist = sqrt(dx * dx + dz * dz)
-        if (hDist < 0.02) return
-        if (hDist > 1.2) return
+        val hDist = sqrt(dx * dx + dz * dz) // TODO expensive
+        if (hDist < 0.02) return // TODO can be constant because this feels like a magic number (i dont know what this means)
+        if (hDist > 1.2) return // TODO can be constant
 
         val id = player.uniqueId
+        // TODO maybe unnecessary overhead
         val st = STATE.getOrPut(id) { WalkState(to.x, to.y, to.z, 0.0) }
 
         val rx = to.x - st.lastX
         val rz = to.z - st.lastZ
-        val resyncDist = sqrt(rx * rx + rz * rz)
-        if (resyncDist > 6.0) {
+        val resyncDist = sqrt(rx * rx + rz * rz) // TODO expensive
+        if (resyncDist > 6.0) { // TODO can be constant
             st.lastX = to.x
             st.lastY = to.y
             st.lastZ = to.z
@@ -118,7 +124,7 @@ class WanderersDecanterBoots : CustomItemFunctions() {
 
         val blocksPerBottle = if (player.isSprinting) SPRINT_BLOCKS_PER_BOTTLE else WALK_BLOCKS_PER_BOTTLE
 
-        while (st.accum >= blocksPerBottle) {
+        while (st.accum >= blocksPerBottle) { // TODO can this be a for loop?
             if (!tryConvertOneBottle(player)) break
             st.accum -= blocksPerBottle
         }
@@ -128,12 +134,7 @@ class WanderersDecanterBoots : CustomItemFunctions() {
         if (player.totalExperience < XP_COST_PER_BOTTLE) return false
 
         player.giveExp(-XP_COST_PER_BOTTLE)
-
-        val bottle = ItemStack(Material.EXPERIENCE_BOTTLE, 1)
-        val leftover = player.inventory.addItem(bottle)
-        if (leftover.isNotEmpty()) {
-            player.world.dropItemNaturally(player.location, bottle)
-        }
+        player.give(BOTTLE)
         return true
     }
 

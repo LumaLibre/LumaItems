@@ -1,9 +1,11 @@
 package dev.lumas.lumaitems.items.misc.nests
 
+import com.destroystokyo.paper.MaterialTags
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.formatSnakeCase
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -77,8 +79,10 @@ abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFun
         private val KEY = Util.namespacedKey("conversion-bundle")
         private val WOOD_KEY = Util.namespacedKey("conversion-bundle-wood")
 
+        // TODO use enum
+        // TODO bamboo
         private val ALLOWED_PREFIXES = setOf(
-            "oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak"
+            "oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "bamboo"
         )
         private val SUFFIXES = listOf(
             "log", "wood",
@@ -146,7 +150,7 @@ abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFun
             val base = target.hexColor
             val dark = adjustHex(base, 0.85)
             val bright = adjustHex(base, 1.15)
-            return "<b><gradient:#$dark:#$bright:#$dark:#$bright>${target.pretty} Reformation Pouch</gradient></b>"
+            return "<b><gradient:#$dark:#$bright:#$dark:#$bright>Reformation Pouch</gradient></b>"
         }
 
         private fun clamp255(v: Int) = v.coerceIn(0, 255)
@@ -173,7 +177,7 @@ abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFun
             .customEnchants("<#${target.hexColor}>Conversion")
             .vanillaEnchants(Enchantment.UNBREAKING to 5)
             .hideEnchants(true)
-            .material(Material.BROWN_BUNDLE)
+            .material(target.bundle)
             .persistentData(KEY)
             .persistentDataRecords(
                 PersistentDataRecord.create(
@@ -257,20 +261,20 @@ abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFun
 
     enum class WoodSet(
         val id: String,
-        val pretty: String,
+        val bundle: Material,
         val hexColor: String,
         val leaves: Material,
         val sapling: Material
     ) {
-        OAK("oak", "Oak", "BA8B41", Material.OAK_LEAVES, Material.OAK_SAPLING),
-        SPRUCE("spruce", "Spruce", "825927", Material.SPRUCE_LEAVES, Material.SPRUCE_SAPLING),
-        BIRCH("birch", "Birch", "CDB768", Material.BIRCH_LEAVES, Material.BIRCH_SAPLING),
-        JUNGLE("jungle", "Jungle", "B67747", Material.JUNGLE_LEAVES, Material.JUNGLE_SAPLING),
-        ACACIA("acacia", "Acacia", "C15921", Material.ACACIA_LEAVES, Material.ACACIA_SAPLING),
-        DARK_OAK("dark_oak", "Dark Oak", "502E0F", Material.DARK_OAK_LEAVES, Material.DARK_OAK_SAPLING),
-        MANGROVE("mangrove", "Mangrove", "86352F", Material.MANGROVE_LEAVES, Material.MANGROVE_PROPAGULE),
-        CHERRY("cherry", "Cherry", "F3B8B0", Material.CHERRY_LEAVES, Material.CHERRY_SAPLING),
-        PALE_OAK("pale_oak", "Pale Oak", "E8E3E0", Material.PALE_OAK_LEAVES, Material.PALE_OAK_SAPLING)
+        OAK("oak", Material.BROWN_BUNDLE, "BA8B41", Material.OAK_LEAVES, Material.OAK_SAPLING),
+        SPRUCE("spruce", Material.BUNDLE, "825927", Material.SPRUCE_LEAVES, Material.SPRUCE_SAPLING),
+        BIRCH("birch", Material.LIGHT_GRAY_BUNDLE, "CDB768", Material.BIRCH_LEAVES, Material.BIRCH_SAPLING),
+        JUNGLE("jungle", Material.BROWN_BUNDLE, "B67747", Material.JUNGLE_LEAVES, Material.JUNGLE_SAPLING),
+        ACACIA("acacia", Material.ORANGE_BUNDLE, "C15921", Material.ACACIA_LEAVES, Material.ACACIA_SAPLING),
+        DARK_OAK("dark_oak", Material.BLACK_BUNDLE, "502E0F", Material.DARK_OAK_LEAVES, Material.DARK_OAK_SAPLING),
+        MANGROVE("mangrove", Material.RED_BUNDLE, "86352F", Material.MANGROVE_LEAVES, Material.MANGROVE_PROPAGULE),
+        CHERRY("cherry", Material.PINK_BUNDLE, "F3B8B0", Material.CHERRY_LEAVES, Material.CHERRY_SAPLING),
+        PALE_OAK("pale_oak", Material.WHITE_BUNDLE, "E8E3E0", Material.PALE_OAK_LEAVES, Material.PALE_OAK_SAPLING)
     }
 
     override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
@@ -311,8 +315,7 @@ abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFun
         return out
     }
 
-    // No Tag.DYES or similar, it seems
-    private fun Material.isDye(): Boolean = this.name.endsWith("_DYE")
+    private fun Material.isDye(): Boolean = MaterialTags.DYES.isTagged(this)
 
     private fun Material.toBundleMaterial(): Material? {
         if (!isDye()) return null

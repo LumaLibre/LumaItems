@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.shapes.ShapeUtil
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -38,7 +39,7 @@ class BlueGarnetMattockItem : CustomItem {
                 val b = event.block
 
                 val blocklist = ShapeUtil.getCuboidBlocks(b.location.add(1.0, 1.0, 1.0), b.location.add(-1.0, -1.0, -1.0)).filter {
-                    !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid
+                    !Kind.BLACKLIST.isTagged(it.type) && it.isSolid
                 }
 
 

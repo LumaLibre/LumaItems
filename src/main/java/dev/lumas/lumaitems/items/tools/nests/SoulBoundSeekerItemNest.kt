@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.model.MultiPlayerCustomItem
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.shapes.Sphere
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.QuickTasks
@@ -140,7 +141,7 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val type = event.block.type
-        if (!BlockConstants.ORES.contains(type) || !isBondedPlayerOnline(player)) {
+        if (!Kind.INCLUSIVE_ORES.isTagged(type) || !isBondedPlayerOnline(player)) {
             return // Fast checks
         }
         val blocks = Sphere(event.block.location, 9.0, 20.0).sphere

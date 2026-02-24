@@ -15,9 +15,6 @@ import org.bukkit.inventory.ItemStack
 val BLOCK_FACE_RELATIVES = listOf(BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST)
 
 fun Block.getOreColor(): Color? {
-    if (!BlockConstants.ORES.contains(this.type)) {
-        return null
-    }
     val parts = this.type.name.split('_')
     val gem = when (parts.size) {
         3 -> parts[1]

@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.function.Consumer
 import org.bukkit.Color
@@ -62,7 +63,7 @@ class PeepPlushyMattockItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
-        if (!BlockConstants.ORES.contains(block.type)) return
+        if (!Kind.INCLUSIVE_ORES.isTagged(block.type)) return
         val chance = random().nextInt(100)
         if (chance > 24) {
             return

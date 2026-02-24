@@ -54,9 +54,7 @@ class UnnamedBubbleItem : CustomItemFunctions() {
 
     override fun asyncGlobalTask() {
         val players = instance().server.onlinePlayers.filter {
-            it.sync {
-                Util.isItemInSlot(nameSpace, EquipmentSlot.HAND, it)
-            }
+            Util.isItemInSlot(nameSpace, EquipmentSlot.HAND, it) // todo maybe not folia safe
         }
         // destroy and remove groups for players that are not in ths list
         processes.keys.filter { it !in players.map { p -> p.uniqueId } }.forEach { uuid ->

@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.tools.spade
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -38,7 +39,7 @@ class CrystallineSpadeItem : CustomItemFunctions() {
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
         if (block.type == Material.GRAVEL || block.type == Material.CLAY) {
-            block.world.dropItemNaturally(block.location, ItemStack(BlockConstants.COLORED_GLASS.materials.random()))
+            block.world.dropItemNaturally(block.location, ItemStack(Kind.COLORED_GLASS.values.random()))
             event.isDropItems = false
         }
     }

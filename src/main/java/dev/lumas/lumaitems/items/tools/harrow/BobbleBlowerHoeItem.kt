@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
@@ -146,7 +147,7 @@ class BobbleBlowerHoeItem : CustomItemFunctions() {
             7.0,
             FluidCollisionMode.NEVER,
             false
-        ) { b -> BlockConstants.CROPS.contains(b.type) }
+        ) { b -> Kind.CROPS.isTagged(b.type) }
         val hitBlock = raytrace?.hitBlock ?: return
         if (!AbilityUtil.noBuildPermission(player, hitBlock)) {
             val item = player.inventory.itemInMainHand

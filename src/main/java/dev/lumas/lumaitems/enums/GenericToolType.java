@@ -4,46 +4,35 @@ import org.bukkit.Material;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.Nullable;
 
+import static dev.lumas.lumaitems.enums.ToolType.*;
+
 import java.util.List;
 
 // Enum for generic tooltypes
 public enum GenericToolType {
-    ARMOR(List.of("HELMET", "CHESTPLATE", "LEGGINGS", "BOOTS")),
-    WEAPON(List.of("SWORD", "AXE", "BOW", "CROSSBOW", "TRIDENT", "SHIELD", "MACE")),
-    TOOL(List.of("PICKAXE", "AXE", "SHOVEL", "HOE", "ROD"));
 
-    private final List<String> gearType;
+    ARMOR(HELMET, CHESTPLATE, LEGGINGS, BOOTS),
+    WEAPON(SWORD, SPEAR, AXE, BOW, CROSSBOW, TRIDENT, SHIELD, MACE),
+    TOOL(PICKAXE, AXE, SHOVEL, HOE, FISHING_ROD);
 
-    GenericToolType(List<String> list) {
-        this.gearType = list;
+    private final List<ToolType> toolTypes;
+
+    GenericToolType(ToolType... array) {
+        this.toolTypes = List.of(array);
     }
 
-    public List<String> getGearTypes() {
-        return gearType;
-    }
-
-    public static List<String> getArmorStrings() {
-        return ARMOR.getGearTypes();
-    }
-
-    public static List<String> getWeaponStrings() {
-        return WEAPON.getGearTypes();
-    }
-
-    public static List<String> getToolStrings() {
-        return TOOL.getGearTypes();
+    public List<ToolType> getToolTypes() {
+        return toolTypes;
     }
 
     @Nullable
     public static GenericToolType getGenericToolType(Material material) {
-        for (String string :  GenericToolType.getArmorStrings()) {
-            if (material.toString().contains(string)) return GenericToolType.ARMOR;
-        }
-        for (String string :  GenericToolType.getToolStrings()) {
-            if (material.toString().contains(string)) return GenericToolType.TOOL;
-        }
-        for (String string :  GenericToolType.getWeaponStrings()) {
-            if (material.toString().contains(string)) return GenericToolType.WEAPON;
+        for (GenericToolType genericToolType : GenericToolType.values()) {
+            for (ToolType toolType : genericToolType.getToolTypes()) {
+                if (toolType.is(material)) {
+                    return genericToolType;
+                }
+            }
         }
         return null;
     }

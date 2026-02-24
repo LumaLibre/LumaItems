@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.items.tools.nests
 
+import com.destroystokyo.paper.MaterialTags
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
@@ -10,6 +11,7 @@ import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.random
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
@@ -37,7 +39,6 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
 
     companion object {
         private val REGEX = Regex(".*_DYE")
-        private val DYES = Material.entries.filter { it.name.matches(REGEX) }
         private val COLORS = listOf("#feb17d", "#f9ce90", "#f9f2db", "#b8d1c0", "#af97c7", "#ed9bb0")
             .map { Color.decode(it) }
         private val ACTIVATOR_KEY = Util.namespacedKey("equinox-nest-activator")
@@ -200,7 +201,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
                 if (seed) {
                     Util.setPersistentKey(ball, ACTIVATOR_KEY, PersistentDataType.BOOLEAN, true)
                 } else {
-                    ball.item = ItemStack(DYES.random())
+                    ball.item = ItemStack(MaterialTags.DYES.random())
                 }
 
                 Util.setPersistentKey(ball, key, PersistentDataType.SHORT, 1)

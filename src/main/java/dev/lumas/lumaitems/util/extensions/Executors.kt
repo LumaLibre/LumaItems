@@ -11,40 +11,46 @@ import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 
-fun Entity.sync(runnable: Runnable): Boolean {
-    return this.scheduler.execute(LumaItems.getInstance(), runnable, null, 1)
+val FOLIA = classExists("io.papermc.paper.threadedregions.RegionizedServer")
+
+private fun Long.coerce(): Long {
+    return if (this < 1 && FOLIA) 1 else this
 }
 
-fun Location.sync(runnable: Runnable) {
-    Bukkit.getRegionScheduler().execute(LumaItems.getInstance(), this, runnable)
+fun Entity.sync(runnable: Runnable): ScheduledTask? {
+    return this.scheduler.run(LumaItems.getInstance(), { runnable.run() }, null)
 }
 
-fun Block.sync(runnable: Runnable) {
-    Bukkit.getRegionScheduler().execute(LumaItems.getInstance(), this.location, runnable)
+fun Location.sync(runnable: Runnable): ScheduledTask {
+    return Bukkit.getRegionScheduler().run(LumaItems.getInstance(), this) { runnable.run() }
+}
+
+fun Block.sync(runnable: Runnable): ScheduledTask {
+    return Bukkit.getRegionScheduler().run(LumaItems.getInstance(), this.location) { runnable.run() }
 }
 
 fun Entity.syncTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
-    return this.scheduler.runAtFixedRate(LumaItems.getInstance(), runnable, null, delay.coerceAtLeast(1), period)
+    return this.scheduler.runAtFixedRate(LumaItems.getInstance(), runnable, null, delay.coerce(), period)
 }
 
 fun Collection<Entity>.syncTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
     return if (this.isEmpty()) {
         null
     } else {
-        this.first().scheduler.runAtFixedRate(LumaItems.getInstance(), runnable, null, delay.coerceAtLeast(1), period)
+        this.first().scheduler.runAtFixedRate(LumaItems.getInstance(), runnable, null, delay.coerce(), period)
     }
 }
 
 fun Location.syncTimer(delay: Long, period: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
-    return Bukkit.getRegionScheduler().runAtFixedRate(LumaItems.getInstance(), this, runnable, delay.coerceAtLeast(1), period)
+    return Bukkit.getRegionScheduler().runAtFixedRate(LumaItems.getInstance(), this, runnable, delay.coerce(), period)
 }
 
 fun Entity.syncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask? {
-    return this.scheduler.runDelayed(LumaItems.getInstance(), runnable, null, delay)
+    return this.scheduler.runDelayed(LumaItems.getInstance(), runnable, null, delay.coerce())
 }
 
 fun Location.syncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
-    return Bukkit.getRegionScheduler().runDelayed(LumaItems.getInstance(), this, runnable, delay)
+    return Bukkit.getRegionScheduler().runDelayed(LumaItems.getInstance(), this, runnable, delay.coerce())
 }
 
 
@@ -107,7 +113,26 @@ object Executors {
         }, delay, timeUnit)
     }
 
+    @JvmStatic
+    fun global(runnable: Runnable): ScheduledTask {
+        return Bukkit.getGlobalRegionScheduler().run(LumaItems.getInstance()) { runnable.run() }
+    }
+
+    @JvmStatic
+    fun globalTimer(delay: Long, period: Long, consumer: Consumer<ScheduledTask>): ScheduledTask {
+        return Bukkit.getGlobalRegionScheduler().runAtFixedRate(LumaItems.getInstance(), consumer, delay.coerce(), period.coerce())
+    }
+
+    @JvmStatic
+    fun globalDelayed(delay: Long, consumer: Consumer<ScheduledTask>): ScheduledTask {
+        return Bukkit.getGlobalRegionScheduler().runDelayed(LumaItems.getInstance(), consumer, delay.coerce())
+    }
+
     fun <T> (() -> T).async(): ScheduledTask {
         return async { this() }
+    }
+
+    fun <T> (() -> T).global(): ScheduledTask {
+        return global { this() }
     }
 }

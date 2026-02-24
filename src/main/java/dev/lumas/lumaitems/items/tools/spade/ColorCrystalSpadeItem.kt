@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.util.Kind
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -34,7 +35,7 @@ class ColorCrystalSpadeItem : CustomItem {
                 event as BlockBreakEvent
                 val block = event.block
                 if (block.type == Material.SAND || block.type == Material.RED_SAND) {
-                    block.world.dropItemNaturally(block.location, ItemStack(BlockConstants.COLORED_GLASS.materials.random()))
+                    block.world.dropItemNaturally(block.location, ItemStack(Kind.COLORED_GLASS.values.random()))
                     event.isDropItems = false
                 }
             }

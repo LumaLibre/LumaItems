@@ -2,6 +2,7 @@
 package dev.lumas.lumaitems.model
 
 import io.papermc.paper.datacomponent.DataComponentType
+import java.util.function.Consumer
 
 abstract class PaperDataComponent {
     companion object {

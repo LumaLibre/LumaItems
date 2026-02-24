@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
@@ -114,7 +115,7 @@ class HailstormShovelItem : CustomItemFunctions() {
 
         val block = event.hitBlock ?: return
 
-        if (!block.isPreferredTool(SHOVEL_ITEM_STACK) || BlockConstants.BLACKLISTED.contains(block.type) || AbilityUtil.noBuildPermission(player, block)) {
+        if (!block.isPreferredTool(SHOVEL_ITEM_STACK) || Kind.BLACKLIST.isTagged(block.type) || AbilityUtil.noBuildPermission(player, block)) {
             return
         }
 

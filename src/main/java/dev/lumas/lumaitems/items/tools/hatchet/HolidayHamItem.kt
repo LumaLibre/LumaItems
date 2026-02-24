@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
@@ -74,7 +75,7 @@ class HolidayHamItem : CustomItemFunctions() {
             return
         }
         val sphere = Sphere(loc, 6.0, 11.0).sphere.filter {
-            !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid
+            !Kind.BLACKLIST.isTagged(it.type) && it.isSolid
         }
         for (block in sphere) {
             block.breakNaturallyWithLog(player)

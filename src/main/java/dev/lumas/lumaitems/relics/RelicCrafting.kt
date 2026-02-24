@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFunctions
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -72,9 +73,16 @@ object RelicCrafting {
         val astralKey = NamespacedKey(plugin, "astralorb")
         val upgradeCoreKey = NamespacedKey(plugin, "astralupgradecore")
 
-        if (Bukkit.getRecipe(lunarKey) != null) Bukkit.removeRecipe(lunarKey)
-        if (Bukkit.getRecipe(astralKey) != null) Bukkit.removeRecipe(astralKey)
-        if (Bukkit.getRecipe(upgradeCoreKey) != null) Bukkit.removeRecipe(upgradeCoreKey)
+        if (Bukkit.getRecipe(lunarKey) != null) {
+            Executors.global { Bukkit.removeRecipe(lunarKey) }
+
+        }
+        if (Bukkit.getRecipe(astralKey) != null) {
+            Executors.global { Bukkit.removeRecipe(astralKey) }
+        }
+        if (Bukkit.getRecipe(upgradeCoreKey) != null) {
+            Executors.global { Bukkit.removeRecipe(upgradeCoreKey) }
+        }
 
 
         val lunarRecipe = ShapedRecipe(lunarKey, lunarOrb)
@@ -84,7 +92,7 @@ object RelicCrafting {
             "AAA")
         lunarRecipe.setIngredient('A', relicShard)
         lunarRecipe.setIngredient('B', lunarCore)
-        Bukkit.addRecipe(lunarRecipe)
+        Executors.global { Bukkit.addRecipe(lunarRecipe) }
 
         val astralRecipe = ShapedRecipe(astralKey, astralOrb)
         astralRecipe.shape(
@@ -93,7 +101,7 @@ object RelicCrafting {
             "AAA")
         astralRecipe.setIngredient('A', relicShard)
         astralRecipe.setIngredient('B', astralCore)
-        Bukkit.addRecipe(astralRecipe)
+        Executors.global { Bukkit.addRecipe(astralRecipe) }
 
         val upgradeCoreRecipe = ShapedRecipe(upgradeCoreKey, astralUpgradeCore)
         upgradeCoreRecipe.shape(
@@ -101,7 +109,7 @@ object RelicCrafting {
             "ABA",
             "AAA")
         upgradeCoreRecipe.setIngredient('A', relicShard)
-        Bukkit.addRecipe(upgradeCoreRecipe)
+        Executors.global { Bukkit.addRecipe(upgradeCoreRecipe) }
     }
 
     //TODO

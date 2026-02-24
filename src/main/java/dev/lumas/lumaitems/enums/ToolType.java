@@ -17,6 +17,7 @@ public enum ToolType {
     LEGGINGS,
     BOOTS,
     SWORD,
+    SPEAR,
     PICKAXE,
     AXE,
     SHOVEL,
@@ -31,6 +32,11 @@ public enum ToolType {
     MACE;
 
     public static final List<String> magicMaterials = List.of("BLAZE_ROD");
+
+
+    public boolean is(Material material) {
+        return getToolType(material) == this;
+    }
 
     @Nullable
     public static ToolType getToolType(ItemStack item) {

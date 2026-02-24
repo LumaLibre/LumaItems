@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Ellipsoid
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -66,7 +67,7 @@ class BigSwingSpadeItem : CustomItemFunctions() {
 
 
         val ellipsoidBlocks = Ellipsoid.getEllipsoid(block.location, xRadius, 2.0, zRadius).filter {
-            !BlockConstants.BLACKLISTED.contains(it.type) && it.isSolid && it != block && Tag.MINEABLE_SHOVEL.isTagged(it.type)
+            !Kind.BLACKLIST.isTagged(it.type) && it.isSolid && it != block && Tag.MINEABLE_SHOVEL.isTagged(it.type)
         }
         for (block in ellipsoidBlocks) {
             block.breakNaturallyWithLog(player, item, true)

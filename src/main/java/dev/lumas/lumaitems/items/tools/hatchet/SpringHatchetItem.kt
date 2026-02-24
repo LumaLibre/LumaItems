@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.tools.hatchet
 import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -39,7 +40,7 @@ class SpringHatchetItem : CustomItemFunctions() {
             return
         }
         val block = event.clickedBlock ?: return
-        if (!BlockConstants.GLASS.contains(block.type)) {
+        if (!Kind.GLASS_BLOCK.isTagged(block.type)) {
             return
         }
         player.breakBlock(block)

@@ -1,6 +1,8 @@
 @file:JvmName("ClassUtil")
 package dev.lumas.lumaitems.util.extensions
 
+import org.bukkit.Material
+
 fun classExists(className: String): Boolean {
     return try {
         Class.forName(className)
@@ -51,4 +53,8 @@ fun String.formatSnakeCase(): String {
 
 fun <E : Enum<E>> Enum<E>.formatEnumerator(): String {
     return this.name.formatSnakeCase()
+}
+
+fun String.material(): Material? {
+    return Material.getMaterial(this)
 }

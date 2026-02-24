@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
+import dev.lumas.lumaitems.util.Kind
 import java.util.Random
 import org.bukkit.Color
 import org.bukkit.Material
@@ -70,7 +71,7 @@ class SpellboundShattererItem : CustomItem {
 
         player.setMetadata("shattering", FixedMetadataValue(instance(), true))
         for (b in cuboid.blockList()) {
-            if (BlockConstants.BLACKLISTED.contains(b.type)) continue
+            if (Kind.BLACKLIST.isTagged(b.type)) continue
 
             if (Random().nextInt(50) <= 5) {
                 b.world.spawnParticle(Particle.DUST, block.location, 10, 0.5, 0.5, 0.5, 0.1, dustOptions.random())

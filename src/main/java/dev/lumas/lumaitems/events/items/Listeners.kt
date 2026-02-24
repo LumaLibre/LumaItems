@@ -167,6 +167,7 @@ class Listeners : ItemListener() {
         fire(data, Action.ENTITY_DAMAGE, player, event)
     }
 
+    @AllSlots
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPlayerDamagedByEntity(event: EntityDamageByEntityEvent) {
         val player: Player = event.entity as? Player ?: return
@@ -174,6 +175,7 @@ class Listeners : ItemListener() {
         fire(Util.getAllEquipmentNBT(player), Action.PLAYER_DAMAGED_BY_ENTITY, player, event)
     }
 
+    @AllSlots
     @EventHandler
     fun onEntityDamage(event: EntityDamageEvent) {
         val entity = event.entity

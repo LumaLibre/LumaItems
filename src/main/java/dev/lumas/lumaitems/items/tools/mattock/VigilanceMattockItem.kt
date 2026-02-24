@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.PacketGlowColors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.getOreColor
@@ -173,7 +174,7 @@ class VigilanceMattockItem : CustomItemFunctions() {
         val list = mutableListOf<DisplayableBlock>()
 
         cube.blockListConsumer { block ->
-            if (DISPLAYABLE_BLOCKS.none { it.isAtBlock(block) } && BlockConstants.ORES.contains(block.type)) {
+            if (DISPLAYABLE_BLOCKS.none { it.isAtBlock(block) } && Kind.INCLUSIVE_ORES.isTagged(block.type)) {
                 displayableBlock(block, player).let {
                     list.add(it)
                 }

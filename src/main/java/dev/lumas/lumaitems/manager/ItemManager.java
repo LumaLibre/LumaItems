@@ -114,6 +114,10 @@ public final class ItemManager {
                     CustomItem item = (CustomItem) clazz.getDeclaredConstructor().newInstance();
                     registerItem(item);
                 }
+            } catch (IllegalStateException e) {
+                LOGGER.error("Failed to register class " + clazz.getSimpleName(), e);
+                LOGGER.error("Zip file closed? Exiting early.");
+                break;
             } catch (Throwable e) {
                 LOGGER.error("Failed to register class " + clazz.getSimpleName(), e);
             }

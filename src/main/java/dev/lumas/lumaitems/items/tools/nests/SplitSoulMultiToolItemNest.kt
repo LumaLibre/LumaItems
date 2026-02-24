@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.dialogue.DialogueText
+import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.UUID
@@ -149,6 +150,8 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
 
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
         val item = player.inventory.itemInMainHand
+        if (!item.isMatchingItem(KEY)) return
+
         val (remove, add, level) = if (item.containsEnchantment(Enchantment.SILK_TOUCH)) {
             Triple(Enchantment.SILK_TOUCH, Enchantment.FORTUNE, 4)
         } else {

@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.isLocationOnGround
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -70,7 +71,7 @@ class AuraiGaleMattockItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val type = event.block.type
-        if (!BlockConstants.ORES.contains(type)) {
+        if (!Kind.INCLUSIVE_ORES.isTagged(type)) {
             return
         }
         val blocks = Sphere(event.block.location, 7.0).sphereFast

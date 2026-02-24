@@ -34,7 +34,7 @@ class MiniPoppyItem : CustomItemFunctions() {
                 "I wonder if holding it",
                 "does anything special?"
             )
-            .tier(Tier.VALENTIDE_2025)
+            .tier(Tier.VALENTIDE_2026) // valentide 2026
             .persistentData(key)
             .material(Material.POPPY)
             .attributeModifiers(

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * Use {@link org.bukkit.Tag}, {@link dev.lumas.lumaitems.util.Kind}, or {@link com.destroystokyo.paper.MaterialTags}
+ */
+@Deprecated(forRemoval = true)
 public enum BlockConstants {
 
     BLACKLISTED( ".*SHULKER_BOX|.*_SIGN",
@@ -13,7 +17,7 @@ public enum BlockConstants {
             Material.FURNACE, Material.BLAST_FURNACE, Material.SMOKER,
             Material.HOPPER, Material.BREWING_STAND, Material.DROPPER,
             Material.DISPENSER, Material.BEDROCK, Material.END_PORTAL_FRAME,
-            Material.SPAWNER, Material.COMMAND_BLOCK, Material.BARRIER,
+            Material.SPAWNER, Material.COMMAND_BLOCK, Material.REPEATING_COMMAND_BLOCK, Material.CHAIN_COMMAND_BLOCK, Material.BARRIER,
             Material.STRUCTURE_BLOCK, Material.JIGSAW, Material.END_GATEWAY,
             Material.BUDDING_AMETHYST, Material.FARMLAND, Material.DIRT_PATH,
             Material.END_PORTAL, Material.REINFORCED_DEEPSLATE, Material.TRIAL_SPAWNER,
@@ -40,7 +44,7 @@ public enum BlockConstants {
     ),
     CROPS(
             Material.WHEAT, Material.CARROTS, Material.POTATOES, Material.BEETROOTS,
-            Material.NETHER_WART, Material.COCOA, Material.SWEET_BERRIES, Material.SUGAR_CANE,
+            Material.NETHER_WART, Material.COCOA, Material.SWEET_BERRY_BUSH, Material.SUGAR_CANE,
             Material.MELON, Material.PUMPKIN, Material.KELP_PLANT
     )
     ;

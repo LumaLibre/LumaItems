@@ -39,7 +39,7 @@ dependencies {
     }
     compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
     compileOnly("io.lumine:Mythic-Dist:5.6.1")
-    compileOnly("dev.lumas.lumacore:LumaCore:d774bc6")
+    compileOnly("dev.lumas.lumacore:LumaCore:fe80018")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.047-CUSTOM") {
         isTransitive = false
     }

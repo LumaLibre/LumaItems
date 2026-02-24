@@ -30,6 +30,10 @@ interface CustomItem : RegistryItem {
         return Executors.async { block() }
     }
 
+    fun <T> global(block: () -> T): ScheduledTask {
+        return Executors.global { block() }
+    }
+
     /**
      * Called at startup to initialize and create each custom item
      * @return A pair of the item's nbt key and the itemstack

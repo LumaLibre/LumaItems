@@ -55,6 +55,7 @@ object Util {
 
     fun <E : Enum<E>> enumValueOfOrNull(enumClass: Class<E>, name: String) = name.asEnum(enumClass)
 
+    @JvmStatic
     fun namespacedKey(key: String) = key.namespacedKey()
     fun removePersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey) = persistentDataHolder.persistentDataContainer.remove(key)
     fun <P, C : Any> setPersistentKey(persistentDataHolder: PersistentDataHolder, key: NamespacedKey, dataType: PersistentDataType<P, C>, value: C) = persistentDataHolder.setPersistentKey(key, dataType, value)

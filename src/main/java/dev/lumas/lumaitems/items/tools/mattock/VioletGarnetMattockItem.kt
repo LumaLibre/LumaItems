@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.BLOCK_FACE_RELATIVES
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.determineHighestBreakSpeed
@@ -82,7 +83,7 @@ class VioletGarnetMattockItem : CustomItemFunctions() {
                 return@filter item.type == bestTool.type || EXCLUDED_COMPARABLE_BREAKSPEED_MATERIALS.contains(block.type)
             }
             .forEach { block ->
-                if (BlockConstants.BLACKLISTED.contains(block.type) || !block.isSolid) {
+                if (Kind.BLACKLIST.isTagged(block.type) || !block.isSolid) {
                     return@forEach
                 }
 

@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
@@ -79,7 +80,7 @@ class BlobbleHammerItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
-        if (!BlockConstants.ORES.contains(block.type)) {
+        if (!Kind.INCLUSIVE_ORES.isTagged(block.type)) {
             return
         }
         block.getDrops(HOLDER_PICKAXE_ITEM).ifEmpty { return }
@@ -95,7 +96,7 @@ class BlobbleHammerItem : CustomItemFunctions() {
         val hitBlockFace = event.hitBlockFace ?: return
 
         event.hitBlock?.let { hitBlock ->
-            if (hitBlock.isPreferredTool(HOLDER_PICKAXE_ITEM) && !BlockConstants.BLACKLISTED.contains(hitBlock.type) && !AbilityUtil.noBuildPermission(player, hitBlock)) {
+            if (hitBlock.isPreferredTool(HOLDER_PICKAXE_ITEM) && !Kind.BLACKLIST.isTagged(hitBlock.type) && !AbilityUtil.noBuildPermission(player, hitBlock)) {
                 val item = player.inventory.itemInMainHand
                 item.damage(1, player) // no direct reference for item damaging.
                 hitBlock.breakNaturallyWithLog(player, HOLDER_PICKAXE_ITEM, true, true)
