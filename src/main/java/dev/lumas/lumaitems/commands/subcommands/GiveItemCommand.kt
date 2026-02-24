@@ -56,6 +56,7 @@ class GiveItemCommand : SubCommand {
             }
         } else {
             for (customItem in ItemManager.getAllItems()) {
+                if (customItem.isEmpty) continue
                 Util.giveItem(player, customItem)
             }
             player.sendFormatted("You have been given all custom items!")
