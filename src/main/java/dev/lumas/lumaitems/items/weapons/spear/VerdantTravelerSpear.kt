@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.weapons.spear
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.isItemInSlots
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -13,7 +14,7 @@ import org.bukkit.inventory.ItemStack
 
 class VerdantTravelerSpear : CustomItemFunctions() {
 
-    companion object {
+    private companion object {
         private val KEY = Util.namespacedKey("verdant-traveler-spear")
     }
 
@@ -28,7 +29,7 @@ class VerdantTravelerSpear : CustomItemFunctions() {
                 "Built for the journey,",
                 "not the destination.",
                 "",
-                "Lunge forward without",
+                "<#A7DCEB>Lunge</#A7DCEB> forward without",
                 "draining your hunger."
             )
             .vanillaEnchants(
@@ -45,8 +46,7 @@ class VerdantTravelerSpear : CustomItemFunctions() {
     }
 
     override fun onEntityExhaustion(player: Player, event: EntityExhaustionEvent) {
-        if (!Util.isItemInSlot(KEY, EquipmentSlot.HAND, player) &&
-            !Util.isItemInSlot(KEY, EquipmentSlot.OFF_HAND, player)) return
+        if (player.isFlying || !player.isItemInSlots(KEY, EquipmentSlot.HAND, EquipmentSlot.OFF_HAND)) return
         if (event.exhaustionReason != EntityExhaustionEvent.ExhaustionReason.ENCHANTMENT_EFFECT) return
         event.exhaustion = 0.0f
     }

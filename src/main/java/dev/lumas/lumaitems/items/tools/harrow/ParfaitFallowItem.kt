@@ -1,9 +1,13 @@
 package dev.lumas.lumaitems.items.tools.harrow
 
+import com.gmail.nossr50.events.skills.secondaryabilities.SubSkillBlockEvent
 import dev.lumas.lumaitems.enums.CardinalDirection
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.syncDelayed
+import dev.lumas.lumaitems.util.extensions.takeItem
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Tag
@@ -38,7 +42,7 @@ class ParfaitFallowItem : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
-        if (!Tag.CROPS.isTagged(block.type) && block.type != Material.NETHER_WART) {
+        if (!Kind.CROPS.isTagged(block.type)) {
             return
         }
 
@@ -52,5 +56,24 @@ class ParfaitFallowItem : CustomItemFunctions() {
         if (block2.type == block.type) {
             block2.breakNaturallyWithLog(player, item, true)
         }
+    }
+
+    override fun onMcMMOHerbalismReplant(player: Player, event: SubSkillBlockEvent) {
+        val direction = CardinalDirection.fromEntity(player)
+        val block = event.block
+
+        val block1 = block.getRelative(direction.leftFace)
+        val block2 = block.getRelative(direction.rightFace)
+
+        val type = block.type
+
+        block.syncDelayed(20) {
+            val itemType = block.state.drops.first().type
+            if (player.takeItem(ItemStack.of(itemType, 2))) {
+                block1.type = type
+                block2.type = type
+            }
+        }
+
     }
 }

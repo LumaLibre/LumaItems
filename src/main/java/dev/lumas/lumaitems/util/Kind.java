@@ -38,7 +38,7 @@ public interface Kind<T extends Keyed> extends Tag<T> {
 
     Tag<Material> COLORED_GLASS_INCLUSIVE = Kind.material("colored_glass_inclusive", COLORED_GLASS, COLORED_GLASS_PANE);
 
-    Tag<Material> CROPS = Kind.material("crops", Material.WHEAT, Material.CARROTS, Material.POTATOES, Material.BEETROOTS, Material.NETHER_WART, Material.COCOA, Material.SWEET_BERRY_BUSH, Material.SUGAR_CANE, Material.MELON, Material.PUMPKIN, Material.KELP_PLANT);
+    Tag<Material> CROPS = Kind.material("crops", Tag.CROPS, Material.NETHER_WART);
 
     /**
      * Generally any type of block that holds data or is illegal to obtain in survival.

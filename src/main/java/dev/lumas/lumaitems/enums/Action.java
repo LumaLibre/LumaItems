@@ -22,6 +22,7 @@ public enum Action {
     JOBS_EXP_GAIN, // When a player gains experience from Jobs Reborn
     JOBS_PRE_PAYMENT, // When a player is about to be paid from Jobs Reborn
     MCMMO_TREE_FELLER_DESTROY_TREE, // When a player destroys a tree with the MCMMO Tree Feller ability
+    MCMMO_HERBALISM_REPLANT, // Green thumb from mcMMO
 
     /**
      * Player actions that effect a specific player. Called by a listener.

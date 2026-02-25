@@ -11,10 +11,10 @@ import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 
-val FOLIA = classExists("io.papermc.paper.threadedregions.RegionizedServer")
+//val FOLIA = classExists("io.papermc.paper.threadedregions.RegionizedServer")
 
 private fun Long.coerce(): Long {
-    return if (this < 1 && FOLIA) 1 else this
+    return if (this < 1) 1 else this
 }
 
 fun Entity.sync(runnable: Runnable): ScheduledTask? {
@@ -51,6 +51,10 @@ fun Entity.syncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): Schedule
 
 fun Location.syncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
     return Bukkit.getRegionScheduler().runDelayed(LumaItems.getInstance(), this, runnable, delay.coerce())
+}
+
+fun Block.syncDelayed(delay: Long, runnable: Consumer<ScheduledTask>): ScheduledTask {
+    return Bukkit.getRegionScheduler().runDelayed(LumaItems.getInstance(), this.location, runnable, delay.coerce())
 }
 
 

@@ -4,7 +4,6 @@ package dev.lumas.lumaitems.util.extensions
 import java.util.function.IntFunction
 import java.util.stream.IntStream
 
-
 fun String.toIntOrZero(): Int {
     return this.toIntOrNull() ?: 0
 }

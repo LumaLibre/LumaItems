@@ -2,8 +2,11 @@ package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.isOnCooldown
+import dev.lumas.lumaitems.util.extensions.namespacedKey
+import dev.lumas.lumaitems.util.extensions.sendFormatted
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Location
@@ -18,10 +21,11 @@ import org.bukkit.inventory.ItemStack
 
 class RecallCompass : CustomItemFunctions() {
 
-    private val key = "recall-compass"
+    private companion object {
+        private val KEY = "recall-compass".namespacedKey()
+    }
 
     override fun createItem(): Pair<String, ItemStack> {
-
         return ItemFactory.builder()
             .name("<b><gradient:#F6C1D1:#E8B7E8:#D7C2F2:#F4B6C2>Recall Compass</gradient></b>")
             .customEnchants("<#D7C2F2>Attunement")
@@ -29,12 +33,12 @@ class RecallCompass : CustomItemFunctions() {
                 "A compass humming with",
                 "soft magical energy.",
                 "",
-                "<#D7C2F2>Shift + Right-Click</#D7C2F2>",
+                "<#D7C2F2>Sneak</#D7C2F2> + <#D7C2F2>right-click</#D7C2F2>",
                 "to recall to your",
-                "spawnpoint."
+                "spawn point."
             )
             .tier(Tier.VALENTIDE_2026)
-            .persistentData(key)
+            .persistentData(KEY)
             .material(Material.COMPASS)
             .vanillaEnchants(Enchantment.LOYALTY to 10)
             .hideEnchants(true)
@@ -42,46 +46,39 @@ class RecallCompass : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (isLodestoneInteraction(player, event)) {
-            MiniMessageUtil.msg(player, "<#D7C2F2>This compass only knows one destination. Home.")
+        event.item?.takeIf { it.isMatchingItem(KEY) } ?: return
+
+        if (event.clickedBlock?.type == Material.LODESTONE) {
+            player.sendFormatted("<#D7C2F2>This compass only knows one destination... Home.")
             event.isCancelled = true
             return
         }
 
-        if (event.hand != EquipmentSlot.HAND) return
-        if (!player.isSneaking) return
+        if (event.hand != EquipmentSlot.HAND || !player.isSneaking || player.isOnCooldown(this)) return
 
-        val item = event.item ?: return
-        if (!item.isMatchingItem(key)) {
+
+        val from = player.location
+        val to = player.respawnLocation ?: run {
+            player.sendFormatted("<#D7C2F2>You have no respawn point set.")
             return
         }
-
-        val from = player.location.clone()
-        val to = player.respawnLocation ?: player.world.spawnLocation
 
         if (from.world.equals(to.world) && from.distanceSquared(to) < 9) {
-            MiniMessageUtil.msg(player, "<#D7C2F2>You are already within your comfort zone.")
+            player.sendFormatted("<#D7C2F2>You are already within your comfort zone.")
             return
         }
 
-        from.sync {
-            spawnRecallParticles(from)
-            from.world.playSound(from, Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, 1.0f)
-        }
+        spawnRecallParticles(from)
+        from.world.playSound(from, Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, 1.0f)
+        player.addCooldown(this, 50)
 
         player.teleportAsync(to).thenAccept { success ->
             if (!success) return@thenAccept
+            spawnRecallParticles(to)
             to.sync {
-                spawnRecallParticles(to)
                 to.world.playSound(to, Sound.BLOCK_BEACON_POWER_SELECT, 1.0f, 1.0f)
             }
         }
-    }
-
-    private fun isLodestoneInteraction(player: Player, event: PlayerInteractEvent): Boolean {
-        val item = event.item ?: return false
-        if (!item.isMatchingItem(key)) return false
-        return event.clickedBlock?.type == Material.LODESTONE
     }
 
     private fun spawnRecallParticles(loc: Location) {

@@ -7,6 +7,7 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
+import com.gmail.nossr50.events.skills.secondaryabilities.SubSkillBlockEvent
 import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
 import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
@@ -138,6 +139,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_EXHAUSTION -> onEntityExhaustion(player, event as EntityExhaustionEvent)
             Action.PREPARE_CRAFT -> onPrepareCraft(player, event as PrepareItemCraftEvent)
             Action.CRAFT_ITEM -> onCraftItem(player, event as CraftItemEvent)
+            Action.MCMMO_HERBALISM_REPLANT -> onMcMMOHerbalismReplant(player, event as SubSkillBlockEvent)
         }
         return true
     }
@@ -211,10 +213,11 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityExhaustion(player: Player, event: EntityExhaustionEvent) {}
     open fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {}
     open fun onCraftItem(player: Player, event: CraftItemEvent) {}
+    open fun onMcMMOHerbalismReplant(player: Player, event: SubSkillBlockEvent) {}
 
 
-    // FIXME: Optimize this with a static map in a companion object?
-    // FIXME: Cleanup
+    // TODO: Optimize this with a static map in a companion object?
+    // TODO: Cleanup
     override fun fireAnyways(action: Action): Boolean {
         if (fireAnywaysInitialized) {
             return fireAnywaysCached?.contains(action) ?: false

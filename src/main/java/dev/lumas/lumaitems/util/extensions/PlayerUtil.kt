@@ -116,6 +116,10 @@ fun Player.containers(vararg slots: EquipmentSlot): List<PersistentDataContainer
     return result
 }
 
+fun Player.mainHandContainer(): PersistentDataContainer? {
+    return inventory.itemInMainHand.itemMeta?.persistentDataContainer
+}
+
 
 fun Player.canDamage(entity: LivingEntity): Boolean {
     var result = true
