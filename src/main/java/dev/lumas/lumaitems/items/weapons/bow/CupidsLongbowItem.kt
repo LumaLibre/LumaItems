@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 @Disable(WorldName.PINATA)
-class CupidsLongbow : CustomItemFunctions() {
+class CupidsLongbowItem : CustomItemFunctions() {
 
     private companion object {
         private val KEY = "cupids-longbow".namespacedKey()

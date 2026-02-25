@@ -2,12 +2,10 @@ package dev.lumas.lumaitems.items.armor.elytra
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.lumas.glowapi.model.GlowColorManager
-import dev.lumas.lumaitems.hooks.LumaGlowAPIHook
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.tiers.Tier
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -19,28 +17,28 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-class SnowySunsetWingsItem : CustomItemFunctions() {
+class DeepRoseVeilItem : CustomItemFunctions() {
 
-    companion object {
-        private val KEY = Util.namespacedKey("snowy-sunset-wings")
+    private companion object {
+        private val KEY = "deep-rose-veil".namespacedKey()
         private val GLOW = PotionEffect(PotionEffectType.GLOWING, 340, 0, false, false, false)
     }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><gradient:#33394f:#767da4:#d8cde0:#b6a5bf:#dfbbc1>Snowy Sunset Wings</gradient></b>")
-            .customEnchants("<#33394f>Color Glow")
-            .persistentData(KEY)
+            .name("<b><gradient:#560a35:#e79aa3:#fdd8e4:#7f587e:#583859>Deep Rose Veil</gradient></b>")
+            .customEnchants("<#7B548C>Glow")
             .material(Material.ELYTRA)
-            .tier(Tier.CHRISTMAS_2025)
+            .tier(Tier.VALENTIDE_2026)
+            .persistentData(KEY)
             .lore(
-                "Soar through the sky,",
-                "lit by the soft glow",
-                "of a snowy sunset.",
+                "A delicate veil of",
+                "petals wrapped up",
+                "perfectly together.",
                 "",
-                "<#33394f>While worn</#33394f>, these wings",
+                "<#7B548C>While worn</#7B548C>, these wings",
                 "will allow you to glow",
-                "with a black outline."
+                "with a purple outline."
             )
             .vanillaEnchants(
                 Enchantment.PROTECTION to 6,
@@ -73,14 +71,10 @@ class SnowySunsetWingsItem : CustomItemFunctions() {
     }
 
     fun addColor(player: Player) {
-        if (Registry.HOOKS.getOrThrow(LumaGlowAPIHook::class).isWith()) {
-            GlowColorManager.getInstance().setTransientColor(player, NamedTextColor.BLACK)
-        }
+        GlowColorManager.getInstance().setTransientColor(player, NamedTextColor.DARK_PURPLE)
     }
 
     fun removeColor(player: Player) {
-        if (Registry.HOOKS.getOrThrow(LumaGlowAPIHook::class).isWith()) {
-            GlowColorManager.getInstance().update(player)
-        }
+        GlowColorManager.getInstance().update(player)
     }
 }

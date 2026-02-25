@@ -1,7 +1,6 @@
 package dev.lumas.lumaitems.items.tools.nests
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.model.MultiPlayerCustomItem
@@ -32,9 +31,10 @@ class SoulboundSeeker : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><#7B76D0>S<#8D78C8>o<#9E7BC0>u<#B07DB8>l<#C27FB0>b<#D382A8>o<#E584A0>u<#DC84AA>n<#D384B4>d <#C084C7>S<#B784D1>e<#AE84DB>e<#A584E5>k<#AF80D5>e<#B97BC4>r <#CE72A3>S<#D86E93>e<#E26982>t")
-            .material(Material.PURPLE_BUNDLE)
-            .tier(Tier.VALENTIDE_2025)
-            .vanillaEnchants(Enchantment.UNBREAKING to 10)
+            .material(Material.MAGENTA_BUNDLE)
+            .tier(Tier.VALENTIDE_2026)
+            .vanillaEnchants(Enchantment.EFFICIENCY to 8, Enchantment.UNBREAKING to 10, Enchantment.FORTUNE to 5, Enchantment.MENDING to 1)
+            .customEnchants("<#7B76D0>Lover's Bond")
             .lore(
                 "<gray>Right-click to redeem!",
                 "",
@@ -90,13 +90,13 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
     fun create(style: Style): ItemFactory {
         return ItemFactory.builder()
             .name(style.styleName)
-            .customEnchants("${style.baseColor}Better Together")
+            .customEnchants("${style.baseColor}Lover's Bond")
             .lore(
                 "Each mattock is intended to",
                 "be held onto by another player.",
                 "",
                 "Whilst your partner has the other",
-                "mattock in their inventory, mined",
+                "mattock in their inventory, ${style.baseColor}mined",
                 "ore veins will be broken instantly.",
                 "",
                 "While holding this mattock,",
@@ -104,10 +104,10 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
                 "to teleport to your partner."
             )
             .material(Material.NETHERITE_PICKAXE)
-            .tier(Tier.VALENTIDE_2025)
+            .tier(Tier.VALENTIDE_2026)
             .persistentData(KEY)
             .persistentDataRecords(PersistentDataRecord.create(secretKey, PersistentDataType.STRING, secretGenerator.secret))
-            .vanillaEnchants(Enchantment.EFFICIENCY to 7, Enchantment.UNBREAKING to 10, Enchantment.SILK_TOUCH to 1, Enchantment.MENDING to 1)
+            .vanillaEnchants(Enchantment.EFFICIENCY to 8, Enchantment.UNBREAKING to 10, Enchantment.FORTUNE to 5, Enchantment.MENDING to 1)
             .build()
     }
 
@@ -130,12 +130,12 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
         }
 
         val bondedPlayer = getBondedPlayer(player) ?: return run {
-            player.sendActionBar(MiniMessageUtil.mm("<red>\uD83D\uDC94 Couldn't find your partner."))
+            player.sendActionBar(MiniMessageUtil.mm("<red>Couldn't find your partner."))
         }
 
         player.teleportAsync(bondedPlayer.location)
         player.sendActionBar(MiniMessageUtil.mm("<yellow>Teleported to ${bondedPlayer.name}!"))
-        QuickTasks.addCooldown(this, player.uniqueId, 30L)
+        QuickTasks.addCooldown(this, player.uniqueId, 50L)
     }
 
 

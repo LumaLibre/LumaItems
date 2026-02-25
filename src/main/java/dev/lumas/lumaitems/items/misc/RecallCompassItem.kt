@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
-class RecallCompass : CustomItemFunctions() {
+class RecallCompassItem : CustomItemFunctions() {
 
     private companion object {
         private val KEY = "recall-compass".namespacedKey()

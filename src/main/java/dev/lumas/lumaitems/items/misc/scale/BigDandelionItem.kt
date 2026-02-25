@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.misc
+package dev.lumas.lumaitems.items.misc.scale
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.WorldName

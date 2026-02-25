@@ -12,7 +12,7 @@ import org.bukkit.event.entity.EntityExhaustionEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
-class VerdantTravelerSpear : CustomItemFunctions() {
+class VerdantTravelerSpearItem : CustomItemFunctions() {
 
     private companion object {
         private val KEY = Util.namespacedKey("verdant-traveler-spear")
@@ -22,7 +22,7 @@ class VerdantTravelerSpear : CustomItemFunctions() {
         return ItemFactory.builder()
             .name("<b><gradient:#B9E6C9:#A7DCEB:#F3E3B1:#CDE7B5>Verdant Traveler</gradient></b>")
             .customEnchants("<#A7DCEB>Endurance")
-            .material(Material.NETHERITE_SPEAR)
+            .material(Material.IRON_SPEAR)
             .persistentData(KEY)
             .tier(Tier.VALENTIDE_2026)
             .lore(

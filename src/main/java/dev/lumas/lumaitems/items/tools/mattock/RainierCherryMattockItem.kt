@@ -2,14 +2,11 @@ package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.PaperDataComponent
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.random
 import dev.lumas.lumaitems.util.extensions.spell
 import dev.lumas.lumaitems.util.tiers.Tier
-import io.papermc.paper.datacomponent.DataComponentTypes
-import io.papermc.paper.datacomponent.item.SwingAnimation
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Tag
@@ -25,9 +22,9 @@ class RainierCherryMattockItem : CustomItemFunctions() {
             .name("<b><gradient:#cb354e:#ff7d7c:#ffa5a5:#ffdca4:#ffb47b:#fe9164>Rainier Cherry Mattock</gradient></b>")
             .customEnchants("<#ffa5a5>Canvas")
             .persistentData("rainier-cherry-mattock")
-            .material(Material.DIAMOND_PICKAXE)
+            .material(Material.NETHERITE_PICKAXE)
             .persistentDataRecords(PersistentDataRecord.PREVENT_NETHERITE_SMITHING)
-            .tagline("#ffa5a5", "What a weird swing...")
+            .tagline("#ffa5a5", "Color perfectionist!")
             .tier(Tier.VALENTIDE_2026)
             .lore(
                 "<#ffa5a5>Breaking</#ffa5a5> stones with this",
@@ -44,15 +41,15 @@ class RainierCherryMattockItem : CustomItemFunctions() {
                 Enchantment.SILK_TOUCH to 1,
                 Enchantment.MENDING to 1
             )
-            .paperDataComponents(
-                PaperDataComponent.valued(DataComponentTypes.SWING_ANIMATION)
-                    .value(
-                        SwingAnimation.swingAnimation()
-                            .type(SwingAnimation.Animation.STAB)
-                            .duration(15)
-                            .build()
-                    )
-            )
+//            .paperDataComponents(
+//                PaperDataComponent.valued(DataComponentTypes.SWING_ANIMATION)
+//                    .value(
+//                        SwingAnimation.swingAnimation()
+//                            .type(SwingAnimation.Animation.STAB)
+//                            .duration(15)
+//                            .build()
+//                    )
+//            )
             .buildPair()
     }
 

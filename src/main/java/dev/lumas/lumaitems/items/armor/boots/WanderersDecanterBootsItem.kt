@@ -20,11 +20,11 @@ import org.bukkit.inventory.ItemStack
 import kotlin.math.abs
 
 @Disable(WorldName.EVENT_NEW)
-class WanderersDecanterBoots : CustomItemFunctions() {
+class WanderersDecanterBootsItem : CustomItemFunctions() {
 
     companion object {
         private val KEY = Util.namespacedKey("wanderers-decanter-boots")
-        val BOTTLE = ItemStack(Material.EXPERIENCE_BOTTLE, 1)
+        private val BOTTLE = ItemStack(Material.EXPERIENCE_BOTTLE, 1)
 
         private const val XP_COST_PER_BOTTLE = 8
         private const val WALK_BLOCKS_PER_BOTTLE = 32.0
@@ -39,14 +39,14 @@ class WanderersDecanterBoots : CustomItemFunctions() {
 
         private const val RESYNC_BLOCK_JUMP = 6
         private const val DIAGONAL_STEP = 1.41421356237 // sqrt(2)
-        private val STATE: MutableMap<UUID, WalkState> = ConcurrentHashMap()
+        private val STATE: MutableMap<UUID, WalkState> = mutableMapOf()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gradient:#B9E6C9:#A7DCEB:#F3E3B1:#CDE7B5>Wanderer's Decanter</gradient></b>")
             .customEnchants("<#A7DCEB>Distillation")
-            .material(Material.NETHERITE_BOOTS)
+            .material(Material.DIAMOND_BOOTS)
             .persistentData(KEY)
             .tier(Tier.VALENTIDE_2026)
             .lore(

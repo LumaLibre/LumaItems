@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.misc
+package dev.lumas.lumaitems.items.misc.scale
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.WorldName
@@ -34,7 +34,7 @@ class MiniPoppyItem : CustomItemFunctions() {
                 "I wonder if holding it",
                 "does anything special?"
             )
-            .tier(Tier.VALENTIDE_2026) // valentide 2026
+            .tier(Tier.VALENTIDE_2025)
             .persistentData(key)
             .material(Material.POPPY)
             .attributeModifiers(

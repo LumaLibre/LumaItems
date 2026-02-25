@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-class HearthglowLantern : CustomItemFunctions() {
+class HearthglowLanternItem : CustomItemFunctions() {
 
     companion object {
         private val KEY = Util.namespacedKey("hearthglow-lantern")
@@ -27,11 +27,11 @@ class HearthglowLantern : CustomItemFunctions() {
         return ItemFactory.builder()
             .name("<b><gradient:#F6D6B8:#F1C48D:#F7B6A6:#E9B7D8>Hearthglow Lantern</gradient></b>")
             .customEnchants("<#F1C48D>Lumenwake")
-            .material(Material.LANTERN)
+            .material(Material.COPPER_LANTERN)
             .persistentData(KEY)
             .tier(Tier.VALENTIDE_2026)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
-            //.hideEnchants(true)
+            .hideEnchants(true)
             .lore(
                 "A lantern with a gentle",
                 "and homey warmth.",

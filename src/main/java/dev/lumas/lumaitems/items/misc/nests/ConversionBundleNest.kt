@@ -5,7 +5,6 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.formatSnakeCase
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -54,26 +53,26 @@ class ReformationPouchBundleItem : CustomItemFunctions() {
         val item = event.item ?: return
         item.amount -= 1
 
-        val target = ReformationPouchBase.WoodSet.entries.random()
+        val target = ReformationPouchItemNest.WoodSet.entries.random()
         player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1f, 1f)
 
         val pouch = when (target) {
-            ReformationPouchBase.WoodSet.OAK -> OakReformationPouch()
-            ReformationPouchBase.WoodSet.SPRUCE -> SpruceReformationPouch()
-            ReformationPouchBase.WoodSet.BIRCH -> BirchReformationPouch()
-            ReformationPouchBase.WoodSet.JUNGLE -> JungleReformationPouch()
-            ReformationPouchBase.WoodSet.ACACIA -> AcaciaReformationPouch()
-            ReformationPouchBase.WoodSet.DARK_OAK -> DarkOakReformationPouch()
-            ReformationPouchBase.WoodSet.MANGROVE -> MangroveReformationPouch()
-            ReformationPouchBase.WoodSet.CHERRY -> CherryReformationPouch()
-            ReformationPouchBase.WoodSet.PALE_OAK -> PaleOakReformationPouch()
+            ReformationPouchItemNest.WoodSet.OAK -> OakReformationPouchItem()
+            ReformationPouchItemNest.WoodSet.SPRUCE -> SpruceReformationPouchItem()
+            ReformationPouchItemNest.WoodSet.BIRCH -> BirchReformationPouchItem()
+            ReformationPouchItemNest.WoodSet.JUNGLE -> JungleReformationPouchItem()
+            ReformationPouchItemNest.WoodSet.ACACIA -> AcaciaReformationPouchItem()
+            ReformationPouchItemNest.WoodSet.DARK_OAK -> DarkOakReformationPouchItem()
+            ReformationPouchItemNest.WoodSet.MANGROVE -> MangroveReformationPouchItem()
+            ReformationPouchItemNest.WoodSet.CHERRY -> CherryReformationPouchItem()
+            ReformationPouchItemNest.WoodSet.PALE_OAK -> PaleOakReformationPouchItem()
         }.createItem().second
 
         Util.giveItem(player, pouch)
     }
 }
 
-abstract class ReformationPouchBase(private val target: WoodSet) : CustomItemFunctions() {
+abstract class ReformationPouchItemNest(private val target: WoodSet) : CustomItemFunctions() {
 
     companion object {
         private val KEY = Util.namespacedKey("reformation-pouch")
@@ -324,12 +323,12 @@ abstract class ReformationPouchBase(private val target: WoodSet) : CustomItemFun
     }
 }
 
-class OakReformationPouch : ReformationPouchBase(WoodSet.OAK)
-class SpruceReformationPouch : ReformationPouchBase(WoodSet.SPRUCE)
-class BirchReformationPouch : ReformationPouchBase(WoodSet.BIRCH)
-class JungleReformationPouch : ReformationPouchBase(WoodSet.JUNGLE)
-class AcaciaReformationPouch : ReformationPouchBase(WoodSet.ACACIA)
-class DarkOakReformationPouch : ReformationPouchBase(WoodSet.DARK_OAK)
-class MangroveReformationPouch : ReformationPouchBase(WoodSet.MANGROVE)
-class CherryReformationPouch : ReformationPouchBase(WoodSet.CHERRY)
-class PaleOakReformationPouch : ReformationPouchBase(WoodSet.PALE_OAK)
+class OakReformationPouchItem : ReformationPouchItemNest(WoodSet.OAK)
+class SpruceReformationPouchItem : ReformationPouchItemNest(WoodSet.SPRUCE)
+class BirchReformationPouchItem : ReformationPouchItemNest(WoodSet.BIRCH)
+class JungleReformationPouchItem : ReformationPouchItemNest(WoodSet.JUNGLE)
+class AcaciaReformationPouchItem : ReformationPouchItemNest(WoodSet.ACACIA)
+class DarkOakReformationPouchItem : ReformationPouchItemNest(WoodSet.DARK_OAK)
+class MangroveReformationPouchItem : ReformationPouchItemNest(WoodSet.MANGROVE)
+class CherryReformationPouchItem : ReformationPouchItemNest(WoodSet.CHERRY)
+class PaleOakReformationPouchItem : ReformationPouchItemNest(WoodSet.PALE_OAK)
