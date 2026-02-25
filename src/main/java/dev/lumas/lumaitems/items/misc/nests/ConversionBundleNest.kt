@@ -54,30 +54,30 @@ class ReformationPouchBundleItem : CustomItemFunctions() {
         val item = event.item ?: return
         item.amount -= 1
 
-        val target = ConversionBundleBase.WoodSet.entries.random()
+        val target = ReformationPouchBase.WoodSet.entries.random()
         player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1f, 1f)
 
         val pouch = when (target) {
-            ConversionBundleBase.WoodSet.OAK -> OakConversionBundle()
-            ConversionBundleBase.WoodSet.SPRUCE -> SpruceConversionBundle()
-            ConversionBundleBase.WoodSet.BIRCH -> BirchConversionBundle()
-            ConversionBundleBase.WoodSet.JUNGLE -> JungleConversionBundle()
-            ConversionBundleBase.WoodSet.ACACIA -> AcaciaConversionBundle()
-            ConversionBundleBase.WoodSet.DARK_OAK -> DarkOakConversionBundle()
-            ConversionBundleBase.WoodSet.MANGROVE -> MangroveConversionBundle()
-            ConversionBundleBase.WoodSet.CHERRY -> CherryConversionBundle()
-            ConversionBundleBase.WoodSet.PALE_OAK -> PaleOakConversionBundle()
+            ReformationPouchBase.WoodSet.OAK -> OakReformationPouch()
+            ReformationPouchBase.WoodSet.SPRUCE -> SpruceReformationPouch()
+            ReformationPouchBase.WoodSet.BIRCH -> BirchReformationPouch()
+            ReformationPouchBase.WoodSet.JUNGLE -> JungleReformationPouch()
+            ReformationPouchBase.WoodSet.ACACIA -> AcaciaReformationPouch()
+            ReformationPouchBase.WoodSet.DARK_OAK -> DarkOakReformationPouch()
+            ReformationPouchBase.WoodSet.MANGROVE -> MangroveReformationPouch()
+            ReformationPouchBase.WoodSet.CHERRY -> CherryReformationPouch()
+            ReformationPouchBase.WoodSet.PALE_OAK -> PaleOakReformationPouch()
         }.createItem().second
 
         Util.giveItem(player, pouch)
     }
 }
 
-abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFunctions() {
+abstract class ReformationPouchBase(private val target: WoodSet) : CustomItemFunctions() {
 
     companion object {
-        private val KEY = Util.namespacedKey("conversion-bundle")
-        private val WOOD_KEY = Util.namespacedKey("conversion-bundle-wood")
+        private val KEY = Util.namespacedKey("reformation-pouch")
+        private val WOOD_KEY = Util.namespacedKey("preformation-pouch-type")
 
         // TODO use enum
         // TODO bamboo
@@ -204,7 +204,7 @@ abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFun
             && a != InventoryAction.PICKUP_ALL_INTO_BUNDLE
             && a != InventoryAction.PICKUP_SOME_INTO_BUNDLE) return
         player.syncDelayed(1) {
-            rewriteAllConversionBundlesInView(player)
+            rewriteAllReformationPouchsInView(player)
             val cursorNow = player.itemOnCursor
             val rewrittenCursor = rewriteBundleIfNeeded(cursorNow)
             if (rewrittenCursor != null) {
@@ -213,7 +213,7 @@ abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFun
         }
     }
 
-    private fun rewriteAllConversionBundlesInView(player: Player) {
+    private fun rewriteAllReformationPouchsInView(player: Player) {
         val inv = player.inventory
         for (i in 0 until inv.size) {
             val it = inv.getItem(i) ?: continue
@@ -324,12 +324,12 @@ abstract class ConversionBundleBase(private val target: WoodSet) : CustomItemFun
     }
 }
 
-class OakConversionBundle : ConversionBundleBase(WoodSet.OAK)
-class SpruceConversionBundle : ConversionBundleBase(WoodSet.SPRUCE)
-class BirchConversionBundle : ConversionBundleBase(WoodSet.BIRCH)
-class JungleConversionBundle : ConversionBundleBase(WoodSet.JUNGLE)
-class AcaciaConversionBundle : ConversionBundleBase(WoodSet.ACACIA)
-class DarkOakConversionBundle : ConversionBundleBase(WoodSet.DARK_OAK)
-class MangroveConversionBundle : ConversionBundleBase(WoodSet.MANGROVE)
-class CherryConversionBundle : ConversionBundleBase(WoodSet.CHERRY)
-class PaleOakConversionBundle : ConversionBundleBase(WoodSet.PALE_OAK)
+class OakReformationPouch : ReformationPouchBase(WoodSet.OAK)
+class SpruceReformationPouch : ReformationPouchBase(WoodSet.SPRUCE)
+class BirchReformationPouch : ReformationPouchBase(WoodSet.BIRCH)
+class JungleReformationPouch : ReformationPouchBase(WoodSet.JUNGLE)
+class AcaciaReformationPouch : ReformationPouchBase(WoodSet.ACACIA)
+class DarkOakReformationPouch : ReformationPouchBase(WoodSet.DARK_OAK)
+class MangroveReformationPouch : ReformationPouchBase(WoodSet.MANGROVE)
+class CherryReformationPouch : ReformationPouchBase(WoodSet.CHERRY)
+class PaleOakReformationPouch : ReformationPouchBase(WoodSet.PALE_OAK)
