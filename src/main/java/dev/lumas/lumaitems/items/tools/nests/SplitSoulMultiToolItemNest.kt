@@ -191,14 +191,8 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
 
     override fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {
         val item = event.item
-        player.sendViewDistance
-        if (item.type != Material.SHEARS) return
-
-        // Only damage shears 11.71% of the time to match the health of Netherite gear
-        val chanceToDamage = 238.0 / 2031.0
-
-        if (Math.random() > chanceToDamage) {
-            event.damage = 0
+        if (item.type == Material.SHEARS)  {
+            event.isCancelled = true
         }
     }
 

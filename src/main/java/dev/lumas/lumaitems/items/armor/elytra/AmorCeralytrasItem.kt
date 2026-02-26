@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.ItemStack
 
-class AmorCeralytrasItem : CustomItemFunctions() {
+open class AmorCeralytrasItem : CustomItemFunctions() {
 
     companion object {
         private val BOOST_COUNT: MutableMap<UUID, Int> = mutableMapOf()

@@ -46,8 +46,7 @@ class HearthglowLanternItem : CustomItemFunctions() {
     override fun onAsyncRunnable(player: Player) {
         player.sync {
             val nearby = player.getNearbyEntities(RANGE, RANGE, RANGE)
-                .filter { it !is Player && it.isValid && it is LivingEntity }
-                .map { it as LivingEntity }
+                .filterNot { it is Player }.mapNotNull { it as? LivingEntity }
                 .toList()
             applyGlowing(nearby)
         }
