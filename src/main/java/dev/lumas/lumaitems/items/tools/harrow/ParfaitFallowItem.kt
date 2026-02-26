@@ -70,8 +70,8 @@ class ParfaitFallowItem : CustomItemFunctions() {
         block.syncDelayed(20) {
             val itemType = block.state.drops.first().type
             if (player.takeItem(ItemStack.of(itemType, 2))) {
-                block1.type = type
-                block2.type = type
+                if (block1.type.isAir) block1.type = type
+                if (block2.type.isAir) block2.type = type
             }
         }
 

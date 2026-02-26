@@ -56,6 +56,10 @@ fun Player.isItemInSlots(identifier: NamespacedKey, vararg slots: EquipmentSlot)
     return slots.any { isItemInSlot(identifier, it) }
 }
 
+fun Player.isInAnySlot(identifier: NamespacedKey): Boolean {
+    return inventory.armorContents.any { it?.hasPersistentKey(identifier) == true } || inventory.itemInMainHand.hasPersistentKey(identifier) || inventory.itemInOffHand.hasPersistentKey(identifier)
+}
+
 
 fun Player.isLocationOnGround(): Boolean {
     return this.location.add(0.0,-0.1, 0.0).block.isSolid
