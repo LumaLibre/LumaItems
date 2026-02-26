@@ -42,6 +42,6 @@ class IllumeShearsItem : CustomItemFunctions() {
     }
 
     private fun Block.canBreak(itemStack: ItemStack): Boolean {
-        return blockData.lightEmission > 0 && (blockData.requiresCorrectToolForDrops() && blockData.isPreferredTool(itemStack))
+        return blockData.lightEmission >= 1 && !(blockData.requiresCorrectToolForDrops() && !blockData.isPreferredTool(itemStack))
     }
 }
