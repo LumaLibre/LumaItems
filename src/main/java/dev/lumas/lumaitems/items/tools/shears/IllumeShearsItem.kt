@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
+import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
@@ -28,9 +29,6 @@ class IllumeShearsItem : CustomItemFunctions() {
                 "<#c5adff>Left-click</#c5adff> any light",
                 "emitting block to",
                 "instantly destroy it."
-//                "<#c5adff>Left-click</#c5adff> to instantly",
-//                "break light-emitting",
-//                "blocks."
             )
             .buildPair()
     }
@@ -38,8 +36,12 @@ class IllumeShearsItem : CustomItemFunctions() {
     override fun onLeftClick(player: Player, event: PlayerInteractEvent) {
         val block = event.clickedBlock ?: return
 
-        if (block.blockData.lightEmission > 0 && block.getBreakSpeed(player) != Float.POSITIVE_INFINITY) {
+        if (block.canBreak(player.inventory.itemInMainHand) && block.getBreakSpeed(player) != Float.POSITIVE_INFINITY) {
             block.breakNaturallyWithLog(player, player.inventory.itemInMainHand, true)
         }
+    }
+
+    private fun Block.canBreak(itemStack: ItemStack): Boolean {
+        return blockData.lightEmission > 0 && (blockData.requiresCorrectToolForDrops() && blockData.isPreferredTool(itemStack))
     }
 }
