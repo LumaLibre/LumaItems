@@ -78,7 +78,15 @@ class ZephyrSkatesItem : CustomItemFunctions() {
         val direction = REFERENCES.remove(player.uniqueId) ?: return
 
         QuickTasks.addCooldown(this, player, 20)
-        player.velocity = direction.normalize().multiply(6.0).setY(-0.1)
+        val velocity = direction.normalize().multiply(6.0).setY(-0.1)
+        val maxSpeed = 6.0
+        val horizontal = velocity.clone().setY(0)
+        if (horizontal.length() > maxSpeed) {
+            horizontal.normalize().multiply(maxSpeed)
+            velocity.x = horizontal.x
+            velocity.z = horizontal.z
+        }
+        player.velocity = velocity
         player.world.spawnParticle(Particle.DUST, player.location.add(0.0, 0.5, 0.0), 10, 0.5, 0.5, 0.5, 0.1, COLORS.random())
 
         if (random().nextBoolean()) {
