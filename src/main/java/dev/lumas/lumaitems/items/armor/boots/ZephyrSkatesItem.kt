@@ -79,7 +79,7 @@ class ZephyrSkatesItem : CustomItemFunctions() {
 
         QuickTasks.addCooldown(this, player, 20)
         val velocity = direction.normalize().multiply(6.0).setY(-0.1)
-        val maxSpeed = 6.0
+        val maxSpeed = 5.0
         val horizontal = velocity.clone().setY(0)
         if (horizontal.length() > maxSpeed) {
             horizontal.normalize().multiply(maxSpeed)

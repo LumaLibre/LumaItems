@@ -153,11 +153,8 @@ class HeavyBlobWandItem : CustomItemFunctions() {
 
     private fun snowballRepeatExecutor(snowball: Snowball) {
         Executors.asyncTimer(0, 2) { task ->
-            if (snowball.isDead || snowball.location.block.isLiquid) {
+            if (snowball.isDead) {
                 task.cancel()
-                if (!snowball.isDead) {
-                    snowball.sync { snowball.remove() }
-                }
                 return@asyncTimer
             }
             val particleDisplay = colors[snowball.item] ?: return@asyncTimer
