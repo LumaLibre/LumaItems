@@ -121,7 +121,9 @@ class GeneralListeners : Listener {
 
         item.amount -= 1
         player.playSound(player.location, Sound.ENTITY_SQUID_SQUIRT, 1f, 0.9f)
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)
+        Executors.global {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)

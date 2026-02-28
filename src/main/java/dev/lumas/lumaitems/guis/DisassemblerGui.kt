@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.guis
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.relics.RelicDisassembler
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.Executors
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -34,7 +35,9 @@ class DisassemblerGui : AbstractGui {
                 val item = event.inventory.getItem(i) ?: continue
                 val command = RelicDisassembler.getCommandToExecute(item, player) ?: continue
                 item.amount -= 1
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)
+                Executors.global {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)
+                }
             }
             player.closeInventory()
         }

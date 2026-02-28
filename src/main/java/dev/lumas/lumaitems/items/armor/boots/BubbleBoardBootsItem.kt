@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -64,9 +65,10 @@ class BubbleBoardBootsItem : CustomItemFunctions() {
         }
         var ticksHeld = 0
 
-        Executors.asyncTimer(0, 1) { task ->
+        player.syncTimer(0, 1) { task ->
             if ((ticksHeld > 1 && !player.isSneaking) || !AbilityUtil.isOnGround(player)) {
                 task.cancel()
+                return@syncTimer
             }
 
             ticksHeld += 1
