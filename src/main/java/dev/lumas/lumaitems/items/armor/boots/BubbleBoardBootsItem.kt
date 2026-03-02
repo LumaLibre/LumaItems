@@ -68,7 +68,6 @@ class BubbleBoardBootsItem : CustomItemFunctions() {
         player.syncTimer(0, 1) { task ->
             if ((ticksHeld > 1 && !player.isSneaking) || !AbilityUtil.isOnGround(player)) {
                 task.cancel()
-                return@syncTimer
             }
 
             ticksHeld += 1
@@ -84,10 +83,9 @@ class BubbleBoardBootsItem : CustomItemFunctions() {
             }
 
             if (ticksHeld >= 35 && !player.isSneaking) {
-                player.sync {
-                    val vec = player.eyeLocation.direction.clone().multiply(1.5).setY(2.5)
-                    player.velocity = vec
-                }
+                val vec = player.eyeLocation.direction.clone().multiply(1.5).setY(2.5)
+                println("done")
+                player.velocity = vec
 
                 task.cancel()
             }
