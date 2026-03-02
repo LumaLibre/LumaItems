@@ -10,7 +10,6 @@ import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Location
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -26,14 +25,16 @@ class WanderersDecanterBootsItem : CustomItemFunctions() {
         private val KEY = Util.namespacedKey("wanderers-decanter-boots")
         private val BOTTLE = ItemStack(Material.EXPERIENCE_BOTTLE, 1)
 
-        private const val XP_COST_PER_BOTTLE = 8
-        private const val WALK_BLOCKS_PER_BOTTLE = 32.0
-        private const val SPRINT_BLOCKS_PER_BOTTLE = 48.0
+        private const val XP_COST_PER_BOTTLE = 12
+        private const val WALK_BLOCKS_PER_BOTTLE = 24.0
+        private const val SPRINT_BLOCKS_PER_BOTTLE = 32.0
 
 
         private data class WalkState(
             var lastBlockX: Int,
             var lastBlockZ: Int,
+            var prevBlockX: Int,
+            var prevBlockZ: Int,
             var accum: Double
         )
 
@@ -82,7 +83,13 @@ class WanderersDecanterBootsItem : CustomItemFunctions() {
             if (step <= 0.0) return@async
 
             val st = STATE.getOrPut( player.uniqueId) {
-                WalkState(to.blockX, to.blockZ, 0.0)
+                WalkState(
+                    lastBlockX = from.blockX,
+                    lastBlockZ = from.blockZ,
+                    prevBlockX = from.blockX,
+                    prevBlockZ = from.blockZ,
+                    accum = 0.0
+                )
             }
 
             val rdx = abs(to.blockX - st.lastBlockX)
@@ -94,6 +101,17 @@ class WanderersDecanterBootsItem : CustomItemFunctions() {
                 return@async
             }
 
+            // Moving back and forth on one edge is not wandering :/
+            if (to.blockX == st.prevBlockX && to.blockZ == st.prevBlockZ) {
+                st.prevBlockX = st.lastBlockX
+                st.prevBlockZ = st.lastBlockZ
+                st.lastBlockX = to.blockX
+                st.lastBlockZ = to.blockZ
+                return@async
+            }
+
+            st.prevBlockX = st.lastBlockX
+            st.prevBlockZ = st.lastBlockZ
             st.lastBlockX = to.blockX
             st.lastBlockZ = to.blockZ
             st.accum += step
