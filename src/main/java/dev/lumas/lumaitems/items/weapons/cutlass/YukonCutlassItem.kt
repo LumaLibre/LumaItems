@@ -176,10 +176,6 @@ class YukonCutlassItem : CustomItemFunctions() {
             if (this.isDead || !this.isValid) {
                 task.cancel()
                 return@asyncTimer
-            } else if (this.isInWater || this.isInLava) {
-                this.sync { this.dropAndRemove() }
-                task.cancel()
-                return@asyncTimer
             }
 
             this.world.spawnParticle(Particle.DUST, this.location, 1, DUST_TRANSITIONS.random())
