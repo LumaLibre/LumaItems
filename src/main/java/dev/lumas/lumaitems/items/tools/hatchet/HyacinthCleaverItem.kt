@@ -59,7 +59,6 @@ class HyacinthCleaverItem : CustomItemFunctions() {
 
         val loc = block.location.toCenterLocation()
         block.world.dropItemNaturally(loc, CHARCOAL)
-        player.playEffect(EntityEffect.PROTECTED_FROM_DEATH)
 
         Executors.async {
             block.world.spawnParticle(Particle.DUST, loc, 10, 0.4, 0.4, 0.4, 0.1, PARTICLE_DATA)
