@@ -56,7 +56,7 @@ class WitchingStocksItem : CustomItemFunctions() {
     }
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
-        if (player.isSneaking || player.isFlying || player.isLocationOnGround() || TRACKED.contains(player.uniqueId)) {
+        if (player.isSneaking || player.isInWater || player.isFlying || player.isLocationOnGround() || TRACKED.contains(player.uniqueId)) {
             return
         }
         TRACKED.add(player.uniqueId)

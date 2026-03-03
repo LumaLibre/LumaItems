@@ -69,7 +69,7 @@ open class AmorCeralytrasItem : CustomItemFunctions() {
             }
         }
 
-        if (player.isSneaking || player.isFlying || AbilityUtil.isOnGround(player) ||
+        if (player.isSneaking || player.isInWater || player.isFlying || AbilityUtil.isOnGround(player) ||
             (BOOST_COUNT.contains(player.uniqueId) && BOOST_COUNT[player.uniqueId]!! >= 2)) return
 
         player.velocity = player.location.direction.multiply(0.6).setY(0.7)
