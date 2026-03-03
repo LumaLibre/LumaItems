@@ -11,8 +11,6 @@ import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 
-//val FOLIA = classExists("io.papermc.paper.threadedregions.RegionizedServer")
-
 private fun Long.coerce(): Long {
     return if (this < 1) 1 else this
 }

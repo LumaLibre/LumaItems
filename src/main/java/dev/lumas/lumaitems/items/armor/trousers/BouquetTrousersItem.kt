@@ -49,7 +49,7 @@ class BouquetTrousersItem : CustomItemFunctions() {
     }
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
-        if (player.isSneaking || player.isFlying || AbilityUtil.isOnGround(player) || tracked.contains(player.uniqueId)) {
+        if (player.isSneaking || player.isInWater || player.isFlying || AbilityUtil.isOnGround(player) || tracked.contains(player.uniqueId)) {
             return
         }
         tracked.add(player.uniqueId)
