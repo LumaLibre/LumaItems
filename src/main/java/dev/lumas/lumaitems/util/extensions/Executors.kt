@@ -11,7 +11,7 @@ import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Entity
 
-private fun Long.coerce(): Long {
+fun Long.coerce(): Long {
     return if (this < 1) 1 else this
 }
 

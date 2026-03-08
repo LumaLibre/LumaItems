@@ -9,6 +9,7 @@ import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.Synchronizable
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.Kind
@@ -104,8 +105,10 @@ class VigilanceMattockItem : CustomItemFunctions() {
 
     override fun onFastAsyncRunnable(player: Player) {
         for (displayableBlock in DISPLAYABLE_BLOCKS.filter { it.owner == player.uniqueId }) {
-            if (displayableBlock.canBeRemoved()) {
-                displayableBlock.remove()
+            displayableBlock.sync {
+                if (displayableBlock.canBeRemoved()) {
+                    displayableBlock.remove()
+                }
             }
         }
         if (player.inventory.itemInMainHand.isMatchingItem(KEY)) {
@@ -216,11 +219,11 @@ class VigilanceMattockItem : CustomItemFunctions() {
         val owner: UUID,
         val blockDisplay: BlockDisplay,
         val range: Double,
-        val x: Int,
+        override val x: Int,
         val y: Int,
-        val z: Int,
-        val world: World
-    ) {
+        override val z: Int,
+        override val world: World
+    ) : Synchronizable.BlockPos {
 
         constructor(owner: UUID, blockDisplay: BlockDisplay, range: Double, block: Block) :
                 this(owner, blockDisplay, range, block.x, block.y, block.z, block.world)
