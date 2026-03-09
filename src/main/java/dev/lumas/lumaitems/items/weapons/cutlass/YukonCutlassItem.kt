@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.random.asJavaRandom
@@ -150,10 +151,10 @@ class YukonCutlassItem : CustomItemFunctions() {
     }
 
     private fun MutableCollection<Snowball>.trace() {
-        Executors.asyncTimer(0, 1) { task ->
+        this.syncTimer(0, 1) { task ->
             if (this.isEmpty()) {
                 task.cancel()
-                return@asyncTimer
+                return@syncTimer
             }
 
             val iterator = this.iterator()

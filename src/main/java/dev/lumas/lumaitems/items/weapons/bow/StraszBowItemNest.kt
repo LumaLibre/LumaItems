@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Color
 import org.bukkit.Location
@@ -104,13 +105,13 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
             snowball.setMetadata(DUPLICATE, metaDataValue)
         }
 
-        Executors.asyncTimer(0, 1) { task ->
+        snowball.syncTimer(0, 1) { task ->
             if (snowball.isDead || snowball.ticksLived > 110) {
                 if (!snowball.isDead && !snowball.hasGravity()) {
-                    snowball.sync { snowball.setGravity(true) }
+                    snowball.setGravity(true)
                 }
                 task.cancel()
-                return@asyncTimer
+                return@syncTimer
             }
             snowball.world.spawnParticle(Particle.DUST, snowball.location, 5, 0.2, 0.2, 0.2, 0.1, dustOptions)
             snowball.world.spawnParticle(Particle.WITCH, snowball.location, 5, 0.2, 0.2, 0.2, 0.1)

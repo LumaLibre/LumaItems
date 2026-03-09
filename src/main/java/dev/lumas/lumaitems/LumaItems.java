@@ -47,12 +47,12 @@ public final class LumaItems extends JavaPlugin {
         reflectionUtil.whitelistPackages("commands", "commands.subcommands", "events", "events.items");
 
         Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
-        moduleManager.reflectivelyRegisterModules(classSet);
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             LOGGER.info("Players are online, registering items asynchronously");
             Executors.async(task -> {
                 try {
                     initItemManager(itemManager);
+                    moduleManager.reflectivelyRegisterModules(classSet);
                 } catch (Throwable e) {
                     LOGGER.error("An error occurred while registering items asynchronously");
                     getServer().getPluginManager().disablePlugin(this);
@@ -61,6 +61,7 @@ public final class LumaItems extends JavaPlugin {
             });
         } else {
             initItemManager(itemManager);
+            moduleManager.reflectivelyRegisterModules(classSet);
             LOGGER.info("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 

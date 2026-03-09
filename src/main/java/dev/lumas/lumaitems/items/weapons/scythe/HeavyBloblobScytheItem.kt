@@ -10,6 +10,7 @@ import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.tiers.Tier
 import kotlin.random.asJavaRandom
@@ -184,16 +185,16 @@ class HeavyBloblobScytheItem : CustomItemFunctions() {
 
     private fun trackSnowballs(snowballs: MutableCollection<Snowball>) {
         var count = 0
-        Executors.asyncTimer(1, 1) { task ->
+        snowballs.syncTimer(1, 1) { task ->
             val removal = ++count >= 200
 
             snowballs.removeIf { snowball ->
-                if (snowball.isDead || snowball.location.block.isLiquid || removal) {
+                if (snowball.isDead || removal) {
                     snowball.sync { snowball.remove() }
                     return@removeIf true
                 } else {
                     val dustOptions = BallAttribute.dustOptionsOf(snowball.item.type) ?: run {
-                        snowball.sync { snowball.remove() }
+                        snowball.remove()
                         task.cancel()
                         return@removeIf true
                     }

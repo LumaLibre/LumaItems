@@ -94,7 +94,7 @@ class JobsBoosterItem : CustomItemFunctions() {
 
 
     private fun doubleToMultiplier(value: Double, usePercent: Boolean = false): String {
-        return if (usePercent) {
+        return if (value < 1 || usePercent) {
             "${(value * 100).toInt()}%"
         } else {
             "${(value + 1).toInt()}x"
