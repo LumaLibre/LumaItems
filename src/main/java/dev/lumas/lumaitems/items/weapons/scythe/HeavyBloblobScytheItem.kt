@@ -211,17 +211,17 @@ class HeavyBloblobScytheItem : CustomItemFunctions() {
 
     private fun trackSnowball(snowball: Snowball) {
         var count = 0
-        Executors.asyncTimer(0, 1) { task ->
+        snowball.syncTimer(0, 1) { task ->
             if (snowball.isDead || snowball.location.block.isLiquid || ++count >= 200) {
                 task.cancel()
                 snowball.sync { snowball.remove() }
-                return@asyncTimer
+                return@syncTimer
             }
 
             val dustOptions = BallAttribute.dustOptionsOf(snowball.item.type) ?: run {
                 task.cancel()
                 snowball.sync { snowball.remove() }
-                return@asyncTimer
+                return@syncTimer
             }
             snowball.world.spawnParticle(Particle.DUST, snowball.location, 1, 0.05, 0.05, 0.05, 0.1, dustOptions)
         }

@@ -12,6 +12,7 @@ import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.tiers.Tier
 import java.util.concurrent.TimeUnit
 import org.bukkit.Bukkit
@@ -161,10 +162,10 @@ class SpringtideScytheItem : CustomItemFunctions() {
             player.world.addEntity(snowball)
         }
 
-        Executors.asyncTimer(0, 1) { task ->
+        snowballs.syncTimer(0, 1) { task ->
             if (snowballs.isEmpty() || ticksRan++ > 80) {
                 task.cancel()
-                return@asyncTimer
+                return@syncTimer
             }
             snowballs.removeIf {
                 if (it.isDead) {
