@@ -7,7 +7,7 @@ import dev.lumas.lumaitems.model.CustomItem
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCrafting
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import kotlin.random.Random
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -35,7 +35,7 @@ class AstralOrbItem : CustomItem {
                 player.playSound(player.location, Sound.ENTITY_EVOKER_CAST_SPELL, 1f, 1f)
                 for (globalPlayer in Bukkit.getOnlinePlayers()) {
                     globalPlayer.playSound(globalPlayer.location, Sound.ENTITY_EVOKER_CAST_SPELL, 0.9f, 1f)
-                    globalPlayer.sendFormatted("<#E2E2E2><#F7FFC9>${player.name}</#F7FFC9> has revealed a relic inside of an <b><#AC87FB>Astral</#AC87FB></b> <#F7FFC9>Orb</#F7FFC9>!")
+                    globalPlayer.send("<#E2E2E2><#F7FFC9>${player.name}</#F7FFC9> has revealed a relic inside of an <b><#AC87FB>Astral</#AC87FB></b> <#F7FFC9>Orb</#F7FFC9>!")
                 }
 
                 Util.giveItem(player, getAstralItem())

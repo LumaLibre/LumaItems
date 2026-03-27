@@ -11,7 +11,7 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.registry.StringIdentifier
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -59,7 +59,7 @@ class GiveItemCommand : SubCommand {
                 if (customItem.isEmpty) continue
                 Util.giveItem(player, customItem)
             }
-            player.sendFormatted("You have been given all custom items!")
+            player.send("You have been given all custom items!")
         }
         return true
     }

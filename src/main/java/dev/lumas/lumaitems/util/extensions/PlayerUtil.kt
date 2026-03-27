@@ -1,7 +1,7 @@
 @file:JvmName("PlayerUtil")
 package dev.lumas.lumaitems.util.extensions
 
-import dev.lumas.lumacore.utility.Text
+import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.enums.TriState
 import dev.lumas.lumaitems.hooks.ProtectionHook
 import dev.lumas.lumaitems.hooks.TownyHook
@@ -185,10 +185,14 @@ fun Player.takeItem(itemStack: ItemStack, amount: Int): Boolean {
     throw RuntimeException("Failed to remove: $couldNotRemove from $name's inventory!")
 }
 
-fun Player.sendFormatted(msg: String) {
+fun Player.send(msg: String) {
     Text.msg(this, msg)
 }
 
-fun CommandSender.sendFormatted(msg: String) {
+fun CommandSender.send(msg: String) {
     Text.msg(this, msg)
+}
+
+fun Player.actionBar(msg: String) {
+    sendActionBar(Text.mm(msg))
 }

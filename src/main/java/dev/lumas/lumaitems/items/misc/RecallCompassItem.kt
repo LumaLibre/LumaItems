@@ -6,7 +6,7 @@ import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Location
@@ -49,7 +49,7 @@ class RecallCompassItem : CustomItemFunctions() {
         event.item?.takeIf { it.isMatchingItem(KEY) } ?: return
 
         if (event.clickedBlock?.type == Material.LODESTONE) {
-            player.sendFormatted("<#D7C2F2>This compass only knows one destination... Home.")
+            player.send("<#D7C2F2>This compass only knows one destination... Home.")
             event.isCancelled = true
             return
         }
@@ -59,12 +59,12 @@ class RecallCompassItem : CustomItemFunctions() {
 
         val from = player.location
         val to = player.respawnLocation ?: run {
-            player.sendFormatted("<#D7C2F2>You have no respawn point set.")
+            player.send("<#D7C2F2>You have no respawn point set.")
             return
         }
 
         if (from.world.equals(to.world) && from.distanceSquared(to) < 9) {
-            player.sendFormatted("<#D7C2F2>You are already within your comfort zone.")
+            player.send("<#D7C2F2>You are already within your comfort zone.")
             return
         }
 

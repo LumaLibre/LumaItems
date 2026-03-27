@@ -9,12 +9,15 @@ import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import com.gmail.nossr50.events.skills.secondaryabilities.SubSkillBlockEvent
 import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
+import dev.lumas.core.util.ContextLogger
 import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
+import io.papermc.paper.event.player.AsyncChatEvent
 import java.util.EnumSet
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDamageEvent
@@ -40,10 +43,10 @@ import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
-import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInputEvent
@@ -65,6 +68,11 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
  * Abstract class which gives a dedicated function for each action at the cost of added overhead.
  */
 abstract class CustomItemFunctions : CustomItem {
+
+    companion object {
+        @JvmStatic
+        protected val LOGGER: ContextLogger = ContextLogger.getLogger(NamedTextColor.AQUA)
+    }
 
     private var fireAnywaysCached: EnumSet<Action>? = null
     private var fireAnywaysInitialized: Boolean = false
@@ -104,7 +112,8 @@ abstract class CustomItemFunctions : CustomItem {
             Action.FISH -> onFish(player, event as PlayerFishEvent)
             Action.ELYTRA_BOOST -> onElytraBoost(player, event as PlayerElytraBoostEvent)
             Action.PLAYER_CROUCH -> onPlayerCrouch(player, event as PlayerToggleSneakEvent)
-            Action.ASYNC_CHAT -> onAsyncChat(player, event as AsyncPlayerChatEvent)
+            Action.ASYNC_CHAT -> onAsyncChat(player, event as AsyncChatEvent)
+            Action.COMMAND_PREPROCESS -> onCommandPreProcess(player, event as PlayerCommandPreprocessEvent)
             Action.MOVE -> onMove(player, event as PlayerMoveEvent)
             Action.INPUT -> onInput(player, event as PlayerInputEvent)
             Action.ENTITY_MOVE -> onEntityMove(event as EntityMoveEvent)
@@ -178,7 +187,8 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onFish(player: Player, event: PlayerFishEvent) {}
     open fun onElytraBoost(player: Player, event: PlayerElytraBoostEvent) {}
     open fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {}
-    open fun onAsyncChat(player: Player, event: AsyncPlayerChatEvent) {}
+    open fun onAsyncChat(player: Player, event: AsyncChatEvent) {}
+    open fun onCommandPreProcess(player: Player, event: PlayerCommandPreprocessEvent) {}
     open fun onMove(player: Player, event: PlayerMoveEvent) {}
     open fun onInput(player: Player, event: PlayerInputEvent) {}
     open fun onEntityMove(event: EntityMoveEvent) {}

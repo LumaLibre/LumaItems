@@ -4,6 +4,7 @@ import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.astral.GrubbyRelicItem
 import dev.lumas.lumaitems.registry.Registry
@@ -33,7 +34,7 @@ class JobsListeners : ItemListener() {
             fire(Util.getAllEquipmentNBT(player), Action.JOBS_PRE_PAYMENT, player, event, true)
         }
 
-        if (Random.nextInt(20_000) > 2 || event.job.name == HUNTER_JOB) return
+        if (Random.nextInt(20_000) > 2 || event.job.name == HUNTER_JOB || Registry.CONFIGS.getOrThrow(RelicsYml::class).disableNaturalRelicWorlds.contains(player.world.name)) return
 
         val grubby = Registry.CUSTOM_ITEMS.getOrThrow(GrubbyRelicItem::class).createItem().second
         Util.giveItem(player, grubby)

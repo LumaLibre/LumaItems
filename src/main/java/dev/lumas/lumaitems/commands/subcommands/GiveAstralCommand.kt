@@ -9,7 +9,7 @@ import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.configuration.files.AstralYml
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCrafting
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -27,7 +27,7 @@ class GiveAstralCommand : SubCommand {
     override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
         val player = sender as? Player ?: return false
         if (args.size != 1) {
-            player.sendFormatted("Invalid arguments")
+            player.send("Invalid arguments")
             return false
         }
         val items = RelicCrafting.getItemsFromClass(args[0])

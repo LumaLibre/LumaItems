@@ -5,7 +5,7 @@ import dev.lumas.lumacore.reflect.ReflectionUtil;
 import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.enums.Action;
 import dev.lumas.lumaitems.events.items.PassiveListeners;
-import dev.lumas.lumaitems.guis.AbstractGui;
+import dev.lumas.lumaitems.guis.LumaItemsAbstractGui;
 import dev.lumas.lumaitems.hooks.Hook;
 import dev.lumas.lumaitems.manager.ItemManager;
 import dev.lumas.lumaitems.registry.Registry;
@@ -92,16 +92,16 @@ public final class LumaItems extends JavaPlugin {
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this); // Immediately disable all listeners to prevent any further events from firing
-        moduleManager.unregisterModules();
-        passiveListeners.onPluginAction(Action.PLUGIN_DISABLE); // Then fire this for whatever items need to use this
-        passiveListeners.onPluginActionGlobal(Action.PLUGIN_DISABLE_GLOBAL);
-
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getOpenInventory().getTopInventory().getHolder(false) instanceof AbstractGui) {
+            if (player.getOpenInventory().getTopInventory().getHolder(false) instanceof LumaItemsAbstractGui) {
                 player.closeInventory();
             }
         }
+
+        moduleManager.unregisterModules();
+        passiveListeners.onPluginAction(Action.PLUGIN_DISABLE); // Then fire this for whatever items need to use this
+        passiveListeners.onPluginActionGlobal(Action.PLUGIN_DISABLE_GLOBAL);
     }
 
     @NotNull

@@ -7,7 +7,7 @@ import dev.lumas.lumaitems.model.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -77,7 +77,7 @@ class SummertideShellItem : CustomItem {
                     meta.persistentDataContainer.set(NamespacedKey(instance(), "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
-                    player.sendFormatted("Changed to ${newAbilityType.fName} spell.")
+                    player.send("Changed to ${newAbilityType.fName} spell.")
                 } else {
                     when (activeAbilityType) {
                         AbilityType.SPEED -> speedAbility(player)

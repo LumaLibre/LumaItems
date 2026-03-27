@@ -2,10 +2,11 @@ package dev.lumas.lumaitems.events
 
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.EntityArmor
 import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.enums.Rarity
-import dev.lumas.lumaitems.guis.AbstractGui
+import dev.lumas.lumaitems.guis.LumaItemsAbstractGui
 import dev.lumas.lumaitems.guis.DisassemblerGui
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.PersistentDataRecord
@@ -60,7 +61,7 @@ class GeneralListeners : Listener {
         if (Random.nextInt(101) > 8 || livingEntity !is Enemy) return // 8% chance to spawn a relic
 
         Executors.asyncDelayed(1) {
-            if (livingEntity.hasMetadata("NO_RELIC")) return@asyncDelayed
+            if (livingEntity.hasMetadata("NO_RELIC") || Registry.CONFIGS.getOrThrow(RelicsYml::class).disableNaturalRelicWorlds.contains(livingEntity.world.name)) return@asyncDelayed
 
             val rarity: Rarity = if (isBoss) Rarity.BOSS[0] else Rarity.GENERIC.random()
             val material = rarity.materials.random()
@@ -128,8 +129,8 @@ class GeneralListeners : Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onInventoryClick(event: InventoryClickEvent) {
-        if (event.inventory.getHolder(false) is AbstractGui) {
-            (event.inventory.holder as AbstractGui).onInventoryClick(event)
+        if (event.inventory.getHolder(false) is LumaItemsAbstractGui) {
+            (event.inventory.holder as LumaItemsAbstractGui).onInventoryClick(event)
             return
         }
 
@@ -150,8 +151,8 @@ class GeneralListeners : Listener {
 
     @EventHandler
     fun onInventoryClose(event: InventoryCloseEvent) {
-        if (event.inventory.getHolder(false) !is AbstractGui) return
-        (event.inventory.holder as AbstractGui).onInventoryClose(event)
+        if (event.inventory.getHolder(false) !is LumaItemsAbstractGui) return
+        (event.inventory.holder as LumaItemsAbstractGui).onInventoryClose(event)
     }
 
 

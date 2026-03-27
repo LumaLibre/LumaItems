@@ -149,7 +149,4 @@ class WanderersDecanterBootsItem : CustomItemFunctions() {
         STATE.remove(player.uniqueId)
     }
 
-    override fun onPluginDisableGlobal() {
-        STATE.clear()
-    }
 }

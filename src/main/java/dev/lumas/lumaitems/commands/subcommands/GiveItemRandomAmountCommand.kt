@@ -11,7 +11,7 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.registry.StringIdentifier
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.extensions.getNextIntArgument
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -32,7 +32,7 @@ class GiveItemRandomAmountCommand : SubCommand {
         val until = args.getOrNull(3)?.toIntOrNull() ?: return false
 
         if (from < 0 || until < 0 || from > until) {
-            sender.sendFormatted("Invalid range! Ensure that 'from' and 'until' are non-negative integers and that 'from' is less than or equal to 'until'.")
+            sender.send("Invalid range! Ensure that 'from' and 'until' are non-negative integers and that 'from' is less than or equal to 'until'.")
             return false
         }
 

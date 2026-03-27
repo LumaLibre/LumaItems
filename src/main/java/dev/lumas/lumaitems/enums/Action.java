@@ -53,6 +53,7 @@ public enum Action {
     ELYTRA_BOOST, // When a player boosts themselves with an item while gliding with an elytra
     PLAYER_CROUCH, // When a player toggles their sneak button (crouches or un-crouches)
     ASYNC_CHAT, // When a player sends a chat message (Async)
+    COMMAND_PREPROCESS, // When a player executes a command
     MOVE(true), // When a player moves and their position/location has changed
     INPUT(true), // When a key input is received from a player (e.g. pressing a key)
     ENTITY_MOVE(2, true), // When a living entity with specific persistent data moves and their position/location has changed

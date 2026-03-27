@@ -7,7 +7,7 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.util.extensions.namespacedKey
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
@@ -31,7 +31,7 @@ class AddKeyCommand : SubCommand {
         item.editPersistentDataContainer {
             it.set(key.namespacedKey(), PersistentDataType.SHORT, 1)
         }
-        player.sendFormatted("Added key: $key")
+        player.send("Added key: $key")
         return true
     }
 

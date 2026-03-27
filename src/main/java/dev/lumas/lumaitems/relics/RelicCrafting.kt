@@ -73,15 +73,8 @@ object RelicCrafting {
         val astralKey = NamespacedKey(plugin, "astralorb")
         val upgradeCoreKey = NamespacedKey(plugin, "astralupgradecore")
 
-        if (Bukkit.getRecipe(lunarKey) != null) {
-            Executors.global { Bukkit.removeRecipe(lunarKey) }
-
-        }
-        if (Bukkit.getRecipe(astralKey) != null) {
-            Executors.global { Bukkit.removeRecipe(astralKey) }
-        }
-        if (Bukkit.getRecipe(upgradeCoreKey) != null) {
-            Executors.global { Bukkit.removeRecipe(upgradeCoreKey) }
+        if (Bukkit.getRecipe(lunarKey) != null || Bukkit.getRecipe(astralKey) != null || Bukkit.getRecipe(upgradeCoreKey) != null) {
+            return
         }
 
 
@@ -92,7 +85,7 @@ object RelicCrafting {
             "AAA")
         lunarRecipe.setIngredient('A', relicShard)
         lunarRecipe.setIngredient('B', lunarCore)
-        Executors.global { Bukkit.addRecipe(lunarRecipe) }
+        Executors.globalDelayed(10) { Bukkit.addRecipe(lunarRecipe, false) }
 
         val astralRecipe = ShapedRecipe(astralKey, astralOrb)
         astralRecipe.shape(
@@ -101,15 +94,15 @@ object RelicCrafting {
             "AAA")
         astralRecipe.setIngredient('A', relicShard)
         astralRecipe.setIngredient('B', astralCore)
-        Executors.global { Bukkit.addRecipe(astralRecipe) }
+        Executors.globalDelayed(20) { Bukkit.addRecipe(astralRecipe, false) }
 
-        val upgradeCoreRecipe = ShapedRecipe(upgradeCoreKey, astralUpgradeCore)
+        val upgradeCoreRecipe = ShapedRecipe(upgradeCoreKey, astralUpgradeCore, )
         upgradeCoreRecipe.shape(
             "AAA",
             "ABA",
             "AAA")
         upgradeCoreRecipe.setIngredient('A', relicShard)
-        Executors.global { Bukkit.addRecipe(upgradeCoreRecipe) }
+        Executors.globalDelayed(30) { Bukkit.addRecipe(upgradeCoreRecipe, false) }
     }
 
     //TODO

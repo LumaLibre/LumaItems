@@ -9,7 +9,7 @@ import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.extensions.Executors
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.UUID
 import org.bukkit.Color
@@ -80,7 +80,7 @@ class SweetBluetGemstoneItem : CustomItem {
                     meta.persistentDataContainer.set(NamespacedKey(plugin, "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
-                    player.sendFormatted("Changed to ${MiniMessageUtil.convertLegacyToMiniMesssageString(newAbilityType.friendlyName)} <reset>spell.")
+                    player.send("Changed to ${MiniMessageUtil.convertLegacyToMiniMesssageString(newAbilityType.friendlyName)} <reset>spell.")
                 } else if (player.inventory.containsAtLeast(ItemStack(Material.LAPIS_LAZULI), 4)) {
 
                     runAbilityType(activeAbilityType, player)

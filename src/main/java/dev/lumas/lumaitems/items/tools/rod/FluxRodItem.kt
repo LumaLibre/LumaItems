@@ -71,9 +71,12 @@ class FluxRodItem : CustomItemFunctions() {
                 newMultiHook.create(dir, speed)
             }
         } else {
-            val value = multiHook?.handleState(event, event.state) ?: throw IllegalStateException("MultiHook not found")
-            if (value) {
+            val value = multiHook?.handleState(event, event.state)
+
+            if (value != null && value) {
                 activeMultiHooks.remove(multiHook)
+            } else if (value == null) {
+                LOGGER.error("MultiHook is null, but state is not FISHING",  IllegalStateException("MultiHook not found"))
             }
         }
     }

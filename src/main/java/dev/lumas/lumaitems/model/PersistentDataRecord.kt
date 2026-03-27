@@ -12,7 +12,9 @@ class PersistentDataRecord<P, C : Any>(
 ) {
     companion object {
         val PREVENT_NETHERITE_SMITHING_KEY = "prevent-smithing".namespacedKey()
-        val PREVENT_NETHERITE_SMITHING = PersistentDataRecord.create(PREVENT_NETHERITE_SMITHING_KEY, PersistentDataType.SHORT, 1)
+        val PREVENT_NETHERITE_SMITHING = create(PREVENT_NETHERITE_SMITHING_KEY, PersistentDataType.SHORT, 1)
+        val COLORABLE_KEY = "colorable".namespacedKey()
+        val COLORABLE = create(COLORABLE_KEY, PersistentDataType.SHORT, 1)
 
         @JvmStatic
         fun <P, C : Any> create(

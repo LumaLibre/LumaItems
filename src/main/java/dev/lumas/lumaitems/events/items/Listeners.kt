@@ -15,6 +15,7 @@ import dev.lumas.lumaitems.util.extensions.equipmentContainers
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
+import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
@@ -48,6 +49,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.event.player.PlayerInputEvent
@@ -287,15 +289,21 @@ class Listeners : ItemListener() {
         fire(Util.getAllEquipmentNBT(player), Action.PLAYER_CROUCH, player, event)
     }
 
-
-    //@EventHandler (priority = EventPriority.LOWEST) unused
-    fun onPlayerChat(event: AsyncPlayerChatEvent) {
+    @AllSlots
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    fun onPlayerChat(event: AsyncChatEvent) {
         val player = event.player
-
-        val data: PersistentDataContainer = player.persistentDataContainer
-
+        val data = player.equipmentContainers()
         fire(data, Action.ASYNC_CHAT, player, event)
     }
+
+    @AllSlots
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    fun onPlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
+        val player = event.player
+        fire(player.equipmentContainers(), Action.COMMAND_PREPROCESS, player, event)
+    }
+
 
     @AllSlots
     @EventHandler

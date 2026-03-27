@@ -10,7 +10,7 @@ import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.asEnum
 import dev.lumas.lumaitems.util.extensions.getPersistentKey
 import dev.lumas.lumaitems.util.extensions.namespacedKey
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -70,7 +70,7 @@ class JobsBoosterItem : CustomItemFunctions() {
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (QuickTasks.getActiveCooldowns(this) > 0) {
-            player.sendFormatted("This item is on cooldown.")
+            player.send("This item is on cooldown.")
             return
         }
         // TODO: global cooldown

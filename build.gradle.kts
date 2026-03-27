@@ -31,6 +31,7 @@ repositories {
     maven("https://repo.okaeri.cloud/releases")
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.glaremasters.me/repository/towny/")
+    maven("https://repo.codemc.io/repository/EvenMoreFish/")
 }
 
 dependencies {
@@ -49,6 +50,12 @@ dependencies {
     compileOnly("dev.lumas.glowapi:LumaGlowAPI:325d91d")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9-beta1")
     compileOnly("com.palmergames.bukkit.towny:towny:0.102.0.0")
+    compileOnly("com.oheers.evenmorefish:even-more-fish-plugin:2.1.14") {
+        isTransitive = false
+    }
+    compileOnly("com.oheers.evenmorefish:even-more-fish-api:2.1.14") {
+        isTransitive = false
+    }
 
     implementation("com.iridium:IridiumColorAPI:1.0.9")
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")

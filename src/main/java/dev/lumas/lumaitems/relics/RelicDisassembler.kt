@@ -6,7 +6,7 @@ import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID
 import kotlin.random.Random
@@ -76,7 +76,7 @@ object RelicDisassembler {
         if (!rescheduleCooldownTask(player)) {
             return null
         } else if (rarity == Rarity.ASTRAL && action.isLeftClick) {
-            player.sendFormatted("You must left click to disassemble <#F7FFC9>Astral</#F7FFC9> relics")
+            player.send("You must left click to disassemble <#F7FFC9>Astral</#F7FFC9> relics")
             return null
         }
 
@@ -90,7 +90,7 @@ object RelicDisassembler {
             confirmCooldownTasks[player.uniqueId]?.cancel()
             returnValue = true
         } else {
-            player.sendFormatted("Are you sure you want to disassemble this item? Click again to confirm.")
+            player.send("Are you sure you want to disassemble this item? Click again to confirm.")
         }
 
         confirmCooldownTasks[player.uniqueId] = Executors.asyncDelayed(200) {

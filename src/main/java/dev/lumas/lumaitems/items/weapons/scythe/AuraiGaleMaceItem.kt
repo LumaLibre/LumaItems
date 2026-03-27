@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.weapons
+package dev.lumas.lumaitems.items.weapons.scythe
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import dev.lumas.lumaitems.items.ItemFactory
@@ -29,7 +29,7 @@ class AuraiGaleMaceItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.builder()
+        return ItemFactory.Companion.builder()
             .name("<b><gradient:#FAC3C3:#F8C2B4:#FAEBB3:#B8E2FC:#9EB4EC>Aurai Gale Mace</gradient></b>")
             .customEnchants("<#9EB4EC>Updraft")
             .material(Material.MACE)

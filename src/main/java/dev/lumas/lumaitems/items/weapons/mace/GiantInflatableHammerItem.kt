@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.weapons
+package dev.lumas.lumaitems.items.weapons.mace
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
@@ -32,7 +32,7 @@ class GiantInflatableHammerItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.builder()
+        return ItemFactory.Companion.builder()
             .name("<b><#FFA4AD>G<#FFABAD>i<#FFB2AC>a<#FFB9AC>n<#FFBFAB>t <#FFCDAA>I<#FFD7AD>n<#FFE1AF>f<#FEEBB2>l<#FEF5B4>a<#FEFFB7>t<#F1FFB3>a<#E5FFB0>b<#D8FFAC>l<#CBFFA8>e <#B2FFA1>H<#AFFDB4>a<#ADFBC7>m<#AAF8D9>m<#A8F6EC>e<#A5F4FF>r</b>")
             .customEnchants("<#FFA4AD>Astonish")
             .lore("Upon smash attacking, hit", "entities will be stunned.", "", "Occasionally, smash attacks", "with this weapon will push", "entities through the", "ground.")
@@ -47,7 +47,7 @@ class GiantInflatableHammerItem : CustomItemFunctions() {
         stunEntity(event.target ?: return)
 
         val loc = event.target.location
-        if (!AbilityUtil.noBuildPermission(player, loc.block) && Random.nextInt(10) == 1) {
+        if (!AbilityUtil.noBuildPermission(player, loc.block) && Random.Default.nextInt(10) == 1) {
             pushThruGround(loc, player)
         }
     }
@@ -64,7 +64,8 @@ class GiantInflatableHammerItem : CustomItemFunctions() {
             entity.addPotionEffect(PotionEffect(PotionEffectType.SLOWNESS, 150, 10))
         }
         entity.addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, 150, 1))
-        entity.world.spawnParticle(Particle.DUST, entity.eyeLocation, 30, 0.5, 0.2, 0.5, 0.1, Particle.DustOptions(
+        entity.world.spawnParticle(
+            Particle.DUST, entity.eyeLocation, 30, 0.5, 0.2, 0.5, 0.1, Particle.DustOptions(
             colors.random(), 1.4f))
     }
 }

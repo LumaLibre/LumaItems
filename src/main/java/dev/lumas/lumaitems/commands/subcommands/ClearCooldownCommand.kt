@@ -7,7 +7,7 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.util.extensions.QuickTasks
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -23,14 +23,14 @@ import org.bukkit.entity.Player
 class ClearCooldownCommand : SubCommand {
     override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
         val player = args.getOrNull(1)?.let { Bukkit.getPlayerExact(it) } ?: sender as? Player ?: run {
-            sender.sendFormatted("Player not found")
+            sender.send("Player not found")
             return true
         }
 
         QuickTasks.removeNow(player.uniqueId)
         QuickTasks.removeAllFlags(player.uniqueId)
         QuickTasks.removeAllSpellCooldowns(player.uniqueId)
-        sender.sendFormatted("Cleared cooldown for player ${player.name}")
+        sender.send("Cleared cooldown for player ${player.name}")
         return true
     }
 

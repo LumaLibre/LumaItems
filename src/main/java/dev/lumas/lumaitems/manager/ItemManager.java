@@ -4,12 +4,14 @@ import com.google.common.reflect.ClassPath;
 import dev.lumas.lumacore.utility.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
 import dev.lumas.lumaitems.annotations.Ignore;
+import dev.lumas.lumaitems.annotations.Requires;
 import dev.lumas.lumaitems.items.astral.AstralSet;
 import dev.lumas.lumaitems.model.CustomItem;
 import dev.lumas.lumaitems.model.NamedCustomItem;
 import dev.lumas.lumaitems.registry.NamespacedIdentifier;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.registry.StringIdentifier;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,8 +113,12 @@ public final class ItemManager {
                 if (CustomItem.class.isAssignableFrom(clazz) && !clazz.isInterface() &&
                         !Modifier.isAbstract(clazz.getModifiers()) && !clazz.isAnnotationPresent(Ignore.class)
                 ) {
-                    CustomItem item = (CustomItem) clazz.getDeclaredConstructor().newInstance();
-                    registerItem(item);
+                    if (checkRequirements(clazz)) {
+                        CustomItem item = (CustomItem) clazz.getDeclaredConstructor().newInstance();
+                        registerItem(item);
+                    } else {
+                        LOGGER.info("Skipping class " + clazz.getSimpleName() + " due to missing plugin dependency");
+                    }
                 }
             } catch (IllegalStateException e) {
                 LOGGER.error("Failed to register class " + clazz.getSimpleName(), e);
@@ -175,5 +181,13 @@ public final class ItemManager {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+    }
+
+    private boolean checkRequirements(Class<?> clazz) {
+        if (!clazz.isAnnotationPresent(Requires.class)) {
+            return true;
+        }
+        String plugin = clazz.getAnnotation(Requires.class).value();
+        return Bukkit.getPluginManager().getPlugin(plugin) != null;
     }
 }

@@ -7,7 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 
-class ArmorStandPosingGui(val armorStand: ArmorStand) : AbstractGui {
+class ArmorStandPosingGui(val armorStand: ArmorStand) : LumaItemsAbstractGui {
 
     companion object {
         val ROTATIONS_LORE = mutableListOf(

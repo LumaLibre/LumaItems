@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-class DisassemblerGui : AbstractGui {
+class DisassemblerGui : LumaItemsAbstractGui {
 
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()

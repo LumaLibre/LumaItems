@@ -8,7 +8,7 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -27,7 +27,7 @@ class AddTierCommand : SubCommand {
         sender as Player
         val item = sender.inventory.itemInMainHand
         if (item.type.isAir) {
-            sender.sendFormatted("You must be holding an item to add a tier!")
+            sender.send("You must be holding an item to add a tier!")
             return false
         }
 
@@ -43,7 +43,7 @@ class AddTierCommand : SubCommand {
             meta.lore(lore)
         }
 
-        sender.sendFormatted("Successfully added tier to item.")
+        sender.send("Successfully added tier to item.")
         return true
     }
 

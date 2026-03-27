@@ -11,6 +11,9 @@ import org.bukkit.Material
 @File("relics.yml")
 class RelicsYml : OkaeriFile() {
 
+    @CustomKey("disable-natural-relic-worlds")
+    var disableNaturalRelicWorlds = listOf("pale_side", "pale_nether", "pale_end")
+
     var disassembler = DisassemblerSection()
     @CustomKey("relic-materials")
     var relicMaterials = RelicMaterialsSection()

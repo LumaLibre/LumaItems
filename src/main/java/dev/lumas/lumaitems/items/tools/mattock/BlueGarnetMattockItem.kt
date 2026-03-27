@@ -1,11 +1,9 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
@@ -17,7 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
 @Disable(WorldName.EVENT_NEW)
-class BlueGarnetMattockItem : CustomItem {
+open class BlueGarnetMattockItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         val item = ItemFactory(
@@ -32,25 +30,18 @@ class BlueGarnetMattockItem : CustomItem {
         return Pair("bluegarnetmattock", item.createItem())
     }
 
-    override fun executeActions(type: Action, player: Player, event: Any): Boolean {
-        when (type) {
-            Action.BREAK_BLOCK -> {
-                event as BlockBreakEvent
-                val b = event.block
+    override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
+        val brokenBlock = event.block
 
-                val blocklist = ShapeUtil.getCuboidBlocks(b.location.add(1.0, 1.0, 1.0), b.location.add(-1.0, -1.0, -1.0)).filter {
-                    !Kind.BLACKLIST.isTagged(it.type) && it.isSolid
-                }
-
-
-                for (block in blocklist) {
-                    block.world.spawnParticle(Particle.BLOCK, block.location.add(0.5, 0.5, 0.5), 10, 0.5, 0.5, 0.5, 0.1, block.blockData)
-                    block.breakNaturallyWithLog(player, player.inventory.itemInMainHand)
-                }
-            }
-            else -> return false
+        val blocklist = ShapeUtil.getCuboidBlocks(brokenBlock.location.add(1.0, 1.0, 1.0), brokenBlock.location.add(-1.0, -1.0, -1.0)).filter {
+            !Kind.BLACKLIST.isTagged(it.type) && it.isSolid
         }
-        return true
+
+
+        for (block in blocklist) {
+            block.world.spawnParticle(Particle.BLOCK, block.location.add(0.5, 0.5, 0.5), 10, 0.5, 0.5, 0.5, 0.1, block.blockData)
+            block.breakNaturallyWithLog(player, player.inventory.itemInMainHand)
+        }
     }
 
 }

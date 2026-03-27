@@ -1882,6 +1882,9 @@ public class ParticleDisplay implements Cloneable {
                         color, color,
                         particleSize
                 );
+            } else if (display.particle == Particle.INSTANT_EFFECT) {
+                org.bukkit.Color color = org.bukkit.Color.fromRGB(this.color.getRed(), this.color.getGreen(), this.color.getBlue());
+                return new Particle.Spell(color, particleSize);
             }
 
             if (SUPPORTS_ALPHA_COLORS) {

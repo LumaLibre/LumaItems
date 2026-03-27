@@ -15,7 +15,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-class AstralUpgradeGui : AbstractGui {
+class AstralUpgradeGui : LumaItemsAbstractGui {
 
     companion object {
         private val plugin: LumaItems = LumaItems.getInstance()

@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.weapons
+package dev.lumas.lumaitems.items.weapons.trident
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.annotations.FireAnyways

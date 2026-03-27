@@ -10,7 +10,7 @@ import dev.lumas.lumaitems.util.extensions.asEnum
 import dev.lumas.lumaitems.util.extensions.formatEnumerator
 import dev.lumas.lumaitems.util.extensions.getPersistentKey
 import dev.lumas.lumaitems.util.extensions.namespacedKey
-import dev.lumas.lumaitems.util.extensions.sendFormatted
+import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -37,7 +37,7 @@ class UnnamedGemstoneItem : CustomItemFunctions() {
     private enum class Spell(override val cooldown: Long) : AbstractSpell {
         LOVE_BOMB(100L) {
             override fun onHit(player: Player, event: ProjectileHitEvent) {
-                player.sendFormatted("not yet implemented")
+                player.send("not yet implemented")
             }
         },
         LIGHTNING(200L) {
@@ -65,7 +65,7 @@ class UnnamedGemstoneItem : CustomItemFunctions() {
             // get/set next spell
             val nextSpell = Spell.entries[(currentSpell.ordinal + 1) % Spell.entries.size]
             item.setPersistentKey(spell_key, PersistentDataType.STRING, nextSpell.name)
-            player.sendFormatted("Spell set to ${nextSpell.formatEnumerator()}")
+            player.send("Spell set to ${nextSpell.formatEnumerator()}")
             return
         }
 

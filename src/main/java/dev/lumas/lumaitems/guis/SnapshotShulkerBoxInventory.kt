@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory
 
 class SnapshotShulkerBoxInventory(
     private val shulkerBox: ShulkerBox
-) : AbstractGui {
+) : LumaItemsAbstractGui {
 
     companion object {
         private const val SHULKER_BOX_SIZE = 27
