@@ -227,9 +227,9 @@ class SpringtideScytheItem : CustomItemFunctions() {
                 random().nextInt(9, 12).toDouble(),
                 random().nextDouble(-CIRCLE_RADIUS, CIRCLE_RADIUS)
             )
-            val projectile = fallingProjectile(spawnLocation, player, SpellType.NIGHTFALL_DOWNPOUR)
-            snowballs.add(projectile)
             location.sync {
+                val projectile = fallingProjectile(spawnLocation, player, SpellType.NIGHTFALL_DOWNPOUR)
+                snowballs.add(projectile)
                 location.world.addEntity(projectile)
             }
         }, 0, 50, TimeUnit.MILLISECONDS)
