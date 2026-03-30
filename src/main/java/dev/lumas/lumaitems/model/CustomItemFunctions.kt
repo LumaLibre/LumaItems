@@ -12,6 +12,7 @@ import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
 import dev.lumas.core.util.ContextLogger
 import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
+import io.papermc.paper.event.entity.EntityCompostItemEvent
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
@@ -149,6 +150,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.PREPARE_CRAFT -> onPrepareCraft(player, event as PrepareItemCraftEvent)
             Action.CRAFT_ITEM -> onCraftItem(player, event as CraftItemEvent)
             Action.MCMMO_HERBALISM_REPLANT -> onMcMMOHerbalismReplant(player, event as SubSkillBlockEvent)
+            Action.ENTITY_COMPOST_ITEM -> onEntityCompostItem(event as EntityCompostItemEvent)
         }
         return true
     }
@@ -224,6 +226,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {}
     open fun onCraftItem(player: Player, event: CraftItemEvent) {}
     open fun onMcMMOHerbalismReplant(player: Player, event: SubSkillBlockEvent) {}
+    open fun onEntityCompostItem(event: EntityCompostItemEvent) {}
 
 
     // TODO: Optimize this with a static map in a companion object?

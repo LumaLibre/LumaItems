@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.tiers.Tier
+import io.papermc.paper.event.entity.EntityCompostItemEvent
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -52,6 +53,11 @@ class MiniPoppyItem : CustomItemFunctions() {
         if (!item.isMatchingItem(key)) {
             return
         }
+        event.isCancelled = true
+    }
+
+    override fun onEntityCompostItem(event: EntityCompostItemEvent) {
+        if (!event.item.isMatchingItem(key)) return
         event.isCancelled = true
     }
 }

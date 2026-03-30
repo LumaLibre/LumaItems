@@ -13,6 +13,7 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.equipmentContainers
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
+import io.papermc.paper.event.entity.EntityCompostItemEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
@@ -546,6 +547,12 @@ class Listeners : ItemListener() {
             .mapNotNull { it?.itemMeta?.persistentDataContainer }
             .ifEmpty { return }
         fire(datas, Action.PREPARE_CRAFT, player, event)
+    }
+
+    @EventHandler
+    fun onEntityCompostItem(event: EntityCompostItemEvent) {
+        val data: PersistentDataContainer = event.item.itemMeta?.persistentDataContainer ?: return
+        fire(data, Action.ENTITY_COMPOST_ITEM, event.entity as? Player, event)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

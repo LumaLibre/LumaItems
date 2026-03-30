@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.AttributeContainer
 import dev.lumas.lumaitems.model.CustomItemFunctions
+import io.papermc.paper.event.entity.EntityCompostItemEvent
 import dev.lumas.lumaitems.util.extensions.isInAnySlot
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isWearing
@@ -77,6 +78,11 @@ class MiniMushroomItem : CustomItemFunctions() {
         if (item.isMatchingItem(KEY)) {
             event.isCancelled = true
         }
+    }
+
+    override fun onEntityCompostItem(event: EntityCompostItemEvent) {
+        if (!event.item.isMatchingItem(KEY)) return
+        event.isCancelled = true
     }
 
     private fun ItemStack.doModify() {
