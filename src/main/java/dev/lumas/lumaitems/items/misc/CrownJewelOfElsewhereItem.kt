@@ -16,6 +16,8 @@ import org.bukkit.entity.EnderPearl
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.ProjectileHitEvent
+import org.bukkit.event.inventory.CraftItemEvent
+import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -118,5 +120,9 @@ class CrownJewelOfElsewhereItem : CustomItemFunctions() {
         }
         loc.world?.spawnParticle(Particle.PORTAL, loc, 40, 0.4, 0.4, 0.4, 0.5)
         loc.world?.spawnParticle(Particle.END_ROD, loc, 15, 0.2, 0.3, 0.2, 0.15)
+    }
+
+    override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
+        event.inventory.result = null
     }
 }
