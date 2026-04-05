@@ -273,7 +273,7 @@ abstract class ReformationPouchItemNest(private val target: WoodSet) : CustomIte
         DARK_OAK("dark_oak", Material.BLACK_BUNDLE, "502E0F", Material.DARK_OAK_LEAVES, Material.DARK_OAK_SAPLING),
         MANGROVE("mangrove", Material.RED_BUNDLE, "86352F", Material.MANGROVE_LEAVES, Material.MANGROVE_PROPAGULE),
         CHERRY("cherry", Material.PINK_BUNDLE, "F3B8B0", Material.CHERRY_LEAVES, Material.CHERRY_SAPLING),
-        PALE_OAK("pale_oak", Material.WHITE_BUNDLE, "E8E3E0", Material.PALE_OAK_LEAVES, Material.PALE_OAK_SAPLING)
+        PALE_OAK("pale_oak", Material.WHITE_BUNDLE, "E8E3E0", Material.PALE_OAK_LEAVES, Material.PALE_OAK_SAPLING),
     }
 
     override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
