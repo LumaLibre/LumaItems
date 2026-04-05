@@ -1,6 +1,6 @@
 package dev.lumas.lumaitems.items.misc.nests
 
-import com.destroystokyo.paper.MaterialTags
+import dev.lumas.lumaitems.util.extensions.computeDyedBundleResult
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.model.PersistentDataRecord
@@ -277,49 +277,13 @@ abstract class ReformationPouchItemNest(private val target: WoodSet) : CustomIte
     }
 
     override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
-        val inv = event.inventory
-        val result = computeDyedResult(inv.matrix) ?: return
-        inv.result = result
+        val result = computeDyedBundleResult(event.inventory.matrix, KEY.key) ?: return
+        event.inventory.result = result
     }
 
     override fun onCraftItem(player: Player, event: CraftItemEvent) {
-        val inv = event.inventory
-        val result = computeDyedResult(inv.matrix) ?: return
+        val result = computeDyedBundleResult(event.inventory.matrix, KEY.key) ?: return
         event.currentItem = result
-    }
-
-    private fun computeDyedResult(matrix: Array<ItemStack?>): ItemStack? {
-        var pouch: ItemStack? = null
-        var dye: Material? = null
-        for (it in matrix) {
-            if (it == null || it.type == Material.AIR) continue
-            when {
-                it.isMatchingItem(KEY) -> {
-                    if (pouch != null) return null
-                    pouch = it
-                }
-                it.type.isDye() -> {
-                    if (dye != null) return null
-                    dye = it.type
-                }
-                else -> return null
-            }
-        }
-        val basePouch = pouch ?: return null
-        val dyeMat = dye ?: return null
-        val outMat = dyeMat.toBundleMaterial() ?: return null
-        if (basePouch.type == outMat) return null
-        val out = ItemStack(outMat, basePouch.amount.coerceAtLeast(1))
-        out.itemMeta = basePouch.itemMeta
-        return out
-    }
-
-    private fun Material.isDye(): Boolean = MaterialTags.DYES.isTagged(this)
-
-    private fun Material.toBundleMaterial(): Material? {
-        if (!isDye()) return null
-        val base = name.removeSuffix("_DYE")
-        return Material.matchMaterial("${base}_BUNDLE")
     }
 }
 

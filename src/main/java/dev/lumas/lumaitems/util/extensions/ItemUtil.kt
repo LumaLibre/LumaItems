@@ -1,6 +1,7 @@
 @file:JvmName("ItemUtil")
 package dev.lumas.lumaitems.util.extensions
 
+import com.destroystokyo.paper.MaterialTags
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.lumas.lumaitems.LumaItems
 import java.util.UUID
@@ -59,6 +60,40 @@ fun ItemStack.willBreak(test: Int): Boolean {
     val maxDmg = if (meta.hasMaxDamage()) meta.maxDamage else type.maxDurability.toInt()
     if (maxDmg <= 0) return false
     return meta.damage + test >= maxDmg
+}
+
+fun Material.isDye(): Boolean = MaterialTags.DYES.isTagged(this)
+
+fun Material.toBundleMaterial(): Material? {
+    if (!isDye()) return null
+    val base = name.removeSuffix("_DYE")
+    return Material.matchMaterial("${base}_BUNDLE")
+}
+
+fun computeDyedBundleResult(matrix: Array<ItemStack?>, key: String): ItemStack? {
+    var bundle: ItemStack? = null
+    var dye: Material? = null
+    for (it in matrix) {
+        if (it == null || it.type == Material.AIR) continue
+        when {
+            it.isMatchingItem(key) -> {
+                if (bundle != null) return null
+                bundle = it
+            }
+            it.type.isDye() -> {
+                if (dye != null) return null
+                dye = it.type
+            }
+            else -> return null
+        }
+    }
+    val baseBundle = bundle ?: return null
+    val dyeMat = dye ?: return null
+    val outMat = dyeMat.toBundleMaterial() ?: return null
+    if (baseBundle.type == outMat) return null
+    val out = ItemStack(outMat, baseBundle.amount.coerceAtLeast(1))
+    out.itemMeta = baseBundle.itemMeta
+    return out
 }
 
 fun ItemStack.setRemainingHealth(health: Int) {
