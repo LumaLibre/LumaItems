@@ -11,6 +11,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EnderPearl
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
@@ -40,6 +41,8 @@ class CrownJewelOfElsewhereItem : CustomItemFunctions() {
                 "<gradient:#5d85dc:#CA51CB>Slip Between Worlds</gradient>",
                 "<gray>Unbreaking</gray>" // this is intentionally not a vanilla enchantment
             )
+            .vanillaEnchants(Enchantment.LOYALTY to 5)
+            .hideEnchants(true)
             .lore(
                 "A pearl that has slipped between",
                 "worlds, always returning to",
