@@ -66,7 +66,6 @@ class ChargedBreezeRodItem : CustomItemFunctions() {
         val loc = entity.location.add(0.0, 0.5, 0.0)
         entity.world.playSound(loc, Sound.ENTITY_WIND_CHARGE_WIND_BURST, 0.9f, 0.9f)
         entity.world.playSound(loc, Sound.ENTITY_PLAYER_ATTACK_KNOCKBACK, 1.0f, 1.1f)
-        entity.world.spawnParticle(Particle.GUST_EMITTER_LARGE, loc, 1, 0.03, 0.03, 0.03, 0.01)
         entity.world.spawnParticle(Particle.GUST_EMITTER_SMALL, loc, 1, 0.05, 0.05, 0.05, 0.01)
         entity.world.spawnParticle(Particle.DUST_PLUME, loc, 25, 0.3, 0.5, 0.3, 0.15)
     }
