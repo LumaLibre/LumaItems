@@ -21,7 +21,7 @@ class SuperchargedBreezeRod : CustomItemFunctions() {
     companion object {
         private const val KEY = "supercharged-breeze-rod"
 
-        private const val KNOCKBACK_POWER = 10.0
+        private const val KNOCKBACK_POWER = 14.0
         private const val UPWARD_BOOST = 1.25
     }
 
@@ -57,9 +57,11 @@ class SuperchargedBreezeRod : CustomItemFunctions() {
         val dir = player.location.direction
 
         entity.syncDelayed(1) { _ ->
-            entity.knockback(KNOCKBACK_POWER, -dir.x, -dir.z)
             val vel = entity.velocity
-            entity.velocity = vel.setY(vel.y + UPWARD_BOOST)
+            entity.velocity = vel
+                .setX(dir.x * KNOCKBACK_POWER)
+                .setZ(dir.z * KNOCKBACK_POWER)
+                .setY(vel.y + UPWARD_BOOST)
         }
 
         val loc = entity.location.add(0.0, 0.5, 0.0)

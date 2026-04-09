@@ -58,9 +58,11 @@ class ChargedBreezeRodItem : CustomItemFunctions() {
         val dir = player.location.direction
 
         entity.syncDelayed(1) { _ ->
-            entity.knockback(KNOCKBACK_POWER, -dir.x, -dir.z)
             val vel = entity.velocity
-            entity.velocity = vel.setY(vel.y + UPWARD_BOOST)
+            entity.velocity = vel
+                .setX(dir.x * KNOCKBACK_POWER)
+                .setZ(dir.z * KNOCKBACK_POWER)
+                .setY(vel.y + UPWARD_BOOST)
         }
 
         val loc = entity.location.add(0.0, 0.5, 0.0)
