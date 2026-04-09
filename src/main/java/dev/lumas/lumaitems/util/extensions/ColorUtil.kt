@@ -20,6 +20,34 @@ fun String.toBukkitColor(): BukkitColor {
     return this.toColor().toBukkitColor()
 }
 
+fun Color.mix(other: Color, ratio: Float): Color {
+    val r = (this.red * (1 - ratio) + other.red * ratio).toInt()
+    val g = (this.green * (1 - ratio) + other.green * ratio).toInt()
+    val b = (this.blue * (1 - ratio) + other.blue * ratio).toInt()
+    val a = (this.alpha * (1 - ratio) + other.alpha * ratio).toInt()
+    return Color(r, g, b, a)
+}
+
+fun Color.mix(other: Color): Color {
+    return this.mix(other, 0.5f)
+}
+
+fun BukkitColor.mix(other: BukkitColor, ratio: Float): BukkitColor {
+    return this.toColor().mix(other.toColor(), ratio).toBukkitColor()
+}
+
+fun BukkitColor.mix(other: BukkitColor): BukkitColor {
+    return this.mix(other, 0.5f)
+}
+
+fun Color.toHex(): String {
+    return String.format("#%02x%02x%02x", this.red, this.green, this.blue)
+}
+
+fun BukkitColor.toHex(): String {
+    return this.toColor().toHex()
+}
+
 fun blend(vararg c: Color): Color {
     val ratio = 1f / (c.size.toFloat())
 

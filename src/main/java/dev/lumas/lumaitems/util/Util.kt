@@ -9,8 +9,9 @@ import dev.lumas.lumaitems.util.extensions.hasPersistentKey
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.itemStack
 import dev.lumas.lumaitems.util.extensions.namespacedKey
-import dev.lumas.lumaitems.util.extensions.setBase64Texture
+import dev.lumas.lumaitems.util.extensions.setTexture
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.extensions.toColor
 import io.papermc.paper.entity.PlayerGiveResult
@@ -35,8 +36,8 @@ object Util {
     const val WITH_DELIMITER = "((?<=%1\$s)|(?=%1\$s))"
 
 
-    fun giveItem(player: Player, item: ItemStack): PlayerGiveResult = player.give(item)
-    fun giveItem(player: Player, items: Collection<ItemStack>): PlayerGiveResult = player.give(items)
+    fun giveItem(player: Player, item: ItemStack) = player.sync { player.give(item) }
+    fun giveItem(player: Player, items: Collection<ItemStack>) = player.sync { player.give(items)}
 
     fun getAllEquipmentNBT(player: Player) = player.equipmentContainers()
     fun getHandNBT(player: Player) = player.handContainers()
@@ -47,8 +48,8 @@ object Util {
     fun isItemInSlot(identifier: String, slot: EquipmentSlot, player: Player) = player.isItemInSlot(identifier, slot)
     fun isItemInSlot(identifier: NamespacedKey, slot: EquipmentSlot, player: Player) = player.isItemInSlot(identifier, slot)
 
-    fun playerHeadFromBase64(base64: String, amt: Int) = Material.PLAYER_HEAD.itemStack { it.setBase64Texture(base64) }
-    fun setBase64Texture(meta: ItemMeta, base64: String?) = meta.setBase64Texture(base64)
+    fun playerHeadFromBase64(base64: String, amt: Int) = Material.PLAYER_HEAD.itemStack(amt) { it.setTexture(base64) }
+    fun setBase64Texture(meta: ItemMeta, base64: String?) = meta.setTexture(base64)
 
     fun hex2BukkitColor(colorStr: String) = colorStr.toBukkitColor()
     fun hex2AwtColor(colorStr: String) = colorStr.toColor()

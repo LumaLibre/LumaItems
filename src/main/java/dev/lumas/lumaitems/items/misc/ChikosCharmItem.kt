@@ -62,11 +62,13 @@ class ChikosCharmItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        if (player.isOnCooldown(this)) return
         val item = event.item ?: return
         item.getPersistentKey(COMMAND_KEY, PersistentDataType.STRING)
             ?.let {
                 //player.playSound(player.location, Sound.ENTITY_ALLAY_ITEM_GIVEN, 0.09f, 1f)
                 player.performCommand(it)
+                player.addCooldown(this, 10)
             }
             ?: player.actionBar("<i><#C45973>No command set on this charm!")
     }

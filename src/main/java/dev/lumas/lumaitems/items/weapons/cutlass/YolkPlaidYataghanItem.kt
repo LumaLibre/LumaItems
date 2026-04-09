@@ -76,7 +76,7 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
     }
 
     private fun trapMobInEgg(livingEntity: LivingEntity, attacker: Player) {
-        val eggTextures = Registry.CONFIGS.getOrThrow(HeadsYml::class).easterEgg
+        val eggTextures = Registry.CONFIGS.getOrThrow(HeadsYml::class).flatColorEasterEggs
         val loc = livingEntity.eyeLocation.add(0.0, 0.5, 0.0); loc.yaw = 0.0f; loc.pitch = 0.0f
         val boundingBox = livingEntity.boundingBox
         val egg = livingEntity.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay

@@ -7,6 +7,7 @@ import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.Tag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.ItemMeta
@@ -23,7 +24,7 @@ fun ItemStack.isMatchingItem(key: NamespacedKey): Boolean {
     return meta.persistentDataContainer.has(key)
 }
 
-fun ItemMeta.setBase64Texture(base64: String?) {
+fun ItemMeta.setTexture(base64: String?) {
     if (this !is SkullMeta || base64 == null) return
     val profile = Bukkit.createProfile(STATIC_UUID)
     profile.properties.add(ProfileProperty("textures", base64))
@@ -71,3 +72,6 @@ fun ItemStack.setRemainingHealth(health: Int) {
         this.itemMeta = meta
     }
 }
+
+fun ItemStack.isTagged(tag: Tag<Material>) =
+    tag.isTagged(this.type)

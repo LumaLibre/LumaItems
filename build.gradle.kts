@@ -32,6 +32,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.glaremasters.me/repository/towny/")
     maven("https://repo.codemc.io/repository/EvenMoreFish/")
+    maven("https://maven.canvasmc.io/snapshots")
 }
 
 dependencies {
@@ -61,7 +62,8 @@ dependencies {
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")
 
     // PaperWeight
-    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+//    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    paperweight.devBundle("io.canvasmc.canvas", "1.21.11-R0.1-SNAPSHOT")
 }
 
 tasks {
@@ -69,7 +71,7 @@ tasks {
     processResources {
         outputs.upToDateWhen { false }
         filter<ReplaceTokens>(mapOf(
-            "tokens" to mapOf("version" to project.version.toString()),
+            "tokens" to mapOf("version" to project.version),
             "beginToken" to "\${",
             "endToken" to "}"
         )).filteringCharset = charset

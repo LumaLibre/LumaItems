@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.tools.nests
+package dev.lumas.lumaitems.items.tools.spade
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions

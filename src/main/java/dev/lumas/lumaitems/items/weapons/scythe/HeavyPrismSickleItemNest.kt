@@ -30,7 +30,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle

@@ -22,6 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
+import org.bukkit.persistence.PersistentDataType
 
 
 private val PROTECTION_HOOKS by lazy {
@@ -80,6 +81,22 @@ fun Player.isLookingUp(): Boolean {
 
 fun Player.isLookingDown(): Boolean {
     return eyeLocation.pitch >= 45
+}
+
+
+fun Player.firstEquipmentContainer(key: NamespacedKey): ItemStack? {
+    val result = ArrayList<ItemStack>(6)
+    val inv = inventory
+
+    val armor = equipment?.armorContents ?: return null
+    for (item in armor) {
+        item?.let(result::add)
+    }
+
+    inv.itemInMainHand.let(result::add)
+    inv.itemInOffHand.let(result::add)
+
+    return result.firstOrNull { it.hasPersistentKey(key) }
 }
 
 fun Player.equipmentContainers(): List<PersistentDataContainer> {

@@ -1,6 +1,7 @@
 @file:JvmName("ClassUtil")
 package dev.lumas.lumaitems.util.extensions
 
+import kotlin.reflect.KClass
 import org.bukkit.Material
 
 fun classExists(className: String): Boolean {
@@ -40,6 +41,10 @@ fun <E : Enum<E>> String.asEnum(enumClass: Class<E>): E? {
     } catch (_: IllegalArgumentException) {
         null
     }
+}
+
+fun <E : Enum<E>> String.asEnum(enumClass: KClass<E>): E? {
+    return asEnum(enumClass.java)
 }
 
 

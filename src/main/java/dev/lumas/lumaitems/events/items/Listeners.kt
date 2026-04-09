@@ -43,9 +43,10 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
-import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
@@ -172,9 +173,16 @@ class Listeners : ItemListener() {
     @AllSlots
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPlayerDamagedByEntity(event: EntityDamageByEntityEvent) {
-        val player: Player = event.entity as? Player ?: return
+        val entity = event.entity
+        val damager = event.damager
 
-        fire(Util.getAllEquipmentNBT(player), Action.PLAYER_DAMAGED_BY_ENTITY, player, event)
+        if (entity is Player) {
+            fire(entity.equipmentContainers(), Action.PLAYER_DAMAGED_BY_ENTITY, entity, event)
+        }
+
+        if (damager is Player) {
+            fire(entity.persistentDataContainer, Action.ENTITY_DAMAGED_BY_PLAYER, damager, event)
+        }
     }
 
     @AllSlots
@@ -454,6 +462,20 @@ class Listeners : ItemListener() {
         fire(data, Action.INVENTORY_CLICK, player, event)
     }
 
+    @AllSlots
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onInventoryOpen(event: InventoryOpenEvent) {
+        val player = event.player as? Player ?: return
+        fire(player.equipmentContainers(), Action.INVENTORY_OPEN, player, event)
+    }
+
+    @AllSlots
+    //@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true) unused
+    fun onInventoryClose(event: InventoryCloseEvent) {
+        val player = event.player as? Player ?: return
+        fire(player.equipmentContainers(), Action.INVENTORY_CLOSE, player, event)
+    }
+
     @EventHandler
     fun onPlayerFillBucket(event: PlayerBucketFillEvent) {
         val player = event.player
@@ -483,13 +505,15 @@ class Listeners : ItemListener() {
         fire(Util.getAllEquipmentNBT(player), action, player, event, true)
     }
 
+    @AllSlots
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) // if you modify this event to include previous slot, items that use this need a conditional added to their logic
     fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
         val player = event.player
-        val datas = listOfNotNull(
-            player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer,
-            player.inventory.getItem(event.previousSlot)?.itemMeta?.persistentDataContainer
-        ).ifEmpty { return }
+//        val datas = listOfNotNull(
+//            player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer,
+//            player.inventory.getItem(event.previousSlot)?.itemMeta?.persistentDataContainer
+//        ).ifEmpty { return }
+        val datas = player.equipmentContainers()
 
         fire(datas, Action.ITEM_HELD, player, event)
     }

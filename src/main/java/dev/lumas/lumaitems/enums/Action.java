@@ -24,6 +24,8 @@ public enum Action {
     MCMMO_TREE_FELLER_DESTROY_TREE, // When a player destroys a tree with the MCMMO Tree Feller ability
     MCMMO_HERBALISM_REPLANT, // Green thumb from mcMMO
 
+    CANVAS_ASYNC_PLAYER_TELEPORT,
+
     /**
      * Player actions that effect a specific player. Called by a listener.
      */
@@ -39,6 +41,7 @@ public enum Action {
     PLAYER_DEATH, // When a player dies while wearing specific nbt
     ENTITY_DAMAGE, // When a player or a projectile shot by a player damages a living entity
     PLAYER_DAMAGED_BY_ENTITY, // When a player is damaged by a living entity
+    ENTITY_DAMAGED_BY_PLAYER, // When an entity is damaged by a player (checks entity NBT)
     //PLAYER_DAMAGED_WHILE_BLOCKING, // When a player is damaged while blocking with a shield
     PLAYER_DAMAGED, // When a player damages themselves <-- FOR REMOVAL
     ENTITY_DAMAGED_GENERIC, // When a living entity is damaged from ANYTHING and not just other living entities
@@ -77,6 +80,8 @@ public enum Action {
     ENTITY_PICKUP_ITEM, // When a living entity data picks up an item with specific persistent data
     HOPPER_PICKUP_ITEM, // When a hopper or hopper minecart picks up an item with specific persistent data
     INVENTORY_CLICK, // When a player clicks an item in their inventory with a specific persistent data
+    INVENTORY_CLOSE, // When a player closes an inventory
+    INVENTORY_OPEN, // When a player opens an inventory
     FILL_BUCKET, // When a player fills a bucket with a specific persistent data
     EMPTY_BUCKET, // When a player empties a bucket with a specific persistent data
     PICKUP_ITEM(10, true), // When a player picks up an item

@@ -12,6 +12,7 @@ import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
 import dev.lumas.core.util.ContextLogger
 import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
+import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
@@ -41,6 +42,8 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
@@ -88,6 +91,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.PLUGIN_DISABLE_GLOBAL -> onPluginDisableGlobal()
             Action.JOBS_EXP_GAIN -> onJobsExpGain(player, event as JobsExpGainEvent)
             Action.JOBS_PRE_PAYMENT -> onJobsPrePayment(player, event as JobsPrePaymentEvent)
+            Action.CANVAS_ASYNC_PLAYER_TELEPORT -> onCanvasAsyncPlayerTeleport(player, event as EntityTeleportAsyncEvent)
             Action.CROSSBOW_LOAD -> onCrossBowLoad(player, event as EntityLoadCrossbowEvent)
             Action.PLAYER_SHOOT_BOW -> onPlayerShootBow(player, event as EntityShootBowEvent)
             Action.PROJECTILE_LAUNCH -> onProjectileLaunch(player, event as ProjectileLaunchEvent)
@@ -100,6 +104,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.PLAYER_DEATH -> onPlayerDeath(player, event as PlayerDeathEvent)
             Action.ENTITY_DAMAGE -> onEntityDamage(player, event as EntityDamageByEntityEvent)
             Action.PLAYER_DAMAGED_BY_ENTITY -> onPlayerDamagedByEntity(player, event as EntityDamageByEntityEvent)
+            Action.ENTITY_DAMAGED_BY_PLAYER -> onEntityDamagedByPlayer(player, event as EntityDamageByEntityEvent)
             Action.PLAYER_DAMAGED -> onPlayerDamaged(player, event as EntityDamageEvent)
             Action.ENTITY_DAMAGED_GENERIC -> onEntityDamageGeneric(player, event as EntityDamageEvent)
             Action.DROP_ITEM -> onPlayerDropItem(player, event as PlayerDropItemEvent)
@@ -136,6 +141,8 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_PICKUP_ITEM -> onEntityPickupItem(event as EntityPickupItemEvent)
             Action.HOPPER_PICKUP_ITEM -> onHopperPickupItem(event as InventoryPickupItemEvent)
             Action.INVENTORY_CLICK -> onInventoryClick(player, event as InventoryClickEvent)
+            Action.INVENTORY_OPEN -> onInventoryOpen(player, event as InventoryOpenEvent)
+            Action.INVENTORY_CLOSE -> onInventoryClose(player, event as InventoryCloseEvent)
             Action.FILL_BUCKET -> onPlayerFillBucket(player, event as PlayerBucketFillEvent)
             Action.EMPTY_BUCKET -> onPlayerEmptyBucket(player, event as PlayerBucketEmptyEvent)
             Action.PICKUP_ITEM -> onPlayerPickupItem(player, event as PlayerAttemptPickupItemEvent)
@@ -163,6 +170,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onPluginDisableGlobal() {}
     open fun onJobsExpGain(player: Player, event: JobsExpGainEvent) {}
     open fun onJobsPrePayment(player: Player, event: JobsPrePaymentEvent) {}
+    open fun onCanvasAsyncPlayerTeleport(player: Player, event: EntityTeleportAsyncEvent) {}
     open fun onCrossBowLoad(player: Player, event: EntityLoadCrossbowEvent) {}
     open fun onPlayerShootBow(player: Player, event: EntityShootBowEvent) {}
     open fun onProjectileLaunch(player: Player, event: ProjectileLaunchEvent) {}
@@ -174,6 +182,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityDeath(player: Player, event: EntityDeathEvent) {}
     open fun onPlayerDeath(player: Player, event: PlayerDeathEvent) {}
     open fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {}
+    open fun onEntityDamagedByPlayer(player: Player, event: EntityDamageByEntityEvent) {}
     open fun onPlayerDamagedByEntity(player: Player, event: EntityDamageByEntityEvent) {}
     open fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {}
     open fun onEntityDamageGeneric(player: Player, event: EntityDamageEvent) {}
@@ -211,6 +220,8 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityPickupItem(event: EntityPickupItemEvent) {}
     open fun onHopperPickupItem(event: InventoryPickupItemEvent) {}
     open fun onInventoryClick(player: Player, event: InventoryClickEvent) {}
+    open fun onInventoryOpen(player: Player, event: InventoryOpenEvent) {}
+    open fun onInventoryClose(player: Player, event: InventoryCloseEvent) {}
     open fun onPlayerFillBucket(player: Player, event: PlayerBucketFillEvent) {}
     open fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {}
     open fun onPlayerPickupItem(player: Player, event: PlayerAttemptPickupItemEvent) {}

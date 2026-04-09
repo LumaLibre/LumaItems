@@ -5,7 +5,6 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Color
-import org.bukkit.EntityEffect
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Tag

@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.items.tools.shears
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
@@ -36,7 +37,7 @@ class IllumeShearsItem : CustomItemFunctions() {
     override fun onLeftClick(player: Player, event: PlayerInteractEvent) {
         val block = event.clickedBlock ?: return
 
-        if (block.canBreak(player.inventory.itemInMainHand) && block.getBreakSpeed(player) != Float.POSITIVE_INFINITY) {
+        if (block.canBreak(player.inventory.itemInMainHand) && block.getBreakSpeed(player) != Float.POSITIVE_INFINITY && !Kind.BLACKLIST.isTagged(block.type)) {
             block.breakNaturallyWithLog(player, player.inventory.itemInMainHand, true)
         }
     }

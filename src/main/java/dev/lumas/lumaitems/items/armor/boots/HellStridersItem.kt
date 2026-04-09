@@ -9,6 +9,7 @@ import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.tiers.Tier
+import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import java.util.UUID
 import org.bukkit.Location
 import org.bukkit.Material
@@ -139,6 +140,12 @@ class HellStridersItem : CustomItemFunctions() {
 
     override fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {
         delete(player.uniqueId)
+    }
+
+    override fun onCanvasAsyncPlayerTeleport(player: Player, event: EntityTeleportAsyncEvent) {
+        player.sync {
+            delete(player.uniqueId)
+        }
     }
 
     override fun onPlayerQuit(player: Player, event: PlayerQuitEvent) {
