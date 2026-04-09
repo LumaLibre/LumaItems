@@ -53,7 +53,7 @@ class CrownJewelOfElsewhereItem : CustomItemFunctions() {
                 "May occasionally",
                 "bring company.",
                 "",
-                "<red>Cooldown: 5s"
+                "<red>Cooldown: 3s"
             )
             .material(Material.ENDER_PEARL)
             .persistentData(KEY)
