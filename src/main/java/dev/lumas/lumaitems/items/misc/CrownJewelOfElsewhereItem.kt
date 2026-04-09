@@ -16,7 +16,6 @@ import org.bukkit.entity.EnderPearl
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.ProjectileHitEvent
-import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
@@ -26,7 +25,8 @@ class CrownJewelOfElsewhereItem : CustomItemFunctions() {
 
     companion object {
         private const val KEY = "crown-jewel-of-elsewhere"
-        private const val COOLDOWN_TICKS = 100L
+        private const val COOLDOWN_TICKS = 60L
+        private const val EXPIRY_TICKS = 140L
 
         private val TRAIL_COLORS = listOf(
             Color.fromRGB(0x5d, 0x85, 0xdc), // cerulean
@@ -79,7 +79,7 @@ class CrownJewelOfElsewhereItem : CustomItemFunctions() {
 
         var trailTicks = 0
         Executors.asyncTimer(0, 1) { task ->
-            if (pearl.isDead || !pearl.isValid || trailTicks >= COOLDOWN_TICKS) {
+            if (pearl.isDead || !pearl.isValid || trailTicks >= EXPIRY_TICKS) {
                 task.cancel()
                 return@asyncTimer
             }
