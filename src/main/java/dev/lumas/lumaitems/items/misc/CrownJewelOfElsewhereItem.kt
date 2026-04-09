@@ -1,5 +1,7 @@
 package dev.lumas.lumaitems.items.misc
 
+import dev.lumas.lumaitems.annotations.FireAnyways
+import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.Executors
@@ -11,6 +13,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.damage.DamageType
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EnderPearl
 import org.bukkit.entity.Player
@@ -21,6 +24,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
+@FireAnyways(Action.PROJECTILE_LAND, Action.PLAYER_DAMAGED)
 class CrownJewelOfElsewhereItem : CustomItemFunctions() {
 
     companion object {
@@ -98,15 +102,18 @@ class CrownJewelOfElsewhereItem : CustomItemFunctions() {
     }
 
     override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
+        if (event.damageSource.damageType != DamageType.ENDER_PEARL) return
         if (player.isFlagged(this)) {
             event.isCancelled = true
         }
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
+        if (!event.entity.persistentDataContainer
+            .has(NamespacedKey(instance(), KEY), PersistentDataType.SHORT)) return
         val loc = event.entity.location
 
-        player.flagFor(this, 2)
+        player.flagFor(this, 3)
         player.playSound(loc, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 0.8f)
         player.playSound(loc, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 0.5f, 1.3f)
 
