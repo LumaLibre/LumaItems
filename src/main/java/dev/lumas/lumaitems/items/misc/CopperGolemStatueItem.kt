@@ -53,7 +53,7 @@ class CopperGolemStatueItem : CustomItemFunctions() {
 
         private val BASE_LORE = listOf(
             "Forged in an age of living metal.",
-            "Its duty has not yet faded.",
+            "Its duty has not yet faded away.",
             "",
             "<#42BFB8>Hold</#42BFB8> to transmute mined Stone",
             "and Deepslate to Copper Ore.",
