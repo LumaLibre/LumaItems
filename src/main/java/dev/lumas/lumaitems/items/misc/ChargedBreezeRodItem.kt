@@ -22,7 +22,7 @@ class ChargedBreezeRodItem : CustomItemFunctions() {
     companion object {
         private const val KEY = "charged-breeze-rod"
 
-        private const val KNOCKBACK_POWER = 3.5
+        private const val KNOCKBACK_POWER = 5
         private const val UPWARD_BOOST = 0.75
     }
 
