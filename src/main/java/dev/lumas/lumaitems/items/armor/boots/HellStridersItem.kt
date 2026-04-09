@@ -97,8 +97,8 @@ class HellStridersItem : CustomItemFunctions() {
 
         if (blocks.size >= 40) {
             for (index in 0 until blocks.size / 4) {
-                player.sync {
-                    val block = blocks[index]
+                val block = blocks[index]
+                block.sync {
                     if (block.type == Material.OBSIDIAN) {
                         block.type = Material.CRYING_OBSIDIAN
                     } else if (block.type == Material.CRYING_OBSIDIAN) {
@@ -114,7 +114,7 @@ class HellStridersItem : CustomItemFunctions() {
                 for (e in 0 until 6) {
                     val block = blocks.random()
                     if (block.world != player.world || block.location.distance(player.location) > 10) {
-                        block.type = Material.LAVA
+                        block.sync { block.type = Material.LAVA }
                         BlockCacheManager.unCacheBlock(player.uniqueId, block)
                         continue
                     }

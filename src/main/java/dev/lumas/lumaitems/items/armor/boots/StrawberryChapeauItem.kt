@@ -71,6 +71,6 @@ class StrawberryChapeauItem : CustomItemFunctions() {
         val entityMaxHealth = event.entity.getAttribute(Attribute.MAX_HEALTH)?.value?.toInt() ?: return
         val potionEffect = PotionEffect(PotionEffectType.SATURATION, entityMaxHealth, 0, false, false, true)
         player.addPotionEffect(potionEffect)
-        player.damageItemStack(EquipmentSlot.HEAD, entityMaxHealth.div(2))
+        player.damageItemStack(EquipmentSlot.HEAD, entityMaxHealth.div(4).coerceAtMost(16))
     }
 }

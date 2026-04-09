@@ -93,6 +93,7 @@ public enum Action {
     ENTITY_EXHAUSTION, // When a player gains exhaustion (hunger drain)
     PREPARE_CRAFT, // When crafting grid updates (preview result)
     CRAFT_ITEM, // When the player takes the crafted item
+    ENTITY_COMPOST_ITEM, // When a player or hopper minecart composts an item in a composter
 
     ;
 

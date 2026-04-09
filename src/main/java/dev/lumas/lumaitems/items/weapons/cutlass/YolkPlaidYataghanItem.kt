@@ -31,7 +31,6 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
 
     companion object {
         private val coolingDownEggs: MutableMap<UUID, Int> = mutableMapOf()
-        private val SLOWNESS = PotionEffect(PotionEffectType.SLOWNESS, 240, 150, false, false, false)
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -94,7 +93,7 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
 
 
         livingEntity.isCollidable = false
-        livingEntity.addPotionEffect(SLOWNESS)
+        livingEntity.setAI(false)
         livingEntity.addPotionEffect(PotionEffect(PotionEffectType.GLOWING, 240, 0, false, false, false))
         GlowColorManager.getInstance().setTransientColor(livingEntity, NamedTextColor.NAMES.values().random(), 240L)
 
@@ -107,6 +106,7 @@ class YolkPlaidYataghanItem : CustomItemFunctions() {
             var stop = false
             if (totalTicks >= 240) {
                 livingEntity.isCollidable = true
+                livingEntity.setAI(true)
                 stop = true
             } else if (livingEntity.isDead) {
                 stop = true

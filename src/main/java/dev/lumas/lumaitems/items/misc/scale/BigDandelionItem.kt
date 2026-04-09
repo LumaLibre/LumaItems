@@ -12,6 +12,7 @@ import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
+import io.papermc.paper.event.entity.EntityCompostItemEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.inventory.EquipmentSlotGroup
@@ -56,6 +57,11 @@ class BigDandelionItem : CustomItemFunctions() {
         if (!item.isMatchingItem(KEY)) {
             return
         }
+        event.isCancelled = true
+    }
+
+    override fun onEntityCompostItem(event: EntityCompostItemEvent) {
+        if (!event.item.isMatchingItem(KEY)) return
         event.isCancelled = true
     }
 }

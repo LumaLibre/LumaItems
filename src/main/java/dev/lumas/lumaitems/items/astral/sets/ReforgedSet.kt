@@ -25,7 +25,7 @@ class ReforgedSet : AstralSetFunctions("reforged-set") {
             mutableListOf("Increases max amount", "of health while worn."),
             true,
             AttributeContainer.ofMap(Attribute.MAX_HEALTH,
-                "${identifier()}-helm", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
+                "${identifier}-helm", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.HEAD)
         )
 
         astralSetFactory.astralSetItem(
@@ -34,7 +34,7 @@ class ReforgedSet : AstralSetFunctions("reforged-set") {
             mutableListOf("Increases max amount", "of health while worn."),
             true,
             AttributeContainer.ofMap(Attribute.MAX_HEALTH,
-                "${identifier()}-chest", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
+                "${identifier}-chest", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.CHEST)
         )
 
         astralSetFactory.astralSetItem(
@@ -43,7 +43,7 @@ class ReforgedSet : AstralSetFunctions("reforged-set") {
             mutableListOf("Increases max amount", "of health while worn."),
             true,
             AttributeContainer.ofMap(Attribute.MAX_HEALTH,
-                "${identifier()}-legs", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
+                "${identifier}-legs", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.LEGS)
         )
 
         astralSetFactory.astralSetItem(
@@ -52,7 +52,7 @@ class ReforgedSet : AstralSetFunctions("reforged-set") {
             mutableListOf("Increases max amount", "of health while worn."),
             true,
             AttributeContainer.ofMap(Attribute.MAX_HEALTH,
-                "${identifier()}-boots", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
+                "${identifier}-boots", 2.0, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.FEET)
         )
 
         return astralSetFactory.createdAstralItems
