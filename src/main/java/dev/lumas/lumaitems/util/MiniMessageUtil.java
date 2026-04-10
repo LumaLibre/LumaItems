@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
+@Deprecated
 public class MiniMessageUtil {
 
     public static final Component PREFIX = mm("<b><#b986f9>Info</b> <dark_gray>»<white> ");

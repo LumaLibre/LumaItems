@@ -10,6 +10,7 @@ import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.canBuild
 import dev.lumas.lumaitems.util.extensions.getPersistentKey
 import dev.lumas.lumaitems.util.extensions.hasPersistentKey
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
@@ -85,7 +86,7 @@ class MontairisSpadeItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (player.isOnCooldown(this)) return
+        if (player.isOnCooldown(this) || !player.canBuild(player.location)) return
         player.addCooldown(this, 20 * 120)
 
         val snowball = player.launchProjectile(Snowball::class.java)
@@ -122,6 +123,10 @@ class MontairisSpadeItem : CustomItemFunctions() {
         val materialName = snowball.getPersistentKey(MATERIAL_NAME_KEY, PersistentDataType.STRING) ?: return
         val material = materialName.material() ?: return
 
+        if (!player.canBuild(hitBlock.location)) {
+            return
+        }
+
         val sphere = Sphere(hitBlock.location, 1.0)
         sphere.getSphereFast {
             if (it.type.isTagged(Tag.SAND)) {
@@ -129,7 +134,10 @@ class MontairisSpadeItem : CustomItemFunctions() {
             }
         }
 
-        hitBlock.breakNaturallyWithLog(player)
+        if (hitBlock.type.isTagged(Tag.SAND)) {
+            hitBlock.breakNaturallyWithLog(player)
+        }
+
 
         hitBlock.syncDelayed(1) {
             hitBlock.location.getNearbyEntitiesByType(Item::class.java, 1.5, 1.0, 1.5)
@@ -140,17 +148,16 @@ class MontairisSpadeItem : CustomItemFunctions() {
     }
 
     private fun propelToPlayer(player: Player, item: Item) {
-        val target = player.eyeLocation.clone().add(0.0, 0.3, 0.0)
         val origin = item.location
+        val target = player.eyeLocation.clone().add(0.0, 0.3, 0.0)
 
         val distance = target.distance(origin)
 
         if (distance < 1.0 && distance > -1.0) {
-            return // don't apply if the item is too close
+            return
         }
 
         val direction = target.toVector().subtract(origin.toVector()).normalize()
-        // if the items location is already above the player's head dont apply any Y
         if (origin.y > target.y) {
             direction.setY(0.0)
         } else {
@@ -169,9 +176,6 @@ class MontairisSpadeItem : CustomItemFunctions() {
         companion object {
             val PINK_SPARKLE = ParticleDisplay.of(Particle.INSTANT_EFFECT)
                 .withColor(org.bukkit.Color.FUCHSIA.toColor())
-
-            val DUST = ParticleDisplay.of(Particle.DUST)
-            val snowballColors = DyeColor.entries.toList()
         }
 
         val cloudSpawnLoc = spawnLoc.clone().add(0.0, 11.0, 0.0)

@@ -45,6 +45,8 @@ public interface Kind<T extends Keyed> extends Tag<T> {
      */
     Tag<Material> BLACKLIST = Kind.material("blacklist", List.of(Tag.SHULKER_BOXES, Tag.SIGNS), Material.CHEST, Material.BARREL, Material.TRAPPED_CHEST, Material.FURNACE, Material.BLAST_FURNACE, Material.SMOKER, Material.HOPPER, Material.BREWING_STAND, Material.DROPPER, Material.DISPENSER, Material.BEDROCK, Material.END_PORTAL_FRAME, Material.SPAWNER, Material.COMMAND_BLOCK, Material.REPEATING_COMMAND_BLOCK, Material.CHAIN_COMMAND_BLOCK, Material.BARRIER, Material.STRUCTURE_BLOCK, Material.JIGSAW, Material.END_GATEWAY, Material.BUDDING_AMETHYST, Material.FARMLAND, Material.DIRT_PATH, Material.END_PORTAL, Material.REINFORCED_DEEPSLATE, Material.TRIAL_SPAWNER, Material.VAULT);
 
+    Tag<Material> WOODS = Kind.material("woods", Tag.LOGS, Tag.PLANKS, Tag.WOODEN_BUTTONS, Tag.WOODEN_DOORS, Tag.WOODEN_FENCES, Tag.WOODEN_PRESSURE_PLATES, Tag.WOODEN_SHELVES, Tag.WOODEN_SLABS, Tag.WOODEN_STAIRS, Tag.WOODEN_TRAPDOORS, Tag.ALL_SIGNS);
+
     static MaterialSetTag material(@NotNull String key, @NotNull Predicate<Material> filter) {
         return new MaterialSetTag(Util.namespacedKey(key), filter.and(material -> !material.isLegacy()));
     }

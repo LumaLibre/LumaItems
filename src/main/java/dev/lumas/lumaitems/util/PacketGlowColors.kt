@@ -46,7 +46,7 @@ object PacketGlowColors {
 
     fun removeProtocolTeam(player: Player, entity: Entity) {
         val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: return
-        val teamName = "glow_${entity.entityId}"
+        val teamName = "lumaitems_${entity.entityId}"
 
         val removePacket = protocolManager.createPacket(PacketType.Play.Server.SCOREBOARD_TEAM)
         removePacket.strings.write(0, teamName)

@@ -1,7 +1,6 @@
 @file:JvmName("BlockUtil")
 package dev.lumas.lumaitems.util.extensions
 
-import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.hooks.CoreProtectHook
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
@@ -9,6 +8,7 @@ import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -40,11 +40,24 @@ fun Block.setAirWithLog(player: Player) {
 }
 
 fun Block.setBlockDataWithLog(player: Player, material: Material) {
-    val coreprotect = Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()
-    coreprotect?.logRemoval(player.name, this.location, this.type, this.blockData)
-    this.blockData = material.createBlockData()
-    coreprotect?.logPlacement(player.name, this.location, material, material.createBlockData())
+    this.setBlockDataWithLog(player, material.createBlockData())
 }
+
+fun Block.setBlockDataWithLog(player: Player, blockData: BlockData) {
+    val coreprotect = Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()
+    if (!this.type.isAir) {
+        coreprotect?.logRemoval(player.name, this.location, this.type, this.blockData)
+    }
+    this.blockData = blockData
+    coreprotect?.logPlacement(player.name, this.location, blockData.material, blockData)
+}
+
+//fun Block.setBlockDataWithEvent(player: Player, blockData: BlockData, placedAgainst: Block) {
+//    val event = BlockPlaceEvent(this, this.state, placedAgainst, player.inventory.itemInMainHand, player, true, EquipmentSlot.HAND)
+//    if (event.callEvent()) {
+//        this.blockData = blockData
+//    }
+//}
 
 fun Block.determineHighestBreakSpeed(vararg itemStacks: ItemStack): ItemStack {
     var bestTool: ItemStack = itemStacks.first()

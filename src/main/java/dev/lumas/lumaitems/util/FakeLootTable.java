@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.util.internal;
+package dev.lumas.lumaitems.util;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.registries.Registries;

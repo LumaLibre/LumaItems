@@ -1,3 +1,4 @@
+@file:JvmName("Components")
 package dev.lumas.lumaitems.util.extensions
 
 import dev.lumas.core.util.Text

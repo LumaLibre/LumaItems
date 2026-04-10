@@ -1,7 +1,7 @@
 @file:JvmName("LivingEntityUtil")
 package dev.lumas.lumaitems.util.extensions
 
-import dev.lumas.lumaitems.util.internal.FakeLootTable
+import dev.lumas.lumaitems.util.FakeLootTable
 import kotlin.random.Random
 import kotlin.random.asJavaRandom
 import org.bukkit.Material

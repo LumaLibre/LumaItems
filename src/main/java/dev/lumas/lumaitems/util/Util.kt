@@ -9,12 +9,11 @@ import dev.lumas.lumaitems.util.extensions.hasPersistentKey
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.itemStack
 import dev.lumas.lumaitems.util.extensions.namespacedKey
-import dev.lumas.lumaitems.util.extensions.setTexture
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
+import dev.lumas.lumaitems.util.extensions.setTexture
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.extensions.toColor
-import io.papermc.paper.entity.PlayerGiveResult
 import java.awt.Color as AwtColor
 import kotlin.random.Random
 import net.md_5.bungee.api.ChatColor as BungeeChatColor
