@@ -21,7 +21,7 @@ class SuperchargedBreezeRod : CustomItemFunctions() {
     companion object {
         private const val KEY = "supercharged-breeze-rod"
 
-        private const val KNOCKBACK_POWER = 14.0
+        private const val KNOCKBACK_POWER = 10.0
         private const val UPWARD_BOOST = 1.25
     }
 
