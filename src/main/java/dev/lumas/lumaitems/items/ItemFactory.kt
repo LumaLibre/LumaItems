@@ -73,6 +73,7 @@ class ItemFactory(
 
     var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf(),
     var amount: Int = 1,
+    var maxStackSize: Int? = null,
 ) {
 
     companion object {
@@ -222,6 +223,7 @@ class ItemFactory(
 
         meta.isUnbreakable = unbreakable
         if (hideEnchants) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+        if (maxStackSize != null) meta.setMaxStackSize(maxStackSize)
 
         if (autoHat) {
             meta.persistentDataContainer.set(AUTO_HAT_KEY, PersistentDataType.SHORT, 1)
@@ -276,6 +278,7 @@ class ItemFactory(
         private var persistentDataRecords: MutableList<PersistentDataRecord<*, *>> = mutableListOf()
         private var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf()
         private var amount: Int = 1
+        private var maxStackSize: Int? = null
 
         @SafeVarargs
         fun name(name: String) = apply { this.name = name }
@@ -316,11 +319,12 @@ class ItemFactory(
         fun spoofEnchants(spoofEnchants: Boolean) = apply { this.spoofEnchants = spoofEnchants }
         fun persistentDataValue(persistentDataValue: Short) = apply { this.persistentDataValue = persistentDataValue }
         fun amount(amount: Int) = apply { this.amount = amount }
+        fun maxStackSize(maxStackSize: Int) = apply { this.maxStackSize = maxStackSize }
 
         fun buildNoMiniMessage() = ItemFactory(
             name, customEnchants, lore, material, persistentData, vanillaEnchants,
             tier, unbreakable, hideEnchants, addSpace, autoHat, attributeContainers, taglines, b64PHead,
-            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount
+            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount, maxStackSize
         )
 
         fun build() = buildNoMiniMessage().apply { miniMessage() }
