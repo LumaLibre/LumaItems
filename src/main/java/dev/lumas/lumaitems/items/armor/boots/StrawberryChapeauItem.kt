@@ -14,8 +14,6 @@ import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
 
 class StrawberryChapeauItem : CustomItemFunctions() {
 
@@ -64,13 +62,13 @@ class StrawberryChapeauItem : CustomItemFunctions() {
 
 
     override fun onEntityDeath(player: Player, event: EntityDeathEvent) {
-        if (event.isCancelled || player.hasPotionEffect(PotionEffectType.SATURATION)) {
-            return
-        }
+        if (event.isCancelled) return
 
-        val entityMaxHealth = event.entity.getAttribute(Attribute.MAX_HEALTH)?.value?.toInt() ?: return
-        val potionEffect = PotionEffect(PotionEffectType.SATURATION, entityMaxHealth, 0, false, false, true)
-        player.addPotionEffect(potionEffect)
-        player.damageItemStack(EquipmentSlot.HEAD, entityMaxHealth.div(4).coerceAtMost(16))
+        val entityMaxHealth = event.entity.getAttribute(Attribute.MAX_HEALTH)?.value?.toFloat() ?: return
+        val actualGain = (player.foodLevel.toFloat() - player.saturation).coerceIn(0f, entityMaxHealth)
+        if (actualGain <= 0f) return
+
+        player.saturation += actualGain
+        player.damageItemStack(EquipmentSlot.HEAD, entityMaxHealth.toInt().div(4).coerceAtMost(16))
     }
 }
