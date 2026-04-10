@@ -84,15 +84,7 @@ public final class LumaItemsAPI {
      */
     @Nullable
     public CustomItem getCustomItem(ItemStack itemStack) {
-        if (!itemStack.hasItemMeta()) return null;
-        var meta = itemStack.getItemMeta();
-
-        for (var customItem : Registry.CUSTOM_ITEMS) {
-            if (meta.getPersistentDataContainer().has(customItem.getKey().asNameSpacedKey(), PersistentDataType.SHORT)) {
-                return customItem.getValue();
-            }
-        }
-        return null;
+        return ItemManager.getCustomItem(itemStack);
     }
 
     /**

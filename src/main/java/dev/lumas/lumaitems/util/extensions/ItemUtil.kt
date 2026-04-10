@@ -9,6 +9,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Tag
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.ItemMeta
@@ -30,6 +31,11 @@ fun ItemMeta.setTexture(base64: String?) {
     val profile = Bukkit.createProfile(STATIC_UUID)
     profile.properties.add(ProfileProperty("textures", base64))
     playerProfile = profile
+}
+
+fun ItemMeta.setTexture(player: Player) {
+    if (this !is SkullMeta) return
+    this.playerProfile = player.playerProfile
 }
 
 fun ItemStack.withMeta(editMeta: (ItemMeta) -> Unit): ItemStack {

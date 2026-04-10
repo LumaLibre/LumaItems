@@ -15,6 +15,8 @@ class PersistentDataRecord<P, C : Any>(
         val PREVENT_NETHERITE_SMITHING = create(PREVENT_NETHERITE_SMITHING_KEY, PersistentDataType.SHORT, 1)
         val COLORABLE_KEY = "colorable".namespacedKey()
         val COLORABLE = create(COLORABLE_KEY, PersistentDataType.SHORT, 1)
+        val MIXABLE_KEY = "mixable".namespacedKey()
+        val MIXABLE = create(MIXABLE_KEY, PersistentDataType.SHORT, 1)
 
         @JvmStatic
         fun <P, C : Any> create(

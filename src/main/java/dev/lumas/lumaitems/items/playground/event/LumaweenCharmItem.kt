@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.playground
+package dev.lumas.lumaitems.items.playground.event
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
@@ -7,25 +7,24 @@ import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 
-class LumalympicsCharmItem : CustomItemFunctions() {
+class LumaweenCharmItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><gradient:#ff4e50:#fc913a:#f9d62e:#eae374:#97c753>Lumalympics Charm</gradient></b>")
+            .name("<b><gradient:#602749:#b14623:#f6921d>Lumaween Charm</gradient></b>")
             .lore(
                 "A neat little charm you",
                 "earned for participating",
-                "in summer minigames.",
+                "in halloween minigames.",
                 "",
                 "You wonder what it does...",
                 "Maybe you should keep it",
                 "around for a while?"
             )
-            .tier(Tier.SUMMER_2025)
-            .customEnchants("<gradient:#ff4e50:#fc913a:#f9d62e:#eae374:#97c753>Charm</gradient>")
-            .material(Material.RESIN_CLUMP)
-            .persistentData("lumalympics-charm")
+            .tier(Tier.HALLOWEEN_2025)
+            .customEnchants("<gradient:#602749:#b14623:#f6921d>Charm</gradient>")
+            .material(Material.GLOWSTONE_DUST)
+            .persistentData("lumaween-charm")
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
             .buildPair()
     }
-
 }

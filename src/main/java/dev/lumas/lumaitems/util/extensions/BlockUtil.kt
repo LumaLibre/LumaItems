@@ -40,8 +40,10 @@ fun Block.setAirWithLog(player: Player) {
 }
 
 fun Block.setBlockDataWithLog(player: Player, material: Material) {
-    Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()?.logPlacement(player.name, this.location, material, material.createBlockData())
+    val coreprotect = Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()
+    coreprotect?.logRemoval(player.name, this.location, this.type, this.blockData)
     this.blockData = material.createBlockData()
+    coreprotect?.logPlacement(player.name, this.location, material, material.createBlockData())
 }
 
 fun Block.determineHighestBreakSpeed(vararg itemStacks: ItemStack): ItemStack {

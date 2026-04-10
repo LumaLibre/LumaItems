@@ -1,31 +1,31 @@
 package dev.lumas.lumaitems.items.tools.spade
 
-import com.destroystokyo.paper.MaterialTags
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
-import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.getPersistentKey
 import dev.lumas.lumaitems.util.extensions.hasPersistentKey
+import dev.lumas.lumaitems.util.extensions.isOnCooldown
+import dev.lumas.lumaitems.util.extensions.isTagged
 import dev.lumas.lumaitems.util.extensions.itemStack
 import dev.lumas.lumaitems.util.extensions.material
 import dev.lumas.lumaitems.util.extensions.mix
 import dev.lumas.lumaitems.util.extensions.namespacedKey
+import dev.lumas.lumaitems.util.extensions.setBlockDataWithLog
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.toColor
+import dev.lumas.lumaitems.util.tiers.Tier
 import java.awt.Color
 import java.util.concurrent.CompletableFuture
-import kotlin.math.absoluteValue
 import kotlin.random.Random
 import org.bukkit.Color as BukkitColor
 import org.bukkit.DyeColor
@@ -33,6 +33,8 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.Tag
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
@@ -41,34 +43,57 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-class NimbusCrystalSpadeItem : CustomItemFunctions() {
+class MontairisSpadeItem : CustomItemFunctions() {
 
     companion object {
-        private val KEY = "nimbus-crystal-spade".namespacedKey()
-        private val ACTIVATOR_KEY = "nimbus-crystal-spade-activator".namespacedKey()
-        private val MATERIAL_NAME_KEY = "nimbus-crystal-spade-parent".namespacedKey()
-        val BLUE_DUST = ParticleDisplay.of(Particle.DUST_COLOR_TRANSITION)
-            .withTransitionColor(Color.decode("#AEC6CF"), 1.2f, Color.BLUE)
+        private val KEY = "montairis-spade".namespacedKey()
+        private val ACTIVATOR_KEY = "montairis-spade-activator".namespacedKey()
+        private val MATERIAL_NAME_KEY = "montairis-spade-parent".namespacedKey()
+        private val WHITE_DUST = ParticleDisplay.of(Particle.DUST)
+            .withColor(Color.WHITE)
     }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("nimbus crystal spade")
-            .material(org.bukkit.Material.STONE_SHOVEL)
+            .name("<b><gradient:#CDA9FF:#7D9FFC:#96F692:#FFF97E:#EFAC56:#EA6363>Montairis Spade</gradient></b>")
+            .customEnchants("<#CDA9FF>Dyecloud")
+            .material(Material.NETHERITE_SHOVEL)
             .persistentData(KEY)
+            .tier(Tier.WONDERLAND_2026)
+            .lore(
+                "The next evolution",
+                "of the Montanaire",
+                "series, perfect for",
+                "gathering colorful",
+                "powders.",
+                "",
+                "<#CDA9FF>Right-click</#CDA9FF> to summon",
+                "a stormy cloud that",
+                "will rain down various",
+                "colors of concrete",
+                "powder.",
+                "",
+                "<red>Cooldown: 2m"
+            )
+            .vanillaEnchants(
+                Enchantment.SILK_TOUCH to 1,
+                Enchantment.UNBREAKING to 5,
+                Enchantment.EFFICIENCY to 6,
+                Enchantment.MENDING to 1
+            )
             .buildPair()
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (QuickTasks.isOnCooldown(this, player.uniqueId)) return
-        QuickTasks.addCooldown(this, player.uniqueId, 10)
+        if (player.isOnCooldown(this)) return
+        player.addCooldown(this, 20 * 120)
 
         val snowball = player.launchProjectile(Snowball::class.java)
         snowball.setPersistentKey(ACTIVATOR_KEY, PersistentDataType.SHORT, 1)
         snowball.setPersistentKey(KEY, PersistentDataType.SHORT, 1)
         snowball.velocity = snowball.velocity.multiply(0.35)
         snowball.isPersistent = false
-        snowball.item = MaterialTags.DYES.values.random().itemStack()
+        snowball.item = Material.WIND_CHARGE.itemStack()
 
 
         Executors.asyncTimer(0, 1) { task ->
@@ -76,10 +101,8 @@ class NimbusCrystalSpadeItem : CustomItemFunctions() {
                 task.cancel()
                 return@asyncTimer
             }
-            BLUE_DUST.spawn(snowball.location)
+            WHITE_DUST.spawn(snowball.location)
         }
-
-        player.swingMainHand()
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
@@ -101,8 +124,8 @@ class NimbusCrystalSpadeItem : CustomItemFunctions() {
 
         val sphere = Sphere(hitBlock.location, 1.0)
         sphere.getSphereFast {
-            if (it.type != Material.AIR) {
-                it.type = material
+            if (it.type.isTagged(Tag.SAND)) {
+                it.setBlockDataWithLog(player, material)
             }
         }
 
@@ -153,10 +176,6 @@ class NimbusCrystalSpadeItem : CustomItemFunctions() {
 
         val cloudSpawnLoc = spawnLoc.clone().add(0.0, 11.0, 0.0)
         val cloudColor = DyeColor.entries.random()
-
-        fun cloudColorConcretePowder(): Material {
-            return "${cloudColor.name}_CONCRETE_POWDER".material() ?: Material.WHITE_CONCRETE_POWDER
-        }
 
 
         fun seed(): CompletableFuture<Void> {
@@ -241,9 +260,5 @@ class NimbusCrystalSpadeItem : CustomItemFunctions() {
             return snowball
         }
 
-
-        fun colorForSnowball(snowball: Snowball): Color {
-            return snowballColors[snowball.entityId.hashCode().absoluteValue % snowballColors.size].color.toColor()
-        }
     }
 }

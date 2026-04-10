@@ -24,10 +24,6 @@ class AstralUpgradeGui : LumaItemsAbstractGui {
         private val CONFIRM_BUTTON: ItemStack = Util.createBasicItem("&a&lConfirm", listOf(), Material.LIME_STAINED_GLASS_PANE, listOf("gui-item", "confirm"), true)
     }
 
-    init {
-        //AstralSetUpgradeManager().reloadUpgrades()
-    }
-
     override fun onInventoryClick(event: InventoryClickEvent) {
 
         val clickedItem = event.currentItem ?: return

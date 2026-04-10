@@ -40,6 +40,7 @@ class VentanasMattockItem : CustomItemFunctions() {
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
 
+        println("test2")
         val item = player.inventory.itemInMainHand
 
         if (block.getDestroySpeed(item) == Float.POSITIVE_INFINITY) {

@@ -29,7 +29,8 @@ public enum ToolType {
     ELYTRA,
     FISHING_ROD,
     MAGICAL,
-    MACE;
+    MACE,
+    SHEARS;
 
     public static final List<String> magicMaterials = List.of("BLAZE_ROD");
 

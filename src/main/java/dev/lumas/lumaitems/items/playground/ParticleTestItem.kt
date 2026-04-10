@@ -3,7 +3,9 @@ package dev.lumas.lumaitems.items.playground
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
+import dev.lumas.lumaitems.particles.Particles
 import java.awt.Color
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
@@ -28,14 +30,57 @@ class ParticleTestItem : CustomItemFunctions() {
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         val location = player.location
 
-        val particleDisplayCloud = ParticleDisplay.of(Particle.DUST).withLocation(location).withColor(Color.CYAN)
-        //Particles.vortex(instance(), 30, 4.0, particleDisplayCloud)
-        //diamond(double radiusRate, double rate, double height, ParticleDisplay display)
-        //Particles.sphere(3.0, 30.0, particleDisplayCloud.mixWith(Color.BLUE))
-        // Particles.rainbow(double radius, double rate, double curve, double layers, double compact, ParticleDisplay display)
-        //Particles.rainbow(3.0, 3.0, 1.0, 3.0, 0.0, particleDisplayCloud)
-        //Particles.flower(3, 15.0, particleDisplayCloud) {
-        //    Particles.sphere(3.0, 30.0, particleDisplayCloud.mixWith(Color.PINK))
-        //}
+        val particleDisplayCloud = ParticleDisplay.of(Particle.WAX_OFF).withLocation(location).withColor(Color.RED)
+        val maxRadius = 10.0
+        val arms = 5
+        val spiralTightness = 0.8
+        val display = ParticleDisplay.of(Particle.DUST)
+            .withLocation(player.location)
+            .withColor(Color(255, 0, 150))
+
+        var currentRadius = 0.0
+
+        Bukkit.getAsyncScheduler().runAtFixedRate(instance(), { task ->
+            currentRadius += 0.4
+
+            if (currentRadius >= maxRadius) {
+                task.cancel()
+                return@runAtFixedRate
+            }
+
+            // Draw spiral arms up to current radius
+            for (arm in 0 until arms) {
+                val armOffset = (arm * Math.PI * 2.0) / arms
+
+                var r = Math.max(0.3, currentRadius - 1.5) // only draw the leading edge
+                while (r <= currentRadius) {
+                    val theta = armOffset + (r * spiralTightness)
+                    val x = r * Math.cos(theta)
+                    val z = r * Math.sin(theta)
+
+                    val spread = 0.1 + (r * 0.12)
+                    for (s in 0..3) {
+                        val sx = x + Particles.random(-spread, spread)
+                        val sz = z + Particles.random(-spread, spread)
+                        display.spawn(sx, 0.1, sz)
+                    }
+                    r += 0.1
+                }
+            }
+
+            for (i in 0..5) {
+                val r = currentRadius + Particles.random(0.5, 2.0)
+                val theta = Particles.random(0.0, Particles.PII)
+                val x = r * Math.cos(theta)
+                val z = r * Math.sin(theta)
+                for (j in 0..2) {
+                    display.spawn(
+                        x + Particles.random(-0.3, 0.3),
+                        0.1,
+                        z + Particles.random(-0.3, 0.3)
+                    )
+                }
+            }
+        }, 0, 50, java.util.concurrent.TimeUnit.MILLISECONDS)
     }
 }

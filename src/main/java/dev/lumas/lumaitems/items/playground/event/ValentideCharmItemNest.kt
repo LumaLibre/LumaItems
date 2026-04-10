@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.misc.nests
+package dev.lumas.lumaitems.items.playground.event
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions

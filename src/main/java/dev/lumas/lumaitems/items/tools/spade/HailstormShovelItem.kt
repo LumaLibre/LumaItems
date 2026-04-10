@@ -196,12 +196,6 @@ class HailstormShovelItem : CustomItemFunctions() {
             )
 
             val randLoc = spawnLocation.clone().add(random().nextDouble(-6.0, 6.0), 0.0, random().nextDouble(-6.0, 6.0))
-            spawnLocation.sync {
-                val snowball = fallingProjectile(randLoc, player)
-                //snowball.velocity = direction.clone().multiply(0.2)
-                // go in the player's facing direction
-                snowballs.add(snowball)
-            }
 
             snowballs.forEach { projectile ->
                 // have it determine a random color based on the location
@@ -216,7 +210,12 @@ class HailstormShovelItem : CustomItemFunctions() {
                     .spawn(projectile.location)
             }
 
-
+            spawnLocation.sync {
+                val snowball = fallingProjectile(randLoc, player)
+                //snowball.velocity = direction.clone().multiply(0.2)
+                // go in the player's facing direction
+                snowballs.add(snowball)
+            }
         }
     }
 

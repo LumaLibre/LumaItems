@@ -6,10 +6,12 @@ import dev.lumas.lumaitems.enums.TriState
 import dev.lumas.lumaitems.hooks.ProtectionHook
 import dev.lumas.lumaitems.hooks.TownyHook
 import dev.lumas.lumaitems.hooks.WorldGuardHook
+import dev.lumas.lumaitems.model.Mixable
 import dev.lumas.lumaitems.registry.Registry
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.command.CommandSender
 import org.bukkit.damage.DamageSource
@@ -41,12 +43,14 @@ fun Player.isWearing(identifier: NamespacedKey): Boolean {
     }
 }
 
-fun Player.isItemInSlot(identifier: String, slot: EquipmentSlot): Boolean {
-    return equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(identifier.namespacedKey()) == true
-}
 
 fun Player.isItemInSlot(identifier: NamespacedKey, slot: EquipmentSlot): Boolean {
-    return equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.has(identifier) == true
+    val item = equipment?.getItem(slot) ?: return false
+    return item.persistentDataContainer.has(identifier) || Mixable.isMixable(item) // TODO: temporary solution
+}
+
+fun Player.isItemInSlot(identifier: String, slot: EquipmentSlot): Boolean {
+    return isItemInSlot(identifier.namespacedKey(), slot)
 }
 
 fun Player.isItemInSlots(identifier: String, vararg slots: EquipmentSlot): Boolean {

@@ -13,6 +13,7 @@ import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.registry.StringIdentifier;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -56,6 +57,24 @@ public final class ItemManager {
             return null;
         }
         return customItem.createItem().component2();
+    }
+
+    /**
+     * Get the CustomItem object of an ItemStack
+     * @param itemStack ItemStack to get the CustomItem of
+     * @return CustomItem object if the item is a custom item, null otherwise
+     */
+    @Nullable
+    public static CustomItem getCustomItem(ItemStack itemStack) {
+        if (!itemStack.hasItemMeta()) return null;
+        var meta = itemStack.getItemMeta();
+
+        for (var customItem : Registry.CUSTOM_ITEMS) {
+            if (meta.getPersistentDataContainer().has(customItem.getKey().asNameSpacedKey(), PersistentDataType.SHORT)) {
+                return customItem.getValue();
+            }
+        }
+        return null;
     }
 
     /**

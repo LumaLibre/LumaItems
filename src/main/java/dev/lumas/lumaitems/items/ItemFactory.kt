@@ -282,7 +282,7 @@ class ItemFactory(
         fun customEnchants(customEnchants: MutableList<String>) = apply { this.customEnchants = customEnchants }
         @SafeVarargs
         fun customEnchants(vararg customEnchants: String) = apply { this.customEnchants = customEnchants.toMutableList() }
-        fun lore(lore: MutableList<String>) = apply { this.lore = lore }
+        fun lore(lore: List<String>) = apply { this.lore = lore.toMutableList() }
         @SafeVarargs
         fun lore(vararg lore: String) = apply { this.lore = lore.toMutableList() }
         fun material(material: Material) = apply { this.material = material }
