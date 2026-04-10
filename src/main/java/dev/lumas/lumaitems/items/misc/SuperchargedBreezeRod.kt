@@ -1,34 +1,33 @@
-package dev.lumas.lumaitems.items.misc
+package dev.lumas.lumaitems.items.misc;
 
-import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.items.ItemFactory;
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.tiers.Tier
-import org.bukkit.Material
-import org.bukkit.Particle
-import org.bukkit.Sound
-import org.bukkit.enchantments.Enchantment
+import dev.lumas.lumaitems.util.tiers.Tier;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.inventory.PrepareItemCraftEvent
-import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack
-import kotlin.to
 
-class ChargedBreezeRodItem : CustomItemFunctions() {
+class SuperchargedBreezeRod : CustomItemFunctions() {
 
     companion object {
-        private const val KEY = "charged-breeze-rod"
+        private const val KEY = "supercharged-breeze-rod"
 
-        private const val KNOCKBACK_POWER = 5
-        private const val UPWARD_BOOST = 0.75
+        private const val KNOCKBACK_POWER = 14.0
+        private const val UPWARD_BOOST = 1.25
     }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><gradient:#1AC9CC:#5d85dc:#CA51CB>Charged Breeze Rod</gradient></b>")
+            .name("<b><gradient:#1AC9CC:#5d85dc:#CA51CB>Supercharged Breeze Rod</gradient></b>")
             .customEnchants(
                 "<gray>Knockback VIII", // intentional - custom knockback is applied
                 "<gradient:#1AC9CC:#5d85dc>Gust Strike</gradient>"

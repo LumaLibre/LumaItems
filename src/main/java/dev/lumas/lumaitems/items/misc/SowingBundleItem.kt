@@ -2,9 +2,14 @@ package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.util.extensions.actionBar
+import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.computeDyedBundleResult
+import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
+import org.bukkit.Particle
+import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.enchantments.Enchantment
@@ -50,6 +55,8 @@ class SowingBundleItem : CustomItemFunctions() {
                 "<#B1BB57>Right-click</#B1BB57> farmland while",
                 "holding seeds inside to sow",
                 "the surrounding farmland.",
+                "",
+                "<red>Cooldown: 1s per seed sown"
             )
             .material(Material.BROWN_BUNDLE)
             .persistentData(KEY)
@@ -80,15 +87,27 @@ class SowingBundleItem : CustomItemFunctions() {
 
         if (contents.none { it.type in SEED_TO_CROP }) return
 
-        sow(clickedBlock, contents)
+        if (player.isOnCooldown(this)) {
+            player.actionBar("<red>The Sowing Bundle is still recovering!")
+            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f)
+            player.world.spawnParticle(Particle.SMOKE, player.location.add(0.0, 1.0, 0.0), 12, 0.3, 0.3, 0.3, 0.02)
+            return
+        }
+
+        val seedsPlanted = sow(clickedBlock, contents)
+        if (seedsPlanted == 0) return
+
+        player.addCooldown(this, seedsPlanted.toLong() * 20L)
+        player.playSound(player.location, Sound.ITEM_HOE_TILL, 1.0f, 1.2f)
 
         bundleMeta.setItems(contents)
         item.itemMeta = bundleMeta
     }
 
-    private fun sow(origin: Block, contents: MutableList<ItemStack>) {
+    private fun sow(origin: Block, contents: MutableList<ItemStack>): Int {
         val queue = ArrayDeque<Block>()
         val visited = mutableSetOf<Block>()
+        var planted = 0
 
         queue.add(origin)
         visited.add(origin)
@@ -99,13 +118,17 @@ class SowingBundleItem : CustomItemFunctions() {
 
             if (above.type == Material.AIR) {
                 val seedIndex = contents.indexOfFirst { it.type in SEED_TO_CROP }
-                if (seedIndex == -1) return
+                if (seedIndex == -1) return planted
 
                 val seedStack = contents[seedIndex]
                 above.type = SEED_TO_CROP[seedStack.type]!!
 
+                val loc = above.location.add(0.5, 0.3, 0.5)
+                above.world.spawnParticle(Particle.HAPPY_VILLAGER, loc, 4, 0.2, 0.15, 0.2, 0.0)
+
                 seedStack.amount--
                 if (seedStack.amount <= 0) contents.removeAt(seedIndex)
+                planted++
             }
 
             for (face in ADJACENT_FACES) {
@@ -116,6 +139,8 @@ class SowingBundleItem : CustomItemFunctions() {
                 }
             }
         }
+
+        return planted
     }
 
     override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
