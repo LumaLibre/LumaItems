@@ -59,7 +59,7 @@ class CopperGolemStatueItem : CustomItemFunctions() {
             "and Deepslate to Copper Ore.",
             "",
             "<red>Oxidizes as its power is used.</red>",
-            "<gray><b>·</b> <i>Other blocks may cleanse it.</i></gray>",
+            "<gray> ┗ Mine other blocks to undo.</gray>",
             ""
         )
 
