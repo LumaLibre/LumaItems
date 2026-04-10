@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -49,11 +50,11 @@ class TwinFlamePickaxeItem : CustomItemFunctions() {
         if (meta.hasEnchant(Enchantment.FORTUNE)) {
             meta.removeEnchant(Enchantment.FORTUNE)
             meta.addEnchant(Enchantment.SILK_TOUCH, 1, true)
-            player.sendActionBar(MiniMessageUtil.mm("<#FF6AA8>Switched to Silk Touch"))
+            player.actionBar("<#FF6AA8>Switched to Silk Touch")
         } else if (meta.hasEnchant(Enchantment.SILK_TOUCH)) {
             meta.removeEnchant(Enchantment.SILK_TOUCH)
             meta.addEnchant(Enchantment.FORTUNE, 5, true)
-            player.sendActionBar(MiniMessageUtil.mm("<#FF6AA8>Switched to Fortune"))
+            player.actionBar("<#FF6AA8>Switched to Fortune")
         }
         item.itemMeta = meta
         event.isCancelled = true

@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.dialogue.DialogueText
+import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.tiers.Tier
@@ -160,6 +161,13 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
         item.removeEnchantment(remove)
         item.addUnsafeEnchantment(add, level)
         event.isCancelled = true
+
+        val color = getPersonality(item).hexColor
+        player.actionBar(if (add == Enchantment.SILK_TOUCH) {
+            "<$color>Switched to Silk Touch"
+        } else {
+            "<$color>Switched to Fortune"
+        })
     }
 
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
