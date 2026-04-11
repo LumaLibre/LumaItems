@@ -29,6 +29,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import java.util.UUID
 
+// todo: shouldn't be used. modify the event listeners themselves to fire for all equipment
 @FireAnyways(Action.CONSUME_ITEM, Action.ENTITY_TARGET_PLAYER)
 class PiglinMaskItem : CustomItemFunctions() {
 
@@ -40,7 +41,7 @@ class PiglinMaskItem : CustomItemFunctions() {
         private const val ANGER_DURATION_TICKS = 600L // 30 seconds
         private val PIGLIN_TYPES = setOf(EntityType.PIGLIN, EntityType.PIGLIN_BRUTE)
         private val PORK_TYPES = setOf(Material.PORKCHOP, Material.COOKED_PORKCHOP)
-        private val rally_timestamps = mutableMapOf<UUID, Long>()
+        private val rally_timestamps = mutableMapOf<UUID, Long>() // todo: capitalize
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -97,7 +98,7 @@ class PiglinMaskItem : CustomItemFunctions() {
         val attackerUUID = attacker.uniqueId
         rally_timestamps[player.uniqueId] = System.currentTimeMillis()
         player.location.getNearbyEntitiesByType(Mob::class.java, RALLY_RADIUS)
-            .filter { it.type in PIGLIN_TYPES }
+            .filter { it.type in PIGLIN_TYPES } // todo: add a hard cap on how many can get mad
             .forEach { piglin ->
                 piglin.sync {
                     val brain = (piglin as CraftMob).handle.brain

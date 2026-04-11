@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.model.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.flagFor
 import dev.lumas.lumaitems.util.extensions.isFlagged
+import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.tiers.Tier
 import org.bukkit.Color
 import org.bukkit.Material
@@ -24,7 +25,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-@FireAnyways(Action.PROJECTILE_LAND, Action.PLAYER_DAMAGED)
+// TODO: These annotation are costly to use, I would not use this here.
+//@FireAnyways(Action.PLAYER_DAMAGED)
 class CrownJewelOfElsewhereItem : CustomItemFunctions() {
 
     companion object {
@@ -72,11 +74,7 @@ class CrownJewelOfElsewhereItem : CustomItemFunctions() {
 
         val launchLoc = player.eyeLocation
         val pearl = player.launchProjectile(EnderPearl::class.java)
-        pearl.persistentDataContainer.set(
-            NamespacedKey(instance(), KEY),
-            PersistentDataType.SHORT,
-            1.toShort()
-        )
+        pearl.setPersistentKey(KEY, PersistentDataType.SHORT, 1)
 
         player.playSound(player.location, Sound.ENTITY_ENDERMAN_TELEPORT, 0.7f, 1.5f)
         player.world.spawnParticle(Particle.PORTAL, launchLoc, 25, 0.2, 0.3, 0.2, 0.4)
@@ -109,8 +107,6 @@ class CrownJewelOfElsewhereItem : CustomItemFunctions() {
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
-        if (!event.entity.persistentDataContainer
-            .has(NamespacedKey(instance(), KEY), PersistentDataType.SHORT)) return
         val loc = event.entity.location
 
         player.flagFor(this, 3)

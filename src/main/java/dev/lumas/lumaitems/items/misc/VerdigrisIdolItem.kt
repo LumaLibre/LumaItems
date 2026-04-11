@@ -28,6 +28,7 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
+// TODO: INVENTORY_CLICK, Why? Just modify the listener
 @FireAnyways(Action.BREAK_BLOCK, Action.INVENTORY_CLICK)
 class VerdigrisIdolItem : CustomItemFunctions() {
 
@@ -194,6 +195,7 @@ class VerdigrisIdolItem : CustomItemFunctions() {
     }
 
     private fun computeDrops(tool: ItemStack, oreBlock: Material): ItemStack {
+        // TODO: Needs to be nerfed or not drop raw copper
         if (tool.containsEnchantment(Enchantment.SILK_TOUCH)) return ItemStack(oreBlock)
         val fortune = tool.getEnchantmentLevel(Enchantment.FORTUNE)
         return ItemStack(Material.RAW_COPPER, fortuneRawCopper(fortune))
