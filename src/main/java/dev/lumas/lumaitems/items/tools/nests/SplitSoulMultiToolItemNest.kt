@@ -328,7 +328,7 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
             { player, _ ->
                 MiniMessageUtil.msg(player, "Your tool doesn't appear to want to work right now. Try giving it some space...")
             },
-            Personality.PLEASANT to "I-#I'm so sory, but I'm too exhausted to work...#I just need a little break...",
+            Personality.PLEASANT to "I-#I'm so sorry, but I'm too exhausted to work...#I just need a little break...",
             Personality.LAZY to "Ugh, I don't want to work.",
             Personality.LAZY to "Seriously? You want me to work?#No thanks, not going to happen right now.",
             Personality.SAD to "Why do I have to be a tool?!#WHY ME!",
