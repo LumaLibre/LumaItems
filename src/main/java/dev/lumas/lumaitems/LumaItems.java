@@ -44,7 +44,7 @@ public final class LumaItems extends JavaPlugin {
     public void onEnable() {
         long start = System.currentTimeMillis();
         ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
-        reflectionUtil.whitelistPackages("commands", "commands.subcommands", "events", "events.items");
+        reflectionUtil.whitelistPackages("commands", "commands.subcommands", "events", "events.item");
 
         Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
