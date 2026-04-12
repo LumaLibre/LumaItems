@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.armor.boots
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.EntityEffect
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute

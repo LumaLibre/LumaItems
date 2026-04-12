@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.guis
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.extensions.asComponent
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
@@ -29,12 +29,12 @@ class GuiItemBuilder(material: Material) {
     }
 
     fun displayName(name: String): GuiItemBuilder {
-        meta.displayName(MiniMessageUtil.mm(name))
+        meta.displayName(name.asComponent())
         return this
     }
 
     fun lore(lore: List<String>): GuiItemBuilder {
-        meta.lore(MiniMessageUtil.mml(lore))
+        meta.lore(lore.asComponent())
         return this
     }
 

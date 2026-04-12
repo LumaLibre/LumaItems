@@ -2,9 +2,9 @@ package dev.lumas.lumaitems.items.astral
 
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.enums.ToolType
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.AttributeContainer
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.AttributeContainer
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.util.extensions.formatEnumerator
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute

@@ -1,52 +1,31 @@
-package dev.lumas.lumaitems.enums;
+package dev.lumas.lumaitems.enums
 
-import org.bukkit.Material;
-import org.bukkit.inventory.EquipmentSlot;
-import org.jetbrains.annotations.Nullable;
+import org.bukkit.Material
+import org.bukkit.inventory.EquipmentSlot
 
-import static dev.lumas.lumaitems.enums.ToolType.*;
+enum class GenericToolType(vararg val toolTypes: ToolType) {
+    ARMOR(ToolType.HELMET, ToolType.CHESTPLATE, ToolType.LEGGINGS, ToolType.BOOTS),
+    WEAPON(ToolType.SWORD, ToolType.SPEAR, ToolType.AXE, ToolType.BOW, ToolType.CROSSBOW, ToolType.TRIDENT, ToolType.SHIELD, ToolType.MACE),
+    TOOL(ToolType.PICKAXE, ToolType.AXE, ToolType.SHOVEL, ToolType.HOE, ToolType.FISHING_ROD);
 
-import java.util.List;
 
-// Enum for generic tooltypes
-public enum GenericToolType {
+    val equipmentSlot: EquipmentSlot
+            get() = when (this) {
+                ARMOR -> EquipmentSlot.CHEST
+                WEAPON, TOOL -> EquipmentSlot.HAND
+            }
 
-    ARMOR(HELMET, CHESTPLATE, LEGGINGS, BOOTS),
-    WEAPON(SWORD, SPEAR, AXE, BOW, CROSSBOW, TRIDENT, SHIELD, MACE),
-    TOOL(PICKAXE, AXE, SHOVEL, HOE, FISHING_ROD);
 
-    private final List<ToolType> toolTypes;
-
-    GenericToolType(ToolType... array) {
-        this.toolTypes = List.of(array);
-    }
-
-    public List<ToolType> getToolTypes() {
-        return toolTypes;
-    }
-
-    @Nullable
-    public static GenericToolType getGenericToolType(Material material) {
-        for (GenericToolType genericToolType : GenericToolType.values()) {
-            for (ToolType toolType : genericToolType.getToolTypes()) {
-                if (toolType.is(material)) {
-                    return genericToolType;
+    companion object {
+        fun getGenericToolType(material: Material): GenericToolType? {
+            for (genericToolType in entries) {
+                for (toolType in genericToolType.toolTypes) {
+                    if (toolType.matches(material)) {
+                        return genericToolType
+                    }
                 }
             }
+            return null
         }
-        return null;
-    }
-
-
-    public EquipmentSlot getEquipmentSlot() {
-        switch (this) {
-            case ARMOR -> {
-                return EquipmentSlot.CHEST;
-            }
-            case WEAPON, TOOL -> {
-                return EquipmentSlot.HAND;
-            }
-        }
-        return null;
     }
 }

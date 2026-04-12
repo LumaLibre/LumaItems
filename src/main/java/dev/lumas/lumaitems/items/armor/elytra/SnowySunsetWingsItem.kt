@@ -3,12 +3,12 @@ package dev.lumas.lumaitems.items.armor.elytra
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.hooks.LumaGlowAPIHook
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

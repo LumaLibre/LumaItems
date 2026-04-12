@@ -8,8 +8,8 @@ import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.guis.LumaItemsAbstractGui
 import dev.lumas.lumaitems.guis.DisassemblerGui
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCreator

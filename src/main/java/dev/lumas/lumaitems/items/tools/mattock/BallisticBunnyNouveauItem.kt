@@ -1,14 +1,14 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.awt.Color
 import java.util.UUID
 import kotlin.math.exp
@@ -75,12 +75,12 @@ class BallisticBunnyNouveauItem : CustomItemFunctions() {
 
     private fun createExplosion(player: Player, bypassCooldown: Boolean) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId) && !bypassCooldown) {
-            player.sendActionBar(MiniMessageUtil.mm("<gray>›.‹ <red>I can't explode right now!"))
+            player.actionBar("<gray>›.‹ <red>I can't explode right now!")
             return
         }
         val power = getExplosionPower(player)
         if (power < 4.0) {
-            player.sendActionBar(MiniMessageUtil.mm("<gray>›.‹ <#a6dca2>I don't have enough explosion power!"))
+            player.actionBar("<gray>›.‹ <#a6dca2>I don't have enough explosion power!")
             return
         }
 

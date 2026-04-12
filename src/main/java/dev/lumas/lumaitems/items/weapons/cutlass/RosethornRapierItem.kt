@@ -1,14 +1,14 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.blend
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.awt.Color
 import java.util.UUID
 import org.bukkit.Material

@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.relics
 
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Rarity
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.registry.Registry
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey
@@ -118,7 +118,7 @@ class RelicCreator (
 
 
     private fun determineName(): String {
-        return "<${rarity.getRgb()}><b>${relicPrefixes.random()}</b> <white>${relicSuffixes.random()}"
+        return "<${rarity.rgb}><b>${relicPrefixes.random()}</b> <white>${relicSuffixes.random()}"
     }
 
     fun getRelicItem(): ItemStack {

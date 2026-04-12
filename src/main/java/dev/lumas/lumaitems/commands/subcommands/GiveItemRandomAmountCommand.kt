@@ -1,15 +1,16 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import dev.lumas.core.util.Text
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
-import dev.lumas.lumaitems.manager.ItemManager
+import dev.lumas.lumaitems.api.ItemManager
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.registry.StringIdentifier
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.extensions.asComponent
 import dev.lumas.lumaitems.util.extensions.getNextIntArgument
 import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.command.CommandSender
@@ -50,8 +51,8 @@ class GiveItemRandomAmountCommand : SubCommand {
         }
 
         if (!args.contains("-silent")) {
-            MiniMessageUtil.msg(target, item.itemMeta?.displayName()?.let {
-                MiniMessageUtil.mm("<reset>You have been given</reset> <gold>${amount}x</gold> ").append(it) })
+            Text.msg(target, item.itemMeta?.displayName()?.let {
+                "<reset>You have been given</reset> <gold>${amount}x</gold> ".asComponent().append(it) } ?: "???".asComponent())
         }
         return true
     }

@@ -1,11 +1,10 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.actionBar
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player

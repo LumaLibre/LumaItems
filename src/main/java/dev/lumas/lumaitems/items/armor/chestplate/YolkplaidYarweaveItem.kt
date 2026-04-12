@@ -4,8 +4,8 @@ import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.configuration.files.HeadsYml
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.MythicMobsHook
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.syncTimer

@@ -3,9 +3,9 @@ package dev.lumas.lumaitems.items.astral.upgrades
 import dev.lumas.lumaitems.configuration.files.AstralYml
 import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.extensions.asComponent
+import dev.lumas.lumaitems.util.Tier
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -54,7 +54,7 @@ class AstralSetUpgradeFactory (val item: ItemStack) {
         for ((i, loreLine) in currentLore.withIndex()) {
             val loreLineStripped = PlainTextComponentSerializer.plainText().serialize(loreLine)
             if (loreLineStripped.contains("Tier •")) {
-                currentLore[i] = MiniMessageUtil.mm("<#EEE1D5>Tier • ${Tier.ASTRAL}<#CAB5F6>+")
+                currentLore[i] = "<#EEE1D5>Tier • ${Tier.ASTRAL}<#CAB5F6>+".asComponent()
                 break
             }
         }

@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.enums.ToolType
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
-import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.relics.RelicCrafting
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute

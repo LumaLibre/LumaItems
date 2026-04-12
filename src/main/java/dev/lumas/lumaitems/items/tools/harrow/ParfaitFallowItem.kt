@@ -2,15 +2,14 @@ package dev.lumas.lumaitems.items.tools.harrow
 
 import com.gmail.nossr50.events.skills.secondaryabilities.SubSkillBlockEvent
 import dev.lumas.lumaitems.enums.CardinalDirection
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.takeItem
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
-import org.bukkit.Tag
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent

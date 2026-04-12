@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.tools.nests
 
 import com.destroystokyo.paper.MaterialTags
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
@@ -15,7 +15,7 @@ import dev.lumas.lumaitems.util.extensions.random
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.awt.Color
 import kotlin.random.Random
 import org.bukkit.Location

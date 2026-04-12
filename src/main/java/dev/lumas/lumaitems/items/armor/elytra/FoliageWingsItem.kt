@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.armor.elytra
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -26,7 +26,7 @@ class FoliageWingsItem : CustomItemFunctions() {
             .persistentData(ID)
             .material(Material.ELYTRA)
             .lore("Glide from the trees,", "just like an autumn leaf!")
-            .tier(ThanksgivingEventTier.THANKSGIVING_2024)
+            .tier(Tier.THANKSGIVING_2024)
             .vanillaEnchants(Enchantment.PROTECTION to 9, Enchantment.UNBREAKING to 7, Enchantment.MENDING to 1)
             .buildPair()
     }

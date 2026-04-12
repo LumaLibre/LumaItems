@@ -1,7 +1,7 @@
-package dev.lumas.lumaitems.enums;
+package dev.lumas.lumaitems.enums
 
 // https://stackoverflow.com/questions/3921866/how-do-you-find-a-roman-numeral-equivalent-of-an-integer
-public enum RomanNumeral {
+enum class RomanNumeral(val weight: Int) {
     I(1),
     IV(4),
     V(5),
@@ -16,27 +16,21 @@ public enum RomanNumeral {
     CM(900),
     M(1000);
 
-    final int weight;
+    companion object {
+        fun fromInt(n: Int): String {
+            var n = n
+            require(n > 0)
 
-    RomanNumeral(int weight) {
-        this.weight = weight;
-    }
+            val buf = StringBuilder()
 
-    public static String fromInt(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException();
-        }
-
-        StringBuilder buf = new StringBuilder();
-
-        final RomanNumeral[] values = RomanNumeral.values();
-        for (int i = values.length - 1; i >= 0; i--) {
-            while (n >= values[i].weight) {
-                buf.append(values[i]);
-                n -= values[i].weight;
+            val values = RomanNumeral.entries.toTypedArray()
+            for (i in values.indices.reversed()) {
+                while (n >= values[i].weight) {
+                    buf.append(values[i])
+                    n -= values[i].weight
+                }
             }
+            return buf.toString()
         }
-        return buf.toString();
     }
-
 }

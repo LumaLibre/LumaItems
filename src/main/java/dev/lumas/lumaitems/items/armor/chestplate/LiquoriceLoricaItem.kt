@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.armor.chestplate
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.AttributeContainer
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.AttributeContainer
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier

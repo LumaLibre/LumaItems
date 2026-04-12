@@ -1,15 +1,14 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.enums.BlockConstants
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.BLOCK_FACE_RELATIVES
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.determineHighestBreakSpeed
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.block.Block

@@ -1,6 +1,6 @@
 package dev.lumas.lumaitems.util;
 
-import dev.lumas.lumaitems.model.AttributeContainer;
+import dev.lumas.lumaitems.model.item.AttributeContainer;
 import org.bukkit.attribute.Attribute;
 
 public interface SharedContainers {

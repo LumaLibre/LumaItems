@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.PersistentDataRecord
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.extensions.actionBar
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -101,7 +101,7 @@ class FrostbarkChiselItem : CustomItemFunctions() {
         val newMeta = axe.itemMeta?.apply { persistentDataContainer.set(key, PersistentDataType.STRING, newMode.name) }
             ?: return
         axe.itemMeta = newMeta
-        player.sendActionBar(MiniMessageUtil.mm("<#f498f6>${Util.formatEnumerator(newMode.name)}"))
+        player.actionBar("<#f498f6>${Util.formatEnumerator(newMode.name)}")
     }
 
     enum class Mode {

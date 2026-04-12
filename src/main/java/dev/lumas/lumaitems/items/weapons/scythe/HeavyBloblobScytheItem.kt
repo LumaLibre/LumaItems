@@ -1,18 +1,17 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.AttributeContainer
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.AttributeContainer
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import kotlin.random.asJavaRandom
 import org.bukkit.Color
 import org.bukkit.Material

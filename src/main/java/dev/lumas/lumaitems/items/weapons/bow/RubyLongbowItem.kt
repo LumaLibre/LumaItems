@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import java.util.Random

@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.weapons.hatchet
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
+import dev.lumas.lumaitems.util.Tier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable
 import io.papermc.paper.datacomponent.item.FoodProperties
@@ -26,6 +26,17 @@ import org.bukkit.potion.PotionEffectType
 
 class HoneyWickHatchetItem : CustomItemFunctions() {
 
+    private companion object {
+        private val CONSUME_MESSAGES = listOf(
+            "<gray>:3 <#fddeaf>Yum!",
+            "<gray>:o <#fddeaf>Delicious!",
+            "<gray>:* <#B2E55D>I think I'm gonna be sick...",
+            "<gray>:) <#fddeaf>That was tasty!",
+            "<gray>:| <#fddeaf>That tasted kind of funny...?"
+        );
+        private const val TOO_FULL = "›.‹ <#E55DB0>I'm too full right now!"
+    }
+
     private val dropItem: ItemStack = ItemFactory.builder()
         .material(Material.HONEYCOMB)
         .persistentData("honeywickhatchet")
@@ -40,7 +51,7 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
             .customEnchants("<gray>Consumable", "<#ffb825>Perfect Drizzle")
             .persistentData("honeywickhatchet")
             .material(Material.NETHERITE_AXE)
-            .tier(ThanksgivingEventTier.THANKSGIVING_2024)
+            .tier(Tier.THANKSGIVING_2024)
             .lore("Attacked entities will", "receive extra damage.", "", "<#645B82>Consume <white>this item", "to gain temporary buffs.", "", "<red>Cooldown: 1m")
             .vanillaEnchants(Enchantment.SHARPNESS to 8, Enchantment.LOOTING to 5, Enchantment.FIRE_ASPECT to 4, Enchantment.UNBREAKING to 10, Enchantment.MENDING to 1)
             .build()
@@ -98,7 +109,7 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
         event.isCancelled = true
 
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
-            player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.cannotConsumeMessage))
+            player.actionBar(TOO_FULL)
             return
         }
 
@@ -109,6 +120,6 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
         player.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, 600, 2)) // abs 3 for 30s
         player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, 600, 2)) // sat 3 for 30s
 
-        player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.consumeMessages.random()))
+        player.actionBar(CONSUME_MESSAGES.random())
     }
 }

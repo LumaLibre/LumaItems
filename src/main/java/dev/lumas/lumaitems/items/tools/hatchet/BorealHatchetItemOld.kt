@@ -1,11 +1,12 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
 import dev.lumas.lumaitems.annotations.Ignore
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.UUID
+import org.bukkit.Material
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockDropItemEvent
@@ -21,7 +22,7 @@ class BorealHatchetItemOld : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("Boreal Hatchet")
-            .material(org.bukkit.Material.DIAMOND_AXE)
+            .material(Material.DIAMOND_AXE)
             .persistentData("boreal-hatchet")
             .buildPair()
     }

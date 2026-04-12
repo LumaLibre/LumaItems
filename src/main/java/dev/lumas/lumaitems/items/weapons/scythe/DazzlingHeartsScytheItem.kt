@@ -2,14 +2,14 @@ package dev.lumas.lumaitems.items.weapons.scythe
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.WorldName
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.syncTimer
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.util.function.Consumer
 import org.bukkit.Location
 import org.bukkit.Material

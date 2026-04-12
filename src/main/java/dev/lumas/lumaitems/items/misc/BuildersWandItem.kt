@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.misc
 
 import com.destroystokyo.paper.MaterialTags
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.Synchronizable
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.task.Synchronizable
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.addCooldown
@@ -19,7 +19,7 @@ import dev.lumas.lumaitems.util.extensions.setBlockDataWithLog
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.takeItem
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.PriorityQueue

@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.PaperDataComponent
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.PaperDataComponent
+import dev.lumas.lumaitems.util.Tier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import kotlin.jvm.optionals.getOrNull
 import net.minecraft.world.level.block.WeatheringCopper

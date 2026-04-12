@@ -1,16 +1,14 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
-import dev.lumas.lumaitems.enums.BlockConstants
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Kind
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable
 import io.papermc.paper.datacomponent.item.FoodProperties
@@ -27,6 +25,17 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
 class HolidayHamItem : CustomItemFunctions() {
+
+    private companion object {
+        private val CONSUME_MESSAGES = listOf(
+            "<gray>:3 <#fddeaf>Yum!",
+            "<gray>:o <#fddeaf>Delicious!",
+            "<gray>:* <#B2E55D>I think I'm gonna be sick...",
+            "<gray>:) <#fddeaf>That was tasty!",
+            "<gray>:| <#fddeaf>That tasted kind of funny...?"
+        );
+        private const val TOO_FULL = "›.‹ <#E55DB0>I'm too full right now!"
+    }
 
     @Suppress("UnstableApiUsage")
     override fun createItem(): Pair<String, ItemStack> {
@@ -59,14 +68,14 @@ class HolidayHamItem : CustomItemFunctions() {
     override fun onConsumeItem(player: Player, event: PlayerItemConsumeEvent) {
         event.isCancelled = true
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
-            player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.cannotConsumeMessage))
+            player.actionBar(TOO_FULL)
             return
         }
         QuickTasks.addCooldown(this, player.uniqueId, 3600L)
         clearBlocksInRadius(player) // explosion
         player.addPotionEffect(PotionEffect(PotionEffectType.HASTE, 600, 2)) // haste 3 for 30s
 
-        player.sendActionBar(MiniMessageUtil.mm(ThanksgivingEventTier.THANKSGIVING_2024.consumeMessages.random())) // random message
+        player.actionBar(CONSUME_MESSAGES.random()) // random message
     }
 
     private fun clearBlocksInRadius(player: Player) {

@@ -5,11 +5,10 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.enums.BlockConstants
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.Synchronizable
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.task.Synchronizable
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.Kind
@@ -18,7 +17,7 @@ import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.getOreColor
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Bukkit

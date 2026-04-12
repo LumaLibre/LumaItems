@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.extensions.syncTimer

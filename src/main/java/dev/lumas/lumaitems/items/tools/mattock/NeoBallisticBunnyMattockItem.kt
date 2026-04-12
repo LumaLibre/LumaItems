@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.configuration.files.HeadsYml
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.extensions.addCooldown
@@ -12,7 +12,7 @@ import dev.lumas.lumaitems.util.extensions.itemStack
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.extensions.setTexture
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.util.UUID
 import kotlin.random.Random
 import kotlin.random.asJavaRandom

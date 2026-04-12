@@ -2,11 +2,11 @@ package dev.lumas.lumaitems.items.tools
 
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.ToolType
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.manager.ItemManager
-import dev.lumas.lumaitems.model.CustomItem
-import dev.lumas.lumaitems.model.Mixable
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.api.ItemManager
+import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.Mixable
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.asComponent
@@ -16,7 +16,7 @@ import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.extensions.withMeta
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

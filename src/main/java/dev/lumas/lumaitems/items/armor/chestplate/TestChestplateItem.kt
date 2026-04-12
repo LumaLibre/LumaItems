@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.armor.chestplate
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 

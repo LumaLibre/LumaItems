@@ -1,12 +1,12 @@
 package dev.lumas.lumaitems.items.weapons.mace
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import kotlin.random.Random
 import org.bukkit.Location

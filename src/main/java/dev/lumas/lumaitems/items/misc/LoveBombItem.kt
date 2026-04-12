@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.annotations.Ignore
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import io.papermc.paper.datacomponent.DataComponentTypes

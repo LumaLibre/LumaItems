@@ -1,17 +1,14 @@
-package dev.lumas.lumaitems.enums;
+package dev.lumas.lumaitems.enums
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
+import java.util.Locale
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 
 /**
  * Enum for generic Minecraft tool types.
  * Determine their type without regard for the type of material.
  */
-public enum ToolType {
-
+enum class ToolType {
     HELMET,
     CHESTPLATE,
     LEGGINGS,
@@ -32,35 +29,35 @@ public enum ToolType {
     MACE,
     SHEARS;
 
-    public static final List<String> magicMaterials = List.of("BLAZE_ROD");
-
-
-    public boolean is(Material material) {
-        return getToolType(material) == this;
+    fun matches(material: Material): Boolean {
+        return getToolType(material) == this
     }
 
-    @Nullable
-    public static ToolType getToolType(ItemStack item) {
-        return getToolType(item.getType().toString());
-    }
+    companion object {
+        val magicMaterials = listOf("BLAZE_ROD")
 
-    @Nullable
-    public static ToolType getToolType(Material material) {
-        return getToolType(material.toString());
-    }
 
-    @Nullable
-    public static ToolType getToolType(String string) {
-        string = string.toUpperCase();
-        if (magicMaterials.contains(string)) {
-            return MAGICAL;
+        fun getToolType(item: ItemStack): ToolType? {
+            return getToolType(item.type.toString())
         }
 
-        for (ToolType toolType : ToolType.values()) {
-            if (string.contains(toolType.toString())) {
-                return toolType;
+        fun getToolType(material: Material): ToolType? {
+            return getToolType(material.toString())
+        }
+
+        fun getToolType(string: String): ToolType? {
+            var string = string
+            string = string.uppercase(Locale.getDefault())
+            if (magicMaterials.contains(string)) {
+                return ToolType.MAGICAL
             }
+
+            for (toolType in ToolType.entries) {
+                if (string.contains(toolType.toString())) {
+                    return toolType
+                }
+            }
+            return null
         }
-        return null;
     }
 }

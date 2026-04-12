@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.armor.boots
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.extensions.flag
@@ -10,7 +10,7 @@ import dev.lumas.lumaitems.util.extensions.isFlagged
 import dev.lumas.lumaitems.util.extensions.isLocationOnGround
 import dev.lumas.lumaitems.util.extensions.removeFlag
 import dev.lumas.lumaitems.util.extensions.toColor
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound

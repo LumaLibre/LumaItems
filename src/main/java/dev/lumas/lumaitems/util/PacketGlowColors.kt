@@ -10,38 +10,36 @@ import com.comphenix.protocol.wrappers.WrappedWatchableObject
 import com.google.common.collect.Lists
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.extensions.lazyListOf
 import dev.lumas.lumaitems.util.extensions.sync
 import java.lang.Byte
 import java.lang.reflect.Type
 import java.util.Optional
 import kotlin.Boolean
 import kotlin.getValue
-import kotlin.lazy
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 object PacketGlowColors {
 
-    val PACKET_COLORS by lazy {
-        listOf(
-            EnumWrappers.ChatFormatting.AQUA,
-            EnumWrappers.ChatFormatting.BLACK,
-            EnumWrappers.ChatFormatting.BLUE,
-            EnumWrappers.ChatFormatting.DARK_AQUA,
-            EnumWrappers.ChatFormatting.DARK_BLUE,
-            EnumWrappers.ChatFormatting.DARK_GRAY,
-            EnumWrappers.ChatFormatting.DARK_GREEN,
-            EnumWrappers.ChatFormatting.DARK_PURPLE,
-            EnumWrappers.ChatFormatting.DARK_RED,
-            EnumWrappers.ChatFormatting.GOLD,
-            EnumWrappers.ChatFormatting.GRAY,
-            EnumWrappers.ChatFormatting.GREEN,
-            EnumWrappers.ChatFormatting.LIGHT_PURPLE,
-            EnumWrappers.ChatFormatting.RED,
-            EnumWrappers.ChatFormatting.YELLOW,
-            EnumWrappers.ChatFormatting.WHITE
-        )
-    }
+    val PACKET_COLORS by lazyListOf(
+        EnumWrappers.ChatFormatting.AQUA,
+        EnumWrappers.ChatFormatting.BLACK,
+        EnumWrappers.ChatFormatting.BLUE,
+        EnumWrappers.ChatFormatting.DARK_AQUA,
+        EnumWrappers.ChatFormatting.DARK_BLUE,
+        EnumWrappers.ChatFormatting.DARK_GRAY,
+        EnumWrappers.ChatFormatting.DARK_GREEN,
+        EnumWrappers.ChatFormatting.DARK_PURPLE,
+        EnumWrappers.ChatFormatting.DARK_RED,
+        EnumWrappers.ChatFormatting.GOLD,
+        EnumWrappers.ChatFormatting.GRAY,
+        EnumWrappers.ChatFormatting.GREEN,
+        EnumWrappers.ChatFormatting.LIGHT_PURPLE,
+        EnumWrappers.ChatFormatting.RED,
+        EnumWrappers.ChatFormatting.YELLOW,
+        EnumWrappers.ChatFormatting.WHITE
+    )
 
 
     fun removeProtocolTeam(player: Player, entity: Entity) {

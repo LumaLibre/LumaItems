@@ -2,13 +2,13 @@ package dev.lumas.lumaitems.items.misc.magical
 
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItem
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.legacy
 import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.UUID
@@ -80,7 +80,7 @@ class SweetBluetGemstoneItem : CustomItem {
                     meta.persistentDataContainer.set(NamespacedKey(plugin, "ability-type"), PersistentDataType.STRING, newAbilityType.name)
                     event.item?.itemMeta = meta
 
-                    player.send("Changed to ${MiniMessageUtil.convertLegacyToMiniMesssageString(newAbilityType.friendlyName)} <reset>spell.")
+                    player.send("Changed to ${newAbilityType.friendlyName.legacy()} <reset>spell.")
                 } else if (player.inventory.containsAtLeast(ItemStack(Material.LAPIS_LAZULI), 4)) {
 
                     runAbilityType(activeAbilityType, player)

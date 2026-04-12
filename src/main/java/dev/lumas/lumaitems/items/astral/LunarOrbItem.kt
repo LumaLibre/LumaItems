@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.astral
 
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Rarity
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCrafting
 import dev.lumas.lumaitems.relics.RelicCreator

@@ -2,10 +2,10 @@
 
 package dev.lumas.lumaitems.util.extensions
 
-import dev.lumas.lumaitems.model.AbstractSpell
-import dev.lumas.lumaitems.model.CustomItem
-import dev.lumas.lumaitems.model.CustomItemCooldown
-import dev.lumas.lumaitems.model.SpellCooldown
+import dev.lumas.lumaitems.model.spell.AbstractSpell
+import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.CustomItemCooldown
+import dev.lumas.lumaitems.model.spell.SpellCooldown
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.entity.Player

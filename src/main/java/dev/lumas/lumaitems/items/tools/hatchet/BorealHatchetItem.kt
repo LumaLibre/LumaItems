@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
 import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import org.bukkit.Material

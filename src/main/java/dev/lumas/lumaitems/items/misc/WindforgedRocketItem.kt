@@ -2,12 +2,12 @@ package dev.lumas.lumaitems.items.misc
 
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.MiniMessageUtil.mm
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.util.UUID
 import org.bukkit.Material
 import org.bukkit.World.Environment
@@ -82,7 +82,7 @@ class WindforgedRocketItem : CustomItemFunctions() {
         val cooldown = checkCooldown(player)
         if (!cooldown.canUse) {
             val timer = (cooldown.remainingMs/1000).coerceAtLeast(0)
-            player.sendActionBar(mm("<gradient:#E90000:#FFFFFF>The eternal wind resists... ${timer}s before it can surge again</gradient>"))
+            player.actionBar("<gradient:#E90000:#FFFFFF>The eternal wind resists... ${timer}s before it can surge again</gradient>")
             cancelElytraEvents(player, event)
             scheduleRestoreIfConsumed(player, slot)
 
@@ -156,7 +156,7 @@ class WindforgedRocketItem : CustomItemFunctions() {
     }
 
     private fun applyHinderance(player: Player, message: String, effect: PotionEffectType, duration: Int = 120, amplifier: Int = 0) {
-        player.sendActionBar(mm(message))
+        player.actionBar(message)
         player.addPotionEffect(PotionEffect(effect, duration, amplifier))
     }
 

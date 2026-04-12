@@ -1,17 +1,14 @@
 package dev.lumas.lumaitems.items.misc
 
-import dev.lumas.lumaitems.annotations.FireAnyways
-import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.flagFor
 import dev.lumas.lumaitems.util.extensions.isFlagged
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Color
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.damage.DamageType

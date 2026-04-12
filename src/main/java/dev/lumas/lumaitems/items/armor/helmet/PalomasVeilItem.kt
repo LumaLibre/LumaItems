@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.PersistentDataRecord
-import dev.lumas.lumaitems.model.Synchronizable
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
+import dev.lumas.lumaitems.model.task.Synchronizable
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.extensions.asEnum
@@ -23,7 +23,7 @@ import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toColor
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID

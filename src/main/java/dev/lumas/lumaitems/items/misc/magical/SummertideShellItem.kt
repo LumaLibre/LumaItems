@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.misc.magical
 
+import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItem
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.Material
@@ -109,7 +109,7 @@ class SummertideShellItem : CustomItem {
 
     private fun speedAbility(player: Player) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
-            MiniMessageUtil.msg(player, "You are on cooldown for this item.")
+            Text.msg(player, "You are on cooldown for this item.")
             return
         }
         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 4, false, false, false))
@@ -117,7 +117,7 @@ class SummertideShellItem : CustomItem {
 
     private fun spellAbility(player: Player) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
-            MiniMessageUtil.msg(player, "You are on cooldown for this item.")
+            Text.msg(player, "You are on cooldown for this item.")
             return
         }
         AbilityUtil.spawnSpell(player, Particle.ENTITY_EFFECT, ID, 120L).setMetadata("spell-ability", FixedMetadataValue(instance(), true))
@@ -133,7 +133,7 @@ class SummertideShellItem : CustomItem {
 
     private fun nourishAbility(player: Player) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
-            MiniMessageUtil.msg(player, "You are on cooldown for this item.")
+            Text.msg(player, "You are on cooldown for this item.")
             return
         }
         AbilityUtil.spawnSpell(player, Particle.CRIMSON_SPORE, ID, 120L).setMetadata("nourish-ability", FixedMetadataValue(instance(), true))

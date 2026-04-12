@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import dev.lumas.core.util.Text
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
@@ -8,7 +9,7 @@ import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.items.misc.jobs.JobsBoosterItem
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.extensions.asComponent
 import dev.lumas.lumaitems.util.extensions.asEnum
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -37,8 +38,8 @@ class JobsBoosterItemCommand : SubCommand {
 
         target.give(item)
 
-        MiniMessageUtil.msg(target, item.itemMeta?.displayName()?.let {
-            MiniMessageUtil.mm("<reset>You have been given</reset> <gold>1x</gold> ").append(it) })
+        Text.msg(target, item.itemMeta?.displayName()?.let {
+            "<reset>You have been given</reset> <gold>1x</gold> ".asComponent().append(it) } ?: "???".asComponent())
         return true
     }
 

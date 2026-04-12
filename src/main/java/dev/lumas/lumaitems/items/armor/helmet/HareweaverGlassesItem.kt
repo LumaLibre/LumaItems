@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
 import dev.lumas.lumaitems.guis.SnapshotShulkerBoxInventory
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.block.ShulkerBox
 import org.bukkit.enchantments.Enchantment
@@ -57,10 +57,3 @@ class HareweaverGlassesItem : CustomItemFunctions() {
         player.openInventory(inv.inventory)
     }
 }
-
-/*
-val name = shulkerBox.customName() ?: Component.text("Shulker Box")
-player.sendActionBar(
-    MiniMessageUtil.mm("<#f082a1>Viewing the contents of<gray>:</gray></#f082a1> ").append(name)
-)
- */

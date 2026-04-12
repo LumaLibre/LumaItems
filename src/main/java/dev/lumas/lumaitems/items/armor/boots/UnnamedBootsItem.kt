@@ -1,9 +1,10 @@
 package dev.lumas.lumaitems.items.armor.boots
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import kotlin.math.min
+import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
@@ -13,7 +14,7 @@ class UnnamedBootsItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gray>Unnamed Boots</gray></b>")
-            .material(org.bukkit.Material.LEATHER_BOOTS)
+            .material(Material.LEATHER_BOOTS)
             .persistentData("unnamed-boots")
             .buildPair()
     }

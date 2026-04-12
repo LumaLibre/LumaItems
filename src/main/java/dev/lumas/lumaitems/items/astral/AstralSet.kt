@@ -1,6 +1,6 @@
 package dev.lumas.lumaitems.items.astral
 
-import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.model.item.CustomItem
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 

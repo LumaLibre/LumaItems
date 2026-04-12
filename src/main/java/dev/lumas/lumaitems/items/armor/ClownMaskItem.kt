@@ -1,11 +1,11 @@
 package dev.lumas.lumaitems.items.armor
 
 import dev.lumas.lumaitems.configuration.files.HeadsYml
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.AttributeContainer
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.AttributeContainer
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.attribute.Attribute

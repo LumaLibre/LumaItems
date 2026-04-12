@@ -1,12 +1,12 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import dev.lumas.core.util.Text
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
@@ -39,7 +39,7 @@ class CopyCoordinatesCommand : SubCommand {
             .clickEvent(ClickEvent.copyToClipboard(coordinatesString))
             .hoverEvent(Component.text("Click to copy"))
             .color(TextColor.color(c.red, c.green, c.blue))
-        MiniMessageUtil.msg(sender, comp)
+        Text.msg(sender, comp)
         return true
     }
 

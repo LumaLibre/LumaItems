@@ -1,17 +1,17 @@
 package dev.lumas.lumaitems.items.misc.magical
 
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.MagicItemCooldown
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.core.util.Text
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.spell.MagicItemCooldown
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.syncTimer
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -139,7 +139,7 @@ class BookOfKnowledgeItem : CustomItemFunctions() {
         item.itemMeta = item.itemMeta?.apply {
             persistentDataContainer.set(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING, nextSpell.name)
         }
-        MiniMessageUtil.msg(player, "Spell changed to <gradient:#CF9C68:#815531>${Util.formatEnumerator(nextSpell.name)}")
+        Text.msg(player, "Spell changed to <gradient:#CF9C68:#815531>${Util.formatEnumerator(nextSpell.name)}")
     }
 
 

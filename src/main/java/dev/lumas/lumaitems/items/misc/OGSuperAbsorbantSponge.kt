@@ -1,13 +1,14 @@
 package dev.lumas.lumaitems.items.misc
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.actionBar
+import dev.lumas.lumaitems.util.extensions.asComponent
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -82,16 +83,16 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
         val newLore = meta.lore()?.map {
             val currentLoreText = LegacyComponentSerializer.legacySection().serialize(it)
             if (currentLoreText.contains("Current Mode:")) {
-                MiniMessageUtil.mm("<#F4E06D>Current Mode: ${newMode.displayName}")
+                "<#F4E06D>Current Mode: ${newMode.displayName}".asComponent()
             } else {
                 it // Shouldn't happen
             }
-        } ?: listOf(MiniMessageUtil.mm("<#F4E06D>Current Mode: <#F4E06D><bold>${newMode.displayName}"))
+        } ?: listOf("<#F4E06D>Current Mode: <#F4E06D><bold>${newMode.displayName}".asComponent())
 
         meta.lore(newLore)
         item.itemMeta = meta
 
-        player.sendActionBar(MiniMessageUtil.mm("<#F4E06D>Now absorbing ${newMode.displayName}"))
+        player.actionBar("<#F4E06D>Now absorbing ${newMode.displayName}")
         player.playSound(player.location, Sound.UI_HUD_BUBBLE_POP, 2.0f, 1.25f)
 
         event.isCancelled = true

@@ -1,10 +1,11 @@
 package dev.lumas.lumaitems.items.playground
 
 import dev.lumas.lumaitems.annotations.Ignore
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.PaperDataComponent
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.PaperDataComponent
 import io.papermc.paper.datacomponent.DataComponentTypes
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.ProjectileLaunchEvent
@@ -15,7 +16,7 @@ class ThrowableAxeItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("Throwable Axe")
-            .material(org.bukkit.Material.TRIDENT)
+            .material(Material.TRIDENT)
             .persistentData("throwable-axe")
             .paperDataComponents(
                 PaperDataComponent.valued(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft("diamond_axe"))

@@ -1,17 +1,17 @@
 package dev.lumas.lumaitems.items.tools.nests
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.MultiPlayerCustomItem
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.MultiPlayerCustomItem
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.Kind
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
@@ -130,11 +130,11 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
         }
 
         val bondedPlayer = getBondedPlayer(player) ?: return run {
-            player.sendActionBar(MiniMessageUtil.mm("<red>Couldn't find your partner."))
+            player.actionBar("<red>Couldn't find your partner.")
         }
 
         player.teleportAsync(bondedPlayer.location)
-        player.sendActionBar(MiniMessageUtil.mm("<yellow>Teleported to ${bondedPlayer.name}!"))
+        player.actionBar("<yellow>Teleported to ${bondedPlayer.name}!")
         QuickTasks.addCooldown(this, player.uniqueId, 50L)
     }
 

@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.guis
 import dev.lumas.core.model.gui.AbstractGui
 import dev.lumas.core.model.gui.items.IndexedGuiItem
 import dev.lumas.core.util.Text
-import dev.lumas.lumaitems.items.ItemFactory
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.ColorHolder
 import dev.lumas.lumaitems.util.DyeColorUtil
 import org.bukkit.Bukkit

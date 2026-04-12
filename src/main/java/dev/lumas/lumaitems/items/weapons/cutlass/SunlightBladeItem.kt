@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.syncDelayed

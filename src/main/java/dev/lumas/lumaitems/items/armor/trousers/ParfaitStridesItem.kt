@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.armor.trousers
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.AttributeContainer
-import dev.lumas.lumaitems.model.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.AttributeContainer
+import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute

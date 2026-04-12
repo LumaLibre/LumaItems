@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.util.dialogue
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.util.extensions.asComponent
 import java.util.concurrent.TimeUnit
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
@@ -93,7 +93,7 @@ class DialogueText(
     }
 
     fun sendActionBar(text: String) {
-        player.sendActionBar(MiniMessageUtil.mm(text).colorIfAbsent(this.ifAbsentColor))
+        player.sendActionBar(text.asComponent().colorIfAbsent(this.ifAbsentColor))
         player.playSound(player.location, Sound.UI_HUD_BUBBLE_POP, this.voiceVolume, this.voicePitch)
     }
 }

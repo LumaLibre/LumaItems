@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.tools.harrow
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.MiniMessageUtil
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.extensions.actionBar
+import dev.lumas.lumaitems.util.Tier
 import java.time.LocalDate
 import org.bukkit.Color as BukkitColor
 import org.bukkit.Material
@@ -72,7 +72,7 @@ class BloomingBunnyRakeItem : CustomItemFunctions() {
 
     override fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {
         val msg = "<${cropOfTheDay.color()}>${MESSAGES.random().format(cropOfTheDay.name)}"
-        player.sendActionBar(MiniMessageUtil.mm(msg))
+        player.actionBar(msg)
     }
 
 

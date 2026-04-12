@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import dev.lumas.core.util.Text
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
@@ -7,7 +8,6 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.api.LumaItemsAPI
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
@@ -29,18 +29,18 @@ class HideToolTipsCommand : SubCommand {
         val item = player.inventory.itemInMainHand
 
         if (!LumaItemsAPI.getInstance().isCustomItem(item)) {
-            MiniMessageUtil.msg(player, "This item is not a custom item!")
+            Text.msg(player, "This item is not a custom item!")
             return true
         }
 
         val defaultAttributes = item.type.defaultAttributeModifiers.entries().ifEmpty {
-            MiniMessageUtil.msg(player, "Couldn't find default attributes for this item! (Material: ${item.type})")
+            Text.msg(player, "Couldn't find default attributes for this item! (Material: ${item.type})")
             return true
         }
 
         val meta = item.itemMeta
         if (meta.hasAttributeModifiers()) {
-            MiniMessageUtil.msg(player, "Can't hide tool tips on this item. (Attribute modifiers already exist!)")
+            Text.msg(player, "Can't hide tool tips on this item. (Attribute modifiers already exist!)")
             return true
         }
         meta.addItemFlags(
@@ -56,7 +56,7 @@ class HideToolTipsCommand : SubCommand {
 
 
         item.itemMeta = meta
-        MiniMessageUtil.msg(player, "Tool tips have been hidden!")
+        Text.msg(player, "Tool tips have been hidden!")
         return true
     }
 

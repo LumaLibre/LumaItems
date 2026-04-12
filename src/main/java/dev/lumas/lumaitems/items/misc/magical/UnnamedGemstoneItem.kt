@@ -1,17 +1,18 @@
 package dev.lumas.lumaitems.items.misc.magical
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.AbstractSpell
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.FakeLightning
-import dev.lumas.lumaitems.model.PersistentDataRecord
-import dev.lumas.lumaitems.model.SpellCaster
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.spell.AbstractSpell
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.entity.FakeLightning
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
+import dev.lumas.lumaitems.model.spell.SpellCaster
 import dev.lumas.lumaitems.util.extensions.asEnum
 import dev.lumas.lumaitems.util.extensions.formatEnumerator
 import dev.lumas.lumaitems.util.extensions.getPersistentKey
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
+import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -29,7 +30,7 @@ class UnnamedGemstoneItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("unnamed gemstone")
-            .material(org.bukkit.Material.EMERALD)
+            .material(Material.EMERALD)
             .persistentData("unnamed-gemstone")
             .buildPair()
     }

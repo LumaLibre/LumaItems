@@ -4,8 +4,8 @@ import dev.lumas.core.model.gui.AbstractGui
 import dev.lumas.core.model.gui.items.IndexedGuiItem
 import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.items.astral.AstralSet
-import dev.lumas.lumaitems.manager.ItemManager
-import dev.lumas.lumaitems.model.Mixable
+import dev.lumas.lumaitems.api.ItemManager
+import dev.lumas.lumaitems.model.item.Mixable
 import dev.lumas.lumaitems.relics.RelicDisassembler
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.hasPersistentKey

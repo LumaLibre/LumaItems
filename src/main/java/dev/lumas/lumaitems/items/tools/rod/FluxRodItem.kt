@@ -1,10 +1,10 @@
 package dev.lumas.lumaitems.items.tools.rod
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import kotlin.random.Random
 import net.minecraft.world.entity.projectile.FishingHook
 import org.bukkit.Material

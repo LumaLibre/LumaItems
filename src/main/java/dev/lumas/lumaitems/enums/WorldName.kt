@@ -1,11 +1,9 @@
-package dev.lumas.lumaitems.enums;
+package dev.lumas.lumaitems.enums
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
+import org.bukkit.Location
+import org.bukkit.entity.Entity
 
-public enum WorldName {
-
+enum class WorldName {
     ALL("all"),
     EVENT("event"),
     EVENT_NEW("event_new"),
@@ -25,8 +23,39 @@ public enum WorldName {
     ;
 
 
-    // Worlds that are normally accessible to players on Luma
-    public static WorldName[] NORMALLY_ACCESSIBLE = {
+    val stringName: String
+    val uuid: String?
+
+    constructor(stringName: String) {
+        this.stringName = stringName
+        this.uuid = null
+    }
+
+    constructor(stringName: String, uuid: String) {
+        this.stringName = stringName
+        this.uuid = uuid
+    }
+
+    fun isInWorld(entity: Entity): Boolean {
+        return isInWorld(entity.location)
+    }
+
+    fun isInWorld(location: Location): Boolean {
+        if (this == ALL) {
+            return true
+        }
+
+        val world = location.getWorld() ?: return false
+
+        if (uuid != null) {
+            return world.name.equals(stringName, ignoreCase = true) || world.uid.toString() == uuid
+        }
+        return world.name.equals(stringName, ignoreCase = true)
+    }
+
+    companion object {
+        // Worlds that are normally accessible to players on Luma
+        var NORMALLY_ACCESSIBLE: Array<WorldName?> = arrayOf<WorldName?>(
             MAIN,
             MAIN_NETHER,
             MAIN_THE_END,
@@ -34,47 +63,8 @@ public enum WorldName {
             RESOURCE,
             RESOURCE_NETHER,
             RESOURCE_THE_END,
-            RESOURCE_DESERT
-    };
-
-    private final String stringName;
-    private final String uuid;
-
-    WorldName(String stringName) {
-        this.stringName = stringName;
-        this.uuid = null;
-    }
-
-    WorldName(String stringName, String uuid) {
-        this.stringName = stringName;
-        this.uuid = uuid;
-    }
-
-    public String getStringName() {
-        return stringName;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public boolean isInWorld(Entity entity) {
-        return isInWorld(entity.getLocation());
-    }
-
-    public boolean isInWorld(Location location) {
-        if (this == ALL) {
-            return true;
-        }
-
-        World world = location.getWorld();
-        if (world == null) {
-            return false;
-        }
-
-        if (uuid != null) {
-            return world.getName().equalsIgnoreCase(stringName) || world.getUID().toString().equals(uuid);
-        }
-        return world.getName().equalsIgnoreCase(stringName);
+            RESOURCE_DESERT,
+            PINATA
+        )
     }
 }

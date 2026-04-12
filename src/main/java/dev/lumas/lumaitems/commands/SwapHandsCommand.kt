@@ -2,13 +2,13 @@ package dev.lumas.lumaitems.commands
 
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.wrappers.EnumWrappers
+import dev.lumas.core.util.Text
 import dev.lumas.lumacore.manager.commands.AbstractCommand
 import dev.lumas.lumacore.manager.commands.CommandInfo
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.hooks.ProtocolLibHook
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -24,18 +24,18 @@ class SwapHandsCommand : AbstractCommand() {
 
     override fun handle(sender: CommandSender, label: String, args: Array<out String>): Boolean {
         val protocolManager = Registry.HOOKS.getOrThrow(ProtocolLibHook::class).getProtocolManager() ?: run {
-            MiniMessageUtil.msg(sender, "Couldn't find ProtocolLib!")
+            Text.msg(sender, "Couldn't find ProtocolLib!")
             return true
         }
         sender as? Player ?: run {
-            MiniMessageUtil.msg(sender, "Only players can use this command!")
+            Text.msg(sender, "Only players can use this command!")
             return true
         }
 
         val packet = protocolManager.createPacket(PacketType.Play.Client.BLOCK_DIG)
         packet.playerDigTypes.write(0, EnumWrappers.PlayerDigType.SWAP_HELD_ITEMS)
         protocolManager.receiveClientPacket(sender, packet)
-        MiniMessageUtil.msg(sender, "Swapped hands!")
+        Text.msg(sender, "Swapped hands!")
         return true
     }
 

@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.astral.sets
 
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.items.astral.AstralSetFunctions
-import dev.lumas.lumaitems.model.AttributeContainer
+import dev.lumas.lumaitems.model.item.AttributeContainer
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier

@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.enums.CardinalDirection
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
@@ -11,7 +11,7 @@ import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.awt.Color
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material

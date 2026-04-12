@@ -1,14 +1,14 @@
 package dev.lumas.lumaitems.items.armor.boots
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
-import dev.lumas.lumaitems.events.items.BlockCacheManager
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.block.BlockCacheManager
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import java.util.UUID
 import org.bukkit.Location

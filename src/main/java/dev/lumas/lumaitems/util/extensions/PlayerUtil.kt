@@ -6,12 +6,11 @@ import dev.lumas.lumaitems.enums.TriState
 import dev.lumas.lumaitems.hooks.ProtectionHook
 import dev.lumas.lumaitems.hooks.TownyHook
 import dev.lumas.lumaitems.hooks.WorldGuardHook
-import dev.lumas.lumaitems.model.Mixable
+import dev.lumas.lumaitems.model.item.Mixable
 import dev.lumas.lumaitems.registry.Registry
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.command.CommandSender
 import org.bukkit.damage.DamageSource
@@ -24,7 +23,6 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
-import org.bukkit.persistence.PersistentDataType
 
 
 private val PROTECTION_HOOKS by lazy {
@@ -215,5 +213,5 @@ fun CommandSender.send(msg: String) {
 }
 
 fun Player.actionBar(msg: String) {
-    sendActionBar(Text.mm(msg))
+    sendActionBar(msg.asComponent(italic = true))
 }

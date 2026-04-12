@@ -5,9 +5,9 @@ import com.oheers.fish.config.MainConfig
 import com.oheers.fish.fishing.Processor
 import com.oheers.fish.messages.ConfigMessage
 import dev.lumas.lumaitems.annotations.Requires
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.util.Tier
 import java.time.LocalDateTime
 import org.bukkit.Material
 import org.bukkit.Tag

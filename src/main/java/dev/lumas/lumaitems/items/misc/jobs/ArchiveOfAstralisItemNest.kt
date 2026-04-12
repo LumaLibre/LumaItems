@@ -6,11 +6,11 @@ import com.gmail.nossr50.api.AbilityAPI as MCMMOAbilityAPI
 import dev.lumas.lumacore.utility.Logging
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.McMMOHook
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import io.papermc.paper.persistence.PersistentDataContainerView
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

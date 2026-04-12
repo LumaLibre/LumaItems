@@ -1,13 +1,7 @@
 package dev.lumas.lumaitems.guis
 
 import dev.lumas.core.model.gui.AbstractGui
-import dev.lumas.core.model.gui.GuiItemAction
-import dev.lumas.core.model.gui.items.IndexedGuiItem
-import dev.lumas.lumaitems.items.ItemFactory
 import dev.lumas.lumaitems.model.ColorHolder
-import org.bukkit.Color
-import org.bukkit.Material
-import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory

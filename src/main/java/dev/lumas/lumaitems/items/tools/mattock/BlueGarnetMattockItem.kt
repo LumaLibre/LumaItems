@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.WorldName
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
 import dev.lumas.lumaitems.util.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog

@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.items.tools.shears
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItem
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.util.Tier
 import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment

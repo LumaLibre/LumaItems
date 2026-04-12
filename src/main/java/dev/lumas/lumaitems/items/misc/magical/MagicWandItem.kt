@@ -1,18 +1,18 @@
 package dev.lumas.lumaitems.items.misc.magical
 
+import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItem
-import dev.lumas.lumaitems.model.MagicItemCooldown
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.spell.MagicItemCooldown
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.syncTimer
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.util.concurrent.ConcurrentLinkedQueue
 import org.bukkit.Location
 import org.bukkit.Material
@@ -140,7 +140,7 @@ class MagicWandItem : CustomItem {
         item.itemMeta = item.itemMeta?.apply {
             persistentDataContainer.set(NamespacedKey(instance(), SPELL_KEY), PersistentDataType.STRING, nextSpell.name)
         }
-        MiniMessageUtil.msg(player, "Spell changed to <gradient:#C7305D:#ff9ccb>${Util.formatEnumerator(nextSpell.name)}")
+        Text.msg(player, "Spell changed to <gradient:#C7305D:#ff9ccb>${Util.formatEnumerator(nextSpell.name)}")
     }
 
     // Spells

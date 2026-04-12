@@ -2,9 +2,9 @@ package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.WorldName
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.util.tiers.ThanksgivingEventTier
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
@@ -36,7 +36,7 @@ class KindlingBatonItem : CustomItemFunctions() {
             .customEnchants("<#F3AB59>Oven")
             .persistentData("kindlingbaton")
             .material(Material.NETHERITE_PICKAXE)
-            .tier(ThanksgivingEventTier.THANKSGIVING_2024)
+            .tier(Tier.THANKSGIVING_2024)
             .lore("Automatically smelts mined", "ores and sand blocks.", "", "Tap your <#645B82>swap <white>key", "to alternate tool types.")
             .vanillaEnchants(Enchantment.FORTUNE to 4, Enchantment.EFFICIENCY to 7, Enchantment.UNBREAKING to 6, Enchantment.MENDING to 1)
             .buildPair()

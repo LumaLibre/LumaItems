@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.util
 
-import dev.lumas.lumaitems.model.SpellCaster
-import dev.lumas.lumaitems.model.TickDamager
+import dev.lumas.lumaitems.model.spell.SpellCaster
+import dev.lumas.lumaitems.model.entity.TickDamager
 import dev.lumas.lumaitems.util.extensions.canBuild
 import dev.lumas.lumaitems.util.extensions.canDamage
 import dev.lumas.lumaitems.util.extensions.isLocationOnGround

@@ -1,16 +1,16 @@
 package dev.lumas.lumaitems.items.tools.nests
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
-import dev.lumas.lumaitems.model.PersistentDataRecord
+import dev.lumas.core.util.Text
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.MiniMessageUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.dialogue.DialogueText
 import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.util.UUID
 import kotlin.random.Random
 import net.kyori.adventure.text.format.NamedTextColor
@@ -326,7 +326,7 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
             MoodyActionResult.HOLD_ACTION,
             cancelEvent = true,
             { player, _ ->
-                MiniMessageUtil.msg(player, "Your tool doesn't appear to want to work right now. Try giving it some space...")
+                Text.msg(player, "Your tool doesn't appear to want to work right now. Try giving it some space...")
             },
             Personality.PLEASANT to "I-#I'm so sorry, but I'm too exhausted to work...#I just need a little break...",
             Personality.LAZY to "Ugh, I don't want to work.",

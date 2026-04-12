@@ -2,14 +2,14 @@ package dev.lumas.lumaitems.items.weapons.cutlass
 
 import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.configuration.files.HeadsYml
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.syncTimer
-import dev.lumas.lumaitems.util.tiers.Tier
+import dev.lumas.lumaitems.util.Tier
 import java.util.UUID
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material

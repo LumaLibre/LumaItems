@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.playground
 
-import dev.lumas.lumaitems.items.ItemFactory
-import dev.lumas.lumaitems.model.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
 import java.util.LinkedList
 import org.bukkit.Material
