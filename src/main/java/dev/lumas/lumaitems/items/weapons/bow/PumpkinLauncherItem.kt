@@ -73,7 +73,7 @@ class PumpkinLauncherItem : CustomItem {
             val loc: Location = projectile.location.add(0.0,-2.0,0.0);
             loc.setDirection(player.location.toVector().subtract(armorStand.location.toVector()).normalize());
 
-            armorStand.teleport(loc);
+            armorStand.teleportAsync(loc);
             projectile.world.spawnParticle(Particle.LAVA, projectile.location, 3, 0.1, 0.1, 0.1, 0.1);
             projectile.world.playSound(projectile.location, Sound.ENTITY_WITCH_CELEBRATE, 1f, 1f);
             if (projectile.isDead){

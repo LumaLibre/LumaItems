@@ -19,7 +19,7 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
-class MidnightClaymoreItem : CustomItemFunctions() {
+open class MidnightClaymoreItem : CustomItemFunctions() {
 
     companion object {
         private val KEY = Util.namespacedKey("midnight-claymore")

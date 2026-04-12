@@ -265,8 +265,8 @@ class NeoBallisticBunnyMattockItem : CustomItemFunctions() {
                 yFactor *= -1
             }
 
-            eggShell.teleport(eggShell.location.add(0.0, yFactor, 0.0))
-            eggYolk.teleport(eggYolk.location.add(0.0, yFactor / 2, 0.0))
+            eggShell.teleportAsync(eggShell.location.add(0.0, yFactor, 0.0))
+            eggYolk.teleportAsync(eggYolk.location.add(0.0, yFactor / 2, 0.0))
 
             modifyYolkSize(scale)
         }

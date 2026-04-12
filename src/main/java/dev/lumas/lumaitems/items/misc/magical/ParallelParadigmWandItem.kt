@@ -110,8 +110,8 @@ class ParallelParadigmWandItem : CustomItem {
     private fun swapEntityLocations(entity: LivingEntity, entity2: LivingEntity) {
         val loc1 = entity.location
         val loc2 = entity2.location
-        entity.teleport(loc2)
-        entity2.teleport(loc1)
+        entity.teleportAsync(loc2)
+        entity2.teleportAsync(loc1)
         entity.world.playSound(entity.location, Sound.ENTITY_WITCH_CELEBRATE, 1f, 0.9f)
         entity2.world.playSound(entity2.location, Sound.ENTITY_WITCH_CELEBRATE, 1f, 0.9f)
     }

@@ -27,10 +27,29 @@ class ParticleTestItem : CustomItemFunctions() {
         return Pair("particle_test", item.createItem())
     }
 
-    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+    override fun onLeftClick(player: Player, event: PlayerInteractEvent) {
         val location = player.location
 
-        val particleDisplayCloud = ParticleDisplay.of(Particle.WAX_OFF).withLocation(location).withColor(Color.RED)
+        val particleDisplayCloud = ParticleDisplay.of(Particle.COPPER_FIRE_FLAME)
+            .withLocation(player.location)
+            .directional()
+            .withExtra(0.1)
+            //.withColor(Color.WHITE)
+
+        // Mode 1: basic spinning pulls
+        //Particles.blackhole(instance(), 6, 3.0, 30.0, 1, 200, particleDisplayCloud)
+
+// Fewer points, tighter — clean spinning star
+        //Particles.blackhole(instance(), 3, 2.0, 20.0, 1, 200, particleDisplayCloud)
+
+// Many points, wide — dense vortex
+        Particles.blackhole(instance(), 16, 3.0, 40.0, 1, 200, particleDisplayCloud)
+
+// Counter-rotating double layer (mode 2+)
+        //Particles.blackhole(instance(), 8, 4.0, 30.0, 2, 200, particleDisplayCloud)
+    }
+
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         val maxRadius = 10.0
         val arms = 5
         val spiralTightness = 0.8
