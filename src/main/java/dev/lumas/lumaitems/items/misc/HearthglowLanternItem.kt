@@ -8,6 +8,7 @@ import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockPlaceEvent
@@ -47,6 +48,7 @@ class HearthglowLanternItem : CustomItemFunctions() {
         player.location.sync {
             val nearby = player.getNearbyEntities(RANGE, RANGE, RANGE)
                 .filterNot { it is Player }.mapNotNull { it as? LivingEntity }
+                .filterNot { it.type == EntityType.ARMOR_STAND } // furniture
                 .toList()
             applyGlowing(nearby)
         }
