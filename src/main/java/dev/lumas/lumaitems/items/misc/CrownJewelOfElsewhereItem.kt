@@ -1,5 +1,7 @@
 package dev.lumas.lumaitems.items.misc
 
+import dev.lumas.lumaitems.annotations.FireAnyways
+import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.Executors
@@ -22,8 +24,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-// TODO: These annotation are costly to use, I would not use this here.
-//@FireAnyways(Action.PLAYER_DAMAGED)
+@FireAnyways(Action.PLAYER_DAMAGED)
 class CrownJewelOfElsewhereItem : CustomItemFunctions() {
 
     companion object {
