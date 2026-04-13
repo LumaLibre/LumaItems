@@ -38,7 +38,7 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
 
         val item = ItemFactory.builder()
             .material(Material.SPONGE)
-            .name("OG-<b><gradient:#E3C565:#C2A05D>Super </gradient><gradient:#C2A05D:#F4E06D>Absor</gradient><gradient:#F4E06D:#C2A05D>bant S</gradient><gradient:#C2A05D:#E3C565>ponge</gradient></b>")
+            .name("<b><gradient:#E3C565:#C2A05D>Super </gradient><gradient:#C2A05D:#F4E06D>Absor</gradient><gradient:#F4E06D:#C2A05D>bant S</gradient><gradient:#C2A05D:#E3C565>ponge</gradient></b>")
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
             .customEnchants("<#E3C565>N<#D8B962>u<#CDAC60>l<#C2A05D>l<#D3B562>i<#E3CB68>f<#F4E06D>y")
             .lore(
@@ -51,8 +51,8 @@ class OGSuperAbsorbantSponge : CustomItemFunctions() {
                 "",
                 "<#F4E06D>Current Mode: <#359BBD>Water <#F4E06D>& <#FF4500>Lava"
             )
-            .tier(Tier.DEBUG) // Should be changed later on
             .persistentData(key.key)
+            .tier(Tier.STAFF)
             .buildPair()
 
         val meta = item.second.itemMeta

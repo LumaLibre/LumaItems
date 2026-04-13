@@ -43,7 +43,7 @@ class SuperchargedBreezeRod : CustomItemFunctions() {
             )
             .material(Material.BREEZE_ROD)
             .persistentData(KEY)
-            .tier(Tier.WONDERLAND_2026)
+            .tier(Tier.STAFF)
             .buildPair()
     }
 
