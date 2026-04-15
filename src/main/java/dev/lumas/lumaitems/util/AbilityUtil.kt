@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.model.spell.SpellCaster
 import dev.lumas.lumaitems.model.entity.TickDamager
 import dev.lumas.lumaitems.util.extensions.canBuild
 import dev.lumas.lumaitems.util.extensions.canDamage
+import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGround
 import dev.lumas.lumaitems.util.extensions.isLocationOnGround
 import dev.lumas.lumaitems.util.extensions.takeItem
 import org.bukkit.Material
@@ -24,7 +25,10 @@ object AbilityUtil {
 
     fun noDamagePermission(attacker: Player, victim: Entity) = (victim as? LivingEntity)?.let { !attacker.canDamage(it) } ?: false
     fun noBuildPermission(player: Player, block: Block) = !player.canBuild(block.location)
-    fun isOnGround(entity: Entity) = if (entity is Player) entity.isLocationOnGround() else entity.isOnGround
+    fun isOnGround(entity: Entity, amt: Double) = if (entity is Player) entity.isBoundingBoxOnGround(amt) else entity.isOnGround
+    fun isOnGround(entity: Entity) = isOnGround(entity, 0.1);
+    fun isOnGroundCheap(entity: Entity, amt: Double) = if (entity is Player) entity.isLocationOnGround(amt) else entity.isOnGround
+    fun isOnGroundCheap(entity: Entity) = isOnGroundCheap(entity, 0.1);
 
     fun takeSpellLapisCost(player: Player, amount: Int) = player.takeItem(LAPIS_LAZULI, amount)
 
