@@ -40,7 +40,7 @@ class PalomasStridesItem : CustomItemFunctions() {
     }
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
-        if (player.isSneaking || player.isInWater || player.isFlying || player.isBoundingBoxOnGround()) {
+        if (player.isSneaking || player.isInWater || player.isFlying || player.isBoundingBoxOnGround(0.99)) {
             return
         }
 

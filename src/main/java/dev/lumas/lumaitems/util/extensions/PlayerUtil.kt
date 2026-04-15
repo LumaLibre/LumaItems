@@ -65,15 +65,19 @@ fun Player.isInAnySlot(identifier: NamespacedKey): Boolean {
 }
 
 
-fun Player.isBoundingBoxOnGround(): Boolean {
+fun Player.isBoundingBoxOnGround(amt: Double): Boolean {
     val bb = boundingBox
-    val y = floor(bb.minY - 0.1).toInt()
+    val y = floor(bb.minY - amt).toInt()
     val xs = intArrayOf(floor(bb.minX).toInt(), floor(bb.maxX - 1e-9).toInt())
     val zs = intArrayOf(floor(bb.minZ).toInt(), floor(bb.maxZ - 1e-9).toInt())
     for (x in xs) for (z in zs) {
         if (world.getBlockAt(x, y, z).isSolid) return true
     }
     return false
+}
+
+fun Player.isBoundingBoxOnGround(): Boolean {
+    return isBoundingBoxOnGround(0.1);
 }
 
 fun Player.isLocationOnGround(): Boolean {
