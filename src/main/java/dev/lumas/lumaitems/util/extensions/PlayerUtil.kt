@@ -23,6 +23,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
+import kotlin.math.floor
 
 
 private val PROTECTION_HOOKS by lazy {
@@ -63,6 +64,17 @@ fun Player.isInAnySlot(identifier: NamespacedKey): Boolean {
     return inventory.armorContents.any { it?.hasPersistentKey(identifier) == true } || inventory.itemInMainHand.hasPersistentKey(identifier) || inventory.itemInOffHand.hasPersistentKey(identifier)
 }
 
+
+fun Player.isBoundingBoxOnGround(): Boolean {
+    val bb = boundingBox
+    val y = floor(bb.minY - 0.1).toInt()
+    val xs = intArrayOf(floor(bb.minX).toInt(), floor(bb.maxX - 1e-9).toInt())
+    val zs = intArrayOf(floor(bb.minZ).toInt(), floor(bb.maxZ - 1e-9).toInt())
+    for (x in xs) for (z in zs) {
+        if (world.getBlockAt(x, y, z).isSolid) return true
+    }
+    return false
+}
 
 fun Player.isLocationOnGround(): Boolean {
     return this.location.add(0.0,-0.1, 0.0).block.isSolid

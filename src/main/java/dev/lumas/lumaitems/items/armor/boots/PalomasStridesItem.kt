@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.util.extensions.isLocationOnGround
 import dev.lumas.lumaitems.util.extensions.removeFlag
 import dev.lumas.lumaitems.util.extensions.toColor
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGround
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -39,7 +40,7 @@ class PalomasStridesItem : CustomItemFunctions() {
     }
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
-        if (player.isSneaking || player.isInWater || player.isFlying || player.isLocationOnGround()) {
+        if (player.isSneaking || player.isInWater || player.isFlying || player.isBoundingBoxOnGround()) {
             return
         }
 

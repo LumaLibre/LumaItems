@@ -3,8 +3,9 @@ package dev.lumas.lumaitems.items.armor.trousers
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
-import dev.lumas.lumaitems.util.extensions.isLocationOnGround
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGround
+import dev.lumas.lumaitems.util.extensions.isLocationOnGround
 import java.util.UUID
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -56,7 +57,7 @@ class WitchingStocksItem : CustomItemFunctions() {
     }
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
-        if (player.isSneaking || player.isInWater || player.isFlying || player.isLocationOnGround() || TRACKED.contains(player.uniqueId)) {
+        if (player.isSneaking || player.isInWater || player.isFlying || TRACKED.contains(player.uniqueId) || player.isBoundingBoxOnGround()) {
             return
         }
         TRACKED.add(player.uniqueId)
