@@ -60,7 +60,7 @@ class SowingBundleItem : CustomItemFunctions() {
             )
             .material(Material.BROWN_BUNDLE)
             .persistentData(KEY)
-            .tier(Tier.WONDERLAND_2026)
+            .tier(Tier.WONDERLAND_2026.alt())
             .buildPair()
     }
 

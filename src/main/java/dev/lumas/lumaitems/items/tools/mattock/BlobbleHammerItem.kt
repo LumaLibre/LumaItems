@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
@@ -52,7 +52,7 @@ class BlobbleHammerItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#A2BFFE:#D1FEB8:#FFEE8C:#FFC067:#FF746C>Blobble Hammer</gradient></b>")
             .customEnchants("<#FFEE8C>Bubble Breaker")
             .material(Material.NETHERITE_PICKAXE)

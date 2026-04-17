@@ -11,7 +11,7 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.task.Synchronizable
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.PacketGlowColors
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.getOreColor

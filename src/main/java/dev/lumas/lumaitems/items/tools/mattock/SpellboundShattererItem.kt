@@ -6,7 +6,7 @@ import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.shapes.Cuboid
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import java.util.Random
 import org.bukkit.Color
 import org.bukkit.Material

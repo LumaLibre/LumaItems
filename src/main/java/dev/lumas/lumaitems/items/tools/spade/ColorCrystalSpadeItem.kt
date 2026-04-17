@@ -5,7 +5,7 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player

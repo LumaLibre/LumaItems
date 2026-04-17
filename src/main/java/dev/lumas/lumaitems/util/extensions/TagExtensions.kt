@@ -4,6 +4,7 @@ package dev.lumas.lumaitems.util.extensions
 import org.bukkit.Keyed
 import org.bukkit.Material
 import org.bukkit.Tag
+import org.bukkit.block.Block
 
 
 fun <T : Keyed> Tag<T>.random(): T {
@@ -20,4 +21,8 @@ fun <T : Keyed> Tag<T>.excluding(vararg items: T): Collection<T> {
 
 fun Material.isTagged(tag: Tag<Material>): Boolean {
     return tag.isTagged(this)
+}
+
+fun Block.isTagged(tag: Tag<Material>): Boolean {
+    return tag.isTagged(type)
 }

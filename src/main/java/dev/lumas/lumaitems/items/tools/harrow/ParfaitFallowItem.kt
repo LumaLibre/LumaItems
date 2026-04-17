@@ -4,7 +4,7 @@ import com.gmail.nossr50.events.skills.secondaryabilities.SubSkillBlockEvent
 import dev.lumas.lumaitems.enums.CardinalDirection
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.takeItem

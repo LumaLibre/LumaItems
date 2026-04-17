@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.tools.hatchet
 
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material

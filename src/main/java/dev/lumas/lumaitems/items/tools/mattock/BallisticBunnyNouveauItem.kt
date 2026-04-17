@@ -34,7 +34,7 @@ class BallisticBunnyNouveauItem : CustomItemFunctions() {
 
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#fe9999:#fecaec:#8cd3ff:#a6dca2:#fffcbf>Ballistic Bunny Nouveau</gradient></b>")
             .customEnchants("<#fe9999>Explosive!")
             .material(Material.NETHERITE_PICKAXE)

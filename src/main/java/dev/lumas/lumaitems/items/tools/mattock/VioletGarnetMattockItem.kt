@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.tools.mattock
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.extensions.BLOCK_FACE_RELATIVES
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.determineHighestBreakSpeed

@@ -29,7 +29,7 @@ class NightmareScytheItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("Nightmare Scythe")
             .customEnchants("Seize")
             .persistentData("nightmare-scythe")

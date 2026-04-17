@@ -43,7 +43,7 @@ class NeoBallisticBunnyMattockItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#CF8EF3:#FF8BB7:#F593B5:#9DD2FF:#73BBFD>Neo Ballistic Bunny Mattock</gradient></b>")
             .customEnchants("<#FF8BB7>Eggs Away!")
             .persistentData(KEY)

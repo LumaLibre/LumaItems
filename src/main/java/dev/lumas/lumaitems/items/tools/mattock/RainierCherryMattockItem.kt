@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.tools.mattock
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.PersistentDataRecord
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.extensions.random
 import dev.lumas.lumaitems.util.extensions.spell
 import dev.lumas.lumaitems.util.Tier
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack
 class RainierCherryMattockItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#cb354e:#ff7d7c:#ffa5a5:#ffdca4:#ffb47b:#fe9164>Rainier Cherry Mattock</gradient></b>")
             .customEnchants("<#ffa5a5>Canvas")
             .persistentData("rainier-cherry-mattock")

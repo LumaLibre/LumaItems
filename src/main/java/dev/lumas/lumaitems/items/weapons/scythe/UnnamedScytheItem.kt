@@ -24,7 +24,7 @@ class UnnamedScytheItem : CustomItemFunctions() {
 
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("Unnamed Scythe")
             .customEnchants("Seize")
             .persistentData("unnamed-scythe2")

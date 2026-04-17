@@ -45,7 +45,7 @@ class HeavyBlobWandItem : CustomItemFunctions() {
 
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#C9A0DC:#F49AC2:#FFC5D3:#A2BFFE>Heavy Blob Wand</gradient></b>")
             .customEnchants("<#C9A0DC>Bubble Stream")
             .material(Material.NETHERITE_SWORD)

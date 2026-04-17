@@ -63,7 +63,7 @@ class BuildersWandItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#7D9FFC:#CDA9FF:#E28BDC:#F56868>Builder's Wand</gradient></b>")
             .customEnchants("<#CDA9FF>Architex")
             .material(Material.BREEZE_ROD)

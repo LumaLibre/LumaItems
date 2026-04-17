@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack
 class BelovedFallowItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><#ffa5e3>B<#ffafe6>e<#ffb8e9>l<#ffc2ed>o<#ffcbf0>v<#ffd5f3>e<#ffdef6>d <#f9d8f8>F<#f4d1f9>a<#eecbfb>l<#e8c5fc>l<#e3befe>o<#ddb8ff>w")
             .customEnchants("<#ddb8ff>Breeder")
             .lore(

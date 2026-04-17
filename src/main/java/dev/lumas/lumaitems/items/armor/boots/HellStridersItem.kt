@@ -36,7 +36,7 @@ class HellStridersItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><#C93907>H<#D15112>e<#DA691D>l<#E28128>l<#E69635> <#E9AA43>S<#EDBF50>t<#E9AA43>r<#E69635>i<#E28128>d<#DA691D>e<#D15112>r<#C93907>s")
             .customEnchants("<#E06A41>Lava Walker I")
             .lore(

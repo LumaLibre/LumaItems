@@ -29,7 +29,7 @@ class AuraiGaleMaceItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#FAC3C3:#F8C2B4:#FAEBB3:#B8E2FC:#9EB4EC>Aurai Gale Mace</gradient></b>")
             .customEnchants("<#9EB4EC>Updraft")
             .material(Material.MACE)

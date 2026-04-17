@@ -19,7 +19,7 @@ import org.bukkit.persistence.PersistentDataType
 
 class HareHowitzerItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#a75b72:#bfa4db:#f0dfd2:#c59065>Hare Howitzer</gradient></b>")
             .customEnchants("<gold>O'Hare")
             .vanillaEnchants(

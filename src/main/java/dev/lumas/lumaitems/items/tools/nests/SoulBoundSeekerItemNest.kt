@@ -6,7 +6,7 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.MultiPlayerCustomItem
 import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.shapes.Sphere
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.actionBar

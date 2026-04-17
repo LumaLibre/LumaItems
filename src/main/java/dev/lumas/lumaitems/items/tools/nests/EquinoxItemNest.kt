@@ -16,6 +16,7 @@ import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.canBuild
 import java.awt.Color
 import kotlin.random.Random
 import org.bukkit.Location
@@ -23,6 +24,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.Tag
 import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
@@ -236,7 +238,7 @@ class EquinoxHatchetItem : EquinoxItemNest() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#feb17d:#f9ce90:#f9f2db:#b8d1c0:#af97c7:#ed9bb0>Equinox Hatchet</gradient></b>")
             .customEnchants("<#f9f2db>Pentageyser")
             .persistentData(KEY)
@@ -357,5 +359,66 @@ class EquinoxSpadeItem : EquinoxItemNest() {
 
     override fun cooldownTime(): Long {
         return 3600L
+    }
+}
+
+class EquinoxMattockItem : EquinoxItemNest() {
+
+    companion object {
+        private val SILK_TOUCH_PICKAXE = ItemStack(Material.NETHERITE_PICKAXE)
+            .apply { addUnsafeEnchantment(Enchantment.SILK_TOUCH, 1) }
+        private val KEY = Util.namespacedKey("equinox-mattock")
+    }
+
+    override fun createItem(): Pair<String, ItemStack> {
+        return ItemFactory.builder()
+            .name("<b><gradient:#feb17d:#f9ce90:#f9f2db:#b8d1c0:#af97c7:#ed9bb0>Equinox Mattock</gradient></b>")
+            .customEnchants("<#f9f2db>Pentageyser")
+            .persistentData(KEY)
+            .material(Material.NETHERITE_PICKAXE)
+            .tier(Tier.WONDERLAND_2026)
+            .vanillaEnchants(
+                Enchantment.SILK_TOUCH to 1,
+                Enchantment.EFFICIENCY to 8,
+                Enchantment.MENDING to 1,
+                Enchantment.UNBREAKING to 9
+            )
+            .lore(
+                "<#f9f2db>Right-click</#f9f2db> to launch",
+                "<#f9f2db>3</#f9f2db> geyser seeds in various",
+                "directions around you.",
+                "",
+                "Geysers launched from this",
+                "tool will pulse, launching",
+                "several destructive balls",
+                "that can break down trees.",
+                "",
+                "<red>Cooldown: 3m"
+            )
+            .buildPair()
+    }
+
+
+    override fun delegateBreakBlock(player: Player, block: Block): List<Item>? {
+        if (!Tag.MINEABLE_PICKAXE.isTagged(block.type) || !player.canBuild(block.location)) {
+            return null
+        }
+        val drops = block.getDrops(SILK_TOUCH_PICKAXE).map { itemStack ->
+            block.world.dropItemNaturally(block.location, itemStack)
+        }
+
+        block.world.playSound(block.location, Sound.BLOCK_STONE_BREAK, 0.5f, 1f)
+        block.setAirWithLog(player)
+        player.inventory.itemInMainHand.damage(1, player) // no checks
+        return drops
+    }
+
+    override fun key(): NamespacedKey {
+        return KEY
+    }
+
+
+    override fun cooldownTime(): Long {
+        return 2400L
     }
 }

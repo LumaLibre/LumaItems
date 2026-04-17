@@ -24,6 +24,8 @@ import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toColor
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.addCooldown
+import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID
@@ -58,7 +60,55 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.trim.ArmorTrim
+import org.bukkit.inventory.meta.trim.TrimMaterial
+import org.bukkit.inventory.meta.trim.TrimPattern
 import org.bukkit.persistence.PersistentDataType
+
+class PalomasCoreItem : CustomItemFunctions() {
+
+    private val delegate = PalomasVeilItem()
+
+    override fun createItem(): Pair<String, ItemStack> {
+        fun c(s: Any) = "<#DD9FC7>$s</#DD9FC7>"
+
+        return ItemFactory.builder()
+            .name("<b><gradient:#911025:#c44a58:#f2cbb8:#DD9FC7:#E081CE>Paloma's Core</gradient></b>")
+            .customEnchants(c("Kazkan"))
+            .material(Material.QUARTZ)
+            .tier(Tier.WONDERLAND_2026)
+            .persistentData("palomas-core")
+            .vanillaEnchants(
+                Enchantment.UNBREAKING to 10,
+                Enchantment.PROTECTION to 4,
+                Enchantment.LOOTING to 7,
+                Enchantment.MENDING to 1
+            )
+            .lore(
+                "<gray>Right-click to open.",
+                "",
+                "With empty hands, press",
+                "your ${c("swap key (F)")} to",
+                "summon ${c(5)} orbs displays.",
+                "",
+                "${c("Left-click")} to fire one",
+                "at a time or ${c("left-click")}",
+                "while ${c("sneaking")} to fire",
+                "all orbs at once.",
+                "",
+                "<red>Cooldown: 4s"
+            )
+            .buildPair()
+    }
+
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        val item = event.item ?: return
+        item.amount -= 1
+
+        player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)
+        player.give(delegate.createItem().second)
+    }
+}
 
 class PalomasVeilItem : CustomItemFunctions() {
 
@@ -77,14 +127,15 @@ class PalomasVeilItem : CustomItemFunctions() {
 
         fun c(s: Any) = "<${colorType.altColor}>$s</${colorType.altColor}>"
 
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name(colorType.title)
             .customEnchants("<${colorType.altColor}>Kazkan")
             .material(Material.NETHERITE_HELMET)
             .tier(Tier.WONDERLAND_2026)
             .persistentData(KEY)
+            .armorTrim(ArmorTrim(colorType.trimMaterial, TrimPattern.DUNE))
             .persistentDataRecords(
-                PersistentDataRecord.Companion.create(COLOR_TYPE_KEY, PersistentDataType.STRING, colorType.name)
+                PersistentDataRecord.create(COLOR_TYPE_KEY, PersistentDataType.STRING, colorType.name)
             )
             .vanillaEnchants(
                 Enchantment.UNBREAKING to 10,
@@ -102,6 +153,8 @@ class PalomasVeilItem : CustomItemFunctions() {
                 "at a time or ${c("left-click")}",
                 "while ${c("sneaking")} to fire",
                 "all orbs at once.",
+                "",
+                "<red>Cooldown: 4s"
             )
             .buildPair()
     }
@@ -134,7 +187,7 @@ class PalomasVeilItem : CustomItemFunctions() {
 
         orbDisplay.fire(player)
         if (player.isSneaking) {
-            player.removeFlag(this)
+            player.removeNow()
             // fire the rest
             for (i in 0 until orbDisplay.tracked.size) {
                 player.syncDelayed(1L * i) {
@@ -213,7 +266,7 @@ class PalomasVeilItem : CustomItemFunctions() {
     }
 
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
-        if (event.offHandItem.type != Material.AIR || event.mainHandItem.type != Material.AIR || !player.isItemInSlot(KEY, EquipmentSlot.HEAD)) {
+        if (event.offHandItem.type != Material.AIR || event.mainHandItem.type != Material.AIR || player.isOnCooldown(this) || !player.isItemInSlot(KEY, EquipmentSlot.HEAD)) {
             return
         }
 
@@ -223,22 +276,24 @@ class PalomasVeilItem : CustomItemFunctions() {
             summonOrbDisplay(player, true)
             player.flag(this)
         } else {
-            player.removeFlag(this)
-            removeOrbDisplay(player)
+            player.removeFlag(this) // no cooldown
+            player.syncDelayed(1L) {
+                removeOrbDisplay(player)
+            }
         }
     }
 
 
     override fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {
         if (!player.isItemInSlot(KEY, EquipmentSlot.HEAD)) {
-            player.removeFlag(this)
+            player.removeNow()
             removeOrbDisplay(player)
         }
     }
 
     override fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {
         if (removeOrbDisplay(player)) {
-            player.removeFlag(this)
+            player.removeNow()
         }
     }
 
@@ -246,7 +301,7 @@ class PalomasVeilItem : CustomItemFunctions() {
         val orbDisplay = DISPLAYS[player.uniqueId] ?: return
         orbDisplay.sync {
             if (removeOrbDisplay(player)) {
-                player.removeFlag(this)
+                player.removeNow()
             }
         }
     }
@@ -260,8 +315,13 @@ class PalomasVeilItem : CustomItemFunctions() {
     }
 
     override fun onPlayerDeath(player: Player, event: PlayerDeathEvent) {
-        player.removeFlag(this)
+        player.removeNow()
         removeOrbDisplay(player)
+    }
+
+    private fun Player.removeNow() {
+        removeFlag(this@PalomasVeilItem)
+        addCooldown(this@PalomasVeilItem, 20 * 4L)
     }
 
     data class OrbitConfig(
@@ -440,7 +500,7 @@ class PalomasVeilItem : CustomItemFunctions() {
 
             if (hitEntity != null) {
                 snowball.world.playSound(snowball.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 0.8f, 2.0f)
-                hitEntity.damage(10.0, damageSource)
+                hitEntity.damage(8.0, damageSource)
                 hitEntity.noDamageTicks = 0
             } else {
                 snowball.world.playSound(snowball.location, Sound.BLOCK_CANDLE_HIT, 0.5f, 1.9f)
@@ -507,7 +567,6 @@ class PalomasVeilItem : CustomItemFunctions() {
             { p, _ -> p.isInWater }
         ),
 
-
         GLIDE_SQUARE_CROUCH(
             listOf(
                 OrbitConfig(forward = 3.0, right = -0.8, up = 2.5, material = Material.NETHER_STAR),    // top-left
@@ -541,6 +600,20 @@ class PalomasVeilItem : CustomItemFunctions() {
             { player, _ -> player.isSneaking }
         ),
 
+        FLYING(
+            listOf(
+                OrbitConfig(forward = 3.0, right = 0.0, up = 0.4, material = Material.NETHER_STAR),
+                OrbitConfig(forward = 3.0, right = -0.7, up = 0.2, material = null),
+                OrbitConfig(forward = 3.0, right = 0.7, up = 0.2, material = null),
+                OrbitConfig(forward = 3.0, right = -1.4, up = 0.0, material = Material.NETHER_STAR),
+                OrbitConfig(forward = 3.0, right = 1.4, up = 0.0, material = Material.NETHER_STAR),
+            ),
+            { player, _ ->
+                @Suppress("DEPRECATION") // for decoration, client reporting is fine
+                !player.isOnGround || player.isFlying
+            }
+        ),
+
         DEFAULT(
             listOf(
                 OrbitConfig(forward = 3.0, right = 0.0, up = 0.0, material = Material.NETHER_STAR),
@@ -559,11 +632,11 @@ class PalomasVeilItem : CustomItemFunctions() {
         }
     }
 
-    enum class ColorType(val material: Material, val dyeColor: DyeColor, val altColor: String, val title: String) {
-        RED(Material.RED_DYE, DyeColor.RED, "#DD9FC7", "<b><gradient:#911025:#c44a58:#f2cbb8:#DD9FC7:#E081CE>Paloma's Veil</gradient></b>"),
-        LIME(Material.LIME_DYE, DyeColor.LIME, "#CF9CFA", "<b><gradient:#86FF54:#B9F3A1:#EFE9F3:#CF9CFA>Paloma's Veil</gradient></b>"),
-        LIGHT_BLUE(Material.LIGHT_BLUE_DYE, DyeColor.LIGHT_BLUE, "#F3C7F6", "<b><gradient:#547BFF:#A1A4F3:#DEDFF3:#F3C7F6:#E99CFA>Paloma's Veil</gradient></b>"),
-        YELLOW(Material.YELLOW_DYE, DyeColor.YELLOW, "#F6C7EB", "<b><gradient:#FFFA54:#F3F1A1:#F3F2DE:#F6C7EB:#F19CFA>Paloma's Veil</gradient></b>")
+    enum class ColorType(val material: Material, val trimMaterial: TrimMaterial, val dyeColor: DyeColor, val altColor: String, val title: String) {
+        RED(Material.RED_DYE, TrimMaterial.REDSTONE, DyeColor.RED, "#DD9FC7", "<b><gradient:#911025:#c44a58:#f2cbb8:#DD9FC7:#E081CE>Paloma's Veil</gradient></b>"),
+        LIME(Material.LIME_DYE, TrimMaterial.EMERALD, DyeColor.LIME, "#CF9CFA", "<b><gradient:#86FF54:#B9F3A1:#EFE9F3:#CF9CFA>Paloma's Veil</gradient></b>"),
+        LIGHT_BLUE(Material.LIGHT_BLUE_DYE, TrimMaterial.DIAMOND, DyeColor.LIGHT_BLUE, "#F3C7F6", "<b><gradient:#547BFF:#A1A4F3:#DEDFF3:#F3C7F6:#E99CFA>Paloma's Veil</gradient></b>"),
+        YELLOW(Material.YELLOW_DYE, TrimMaterial.GOLD, DyeColor.YELLOW, "#F6C7EB", "<b><gradient:#FFFA54:#F3F1A1:#F3F2DE:#F6C7EB:#F19CFA>Paloma's Veil</gradient></b>")
         ;
 
         val primaryColor = dyeColor.color.mix(Color.WHITE, 0.1f)

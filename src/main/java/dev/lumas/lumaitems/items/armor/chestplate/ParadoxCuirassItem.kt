@@ -25,7 +25,7 @@ class ParadoxCuirassItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#503B78:#695a9d:#8672b7:#703763>Paradox Cuirass</gradient></b>")
             .customEnchants("<#695a9d>Glass Vase")
             .material(Material.NETHERITE_CHESTPLATE)

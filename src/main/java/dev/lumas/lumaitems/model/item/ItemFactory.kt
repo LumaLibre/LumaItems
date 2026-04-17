@@ -6,11 +6,8 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.RomanNumeral
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.asComponent
 import dev.lumas.lumaitems.util.extensions.colorcode
-import dev.lumas.lumaitems.util.extensions.legacy
 import io.papermc.paper.datacomponent.DataComponentType
-import kotlin.collections.iterator
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -19,7 +16,10 @@ import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ArmorMeta
 import org.bukkit.inventory.meta.Damageable
+import org.bukkit.inventory.meta.SkullMeta
+import org.bukkit.inventory.meta.trim.ArmorTrim
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
@@ -49,7 +49,7 @@ class ItemFactory(
     /**
      * Quotes.
      */
-    var quotes: MutableList<String> = mutableListOf(),
+    var taglines: MutableList<String> = mutableListOf(),
     /**
      * Base 64 head if this item's material is a PLAYER_HEAD
      */
@@ -71,6 +71,7 @@ class ItemFactory(
     var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf(),
     var amount: Int = 1,
     var maxStackSize: Int? = null,
+    var armorTrim: ArmorTrim? = null,
 ) {
 
     companion object {
@@ -104,14 +105,14 @@ class ItemFactory(
     }
 
     fun addQuote(s: String): ItemFactory {
-        quotes.add(s)
+        taglines.add(s)
         return this
     }
 
     fun addGradientQuote(s: String, color1: String, color2: String): ItemFactory {
         val strippedColor1 = color1.replace("#", "").replace("&", "").trim()
         val strippedColor2 = color2.replace("#", "").replace("&", "").trim()
-        quotes.add(IridiumColorAPI.process("<GRADIENT:$strippedColor1>\"$s\"</GRADIENT:$strippedColor2>"))
+        taglines.add(IridiumColorAPI.process("<GRADIENT:$strippedColor1>\"$s\"</GRADIENT:$strippedColor2>"))
         return this
     }
 
@@ -178,12 +179,12 @@ class ItemFactory(
         combinedLore.addAll(customEnchants)
 
 
-        if ((addSpace && lore.isNotEmpty()) || quotes.isNotEmpty()) {
+        if ((addSpace && lore.isNotEmpty()) || taglines.isNotEmpty()) {
             combinedLore.add("")
         }
 
-        if (quotes.isNotEmpty()) {
-            combinedLore.addAll(quotes)
+        if (taglines.isNotEmpty()) {
+            combinedLore.addAll(taglines)
             combinedLore.add("")
         }
 
@@ -220,8 +221,12 @@ class ItemFactory(
             meta.persistentDataContainer.set(AUTO_HAT_KEY, PersistentDataType.SHORT, 1)
         }
 
-        if (b64PHead != null && material == Material.PLAYER_HEAD) {
+        if (b64PHead != null && meta is SkullMeta) {
             Util.setBase64Texture(meta, b64PHead)
+        }
+
+        if (armorTrim != null && meta is ArmorMeta) {
+            meta.trim = armorTrim
         }
 
         item.itemMeta = meta
@@ -270,6 +275,7 @@ class ItemFactory(
         private var paperDataComponents: MutableList<PaperDataComponent> = mutableListOf()
         private var amount: Int = 1
         private var maxStackSize: Int? = null
+        private var armorTrim: ArmorTrim? = null
 
         @SafeVarargs
         fun name(name: String) = apply { this.name = name }
@@ -311,11 +317,30 @@ class ItemFactory(
         fun persistentDataValue(persistentDataValue: Short) = apply { this.persistentDataValue = persistentDataValue }
         fun amount(amount: Int) = apply { this.amount = amount }
         fun maxStackSize(maxStackSize: Int) = apply { this.maxStackSize = maxStackSize }
+        fun armorTrim(armorTrim: ArmorTrim) = apply { this.armorTrim = armorTrim }
 
         fun buildNoMiniMessage() = ItemFactory(
-            name, customEnchants, lore, material, persistentData, vanillaEnchants,
-            tier, unbreakable, hideEnchants, addSpace, autoHat, attributeContainers, taglines, b64PHead,
-            spoofEnchants, persistentDataValue, persistentDataRecords, paperDataComponents, amount, maxStackSize
+            name,
+            customEnchants,
+            lore,
+            material,
+            persistentData,
+            vanillaEnchants,
+            tier,
+            unbreakable,
+            hideEnchants,
+            addSpace,
+            autoHat,
+            attributeContainers,
+            taglines,
+            b64PHead,
+            spoofEnchants,
+            persistentDataValue,
+            persistentDataRecords,
+            paperDataComponents,
+            amount,
+            maxStackSize,
+            armorTrim
         )
 
         fun build() = buildNoMiniMessage().apply { miniMessage() }

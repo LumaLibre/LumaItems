@@ -24,7 +24,7 @@ class StickyTaffyItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#f9e1f5:#c8d1ff:#d3caff:#dbecb1:#ffd6a5>Sticky Taffy</gradient></b>")
             .customEnchants("<#d3caff>Sticky Items")
             .material(Material.LIGHT_BLUE_DYE)

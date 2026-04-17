@@ -30,7 +30,7 @@ class ZephyrSkatesItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#8a1c23:#dc3b44:#f1f2d9:#85b79d:#17341f>Zephyr Skates</gradient></b>")
             .customEnchants("<#E37876>Quick Dash")
             .material(Material.NETHERITE_BOOTS)

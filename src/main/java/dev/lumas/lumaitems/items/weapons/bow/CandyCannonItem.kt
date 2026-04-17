@@ -32,7 +32,7 @@ class CandyCannonItem : CustomItemFunctions() {
         java.awt.Color.RED)
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><#A7E7FF>C<#B3D6F0>a<#BFC5E0>n<#CBB4D1>d<#D6A3C1>y <#EE81A2>C<#EEAB70>a<#EED53D>n<#D7B874>n<#C19BAC>o<#AA7EE3>n</b>")
             .customEnchants("<#A7E7FF>Sweet Tooth")
             .lore("No lore yet")

@@ -49,7 +49,7 @@ class HeavyBloblobScytheItem : CustomItemFunctions() {
 
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#90d5ff:#b0ffff:#e4dcff:#b0abff:#7dbfff>Heavy Bloblob Scythe</gradient></b>")
             .customEnchants("<#B0ABFF>Frozen Blobs", "<#8EB8FF>Naturality")
             .material(Material.NETHERITE_HOE)

@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.tools.shears
 
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
-import dev.lumas.lumaitems.util.Kind
+import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack
 class IllumeShearsItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#C5ADFF:#8F79F8:#B36EAF:#DB6B90:#77C679:#CBF6B7>Illume Shears</gradient></b>")
             .customEnchants("<#c5adff>Quick-break")
             .persistentData("illume-shears")

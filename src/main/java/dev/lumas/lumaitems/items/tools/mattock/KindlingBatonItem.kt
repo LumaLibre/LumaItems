@@ -31,7 +31,7 @@ class KindlingBatonItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><#F3AB59>K<#E9A461>i<#E09C6A>n<#D69572>d<#CC8D7A>l<#D6A088>i<#E0B297>n<#EBC5A5>g <#FFEAC2>B<#E4DFB9>a<#C8D5B0>t<#ADCAA6>o<#91BF9D>n</b>")
             .customEnchants("<#F3AB59>Oven")
             .persistentData("kindlingbaton")
