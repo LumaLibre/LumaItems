@@ -5,7 +5,7 @@ import org.bukkit.block.Block
 
 class PlayerCachedBlocks (
     val id: String,
-    val locations: MutableList<Location>,
+    val locations: MutableSet<Location>,
 ) {
     fun getBlocks(): List<Block> {
         return locations.map { it.block }

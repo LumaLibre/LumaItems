@@ -356,11 +356,10 @@ class Listeners : ItemListener() {
         fire(data, Action.ENTITY_FORM_BLOCK, null, event)
     }
 
+    @AllSlots
     @EventHandler
     fun onPlayerConsumeItem(event: PlayerItemConsumeEvent) {
-        val data: PersistentDataContainer = event.item.itemMeta?.persistentDataContainer ?: return
-
-        fire(data, Action.CONSUME_ITEM, event.player, event)
+        fire(event.player.equipmentContainers(), Action.CONSUME_ITEM, event.player, event)
     }
 
     @AllSlots
@@ -370,12 +369,12 @@ class Listeners : ItemListener() {
         fire(Util.getAllEquipmentNBT(player), Action.POTION_EFFECT, player, event)
     }
 
+    @AllSlots
     @EventHandler
     fun onEntityTargetLivingEntity(event: EntityTargetLivingEntityEvent) {
         val target = event.target as? Player ?: return
-        val data = event.entity.persistentDataContainer
-
-        fire(data, Action.ENTITY_TARGET_PLAYER, target, event)
+        fire(event.entity.persistentDataContainer, Action.ENTITY_TARGET_PLAYER, target, event)
+        fire(target.equipmentContainers(), Action.ENTITY_TARGET_PLAYER, target, event)
     }
 
 
@@ -459,8 +458,9 @@ class Listeners : ItemListener() {
     fun onInventoryClickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
         val data = mutableListOf<PersistentDataContainer>()
-        event.currentItem?.itemMeta?.persistentDataContainer.let { data.add(it ?: return) }
-        event.cursor.itemMeta?.persistentDataContainer.let { data.add(it ?: return) }
+        event.currentItem?.itemMeta?.persistentDataContainer?.let { data.add(it) }
+        event.cursor.itemMeta?.persistentDataContainer?.let { data.add(it) }
+        if (data.isEmpty()) return
         fire(data, Action.INVENTORY_CLICK, player, event)
     }
 

@@ -8,6 +8,7 @@ public class Tier {
     public static final Tier BLANK = new Tier("");
     public static final Tier DEPRECATED = new Tier("<b><yellow>Deprecated</yellow></b>");
     public static final Tier DEBUG = new Tier("<b><green>Debug</green></b>");
+    public static final Tier STAFF = new Tier("<b><gradient:#2f8f73:#379f7f:#43aa8b:#5bb79a:#6fc3a7:#5ec09f:#4bb497:#3fa68f:#339887>Staff Only</gradient></b>");
     public static final Tier ASTRAL = new Tier("<b><#AC87FB>Astral</#AC87FB></b>");
     public static final Tier COLLECTIBLE = new Tier("<b><aqua>Collectible</aqua></b>");
     public static final Tier CARNIVAL_2024 = new Tier("<b><#8EC4F7>C<#B4B7E8>a<#D9A9DA>r<#FF9CCB>n<#F2BAB6>i<#E4D7A2>v<#D7F58D>a<#E4F88C>l <#FFFE8A>2<#FFF07E>0<#FFE171>2<#FFD365>4</b>");

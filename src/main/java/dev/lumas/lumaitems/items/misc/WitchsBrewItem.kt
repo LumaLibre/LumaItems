@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import org.bukkit.NamespacedKey
 import kotlin.random.Random
 import org.bukkit.Color
 import org.bukkit.Material
@@ -69,6 +70,7 @@ class WitchsBrewItem : CustomItem {
         when (type) {
             Action.CONSUME_ITEM -> {
                 event as PlayerItemConsumeEvent
+                if (event.item.itemMeta?.persistentDataContainer?.has(NamespacedKey(instance(), "witchsbrew")) != true) return false
 
                 event.isCancelled = true
                 if (QuickTasks.isOnCooldown(this, player)) return false

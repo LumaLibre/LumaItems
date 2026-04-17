@@ -28,8 +28,7 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-// TODO: INVENTORY_CLICK, Why? Just modify the listener
-@FireAnyways(Action.BREAK_BLOCK, Action.INVENTORY_CLICK)
+@FireAnyways(Action.BREAK_BLOCK)
 class VerdigrisIdolItem : CustomItemFunctions() {
 
     private enum class OxidationStage(
@@ -63,7 +62,7 @@ class VerdigrisIdolItem : CustomItemFunctions() {
             "Its duty has not yet faded away.",
             "",
             "<#42BFB8>Hold</#42BFB8> to transmute mined Stone",
-            "and Deepslate to Copper Ore.",
+            "and Deepslate to Raw Copper.",
             "",
             "<red>Oxidizes as its power is used.</red>",
             "<gray> ┗ Deoxidize with Fire Charges.</gray>",
@@ -107,8 +106,18 @@ class VerdigrisIdolItem : CustomItemFunctions() {
         val block = event.block
         val copperOre = TARGET_BLOCKS[block.type] ?: return
 
+        val tool = if (mainHandIdol != null) idol else mainHand
+
+        if (tool.containsEnchantment(Enchantment.SILK_TOUCH)) {
+            player.actionBar("<red>Silk Touch suppresses the Idol's transmutation.")
+            return
+        }
+
         val currentOxidation = idol.getPersistentKey(OXIDATION_KEY, PersistentDataType.INTEGER) ?: 0
         val currentStage = stageFromValue(currentOxidation)
+
+        if (currentStage == OxidationStage.OXIDIZED) return
+        if (currentStage.probability < 1.0 && Random.nextDouble() >= currentStage.probability) return
 
         val newIdol = advanceOxidation(idol, player, currentOxidation)
         if (newIdol != null) {
@@ -119,13 +128,8 @@ class VerdigrisIdolItem : CustomItemFunctions() {
             }
         }
 
-        if (currentStage == OxidationStage.OXIDIZED) return
-        if (currentStage.probability < 1.0 && Random.nextDouble() >= currentStage.probability) return
-
-        val tool = if (mainHandIdol != null) (newIdol ?: idol) else mainHand
-
         event.isDropItems = false
-        block.world.dropItemNaturally(block.location, computeDrops(tool, copperOre))
+        block.world.dropItemNaturally(block.location, computeDrops(if (mainHandIdol != null) (newIdol ?: idol) else mainHand, copperOre))
 
         val loc = block.location.toCenterLocation()
         block.world.spawnParticle(Particle.DUST, loc, 15, 0.35, 0.35, 0.35, 0.0, COPPER_DUST)
@@ -195,10 +199,11 @@ class VerdigrisIdolItem : CustomItemFunctions() {
     }
 
     private fun computeDrops(tool: ItemStack, oreBlock: Material): ItemStack {
-        // TODO: Needs to be nerfed or not drop raw copper
-        if (tool.containsEnchantment(Enchantment.SILK_TOUCH)) return ItemStack(oreBlock)
         val fortune = tool.getEnchantmentLevel(Enchantment.FORTUNE)
-        return ItemStack(Material.RAW_COPPER, fortuneRawCopper(fortune))
+        // Some pickaxes on Luma average 20+ copper per copper ore
+        // This item shouldn't be as strong, so we limit it here
+        val amount = fortuneRawCopper(fortune).coerceAtMost(9)
+        return ItemStack(Material.RAW_COPPER, amount)
     }
 
     // Mirrors vanilla copper ore fortune behaviour

@@ -87,6 +87,7 @@ class SweetHeartsLaceItem : CustomItem {
             }
             Action.ENTITY_TARGET_PLAYER -> {
                 event as EntityTargetLivingEntityEvent
+                if (!event.entity.persistentDataContainer.has(NamespacedKey(instance(), "sweetheartslace"))) return false
                 event.isCancelled = true
             }
             Action.ENTITY_DAMAGE -> {

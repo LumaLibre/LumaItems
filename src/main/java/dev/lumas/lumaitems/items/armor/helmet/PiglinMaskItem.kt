@@ -1,7 +1,5 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
-import dev.lumas.lumaitems.annotations.FireAnyways
-import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.hasPersistentKey
@@ -29,8 +27,6 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import java.util.UUID
 
-// todo: shouldn't be used. modify the event listeners themselves to fire for all equipment
-@FireAnyways(Action.CONSUME_ITEM, Action.ENTITY_TARGET_PLAYER)
 class PiglinMaskItem : CustomItemFunctions() {
 
     companion object {
