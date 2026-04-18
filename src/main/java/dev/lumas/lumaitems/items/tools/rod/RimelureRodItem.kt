@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.tools.rod
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isHoldingTwoRods
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.enchantments.Enchantment
@@ -40,6 +41,8 @@ class RimelureRodItem : CustomItemFunctions() {
     }
 
     override fun onFish(player: Player, event: PlayerFishEvent) {
+        if (player.isHoldingTwoRods()) return
+
         val hook = event.hook
 
         when (event.state) {

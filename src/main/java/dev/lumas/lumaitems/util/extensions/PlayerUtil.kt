@@ -101,6 +101,9 @@ fun Player.isLookingDown(): Boolean {
     return eyeLocation.pitch >= 45
 }
 
+fun Player.isHoldingTwoRods(): Boolean {
+    return inventory.itemInMainHand.type == Material.FISHING_ROD && inventory.itemInOffHand.type == Material.FISHING_ROD
+}
 
 fun Player.firstEquipmentContainer(key: NamespacedKey): ItemStack? {
     val result = ArrayList<ItemStack>(6)

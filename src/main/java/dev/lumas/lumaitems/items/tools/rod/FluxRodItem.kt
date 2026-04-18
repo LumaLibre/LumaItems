@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isHoldingTwoRods
 import kotlin.random.Random
 import net.minecraft.world.entity.projectile.FishingHook
 import org.bukkit.Material
@@ -52,6 +53,8 @@ class FluxRodItem : CustomItemFunctions() {
     }
 
     override fun onFish(player: Player, event: PlayerFishEvent) {
+        if (player.isHoldingTwoRods()) return
+
         val hook = event.hook
         val multiHook = activeMultiHooks.find { it ->
             it.hookPool.map { it.uniqueId }.contains(hook.uniqueId)
