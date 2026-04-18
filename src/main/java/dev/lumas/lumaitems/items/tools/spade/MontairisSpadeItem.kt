@@ -112,8 +112,7 @@ class MontairisSpadeItem : CustomItemFunctions() {
         if (snowball.hasPersistentKey(ACTIVATOR_KEY)) {
             val rainCloud = RainCloud(player, snowball.location)
             rainCloud.seed().thenAccept {
-                rainCloud.spawnCloud(300) {
-                }
+                rainCloud.spawnCloud(300) {}
             }
             snowball.world.playSound(snowball.location, Sound.ENTITY_EVOKER_PREPARE_SUMMON, 0.3f, 0.8f)
             return
@@ -121,21 +120,15 @@ class MontairisSpadeItem : CustomItemFunctions() {
 
         val hitBlock = event.hitBlock ?: return
         val materialName = snowball.getPersistentKey(MATERIAL_NAME_KEY, PersistentDataType.STRING) ?: return
-        val material = materialName.material() ?: return
+        val itemStack = materialName.material()?.itemStack() ?: return
 
         if (!player.canBuild(hitBlock.location)) {
             return
         }
 
-        val sphere = Sphere(hitBlock.location, 1.0)
-        sphere.getSphereFast {
-            if (it.type.isTagged(Tag.SAND)) {
-                it.setBlockDataWithLog(player, material)
-            }
-        }
-
-        if (hitBlock.type.isTagged(Tag.SAND)) {
+        if (hitBlock.type.isTagged(Tag.CONCRETE_POWDER)) {
             hitBlock.breakNaturallyWithLog(player)
+            hitBlock.world.dropItem(hitBlock.location.toCenterLocation(), itemStack)
         }
 
 
@@ -174,8 +167,8 @@ class MontairisSpadeItem : CustomItemFunctions() {
     ) {
 
         companion object {
-            val PINK_SPARKLE = ParticleDisplay.of(Particle.INSTANT_EFFECT)
-                .withColor(org.bukkit.Color.FUCHSIA.toColor())
+            val SPARKLE = ParticleDisplay.of(Particle.INSTANT_EFFECT)
+                .withExtra(0.0)
         }
 
         val cloudSpawnLoc = spawnLoc.clone().add(0.0, 11.0, 0.0)
@@ -198,7 +191,7 @@ class MontairisSpadeItem : CustomItemFunctions() {
 
                 val directionStep = toDestination.toVector().normalize().multiply(0.9)
                 lineCurrentEnd.add(directionStep)
-                Particles.line(spawnLoc, lineCurrentEnd, 0.35, PINK_SPARKLE)
+                Particles.line(spawnLoc, lineCurrentEnd, 0.35, SPARKLE.withColor(cloudColor.fireworkColor.toColor()))
             }
             return future
         }

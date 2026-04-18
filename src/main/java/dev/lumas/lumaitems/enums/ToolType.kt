@@ -34,7 +34,7 @@ enum class ToolType {
     }
 
     companion object {
-        val magicMaterials = listOf("BLAZE_ROD")
+        val magicMaterials = listOf("BLAZE_ROD", "BREEZE_ROD")
 
 
         fun getToolType(item: ItemStack): ToolType? {
