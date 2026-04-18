@@ -124,10 +124,10 @@ class NightmareGlaiveItem : CustomItemFunctions() {
 
 
         val entities: MutableList<LivingEntity> = pin.world.getNearbyLivingEntities(pin, radius)
-            .filter { it !is Player }
+            .filter { it !is Player && !it.hasMetadata("NPC") }
             .toMutableList()
             .apply {
-                addAll(pin.world.getNearbyPlayers(pin, playersRadius))
+                addAll(pin.world.getNearbyPlayers(pin, playersRadius).filter { !it.hasMetadata("NPC") })
             }
             .filter {
                 it == player || !AbilityUtil.noDamagePermission(player, it) || (it is Player && it.isSneaking)
@@ -151,7 +151,7 @@ class NightmareGlaiveItem : CustomItemFunctions() {
             }
             pin.world.playSound(pin, Sound.ITEM_LEAD_BREAK, 2.0f, Random.nextDouble(0.5, 0.8).toFloat())
 
-            this.task = player.syncTimer(0, 1) { task ->
+            this.task = pin.syncTimer(0, 1) { task ->
                 this.entities.removeIf { !it.isValid || (it is Player && player.isSneaking) }
                 if (++count > durationTicks || this.entities.isEmpty()) {
                     this.stopTicking()
