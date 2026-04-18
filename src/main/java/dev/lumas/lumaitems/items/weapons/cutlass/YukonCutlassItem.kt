@@ -1,5 +1,7 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
@@ -31,6 +33,7 @@ import org.bukkit.loot.LootContext
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 
+@Disable(WorldName.SPECIAL)
 class YukonCutlassItem : CustomItemFunctions() {
 
     companion object {

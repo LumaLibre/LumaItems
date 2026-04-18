@@ -25,6 +25,7 @@ import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toColor
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.addCooldown
+import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
@@ -102,7 +103,10 @@ class PalomasCoreItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        val item = event.item ?: return
+        val item = player.inventory.itemInMainHand
+        if (!item.isMatchingItem("palomas-core")) {
+            return
+        }
         item.amount -= 1
 
         player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)

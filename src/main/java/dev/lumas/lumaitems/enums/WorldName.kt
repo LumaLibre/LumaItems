@@ -20,6 +20,7 @@ enum class WorldName {
     STAFF("staff"),
     INTRODUCTION("introduction"),
     PINATA("pinata"),
+    SPECIAL("special"),
     ;
 
 
