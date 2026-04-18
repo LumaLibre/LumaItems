@@ -124,10 +124,10 @@ class NightmareGlaiveItem : CustomItemFunctions() {
 
 
         val entities: MutableList<LivingEntity> = pin.world.getNearbyLivingEntities(pin, radius)
-            .filter { it !is Player }
+            .filter { it !is Player && !it.hasMetadata("NPC") }
             .toMutableList()
             .apply {
-                addAll(pin.world.getNearbyPlayers(pin, playersRadius))
+                addAll(pin.world.getNearbyPlayers(pin, playersRadius).filter { !it.hasMetadata("NPC") })
             }
             .filter {
                 it == player || !AbilityUtil.noDamagePermission(player, it) || (it is Player && it.isSneaking)
