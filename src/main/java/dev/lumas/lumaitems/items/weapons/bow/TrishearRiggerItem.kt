@@ -12,6 +12,7 @@ import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.awt.Color
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -137,10 +138,10 @@ class TrishearRiggerItem : CustomItemFunctions() {
         val particleDisplay = ParticleDisplay.of(Particle.DUST)
         var count = 0
 
-        Executors.asyncTimer(0, 1) { task ->
+        arrows.values.syncTimer(0, 1) { task ->
             if (count++ >= 400 || arrows.all { val e = it.value; e.isInBlock || e.isDead }) {
                 task.cancel()
-                return@asyncTimer
+                return@syncTimer
             }
             arrows.forEach {
                 particleDisplay.withColor(it.key.color).spawn(it.value.location)
