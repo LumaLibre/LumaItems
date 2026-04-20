@@ -13,6 +13,8 @@ import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.extensions.setTexture
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.UUID
 import kotlin.random.Random
 import kotlin.random.asJavaRandom
@@ -107,13 +109,15 @@ class NeoBallisticBunnyMattockItem : CustomItemFunctions() {
         if (egg.cracks > egg.breakLevel) {
             for (eggi in Egg.getEggs(player.uniqueId)) {
                 val loc = eggi.eggShell.location
-                loc.world.playSound(loc, Sound.ENTITY_TURTLE_EGG_CRACK, 0.6f, 1.7f)
-                loc.world.playSound(loc, Sound.ENTITY_ALLAY_AMBIENT_WITHOUT_ITEM, 0.4f, 1f)
-                loc.world.spawnParticle(Particle.DUST, loc, 20, 0.3, 0.3,  0.3, DUST_OPTIONS.random())
+                loc.sync {
+                    loc.world.playSound(loc, Sound.ENTITY_TURTLE_EGG_CRACK, 0.6f, 1.7f)
+                    loc.world.playSound(loc, Sound.ENTITY_ALLAY_AMBIENT_WITHOUT_ITEM, 0.4f, 1f)
+                    loc.world.spawnParticle(Particle.DUST, loc, 20, 0.3, 0.3,  0.3, DUST_OPTIONS.random())
 
-                loc.world.createExplosion(loc, eggi.rarity.power, false, true, player)
+                    loc.world.createExplosion(loc, eggi.rarity.power, false, true, player)
 
-                eggi.remove()
+                    eggi.remove()
+                }
             }
         } else {
             shell.world.playSound(shell.location, Sound.ENTITY_PLAYER_ATTACK_CRIT, 0.6f, 9.7f)

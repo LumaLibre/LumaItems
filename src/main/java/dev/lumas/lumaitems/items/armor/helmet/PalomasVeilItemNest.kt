@@ -258,6 +258,10 @@ class PalomasVeilItem : CustomItemFunctions() {
     }
 
     override fun onEntityDeath(player: Player, event: EntityDeathEvent) {
+        if (event.drops.isEmpty()) {
+            return
+        }
+
         val entity = event.entity
 
         val simulatedDrops = entity.getDrops(player, event.damageSource, LOOTING_LEVEL)
