@@ -51,6 +51,8 @@ public interface Kind<T extends Keyed> extends Tag<T> {
 
     Tag<Material> SAPLING_GROWABLE = Kind.material("soils", Pattern.compile(".*(MOSS|DIRT|MYCELIUM|PODZOL|GRASS_BLOCK|MUD|MUDDY_MANGROVE_ROOTS)")).lock();
 
+    Tag<Material> MINEABLE_SHOVEL = Kind.material("mineable_shovel", Tag.MINEABLE_SHOVEL, Material.FARMLAND).lock();
+
     static MaterialSetTag material(@NotNull String key, @NotNull Predicate<Material> filter) {
         return new MaterialSetTag(Util.namespacedKey(key), filter.and(material -> !material.isLegacy()));
     }

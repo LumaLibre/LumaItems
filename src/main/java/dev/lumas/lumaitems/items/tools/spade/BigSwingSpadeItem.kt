@@ -54,7 +54,7 @@ class BigSwingSpadeItem : CustomItemFunctions() {
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val item = player.inventory.itemInMainHand
         val block = event.block
-        if (!Tag.MINEABLE_SHOVEL.isTagged(block.type) || block.getBreakSpeed(player) >= Float.POSITIVE_INFINITY) {
+        if (!Kind.MINEABLE_SHOVEL.isTagged(block.type) || block.getBreakSpeed(player) >= Float.POSITIVE_INFINITY) {
             return
         }
 
