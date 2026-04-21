@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.awt.Color
 import kotlin.math.min
 import org.bukkit.Location
@@ -161,21 +162,21 @@ class BlobbleHammerItem : CustomItemFunctions() {
     }
 
     private fun snowballRepeatExecutor(snowballs: Collection<Snowball>) {
-        Executors.asyncTimer(0, 2) { task ->
+        snowballs.syncTimer(0, 2) { task ->
             for (snowball in snowballs) {
                 if (repeatExecutorLogic(snowball)) {
                     task.cancel()
-                    return@asyncTimer
+                    return@syncTimer
                 }
             }
         }
     }
 
     private fun snowballRepeatExecutor(snowball: Snowball) {
-        Executors.asyncTimer(0, 2) { task ->
+        snowball.syncTimer(0, 2) { task ->
             if (repeatExecutorLogic(snowball)) {
                 task.cancel()
-                return@asyncTimer
+                return@syncTimer
             }
         }
     }
