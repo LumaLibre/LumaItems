@@ -458,7 +458,9 @@ class PalomasVeilItem : CustomItemFunctions() {
 
         fun stop() {
             task?.cancel()
-            tracked.forEach { it.remove() }
+            tracked.forEach {
+                it.sync { it.remove() }
+            }
             tracked.clear()
         }
 
