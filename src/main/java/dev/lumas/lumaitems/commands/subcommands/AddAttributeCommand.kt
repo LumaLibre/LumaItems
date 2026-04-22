@@ -78,7 +78,7 @@ class AddAttributeCommand : SubCommand {
             meta.addAttributeModifier(attribute, container.modifier())
         }
 
-        player.send("Added ${attribute.key.key} modifier: $amount (${operation.name.lowercase()}) on slot ${slot})")
+        player.send("Added ${attribute.key.key} modifier: $amount (${operation.name.lowercase()}) on slot $slot")
         return true
     }
 
