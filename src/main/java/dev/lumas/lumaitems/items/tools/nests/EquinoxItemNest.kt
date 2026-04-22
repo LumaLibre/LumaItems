@@ -391,7 +391,7 @@ class EquinoxMattockItem : EquinoxItemNest() {
                 "Geysers launched from this",
                 "tool will pulse, launching",
                 "several destructive balls",
-                "that can break down trees.",
+                "that can break down blocks.",
                 "",
                 "<red>Cooldown: 3m"
             )

@@ -25,6 +25,7 @@ import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.toColor
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import java.awt.Color
 import java.util.concurrent.CompletableFuture
 import kotlin.random.Random
@@ -126,8 +127,8 @@ class MontairisSpadeItem : CustomItemFunctions() {
             return
         }
 
-        if (hitBlock.type.isTagged(Tag.CONCRETE_POWDER)) {
-            hitBlock.breakNaturallyWithLog(player)
+        if (hitBlock.type.isTagged(Tag.SAND)) {
+            hitBlock.setAirWithLog(player)
             hitBlock.world.dropItem(hitBlock.location.toCenterLocation(), itemStack)
         }
 
