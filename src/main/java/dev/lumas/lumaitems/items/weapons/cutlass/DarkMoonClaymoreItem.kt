@@ -3,10 +3,13 @@ package dev.lumas.lumaitems.items.weapons.cutlass
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
@@ -45,5 +48,9 @@ class DarkMoonClaymoreItem : MidnightClaymoreItem() {
                 "at once."
             )
             .buildPair()
+    }
+
+    override fun shouldDamage(player: Player): Boolean {
+        return player.isItemInSlot(KEY, EquipmentSlot.HAND)
     }
 }

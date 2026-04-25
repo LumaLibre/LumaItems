@@ -59,8 +59,12 @@ open class MidnightClaymoreItem : CustomItemFunctions() {
     }
 
 
+    open fun shouldDamage(player: Player): Boolean {
+        return player.isItemInSlot(KEY, EquipmentSlot.HAND)
+    }
+
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
-        if (damageGuard.get() || !player.isItemInSlot(KEY, EquipmentSlot.HAND)) return
+        if (damageGuard.get() || !shouldDamage(player)) return
         damageGuard.set(true)
 
         try {
