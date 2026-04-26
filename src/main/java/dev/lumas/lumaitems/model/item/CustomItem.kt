@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.model.item
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.annotations.Disable
@@ -14,6 +15,8 @@ import kotlin.random.Random
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
 
@@ -69,7 +72,7 @@ interface CustomItem : RegistryItem {
 
     fun handleDisabled(player: Player, event: Any) {
         var persistNotif = false
-        if (this.isHardDisabled() && event is Cancellable && event !is PlayerMoveEvent && event !is PlayerJumpEvent) {
+        if (this.isHardDisabled() && event is Cancellable && event !is PlayerMoveEvent && event !is PlayerJumpEvent && event !is PlayerItemHeldEvent && event !is InventoryClickEvent) {
             event.isCancelled = true
             persistNotif = true
         }
