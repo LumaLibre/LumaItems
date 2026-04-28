@@ -44,10 +44,12 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.inventory.CraftItemEvent
+import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
@@ -457,6 +459,22 @@ class Listeners : ItemListener() {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onInventoryClickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
+        val cursorSlotType = event.slotType
+        if ((cursorSlotType == InventoryType.SlotType.ARMOR || cursorSlotType == InventoryType.SlotType.QUICKBAR) &&
+            ItemListener.isHardDisabledAt(event.cursor, player.location)) {
+            event.isCancelled = true
+            ItemListener.notify(player, true)
+            return
+        }
+        val action = event.action
+        if ((event.isShiftClick ||
+             action == InventoryAction.HOTBAR_SWAP ||
+             action == InventoryAction.HOTBAR_MOVE_AND_READD) &&
+            ItemListener.isHardDisabledAt(event.currentItem, player.location)) {
+            event.isCancelled = true
+            ItemListener.notify(player, true)
+            return
+        }
         val data = mutableListOf<PersistentDataContainer>()
         event.currentItem?.itemMeta?.persistentDataContainer?.let { data.add(it) }
         event.cursor.itemMeta?.persistentDataContainer?.let { data.add(it) }
@@ -515,6 +533,11 @@ class Listeners : ItemListener() {
 //            player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer,
 //            player.inventory.getItem(event.previousSlot)?.itemMeta?.persistentDataContainer
 //        ).ifEmpty { return }
+        if (ItemListener.isHardDisabledAt(player.inventory.getItem(event.newSlot), player.location)) {
+            event.isCancelled = true
+            ItemListener.notify(player, true)
+            return
+        }
         val datas = player.equipmentContainers()
 
         fire(datas, Action.ITEM_HELD, player, event)

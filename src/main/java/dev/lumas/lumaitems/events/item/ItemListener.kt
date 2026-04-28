@@ -11,8 +11,10 @@ import io.papermc.paper.persistence.PersistentDataContainerView
 import java.util.EnumMap
 import java.util.UUID
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 
 // TODO: cleanup this class & extract common code
@@ -39,6 +41,17 @@ abstract class ItemListener : Listener {
             if (notifees.contains(player.uniqueId) && !persistentNotification) return
             player.actionBar("<red>Custom abilities for equipped item(s) are disabled in this world.")
             notifees.add(player.uniqueId)
+        }
+
+        fun isHardDisabledAt(item: ItemStack?, location: Location): Boolean {
+            val pdc = item?.itemMeta?.persistentDataContainer ?: return false
+            for (entry in Registry.CUSTOM_ITEMS) {
+                val customItem = entry.value
+                if (pdc.has(entry.key.asNameSpacedKey()) && customItem.isDisabled(location) && customItem.isHardDisabled()) {
+                    return true
+                }
+            }
+            return false
         }
     }
 

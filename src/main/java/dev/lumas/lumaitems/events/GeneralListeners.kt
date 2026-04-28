@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.EntityArmor
 import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.enums.Rarity
+import dev.lumas.lumaitems.events.item.ItemListener
 import dev.lumas.lumaitems.guis.LumaItemsAbstractGui
 import dev.lumas.lumaitems.guis.DisassemblerGui
 import dev.lumas.lumaitems.model.item.ItemFactory
@@ -95,6 +96,12 @@ class GeneralListeners : Listener {
         if (item.hasItemMeta() && Util.hasPersistentKey(item.itemMeta, ItemFactory.AUTO_HAT_KEY)) { // TODO: Organize
             if ((event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK)) return
 
+            if (ItemListener.isHardDisabledAt(item, player.location)) {
+                event.isCancelled = true
+                ItemListener.notify(player, true)
+                return
+            }
+
             val currentHelm = player.equipment?.helmet
             if (currentHelm == null || currentHelm.isEmpty) {
                 player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f)
@@ -134,6 +141,7 @@ class GeneralListeners : Listener {
             return
         }
 
+        if (event.isCancelled) return
         val player = event.whoClicked as Player
         val item = player.itemOnCursor
         if (item.hasItemMeta() && Util.hasPersistentKey(item.itemMeta, ItemFactory.AUTO_HAT_KEY)) { // TODO: Organize
