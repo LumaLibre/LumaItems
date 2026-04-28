@@ -34,13 +34,14 @@ class HauynesPickaxeItem : CustomItemFunctions() {
     }
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
-        event.isDropItems = false
         val item = player.inventory.itemInMainHand
         val block = event.block
 
         if (!LinkedTags.SMELTABLE_ORES.hasKey(block.type)) {
             return
         }
+
+        event.isDropItems = false
 
         val drops = if (block.type != Material.NETHER_GOLD_ORE) block.getDrops(item, player)
             .associate { it.type to it.amount } else mapOf(Material.NETHER_GOLD_ORE to 1)
