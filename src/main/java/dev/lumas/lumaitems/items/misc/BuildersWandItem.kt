@@ -31,6 +31,7 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.block.data.Ageable
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.MultipleFacing
@@ -59,7 +60,9 @@ class BuildersWandItem : CustomItemFunctions() {
         private val KEY = "builders-wand".namespacedKey()
         private val ACTIVE_VISUALIZERS = mutableMapOf<Player, PathVisualizer>()
         private val RED_DUST = "#EA6363".dustOptions()
-        private val BLACKLISTED_MATERIALS = listOf(MaterialTags.ORES)
+        private val BLACKLIST_PREDICATE = { block: Block ->
+            !(block.blockData is Ageable || block.type.isTagged(MaterialTags.ORES))
+        }
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -131,7 +134,7 @@ class BuildersWandItem : CustomItemFunctions() {
         event.isCancelled = true
 
 
-        if (!player.canBuild(clickedBlock.location) || player.isOnCooldown(this) || BLACKLISTED_MATERIALS.any { clickedBlock.type.isTagged(it) } || data is Door || data is Piston || !data.material.isItem) {
+        if (!player.canBuild(clickedBlock.location) || player.isOnCooldown(this) || BLACKLIST_PREDICATE.invoke(clickedBlock) || data is Door || data is Piston || !data.material.isItem) {
             val relative = clickedBlock.getRelative(clickedFace).location.toCenterLocation()
             relative.spawnDust()
             return
