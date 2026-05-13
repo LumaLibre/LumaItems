@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.util;
 import dev.lumas.core.util.Text;
 import net.kyori.adventure.text.Component;
 
-public class Tier {
+public final class Tier {
 
     public static final Tier BLANK = new Tier("");
     public static final Tier DEPRECATED = new Tier("<b><yellow>Deprecated</yellow></b>");

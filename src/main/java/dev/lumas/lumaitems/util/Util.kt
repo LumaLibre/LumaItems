@@ -1,10 +1,8 @@
 package dev.lumas.lumaitems.util
 
 import dev.lumas.lumaitems.util.extensions.asEnum
-import dev.lumas.lumaitems.util.extensions.equipmentContainers
 import dev.lumas.lumaitems.util.extensions.formatSnakeCase
 import dev.lumas.lumaitems.util.extensions.getPersistentKey
-import dev.lumas.lumaitems.util.extensions.handContainers
 import dev.lumas.lumaitems.util.extensions.hasPersistentKey
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.itemStack
@@ -37,9 +35,6 @@ object Util {
 
     fun giveItem(player: Player, item: ItemStack) = player.sync { player.give(item) }
     fun giveItem(player: Player, items: Collection<ItemStack>) = player.sync { player.give(items)}
-
-    fun getAllEquipmentNBT(player: Player) = player.equipmentContainers()
-    fun getHandNBT(player: Player) = player.handContainers()
 
     fun formatEnchantKey(key: String) = formatEnumerator(key.replace("minecraft:", ""))
     fun formatEnumerator(s: String) = s.formatSnakeCase()

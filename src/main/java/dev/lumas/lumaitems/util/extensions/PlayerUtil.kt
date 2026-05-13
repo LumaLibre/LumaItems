@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.util.extensions
 
 import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.enums.TriState
+import dev.lumas.lumaitems.model.item.PdcSource
 import dev.lumas.lumaitems.hooks.ProtectionHook
 import dev.lumas.lumaitems.hooks.TownyHook
 import dev.lumas.lumaitems.hooks.WorldGuardHook
@@ -24,6 +25,7 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import kotlin.math.floor
+import org.bukkit.inventory.PlayerInventory
 
 
 private val PROTECTION_HOOKS by lazy {
@@ -31,6 +33,15 @@ private val PROTECTION_HOOKS by lazy {
         .map { it as ProtectionHook }
 }
 private val AIR by lazy { ItemStack.of(Material.AIR) }
+
+val Player.itemInMainHand: ItemStack
+    get() = inventory.itemInMainHand
+
+val Player.itemInOffHand: ItemStack
+    get() = inventory.itemInOffHand
+
+val PlayerInventory.hotbarContents: Array<ItemStack?>
+    get() = getHotbarContents()
 
 fun Player.isWearing(identifier: String): Boolean {
     return isWearing(identifier.namespacedKey())
@@ -41,7 +52,6 @@ fun Player.isWearing(identifier: NamespacedKey): Boolean {
         it?.hasPersistentKey(identifier) == true
     }
 }
-
 
 fun Player.isItemInSlot(identifier: NamespacedKey, slot: EquipmentSlot): Boolean {
     val item = equipment?.getItem(slot) ?: return false
@@ -105,6 +115,80 @@ fun Player.isHoldingTwoRods(): Boolean {
     return inventory.itemInMainHand.type == Material.FISHING_ROD && inventory.itemInOffHand.type == Material.FISHING_ROD
 }
 
+fun Player.firstEquipmentSource(key: NamespacedKey): PdcSource? {
+    val armor = equipment?.armorContents ?: return null
+
+    for (item in armor) {
+        if (item != null) {
+            val source = PdcSource.of(item)
+            if (source != null && source.data.has(key)) return source
+        }
+    }
+
+    PdcSource.of(inventory.itemInMainHand)?.let { if (it.data.has(key)) return it }
+    PdcSource.of(inventory.itemInOffHand)?.let { if (it.data.has(key)) return it }
+
+    return null
+}
+
+fun Player.equipmentSources(): List<PdcSource> {
+    val result = ArrayList<PdcSource>(6)
+
+    equipment?.armorContents?.let { armor ->
+        for (item in armor) {
+            if (item != null) {
+                PdcSource.of(item)?.let(result::add)
+            }
+        }
+    }
+
+    PdcSource.of(inventory.itemInMainHand)?.let(result::add)
+    PdcSource.of(inventory.itemInOffHand)?.let(result::add)
+
+    return result
+}
+
+fun Player.handSources(): List<PdcSource> {
+    val inv = inventory
+    val main = PdcSource.of(inv.itemInMainHand)
+    val off = PdcSource.of(inv.itemInOffHand)
+
+    return when {
+        main != null && off != null -> listOf(main, off)
+        main != null -> listOf(main)
+        off != null -> listOf(off)
+        else -> emptyList()
+    }
+}
+
+fun Player.sources(vararg slots: EquipmentSlot): List<PdcSource> {
+    val eq = equipment ?: return emptyList()
+    val result = ArrayList<PdcSource>(slots.size)
+
+    for (slot in slots) {
+        eq.getItem(slot).let { PdcSource.of(it) }?.let(result::add)
+    }
+
+    return result
+}
+
+fun Player.mainHandSource(): PdcSource? {
+    return PdcSource.of(inventory.itemInMainHand)
+}
+
+fun Player.equipmentContainers(): List<PersistentDataContainer> {
+    val result = ArrayList<PersistentDataContainer>(6)
+    val inv = inventory
+    val armor = equipment?.armorContents ?: return result
+    for (item in armor) {
+        item?.itemMeta?.persistentDataContainer?.let(result::add)
+    }
+
+    inv.itemInMainHand.itemMeta?.persistentDataContainer?.let(result::add)
+    inv.itemInOffHand.itemMeta?.persistentDataContainer?.let(result::add)
+    return result
+}
+
 fun Player.firstEquipmentContainer(key: NamespacedKey): ItemStack? {
     val result = ArrayList<ItemStack>(6)
     val inv = inventory
@@ -119,49 +203,6 @@ fun Player.firstEquipmentContainer(key: NamespacedKey): ItemStack? {
 
     return result.firstOrNull { it.hasPersistentKey(key) }
 }
-
-fun Player.equipmentContainers(): List<PersistentDataContainer> {
-    val result = ArrayList<PersistentDataContainer>(6)
-    val inv = inventory
-
-    val armor = equipment?.armorContents ?: return result
-    for (item in armor) {
-        item?.itemMeta?.persistentDataContainer?.let(result::add)
-    }
-
-    inv.itemInMainHand.itemMeta?.persistentDataContainer?.let(result::add)
-    inv.itemInOffHand.itemMeta?.persistentDataContainer?.let(result::add)
-
-    return result
-}
-
-fun Player.handContainers(): List<PersistentDataContainer> {
-    val inv = inventory
-    val mainMeta = inv.itemInMainHand.itemMeta
-    val offMeta = inv.itemInOffHand.itemMeta
-
-    return when {
-        mainMeta != null && offMeta != null -> listOf(mainMeta.persistentDataContainer, offMeta.persistentDataContainer)
-        mainMeta != null -> listOf(mainMeta.persistentDataContainer)
-        offMeta != null -> listOf(offMeta.persistentDataContainer)
-        else -> emptyList()
-    }
-}
-
-fun Player.containers(vararg slots: EquipmentSlot): List<PersistentDataContainer> {
-    val result = ArrayList<PersistentDataContainer>(slots.size)
-
-    for (slot in slots) {
-        equipment?.getItem(slot)?.itemMeta?.persistentDataContainer?.let(result::add)
-    }
-
-    return result
-}
-
-fun Player.mainHandContainer(): PersistentDataContainer? {
-    return inventory.itemInMainHand.itemMeta?.persistentDataContainer
-}
-
 
 fun Player.canDamage(entity: LivingEntity): Boolean {
     var result = true
@@ -223,6 +264,15 @@ fun Player.takeItem(itemStack: ItemStack, amount: Int): Boolean {
     throw RuntimeException("Failed to remove: $couldNotRemove from $name's inventory!")
 }
 
+@JvmName("hotbar")
+fun PlayerInventory.getHotbarContents(): Array<ItemStack?> {
+    val result = Array<ItemStack?>(9) { null }
+    for (i in 0..8) {
+        result[i] = getItem(i)
+    }
+    return result
+}
+
 fun Player.send(msg: String) {
     Text.msg(this, msg)
 }
@@ -234,3 +284,4 @@ fun CommandSender.send(msg: String) {
 fun Player.actionBar(msg: String) {
     sendActionBar(msg.asComponent(italic = true))
 }
+

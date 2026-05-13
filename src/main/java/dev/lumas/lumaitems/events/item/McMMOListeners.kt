@@ -6,7 +6,8 @@ import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
 import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.util.extensions.mainHandContainer
+import dev.lumas.lumaitems.util.extensions.asSource
+import dev.lumas.lumaitems.util.extensions.itemInMainHand
 import org.bukkit.event.EventHandler
 
 @AutoRegister(RegisterType.LISTENER, requires = "mcMMO")
@@ -15,7 +16,7 @@ class McMMOListeners : ItemListener() {
     @EventHandler
     fun onMcMMOTreeFellerDestroyTree(event: TreeFellerDestroyTreeEvent) {
         val player = event.player
-        val data = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+        val data = player.itemInMainHand.asSource()
         fire(data, Action.MCMMO_TREE_FELLER_DESTROY_TREE, player, event)
     }
 
@@ -24,6 +25,6 @@ class McMMOListeners : ItemListener() {
         if (event.subSkillType != SubSkillType.HERBALISM_GREEN_THUMB) return
         val player = event.player
 
-        fire(player.mainHandContainer() ?: return, Action.MCMMO_HERBALISM_REPLANT, player, event)
+        fire(player.itemInMainHand.asSource(), Action.MCMMO_HERBALISM_REPLANT, player, event)
     }
 }

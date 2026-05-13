@@ -5,6 +5,8 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.equipmentContainers
+import dev.lumas.lumaitems.util.extensions.equipmentSources
 import dev.lumas.lumaitems.util.extensions.sync
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.Bukkit
@@ -22,6 +24,7 @@ class PassiveListeners(val plugin: LumaItems) {
         const val ASYNC_GLOBAL_TASK_TICKS: Long = 20
     }
 
+    // TODO: refactor
     private fun fire(dataList: List<PersistentDataContainer>, player: Player, action: Action) {
         for (data: PersistentDataContainer in dataList) {
             for (customItem in Registry.CUSTOM_ITEMS) {
@@ -31,6 +34,7 @@ class PassiveListeners(val plugin: LumaItems) {
         }
     }
 
+    // TODO: refactor
     private fun fire(action: Action) {
         for (customItem in Registry.CUSTOM_ITEMS.values()) {
             customItem.executeActions(action, ItemListener.getDummyPlayer() ?: return, 0)
@@ -43,10 +47,10 @@ class PassiveListeners(val plugin: LumaItems) {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (synchronize) {
                     player.sync {
-                        fire(Util.getAllEquipmentNBT(player), player, action)
+                        fire(player.equipmentContainers(), player, action)
                     }
                 } else {
-                    fire(Util.getAllEquipmentNBT(player), player, action)
+                    fire(player.equipmentContainers(), player, action)
                 }
             }
         }
@@ -62,7 +66,7 @@ class PassiveListeners(val plugin: LumaItems) {
 
     fun onPluginAction(action: Action) {
         for (player in Bukkit.getOnlinePlayers()) {
-            fire(Util.getAllEquipmentNBT(player), player, action)
+            fire(player.equipmentContainers(), player, action)
         }
     }
 

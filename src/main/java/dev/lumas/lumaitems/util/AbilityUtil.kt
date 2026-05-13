@@ -27,8 +27,6 @@ object AbilityUtil {
     fun noBuildPermission(player: Player, block: Block) = !player.canBuild(block.location)
     fun isOnGround(entity: Entity, amt: Double) = if (entity is Player) entity.isBoundingBoxOnGround(amt) else entity.isOnGround
     fun isOnGround(entity: Entity) = isOnGround(entity, 0.1);
-    fun isOnGroundCheap(entity: Entity, amt: Double) = if (entity is Player) entity.isLocationOnGround(amt) else entity.isOnGround
-    fun isOnGroundCheap(entity: Entity) = isOnGroundCheap(entity, 0.1);
 
     fun takeSpellLapisCost(player: Player, amount: Int) = player.takeItem(LAPIS_LAZULI, amount)
 

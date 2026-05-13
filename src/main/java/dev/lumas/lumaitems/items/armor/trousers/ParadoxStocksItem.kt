@@ -39,7 +39,6 @@ class ParadoxStocksItem : CustomItemFunctions() {
     fun tryTeleport(player: Player, clickedBlock: Block) {
         // if direction is up/down we spawn a raytrace on the OTHER side of the blok and check if it can fit there, otherwise we pass in the clicked block
         val direction = SimpleDirection.fromLocation(player.eyeLocation)
-        println("testing direction $direction")
         val otherSide = clickedBlock.getRelative(direction.blockFace)
         if (direction.canFitHumanEntity(otherSide)) {
             // teleport player to hit block

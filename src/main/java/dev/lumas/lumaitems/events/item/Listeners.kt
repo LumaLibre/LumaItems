@@ -9,10 +9,12 @@ import dev.lumas.lumacore.manager.modules.AutoRegister
 import dev.lumas.lumacore.manager.modules.RegisterType
 import dev.lumas.lumaitems.annotations.AllSlots
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.model.item.PdcSource
 import dev.lumas.lumaitems.model.block.BlockCacheManager
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.equipmentContainers
+import dev.lumas.lumaitems.util.extensions.asSource
+import dev.lumas.lumaitems.util.extensions.equipmentSources
+import dev.lumas.lumaitems.util.extensions.handSources
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityCompostItemEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
@@ -72,7 +74,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlot
-import org.bukkit.persistence.PersistentDataContainer
+import org.bukkit.inventory.ItemStack
 
 /**
  * Main listeners class for LumaItems
@@ -86,53 +88,52 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onCrossbowLoad(event: EntityLoadCrossbowEvent) {
         val player = event.entity as? Player ?: return
-        val data: PersistentDataContainer = event.crossbow.itemMeta?.persistentDataContainer ?: return
+        val source = event.crossbow.asSource() ?: return
 
-        fire(data, Action.CROSSBOW_LOAD, player, event)
+        fire(source, Action.CROSSBOW_LOAD, player, event)
     }
 
     @EventHandler
     fun onPlayerBowShoot(event: EntityShootBowEvent) {
         val player = event.entity as? Player ?: return
-        val data: PersistentDataContainer = event.bow?.itemMeta?.persistentDataContainer ?: return
+        val source = event.bow.asSource() ?: return
 
-        fire(data, Action.PLAYER_SHOOT_BOW, player, event)
+        fire(source, Action.PLAYER_SHOOT_BOW, player, event)
     }
 
     @AllSlots
     @EventHandler
     fun onProjectileLaunch(event: ProjectileLaunchEvent) {
         val player: Player = event.entity.shooter as? Player ?: return
-        fire(Util.getAllEquipmentNBT(player), Action.PROJECTILE_LAUNCH, player, event)
+        fire(player.equipmentSources(), Action.PROJECTILE_LAUNCH, player, event)
     }
 
     @EventHandler
     fun onProjectileHit(event: ProjectileHitEvent) {
         val player = event.entity.shooter as? Player ?: return
-
-        val data = event.entity.persistentDataContainer
-        fire(data, Action.PROJECTILE_LAND, player, event)
+        // Projectile PDC — no source item
+        fire(PdcSource.of(event.entity.persistentDataContainer), Action.PROJECTILE_LAND, player, event)
     }
 
     @AllSlots
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
         val player = event.player
-        val dataContainers: List<PersistentDataContainer> = Util.getAllEquipmentNBT(player)
-        val action: Action = if (event.action.isLeftClick) Action.LEFT_CLICK else if (event.action.isRightClick) Action.RIGHT_CLICK else Action.GENERIC_INTERACT
+        val sources = player.equipmentSources()
+        val action: Action = when {
+            event.action.isLeftClick -> Action.LEFT_CLICK
+            event.action.isRightClick -> Action.RIGHT_CLICK
+            else -> Action.GENERIC_INTERACT
+        }
 
-        fire(dataContainers, action, player, event)
+        fire(sources, action, player, event)
     }
 
     @AllSlots
     @EventHandler
     fun onPlayerSwapHandItems(event: PlayerSwapHandItemsEvent) {
         val player = event.player
-        //val item = event.offHandItem
-        //item.itemMeta?.persistentDataContainer
-        val data = Util.getAllEquipmentNBT(player) //?: return
-
-        fire(data, Action.SWAP_HAND, player, event)
+        fire(player.equipmentSources(), Action.SWAP_HAND, player, event)
     }
 
     @AllSlots
@@ -141,37 +142,34 @@ class Listeners : ItemListener() {
         val entity = event.entity
 
         entity.killer?.let { player ->
-            val data = Util.getAllEquipmentNBT(player)
-            fire(data, Action.ENTITY_DEATH, player, event)
+            fire(player.equipmentSources(), Action.ENTITY_DEATH, player, event)
             return // We got a killer, we're done.
         }
         // No killer. Let's check the entity's persistent data container.
-        val data: PersistentDataContainer = entity.persistentDataContainer
-        fire(data, Action.ENTITY_DEATH, getDummyPlayer(), event)
+        fire(PdcSource.of(entity.persistentDataContainer), Action.ENTITY_DEATH, getDummyPlayer(), event)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerDeath(event: PlayerDeathEvent) {
         val player = event.entity
-        val data = Util.getAllEquipmentNBT(player)
-
-        fire(data, Action.PLAYER_DEATH, player, event)
+        fire(player.equipmentSources(), Action.PLAYER_DEATH, player, event)
     }
 
     @AllSlots
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
-        val player: Player = when (event.damager) {
-            is Player -> event.damager as Player
-            is Projectile -> (event.damager as? Projectile)?.shooter as? Player ?: return
+        val player: Player = when (val d = event.damager) {
+            is Player -> d
+            is Projectile -> d.shooter as? Player ?: return
             else -> return
         }
 
-        val data = Util.getAllEquipmentNBT(player).toMutableList().apply {
-            (event.damager as? Projectile)?.persistentDataContainer?.let { add(it) }
+        val sources = player.equipmentSources().toMutableList().apply {
+            (event.damager as? Projectile)?.persistentDataContainer
+                ?.let { add(PdcSource.of(it)) }
         }
 
-        fire(data, Action.ENTITY_DAMAGE, player, event)
+        fire(sources, Action.ENTITY_DAMAGE, player, event)
     }
 
     @AllSlots
@@ -181,11 +179,11 @@ class Listeners : ItemListener() {
         val damager = event.damager
 
         if (entity is Player) {
-            fire(entity.equipmentContainers(), Action.PLAYER_DAMAGED_BY_ENTITY, entity, event)
+            fire(entity.equipmentSources(), Action.PLAYER_DAMAGED_BY_ENTITY, entity, event)
         }
 
         if (damager is Player) {
-            fire(entity.persistentDataContainer, Action.ENTITY_DAMAGED_BY_PLAYER, damager, event)
+            fire(PdcSource.of(entity.persistentDataContainer), Action.ENTITY_DAMAGED_BY_PLAYER, damager, event)
         }
     }
 
@@ -193,32 +191,29 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onEntityDamage(event: EntityDamageEvent) {
         val entity = event.entity
-        val data: List<PersistentDataContainer>? = if (entity is Player) Util.getAllEquipmentNBT(entity) else null
 
-
-        if (data != null) {
-            fire(data, Action.PLAYER_DAMAGED, entity as? Player ?: return, event)
+        if (entity is Player) {
+            fire(entity.equipmentSources(), Action.PLAYER_DAMAGED, entity, event)
         } else {
-            fire(entity.persistentDataContainer, Action.ENTITY_DAMAGED_GENERIC, null, event)
+            fire(PdcSource.of(entity.persistentDataContainer), Action.ENTITY_DAMAGED_GENERIC, null, event)
         }
     }
 
     @EventHandler
     fun onPlayerDropItem(event: PlayerDropItemEvent) {
         val player = event.player
-        val data: PersistentDataContainer = event.itemDrop.itemStack.itemMeta?.persistentDataContainer ?: return
+        val source = event.itemDrop.itemStack.asSource() ?: return
 
-        fire(data, Action.DROP_ITEM, player, event)
+        fire(source, Action.DROP_ITEM, player, event)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerBreakBlock(event: BlockBreakEvent) {
         val player = event.player
         if (this.isTreeFeller(player)) return
-        val data: PersistentDataContainer? = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
 
-        if (data != null) {
-            fire(data, Action.BREAK_BLOCK, player, event)
+        player.inventory.itemInMainHand.asSource()?.let { source ->
+            fire(source, Action.BREAK_BLOCK, player, event)
         }
 
         val playerCachedBlocks = BlockCacheManager.playerCachedBlocks[player.uniqueId] ?: return
@@ -235,11 +230,9 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onBlockDropItems(event: BlockDropItemEvent) {
         val player = event.player
-        val data = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
+        val source = player.inventory.itemInMainHand.asSource() ?: return
 
-        if (data != null) {
-            fire(data, Action.BLOCK_DROP_ITEM, player, event)
-        }
+        fire(source, Action.BLOCK_DROP_ITEM, player, event)
     }
 
 
@@ -247,39 +240,42 @@ class Listeners : ItemListener() {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerPlaceBlock(event: BlockPlaceEvent) {
         val player = event.player
-        val data = event.itemInHand.itemMeta?.persistentDataContainer ?: return
+        val source = event.itemInHand.asSource() ?: return
 
-        fire(data, Action.PLACE_BLOCK, player, event)
+        fire(source, Action.PLACE_BLOCK, player, event)
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBlockDamage(event: BlockDamageEvent) {
         val player = event.player
-        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+        val source = player.inventory.itemInMainHand.asSource() ?: return
 
-        fire(data, Action.BLOCK_DAMAGE, player, event)
+        fire(source, Action.BLOCK_DAMAGE, player, event)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerFish(event: PlayerFishEvent) {
         val player = event.player
 
-        val item = player.inventory.itemInMainHand
-        val offHandItem = player.inventory.itemInOffHand
+        val mainHand = player.inventory.itemInMainHand
+        val offHand = player.inventory.itemInOffHand
 
-        if (!item.hasItemMeta() && !offHandItem.hasItemMeta()) return
+        if (!mainHand.hasItemMeta() && !offHand.hasItemMeta()) return
 
-        // TODO: Look into why this listener is written this way instead of using Util.getHandNBT()
-        val data: PersistentDataContainer? = item.itemMeta?.persistentDataContainer
-        val offHandData: PersistentDataContainer? = offHandItem.itemMeta?.persistentDataContainer
+        // TODO: Look into why this listener is written this way instead of using Util.getHandSources()
+        val mainSource = mainHand.asSource()
+        val offSource = offHand.asSource()
         for (entry in Registry.CUSTOM_ITEMS) {
             val key = entry.key.asNameSpacedKey()
-            if (data?.has(key) == true) {
-                entry.value.executeActions(Action.FISH, player, event)
-                break
-            } else if (offHandData?.has(key) == true) {
-                entry.value.executeActions(Action.FISH, player, event)
-                break
+            when {
+                mainSource?.data?.has(key) == true -> {
+                    entry.value.executeActions(Action.FISH, player, event)
+                    break
+                }
+                offSource?.data?.has(key) == true -> {
+                    entry.value.executeActions(Action.FISH, player, event)
+                    break
+                }
             }
         }
     }
@@ -287,33 +283,31 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onPlayerElytraBoost(event: PlayerElytraBoostEvent) {
         val player = event.player
-
         val elytra = player.inventory.chestplate ?: return
-        val data: PersistentDataContainer = elytra.itemMeta?.persistentDataContainer ?: return
+        val source = elytra.asSource() ?: return
 
-        fire(data, Action.ELYTRA_BOOST, player, event)
+        fire(source, Action.ELYTRA_BOOST, player, event)
     }
 
     @AllSlots
     @EventHandler
     fun onPlayerCrouch(event: PlayerToggleSneakEvent) {
         val player = event.player
-        fire(Util.getAllEquipmentNBT(player), Action.PLAYER_CROUCH, player, event)
+        fire(player.equipmentSources(), Action.PLAYER_CROUCH, player, event)
     }
 
     @AllSlots
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerChat(event: AsyncChatEvent) {
         val player = event.player
-        val data = player.equipmentContainers()
-        fire(data, Action.ASYNC_CHAT, player, event)
+        fire(player.equipmentSources(), Action.ASYNC_CHAT, player, event)
     }
 
     @AllSlots
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun onPlayerCommandPreprocess(event: PlayerCommandPreprocessEvent) {
         val player = event.player
-        fire(player.equipmentContainers(), Action.COMMAND_PREPROCESS, player, event)
+        fire(player.equipmentSources(), Action.COMMAND_PREPROCESS, player, event)
     }
 
 
@@ -321,13 +315,13 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (!event.hasChangedPosition()) return
-        fire(Util.getAllEquipmentNBT(event.player), Action.MOVE, event.player, event)
+        fire(event.player.equipmentSources(), Action.MOVE, event.player, event, optimize = true)
     }
 
     @AllSlots
     //@EventHandler
     fun onPlayerInput(event: PlayerInputEvent) {
-        fire(Util.getAllEquipmentNBT(event.player), Action.INPUT, event.player, event)
+        fire(event.player.equipmentSources(), Action.INPUT, event.player, event, optimize = true)
     }
 
     //@EventHandler
@@ -336,55 +330,55 @@ class Listeners : ItemListener() {
         val action = Action.ENTITY_MOVE
         if (!action.canFireRightNow()) return
 
-        val container: PersistentDataContainer = event.entity.persistentDataContainer
+        val container = event.entity.persistentDataContainer
         if (container.isEmpty) return
 
-        fire(container, action, null, event)
+        fire(PdcSource.of(container), action, null, event, optimize = true)
     }
 
     @EventHandler
     fun onPlayerJump(event: PlayerJumpEvent) {
-        val data = Util.getAllEquipmentNBT(event.player)
-        fire(data, Action.JUMP, event.player, event)
+        fire(event.player.equipmentSources(), Action.JUMP, event.player, event, optimize = true)
     }
 
     @EventHandler
     fun onEntityFormBlock(event: EntityBlockFormEvent) {
-        val entity = event.entity
+        val container = event.entity.persistentDataContainer
+        if (container.isEmpty) return
 
-        val data: PersistentDataContainer = entity.persistentDataContainer
-        if (data.isEmpty) return
-
-        fire(data, Action.ENTITY_FORM_BLOCK, null, event)
+        fire(PdcSource.of(container), Action.ENTITY_FORM_BLOCK, event.entity as? Player, event)
     }
 
     @AllSlots
     @EventHandler
     fun onPlayerConsumeItem(event: PlayerItemConsumeEvent) {
-        fire(event.player.equipmentContainers(), Action.CONSUME_ITEM, event.player, event)
+        fire(event.player.equipmentSources(), Action.CONSUME_ITEM, event.player, event)
     }
 
     @AllSlots
     @EventHandler
     fun onEntityPotionEffect(event: EntityPotionEffectEvent) {
         val player = event.entity as? Player ?: return
-        fire(Util.getAllEquipmentNBT(player), Action.POTION_EFFECT, player, event)
+        fire(player.equipmentSources(), Action.POTION_EFFECT, player, event, optimize = true)
     }
 
     @AllSlots
     @EventHandler
     fun onEntityTargetLivingEntity(event: EntityTargetLivingEntityEvent) {
         val target = event.target as? Player ?: return
-        fire(event.entity.persistentDataContainer, Action.ENTITY_TARGET_PLAYER, target, event)
-        fire(target.equipmentContainers(), Action.ENTITY_TARGET_PLAYER, target, event)
+        fire(PdcSource.of(event.entity.persistentDataContainer), Action.ENTITY_TARGET_PLAYER, target, event)
+        fire(target.equipmentSources(), Action.ENTITY_TARGET_PLAYER, target, event)
     }
 
 
     @EventHandler
     fun onPlayerArmorSwap(event: PlayerArmorChangeEvent) {
-        val data = listOf(event.oldItem, event.newItem).mapNotNull { it.itemMeta?.persistentDataContainer }
+        val sources = listOfNotNull(
+            event.oldItem.asSource(),
+            event.newItem.asSource()
+        )
 
-        fire(data, Action.ARMOR_CHANGE, event.player, event)
+        fire(sources, Action.ARMOR_CHANGE, event.player, event)
     }
 
     @EventHandler
@@ -392,127 +386,127 @@ class Listeners : ItemListener() {
         val container = event.entity.persistentDataContainer
         if (container.isEmpty) return
 
-        fire(container, Action.ENTITY_TELEPORT, null, event)
+        fire(PdcSource.of(container), Action.ENTITY_TELEPORT, null, event)
     }
 
     @EventHandler
     fun onPlayerInteractAtEntity(event: PlayerInteractAtEntityEvent) {
-        fire(Util.getHandNBT(event.player), Action.PLAYER_INTERACT_AT_ENTITY, event.player, event)
+        fire(event.player.handSources(), Action.PLAYER_INTERACT_AT_ENTITY, event.player, event)
     }
 
     //@EventHandler unused
     fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
-        fire(Util.getHandNBT(event.player), Action.PLAYER_INTERACT_ENTITY, event.player, event)
+        fire(event.player.handSources(), Action.PLAYER_INTERACT_ENTITY, event.player, event)
     }
 
     @EventHandler
     fun onShearEntity(event: PlayerShearEntityEvent) {
         val player = event.player
-        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+        val source = player.inventory.itemInMainHand.asSource() ?: return
 
-        fire(data, Action.SHEAR_ENTITY, player, event)
+        fire(source, Action.SHEAR_ENTITY, player, event)
     }
 
     @EventHandler
     fun onBlockShearEntity(event: BlockShearEntityEvent) {
-        val data: PersistentDataContainer = event.tool.itemMeta?.persistentDataContainer ?: return
+        val source = event.tool.asSource() ?: return
 
-        fire(data, Action.BLOCK_SHEAR_ENTITY, null, event)
+        fire(source, Action.BLOCK_SHEAR_ENTITY, null, event)
     }
 
     @AllSlots
     @EventHandler
     fun onPlayerTeleport(event: PlayerTeleportEvent) {
-        fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_TELEPORT, event.player, event)
+        fire(event.player.equipmentSources(), Action.PLAYER_TELEPORT, event.player, event, optimize = true)
     }
 
     @AllSlots
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_QUIT, event.player, event)
+        fire(event.player.equipmentSources(), Action.PLAYER_QUIT, event.player, event, optimize = true)
     }
 
     @AllSlots
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_JOIN, event.player, event)
+        fire(event.player.equipmentSources(), Action.PLAYER_JOIN, event.player, event, optimize = true)
     }
 
     @AllSlots
     @EventHandler
     fun onPlayerPickupExp(event: PlayerPickupExperienceEvent) {
-        fire(Util.getAllEquipmentNBT(event.player), Action.PLAYER_PICKUP_EXP, event.player, event)
+        fire(event.player.equipmentSources(), Action.PLAYER_PICKUP_EXP, event.player, event)
     }
 
     // ONLY FIRES IF PERSISTENT DATA IS IN THE ITEMSTACK!!!!
     @EventHandler
     fun onEntityPickupItem(event: EntityPickupItemEvent) {
-        fire(event.item.itemStack.persistentDataContainer, Action.ENTITY_PICKUP_ITEM, null, event)
+        val source = event.item.itemStack.asSource() ?: return
+        fire(source, Action.ENTITY_PICKUP_ITEM, null, event)
     }
 
     // Called when a hopper or hopper minecart picks up a dropped item.
     @EventHandler
     fun onHopperPickupEvent(event: InventoryPickupItemEvent) {
-        fire(event.item.itemStack.persistentDataContainer, Action.HOPPER_PICKUP_ITEM, null, event)
+        val source = event.item.itemStack.asSource() ?: return
+        fire(source, Action.HOPPER_PICKUP_ITEM, null, event)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onInventoryClickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
         val cursorSlotType = event.slotType
-        if ((cursorSlotType == InventoryType.SlotType.ARMOR || cursorSlotType == InventoryType.SlotType.QUICKBAR) &&
-            ItemListener.isHardDisabledAt(event.cursor, player.location)) {
+        if ((cursorSlotType == InventoryType.SlotType.ARMOR || cursorSlotType == InventoryType.SlotType.QUICKBAR) && isHardDisabledAt(event.cursor, player.location)) {
             event.isCancelled = true
-            ItemListener.notify(player, true)
+            notify(player, true)
             return
         }
         val action = event.action
-        if ((event.isShiftClick ||
-             action == InventoryAction.HOTBAR_SWAP ||
-             action == InventoryAction.HOTBAR_MOVE_AND_READD) &&
-            ItemListener.isHardDisabledAt(event.currentItem, player.location)) {
+        if ((event.isShiftClick || action == InventoryAction.HOTBAR_SWAP) &&
+            isHardDisabledAt(event.currentItem, player.location)) {
             event.isCancelled = true
-            ItemListener.notify(player, true)
+            notify(player, true)
             return
         }
-        val data = mutableListOf<PersistentDataContainer>()
-        event.currentItem?.itemMeta?.persistentDataContainer?.let { data.add(it) }
-        event.cursor.itemMeta?.persistentDataContainer?.let { data.add(it) }
-        if (data.isEmpty()) return
-        fire(data, Action.INVENTORY_CLICK, player, event)
+        val sources = mutableListOf<PdcSource>()
+        event.currentItem.asSource()?.let(sources::add)
+        event.cursor.asSource()?.let(sources::add)
+        if (sources.isEmpty()) return
+        fire(sources, Action.INVENTORY_CLICK, player, event)
     }
 
     @AllSlots
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onInventoryOpen(event: InventoryOpenEvent) {
         val player = event.player as? Player ?: return
-        fire(player.equipmentContainers(), Action.INVENTORY_OPEN, player, event)
+        fire(player.equipmentSources(), Action.INVENTORY_OPEN, player, event)
     }
 
     @AllSlots
     //@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true) unused
     fun onInventoryClose(event: InventoryCloseEvent) {
         val player = event.player as? Player ?: return
-        fire(player.equipmentContainers(), Action.INVENTORY_CLOSE, player, event)
+        fire(player.equipmentSources(), Action.INVENTORY_CLOSE, player, event)
     }
 
     @EventHandler
     fun onPlayerFillBucket(event: PlayerBucketFillEvent) {
         val player = event.player
-        val data: PersistentDataContainer = event.itemStack?.itemMeta?.persistentDataContainer ?: return
+        val source = event.itemStack.asSource() ?: return
 
-        fire(data, Action.FILL_BUCKET, player, event)
+        fire(source, Action.FILL_BUCKET, player, event)
     }
 
     @EventHandler
     fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
         val player = event.player
-        val data = when (event.hand) {
-            EquipmentSlot.HAND -> player.inventory.itemInMainHand.itemMeta?.persistentDataContainer
-            EquipmentSlot.OFF_HAND -> player.inventory.itemInOffHand.itemMeta?.persistentDataContainer
+        val item = when (event.hand) {
+            EquipmentSlot.HAND -> player.inventory.itemInMainHand
+            EquipmentSlot.OFF_HAND -> player.inventory.itemInOffHand
             else -> return
-        } ?: return
-        fire(data, Action.EMPTY_BUCKET, player, event)
+        }
+        val source = item.asSource() ?: return
+        fire(source, Action.EMPTY_BUCKET, player, event)
     }
 
     @AllSlots
@@ -522,93 +516,91 @@ class Listeners : ItemListener() {
         val action = Action.PICKUP_ITEM
         if (!action.canFireRightNow()) return
 
-        fire(Util.getAllEquipmentNBT(player), action, player, event, true)
+        fire(player.equipmentSources(), action, player, event, true)
     }
 
     @AllSlots
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) // if you modify this event to include previous slot, items that use this need a conditional added to their logic
     fun onPlayerItemHeld(event: PlayerItemHeldEvent) {
         val player = event.player
-//        val datas = listOfNotNull(
-//            player.inventory.getItem(event.newSlot)?.itemMeta?.persistentDataContainer,
-//            player.inventory.getItem(event.previousSlot)?.itemMeta?.persistentDataContainer
+//        val sources = listOfNotNull(
+//            player.inventory.getItem(event.newSlot).asSource(),
+//            player.inventory.getItem(event.previousSlot).asSource()
 //        ).ifEmpty { return }
-        if (ItemListener.isHardDisabledAt(player.inventory.getItem(event.newSlot), player.location)) {
+        if (isHardDisabledAt(player.inventory.getItem(event.newSlot), player.location)) {
             event.isCancelled = true
-            ItemListener.notify(player, true)
+            notify(player, true)
             return
         }
-        val datas = player.equipmentContainers()
-
-        fire(datas, Action.ITEM_HELD, player, event)
+        fire(player.equipmentSources(), Action.ITEM_HELD, player, event)
     }
 
     @EventHandler
     fun onPlayerItemDamage(event: PlayerItemDamageEvent) {
         val player = event.player
-        val data: PersistentDataContainer = event.item.itemMeta?.persistentDataContainer ?: return
+        val source = event.item.asSource() ?: return
 
-        fire(data, Action.ITEM_DAMAGE, player, event)
+        fire(source, Action.ITEM_DAMAGE, player, event)
     }
 
     @EventHandler
     fun onEntityKnockbackByEntity(event: EntityKnockbackByEntityEvent) {
         val player = event.hitBy as? Player ?: return
-        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+        val source = player.inventory.itemInMainHand.asSource() ?: return
 
-        fire(data, Action.PLAYER_KNOCKBACK_ENTITY, player, event)
+        fire(source, Action.PLAYER_KNOCKBACK_ENTITY, player, event)
     }
 
     @EventHandler
     fun onItemMerge(event: ItemMergeEvent) {
         val player = event.target.thrower?.let { Bukkit.getPlayer(it) } ?: return
-        val data = event.target.persistentDataContainer
-        fire(data, Action.ITEM_MERGE, player, event)
+        // Item entity PDC, not the ItemStack's — no source item
+        fire(PdcSource.of(event.target.persistentDataContainer), Action.ITEM_MERGE, player, event)
     }
 
     @EventHandler
     fun onSmashAttack(event: EntityAttemptSmashAttackEvent) {
         val player = event.entity as? Player ?: return
-        val data: PersistentDataContainer = player.inventory.itemInMainHand.itemMeta?.persistentDataContainer ?: return
+        val source = player.inventory.itemInMainHand.asSource() ?: return
 
-        fire(data, Action.MACE_SMASH_ATTACK, player, event)
+        fire(source, Action.MACE_SMASH_ATTACK, player, event)
     }
 
     @AllSlots
     //@EventHandler Unused
     fun onPlayerResurrect(event: EntityResurrectEvent) {
         val player = event.entity as? Player ?: return
-        fire(player.equipmentContainers(), Action.PLAYER_RESURRECT, player, event)
+        fire(player.equipmentSources(), Action.PLAYER_RESURRECT, player, event)
     }
 
     @AllSlots
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onEntityExhaustion(event: EntityExhaustionEvent) {
         val player = event.entity as? Player ?: return
-        fire(Util.getAllEquipmentNBT(player), Action.ENTITY_EXHAUSTION, player, event)
+        fire(player.equipmentSources(), Action.ENTITY_EXHAUSTION, player, event, optimize = true)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPrepareCraft(event: PrepareItemCraftEvent) {
         val player = event.view.player as? Player ?: return
-        val datas = event.inventory.matrix
-            .mapNotNull { it?.itemMeta?.persistentDataContainer }
+        val sources = event.inventory.matrix
+            .mapNotNull { it.asSource() }
             .ifEmpty { return }
-        fire(datas, Action.PREPARE_CRAFT, player, event)
+        fire(sources, Action.PREPARE_CRAFT, player, event)
     }
 
     @EventHandler
     fun onEntityCompostItem(event: EntityCompostItemEvent) {
-        val data: PersistentDataContainer = event.item.itemMeta?.persistentDataContainer ?: return
-        fire(data, Action.ENTITY_COMPOST_ITEM, event.entity as? Player, event)
+        val source = event.item.asSource() ?: return
+        fire(source, Action.ENTITY_COMPOST_ITEM, event.entity as? Player, event)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onCraftItem(event: CraftItemEvent) {
         val player = event.whoClicked as? Player ?: return
-        val datas = event.inventory.matrix
-            .mapNotNull { it?.itemMeta?.persistentDataContainer }
+        val sources = event.inventory.matrix
+            .mapNotNull { it.asSource() }
             .ifEmpty { return }
-        fire(datas, Action.CRAFT_ITEM, player, event)
+        fire(sources, Action.CRAFT_ITEM, player, event)
     }
 }

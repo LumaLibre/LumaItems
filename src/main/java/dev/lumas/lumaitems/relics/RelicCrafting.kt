@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.items.astral.AstralSetFunctions
 import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
+import dev.lumas.lumaitems.util.extensions.namespacedKey
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -18,6 +19,7 @@ import org.bukkit.persistence.PersistentDataType
 object RelicCrafting {
 
     private val plugin: LumaItems = LumaItems.getInstance()
+    val RELIC_KEY = "relic-item".namespacedKey()
 
     val relicShard: ItemStack = Util.createBasicItem(
         "&#E97979&lRelic &#F7FFC9Shard",

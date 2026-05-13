@@ -9,6 +9,7 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.astral.GrubbyRelicItem
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.equipmentSources
 import kotlin.random.Random
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -24,14 +25,14 @@ class JobsListeners : ItemListener() {
     fun onJobsExpGain(event: JobsExpGainEvent) {
         val player = event.player.player ?: return
         if (this.isTreeFeller(player)) return
-        fire(Util.getAllEquipmentNBT(player), Action.JOBS_EXP_GAIN, player, event, true)
+        fire(player.equipmentSources(), Action.JOBS_EXP_GAIN, player, event, optimize = false, withContainer = true)
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     fun onJobsPrePayment(event: JobsPrePaymentEvent) {
         val player = event.player?.player ?: return
         if (!this.isTreeFeller(player)) {
-            fire(Util.getAllEquipmentNBT(player), Action.JOBS_PRE_PAYMENT, player, event, true)
+            fire(player.equipmentSources(), Action.JOBS_PRE_PAYMENT, player, event, optimize = false, withContainer = true)
         }
 
         if (Random.nextInt(20_000) > 2 || event.job.name == HUNTER_JOB || Registry.CONFIGS.getOrThrow(RelicsYml::class).disableNaturalRelicWorlds.contains(player.world.name)) return

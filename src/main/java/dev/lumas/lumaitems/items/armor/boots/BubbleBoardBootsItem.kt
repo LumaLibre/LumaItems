@@ -82,7 +82,6 @@ class BubbleBoardBootsItem : CustomItemFunctions() {
 
             if (ticksHeld >= 35 && !player.isSneaking) {
                 val vec = player.eyeLocation.direction.clone().multiply(1.5).setY(2.5)
-                println("done")
                 player.velocity = vec
 
                 task.cancel()

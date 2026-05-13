@@ -1,9 +1,11 @@
 package dev.lumas.lumaitems.util.tags;
 
 import org.bukkit.Material;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
+@ApiStatus.NonExtendable
 public interface LinkedTags {
 
     LinkedTag<Material> LOG_TO_SAPLING = LinkedTag.<Material>linked()

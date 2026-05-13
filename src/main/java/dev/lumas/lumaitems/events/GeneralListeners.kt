@@ -18,7 +18,11 @@ import dev.lumas.lumaitems.relics.RelicDisassembler
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.hasPersistentKey
+import dev.lumas.lumaitems.util.extensions.isLumaItem
+import dev.lumas.lumaitems.util.extensions.isRelic
+import dev.lumas.lumaitems.util.extensions.setRemainingHealth
 import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.willBreak
 import kotlin.random.Random
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -38,6 +42,7 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.inventory.PrepareSmithingEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.persistence.PersistentDataType
 
 // TODO: These listeners are a mess
@@ -201,6 +206,17 @@ class GeneralListeners : Listener {
         if (event.inventory.inputTemplate?.type == Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE
             && result.hasPersistentKey(PersistentDataRecord.PREVENT_NETHERITE_SMITHING_KEY)) {
             event.result = null
+        }
+    }
+
+
+    @EventHandler
+    fun onItemDamage(event: PlayerItemDamageEvent) {
+        val item = event.item
+
+        if (item.isLumaItem() && item.isRelic() && item.willBreak(event.damage)) {
+            item.setRemainingHealth(1)
+            event.isCancelled = true
         }
     }
 }

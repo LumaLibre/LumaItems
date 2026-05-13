@@ -4,6 +4,9 @@ package dev.lumas.lumaitems.util.extensions
 import com.destroystokyo.paper.MaterialTags
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.model.item.PdcSource
+import dev.lumas.lumaitems.relics.RelicCrafting
 import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -63,10 +66,22 @@ fun Material.itemStack(amount: Int = 1, editMeta: ((ItemMeta) -> Unit)? = null):
 }
 
 fun ItemStack.willBreak(test: Int): Boolean {
-    val meta = this.itemMeta as? Damageable ?: return false
+    return willBreak(test, itemMeta ?: return false)
+}
+
+fun ItemStack.willBreak(test: Int, itemMeta: ItemMeta): Boolean {
+    val meta = itemMeta as? Damageable ?: return false
     val maxDmg = if (meta.hasMaxDamage()) meta.maxDamage else type.maxDurability.toInt()
     if (maxDmg <= 0) return false
     return meta.damage + test >= maxDmg
+}
+
+fun ItemStack.getHealth(): Int {
+    val meta = itemMeta as? Damageable ?: return -1
+    val maxDmg = if (meta.hasMaxDamage()) meta.maxDamage else type.maxDurability.toInt()
+    if (maxDmg <= 0) return -1
+    val damage = if (meta.hasDamage()) meta.damage else 0
+    return maxDmg - damage
 }
 
 fun Material.isDye(): Boolean = MaterialTags.DYES.isTagged(this)
@@ -116,3 +131,15 @@ fun ItemStack.setRemainingHealth(health: Int) {
 
 fun ItemStack.isTagged(tag: Tag<Material>) =
     tag.isTagged(this.type)
+
+fun ItemStack?.asSource(): PdcSource? = this?.let(PdcSource::of)
+
+fun ItemStack.isLumaItem(): Boolean {
+    val meta = this.itemMeta ?: return false
+    return meta.persistentDataContainer.has(ItemFactory.LUMAITEM)
+}
+
+fun ItemStack.isRelic(): Boolean {
+    val meta = this.itemMeta ?: return false
+    return meta.persistentDataContainer.has(RelicCrafting.RELIC_KEY)
+}

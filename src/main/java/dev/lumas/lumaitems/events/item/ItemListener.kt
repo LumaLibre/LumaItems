@@ -5,19 +5,22 @@ import dev.lumas.lumacore.utility.Logging
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.PdcSource
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.ServiceDeterrents
 import dev.lumas.lumaitems.util.extensions.actionBar
 import io.papermc.paper.persistence.PersistentDataContainerView
 import java.util.EnumMap
 import java.util.UUID
+import java.util.WeakHashMap
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.NamespacedKey
+import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataContainer
 
-// TODO: cleanup this class & extract common code
 abstract class ItemListener : Listener {
 
     companion object {
@@ -28,6 +31,8 @@ abstract class ItemListener : Listener {
         // Loosely notify players if they're using a disabled custom item
         private val notifees: MutableSet<UUID> = mutableSetOf()
         private val reducedCalls: EnumMap<Action, Int> = EnumMap(Action::class.java)
+        private val lastBreakSound: MutableMap<UUID, Long> = WeakHashMap()
+        private const val BREAK_SOUND_COOLDOWN_MS = 1500L
 
 
         fun getDummyPlayer(): Player? {
@@ -56,76 +61,90 @@ abstract class ItemListener : Listener {
     }
 
 
-    // Paper added this, just makes it easier to look at the PDC
-    fun fire(data: PersistentDataContainerView, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem in Registry.CUSTOM_ITEMS) {
-            val item = customItem.value
-            val fireAnyways = item.fireAnyways(action)
+    /**
+     * Fires all matching custom items against a single PDC view.
+     * Accepts both [PersistentDataContainerView] and [org.bukkit.persistence.PersistentDataContainer]
+     * since the latter extends the former.
+     */
+    fun fire(
+        source: PdcSource?,
+        action: Action,
+        player: Player?,
+        event: Any,
+        optimize: Boolean = false,
+        withContainer: Boolean = false
+    ) {
 
-            if (!data.has(customItem.key.asNameSpacedKey()) && !fireAnyways) {
-                continue
+        if (!optimize && source?.isHealthTooLow() == true) {
+            if (ServiceDeterrents.applyDeterrent(source.item, player, event, action) && player != null) {
+                tryPlayBreakSound(player)
             }
+            return
+        }
 
-            if (player?.location?.let { item.isDisabled(it) } == true) {
-                item.handleDisabled(player, event)
-                return
-            }
-            item.fireViewVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) data else null)
+        for ((registryKey, item) in Registry.CUSTOM_ITEMS) {
+            if (!shouldFire(item, source?.data, registryKey.asNameSpacedKey(), action)) continue
+            if (!action.isHot && handleDisabledIfNeeded(item, player, event, action)) return
+
+            val effectivePlayer = player ?: getDummyPlayer() ?: return
+            item.fireVerbosely(action, effectivePlayer, event, if (withContainer) source?.data else null)
         }
     }
 
-    fun fire(data: PersistentDataContainer, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem in Registry.CUSTOM_ITEMS) {
-            val item = customItem.value
-            val fireAnyways = customItem.value.fireAnyways(action)
-
-            if (!data.has(customItem.key.asNameSpacedKey()) && !fireAnyways) {
-                continue
-            }
-
-            if (player?.location?.let { item.isDisabled(it) } == true && !fireAnyways) {
-                item.handleDisabled(player, event)
-                return
-            }
-
-            item.fireVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) data else null)
-        }
-    }
-
-    fun fire(data: List<PersistentDataContainer>, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (itemData: PersistentDataContainer? in data.ifEmpty { listOf(null) }) {
-            for (customItem in Registry.CUSTOM_ITEMS) {
-                val fireAnyways = customItem.value.fireAnyways(action)
-
-                if (!((itemData != null && itemData.has(customItem.key.asNameSpacedKey())) || fireAnyways)) {
-                    continue
-                }
-
-                val item = customItem.value
-                if (player?.location?.let { item.isDisabled(it) } == true && !fireAnyways) {
-                    item.handleDisabled(player, event)
-                    break
-                }
-
-                item.fireVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) itemData else null)
-            }
+    fun fire(
+        data: List<PdcSource>,
+        action: Action,
+        player: Player?,
+        event: Any,
+        optimize: Boolean = false,
+        withContainer: Boolean = false
+    ) {
+        val containers = data.ifEmpty { listOf(null) }
+        for (itemData in containers) {
+            fire(itemData, action, player, event, optimize, withContainer)
         }
     }
 
     // TODO: @FireAnyways
     fun fire(key: String, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
-        for (customItem in Registry.CUSTOM_ITEMS) {
-            if (key.equals(customItem.key.asSimpleString(), true)) {
-                val item = customItem.value
-                if (player?.location?.let { item.isDisabled(it) } == true) {
-                    item.handleDisabled(player, event)
-                    return
-                }
+        for ((registryKey, item) in Registry.CUSTOM_ITEMS) {
+            if (!key.equals(registryKey.asSimpleString(), true)) continue
+            if (handleDisabledIfNeeded(item, player, event, action)) return
 
-                item.fireVerbosely(action, player ?: getDummyPlayer() ?: return, event, if (withContainer) player?.persistentDataContainer else null)
-                break
-            }
+            val effectivePlayer = player ?: getDummyPlayer() ?: return
+            val container = if (withContainer) player?.persistentDataContainer else null
+            item.fireVerbosely(action, effectivePlayer, event, container)
+            break
         }
+    }
+
+
+    /** Whether the given item should fire for this action, considering PDC presence and fire-anyways flag. */
+    private fun shouldFire(
+        item: CustomItem,
+        data: PersistentDataContainerView?,
+        key: NamespacedKey,
+        action: Action
+    ): Boolean {
+        val hasKey = data?.has(key) == true
+        return hasKey || item.fireAnyways(action)
+    }
+
+    /**
+     * If the item is disabled at the player's location (and not flagged fire-anyways for this action),
+     * runs [CustomItem.handleDisabled] and returns true. Otherwise returns false.
+     */
+    private fun handleDisabledIfNeeded(
+        item: CustomItem,
+        player: Player?,
+        event: Any,
+        action: Action
+    ): Boolean {
+        if (player == null) return false
+        if (item.fireAnyways(action)) return false
+        if (!item.isDisabled(player.location)) return false
+        item.handleDisabled(player, event)
+        return true
     }
 
 
@@ -154,20 +173,21 @@ abstract class ItemListener : Listener {
         return false
     }
 
-    private fun CustomItem.fireVerbosely(action: Action, player: Player, event: Any, container: PersistentDataContainer? = null) {
-        try {
-            if (container == null) {
-                executeActions(action, player, event)
-            } else {
-                executeWithContainer(action, player, event, container)
-            }
-        } catch (throwable: Throwable) {
-            Logging.errorLog("An error occurred while firing custom item '${this.javaClass.simpleName}' for player ${player.name} on action $action")
-            throwable.printStackTrace()
-        }
+    private fun tryPlayBreakSound(player: Player) {
+        val now = System.currentTimeMillis()
+        val last = lastBreakSound[player.uniqueId] ?: 0L
+        if (now - last < BREAK_SOUND_COOLDOWN_MS) return
+
+        lastBreakSound[player.uniqueId] = now
+        player.playSound(player.location, Sound.ENTITY_ITEM_BREAK, 0.35f, 1.2f)
     }
 
-    private fun CustomItem.fireViewVerbosely(action: Action, player: Player, event: Any, container: PersistentDataContainerView? = null) {
+    private fun CustomItem.fireVerbosely(
+        action: Action,
+        player: Player,
+        event: Any,
+        container: PersistentDataContainerView? = null
+    ) {
         try {
             if (container == null) {
                 executeActions(action, player, event)
