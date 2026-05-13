@@ -13,6 +13,7 @@ import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.setBlockDataWithLog
 import kotlin.random.Random
 import org.bukkit.Material
+import org.bukkit.block.BlockFace
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.Action
@@ -22,8 +23,7 @@ import org.bukkit.inventory.ItemStack
 class PathmakerItem : CustomItemFunctions() {
 
     private companion object {
-        private val KEY = "pathmaker".namespacedKey()
-    }
+        private val KEY = "pathmaker".namespacedKey() }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -41,7 +41,7 @@ class PathmakerItem : CustomItemFunctions() {
                 "Only <#CDA9FF>full blocks</#CDA9FF> are used.",
                 "<red>Works on grass blocks only.",
                 "",
-                "<red>Cooldown: 3s"
+                "<red>Cooldown: 1s"
             )
             .buildPair()
     }
@@ -53,34 +53,42 @@ class PathmakerItem : CustomItemFunctions() {
 
         if (event.action != Action.RIGHT_CLICK_BLOCK || player.isOnCooldown(this) || !item.isMatchingItem(KEY)) {
             return
-        } else if (clickedBlock.type != Material.GRASS_BLOCK || !player.canBuild(clickedBlock.location)) {
+        }
+        if (clickedBlock.type != Material.GRASS_BLOCK || !player.canBuild(clickedBlock.location)) {
             return
         }
 
         event.isCancelled = true
-        player.addCooldown(this, 80)
-
+        player.addCooldown(this, 20)
 
         val sources = collectHotbarSources(player)
-        if (sources.isEmpty()) {
-            return
+        if (sources.isEmpty()) return
+
+        val facing = player.facing
+        val (dx, dz) = when (facing) {
+            BlockFace.NORTH, BlockFace.SOUTH -> Pair(1, 0)
+            BlockFace.EAST, BlockFace.WEST   -> Pair(0, 1)
+            else -> Pair(1, 0)
         }
 
-        // TODO: Should be mutated based on the face of the block clicked
-        val loc1 = clickedBlock.location.add(1.0, 0.0, 1.0)
-        val loc2 = clickedBlock.location.add(-1.0, 0.0, -1.0)
+        val loc1 = clickedBlock.location.clone().add( 1.0, 0.0,  1.0)
+        val loc2 = clickedBlock.location.clone().add(-1.0, 0.0, -1.0)
         val cuboid = Cuboid(loc1, loc2)
 
         for (target in cuboid.blockList()) {
-            if (target.type != Material.GRASS_BLOCK) {
-                continue
-            }
-
-            val source = pickRandomSource(sources)
-                ?: return // Out of sources
-
+            if (target.type != Material.GRASS_BLOCK) continue
+            val source = weightedRandomSource(sources) ?: break
             source.reduce(1)
             target.setBlockDataWithLog(player, source.material)
+        }
+
+        // 50% chance to silently steal 1-5 extra blocks from the hotbar
+        if (Random.nextBoolean()) {
+            val stolen = Random.nextInt(1, 6)
+            repeat(stolen) {
+                val source = weightedRandomSource(sources) ?: return
+                source.reduce(1)
+            }
         }
     }
 
@@ -89,16 +97,18 @@ class PathmakerItem : CustomItemFunctions() {
 
         player.inventory.hotbarContents.forEachIndexed { index, stack ->
             if (stack == null) return@forEachIndexed
-            val material = stack.type
-            if (stack.amount <= 0 || !material.isSolid) return@forEachIndexed
+            val blockType = stack.type.asBlockType() ?: return@forEachIndexed
+
+            if (stack.amount <= 0 || !blockType.isOccluding) {
+                return@forEachIndexed
+            }
             sources.add(HotbarSource(index, stack))
         }
         return sources
     }
 
-    // TODO: This is not random, misleading function name // needs to be rewritten
-    // TODO: javadoc this? when tf does this return null?
-    private fun pickRandomSource(sources: MutableList<HotbarSource>): HotbarSource? {
+    // returns null when all sources are exhausted (totalWeight == 0)
+    private fun weightedRandomSource(sources: MutableList<HotbarSource>): HotbarSource? {
         var totalWeight = 0
         for (source in sources) {
             if (source.amount > 0) {
