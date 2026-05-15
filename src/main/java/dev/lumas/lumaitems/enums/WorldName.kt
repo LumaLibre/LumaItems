@@ -13,6 +13,7 @@ enum class WorldName {
     MAIN_NETHER("main_nether"),
     MAIN_THE_END("main_the_end"),
     MAIN_SEASONS("main_seasons"),
+    MAIN_TERRALITH("main_terralith_dim_overworld"),
     RESOURCE("resource"),
     RESOURCE_NETHER("resource_nether"),
     RESOURCE_THE_END("resource_the_end"),
@@ -21,6 +22,11 @@ enum class WorldName {
     INTRODUCTION("introduction"),
     PINATA("pinata"),
     SPECIAL("special"),
+
+    // Mainly for testing/debugging
+    WORLD("world"),
+    WORLD_NETHER("world_nether"),
+    WORLD_THE_END("world_the_end"),
     ;
 
 
@@ -55,17 +61,22 @@ enum class WorldName {
     }
 
     companion object {
-        // Worlds that are normally accessible to players on Luma
-        var NORMALLY_ACCESSIBLE: Array<WorldName?> = arrayOf<WorldName?>(
+        val STANDARD_WORLDS: Array<WorldName> = arrayOf<WorldName>(
             MAIN,
             MAIN_NETHER,
             MAIN_THE_END,
             MAIN_SEASONS,
+            MAIN_TERRALITH,
             RESOURCE,
             RESOURCE_NETHER,
             RESOURCE_THE_END,
-            RESOURCE_DESERT,
-            PINATA
+            RESOURCE_DESERT
+        )
+
+        val TEST_WORLDS: Array<WorldName> = arrayOf<WorldName>(
+            WORLD,
+            WORLD_NETHER,
+            WORLD_THE_END,
         )
     }
 }

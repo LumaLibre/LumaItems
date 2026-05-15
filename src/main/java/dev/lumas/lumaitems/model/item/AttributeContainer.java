@@ -87,7 +87,7 @@ public record AttributeContainer(String key,
         private Attribute attribute;
         private AttributeModifier.Operation operation;
         private double amount;
-        private EquipmentSlotGroup slot;
+        private @Nullable EquipmentSlotGroup slot;
 
         public Builder setKey(String key) {
             this.key = key;
@@ -124,7 +124,6 @@ public record AttributeContainer(String key,
             Preconditions.checkNotNull(attribute, "Attribute must not be null");
             Preconditions.checkNotNull(operation, "Operation must not be null");
             Preconditions.checkArgument(amount != 0, "Amount must not be zero");
-            Preconditions.checkNotNull(slot, "Slot must not be null");
             return new AttributeContainer(key, attribute, operation, amount, slot);
         }
     }
