@@ -87,7 +87,7 @@ public record AttributeContainer(String key,
         private Attribute attribute;
         private AttributeModifier.Operation operation;
         private double amount;
-        private @Nullable EquipmentSlotGroup slot;
+        private @Nullable EquipmentSlotGroup slot = EquipmentSlotGroup.ANY;
 
         public Builder setKey(String key) {
             this.key = key;
@@ -117,6 +117,11 @@ public record AttributeContainer(String key,
         public Builder setSlot(EquipmentSlotGroup slot) {
             this.slot = slot;
             return this;
+        }
+
+
+        public NamespacedKey getKey() {
+            return new NamespacedKey(LumaItems.getInstance(), key);
         }
 
         public AttributeContainer build() {

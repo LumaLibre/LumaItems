@@ -1,20 +1,26 @@
 package dev.lumas.lumaitems.items.misc.scale
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.WorldName
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.util.SharedContainers
+import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
-import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.itemInMainHand
+import dev.lumas.lumaitems.util.extensions.useNewSharedScaleContainer
+import io.papermc.paper.event.entity.EntityCompostItemEvent
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
-import io.papermc.paper.event.entity.EntityCompostItemEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.player.PlayerItemHeldEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
@@ -24,6 +30,7 @@ class BigDandelionItem : CustomItemFunctions() {
 
     companion object {
         private val KEY = Util.namespacedKey("big-dandelion")
+        private const val AMT = 0.3
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -44,7 +51,7 @@ class BigDandelionItem : CustomItemFunctions() {
                 "does anything special?"
             )
             .attributeModifiers(
-                AttributeContainer.of(KEY, Attribute.SCALE, AttributeModifier.Operation.ADD_NUMBER, 0.3, EquipmentSlotGroup.ANY),
+                SharedContainers.SCALE.setOperation(AttributeModifier.Operation.ADD_NUMBER).setAmount(AMT).build(),
                 AttributeContainer.of(KEY, Attribute.JUMP_STRENGTH , AttributeModifier.Operation.ADD_NUMBER, 0.1, EquipmentSlotGroup.ANY)
             )
             .autoHat(true)
@@ -63,5 +70,19 @@ class BigDandelionItem : CustomItemFunctions() {
     override fun onEntityCompostItem(event: EntityCompostItemEvent) {
         if (!event.item.isMatchingItem(KEY)) return
         event.isCancelled = true
+    }
+
+    // TODO: Temporary VV
+
+    override fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {
+        event.newItem.useNewSharedScaleContainer(KEY, AMT)
+    }
+
+    override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
+        event.player.itemInMainHand.useNewSharedScaleContainer(KEY, AMT)
+    }
+
+    override fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {
+        player.itemInMainHand.useNewSharedScaleContainer(KEY, AMT)
     }
 }

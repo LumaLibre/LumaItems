@@ -3,7 +3,6 @@ package dev.lumas.lumaitems.util.tags;
 import org.bukkit.Keyed;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @NullMarked

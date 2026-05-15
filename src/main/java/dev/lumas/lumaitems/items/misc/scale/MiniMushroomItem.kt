@@ -6,10 +6,12 @@ import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.util.SharedContainers
 import io.papermc.paper.event.entity.EntityCompostItemEvent
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
-import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.itemInMainHand
+import dev.lumas.lumaitems.util.extensions.useNewSharedScaleContainer
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -26,7 +28,7 @@ class MiniMushroomItem : CustomItemFunctions() {
 
     private companion object {
         private const val KEY = "mini-mushroom"
-        private val MINI_POPPY = "mini-poppy".namespacedKey() // TODO: replace this with global attributes
+        private const val AMT = -0.7
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -48,7 +50,7 @@ class MiniMushroomItem : CustomItemFunctions() {
             .persistentData(KEY)
             .material(Material.RED_MUSHROOM)
             .attributeModifiers(
-                AttributeContainer.of(MINI_POPPY, Attribute.SCALE, AttributeModifier.Operation.ADD_NUMBER, -0.7, EquipmentSlotGroup.ANY),
+                SharedContainers.SCALE.setOperation(AttributeModifier.Operation.ADD_NUMBER).setAmount(AMT).build(),
                 AttributeContainer.of(KEY, Attribute.GRAVITY , AttributeModifier.Operation.ADD_NUMBER, -0.04, EquipmentSlotGroup.ANY),
                 AttributeContainer.of(KEY, Attribute.SAFE_FALL_DISTANCE, AttributeModifier.Operation.ADD_NUMBER, 6.0, EquipmentSlotGroup.ANY),
                 AttributeContainer.of(KEY, Attribute.JUMP_STRENGTH , AttributeModifier.Operation.ADD_NUMBER, 0.06, EquipmentSlotGroup.ANY),
@@ -58,18 +60,6 @@ class MiniMushroomItem : CustomItemFunctions() {
             .buildPair()
     }
 
-
-    override fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {
-        event.newItem.doModify()
-    }
-
-    override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
-        event.player.inventory.itemInMainHand.doModify()
-    }
-
-    override fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {
-        player.inventory.itemInMainHand.doModify()
-    }
 
     override fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {
         val item = event.itemInHand
@@ -83,14 +73,17 @@ class MiniMushroomItem : CustomItemFunctions() {
         event.isCancelled = true
     }
 
-    private fun ItemStack.doModify() {
-        if (true) return // TODO
-        val item = this.takeIf { it.isMatchingItem(KEY) } ?: return
-        item.editMeta { meta ->
-            if (meta.getAttributeModifiers(Attribute.SCALE)?.any { it.key == MINI_POPPY } == true) return@editMeta
+    // TODO: Temporary VV
 
-            meta.removeAttributeModifier(Attribute.SCALE)
-            meta.addAttributeModifier(Attribute.SCALE, AttributeModifier(MINI_POPPY, -0.7, AttributeModifier.Operation.ADD_NUMBER))
-        }
+    override fun onArmorChange(player: Player, event: PlayerArmorChangeEvent) {
+        event.newItem.useNewSharedScaleContainer(KEY, AMT)
+    }
+
+    override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
+        event.player.itemInMainHand.useNewSharedScaleContainer(KEY, AMT)
+    }
+
+    override fun onPlayerItemHeld(player: Player, event: PlayerItemHeldEvent) {
+        player.itemInMainHand.useNewSharedScaleContainer(KEY, AMT)
     }
 }

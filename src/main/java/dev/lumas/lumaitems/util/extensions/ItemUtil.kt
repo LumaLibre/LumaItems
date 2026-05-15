@@ -7,12 +7,16 @@ import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.PdcSource
 import dev.lumas.lumaitems.relics.RelicCrafting
+import dev.lumas.lumaitems.util.SharedContainers
 import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Tag
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.ItemMeta
@@ -142,4 +146,25 @@ fun ItemStack.isLumaItem(): Boolean {
 fun ItemStack.isRelic(): Boolean {
     val meta = this.itemMeta ?: return false
     return meta.persistentDataContainer.has(RelicCrafting.RELIC_KEY)
+}
+
+
+fun ItemStack.useNewSharedScaleContainer(takeIfMatching: String, amount: Double) {
+    useNewSharedScaleContainer(NamespacedKey(LumaItems.getInstance(), takeIfMatching), amount)
+}
+
+fun ItemStack.useNewSharedScaleContainer(takeIfMatching: NamespacedKey, amount: Double) {
+    val item = this.takeIf { it.isMatchingItem(takeIfMatching) } ?: return
+    item.editMeta { meta ->
+        if (meta.getAttributeModifiers(Attribute.SCALE)?.any { it.key == SharedContainers.SCALE.key } == true) return@editMeta
+
+        meta.removeAttributeModifier(Attribute.SCALE)
+
+        val built = SharedContainers.SCALE
+            .setAmount(amount)
+            .setOperation(AttributeModifier.Operation.ADD_NUMBER)
+            .build()
+            .modifier()
+        meta.addAttributeModifier(Attribute.SCALE, built)
+    }
 }
