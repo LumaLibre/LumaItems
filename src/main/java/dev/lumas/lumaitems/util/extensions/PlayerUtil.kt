@@ -41,7 +41,14 @@ val Player.itemInOffHand: ItemStack
     get() = inventory.itemInOffHand
 
 val PlayerInventory.hotbarContents: Array<ItemStack?>
-    get() = getHotbarContents()
+    get() {
+        val result = Array<ItemStack?>(9) { null }
+        for (i in 0..8) {
+            result[i] = getItem(i)
+        }
+        return result
+    }
+
 
 fun Player.isWearing(identifier: String): Boolean {
     return isWearing(identifier.namespacedKey())
@@ -262,15 +269,6 @@ fun Player.takeItem(itemStack: ItemStack, amount: Int): Boolean {
         return true
     }
     throw RuntimeException("Failed to remove: $couldNotRemove from $name's inventory!")
-}
-
-@JvmName("hotbar")
-fun PlayerInventory.getHotbarContents(): Array<ItemStack?> {
-    val result = Array<ItemStack?>(9) { null }
-    for (i in 0..8) {
-        result[i] = getItem(i)
-    }
-    return result
 }
 
 fun Player.send(msg: String) {

@@ -29,6 +29,12 @@ interface CustomItem : RegistryItem {
         return Random.Default
     }
 
+    val random: Random
+        get() = Random.Default
+
+    val instance: LumaItems
+        get() = LumaItems.getInstance()
+
     fun <T> async(block: () -> T): ScheduledTask {
         return Executors.async { block() }
     }

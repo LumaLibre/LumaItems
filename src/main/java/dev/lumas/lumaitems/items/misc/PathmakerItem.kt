@@ -59,17 +59,10 @@ class PathmakerItem : CustomItemFunctions() {
         }
 
         event.isCancelled = true
-        player.addCooldown(this, 20)
+        player.addCooldown(this, 30)
 
         val sources = collectHotbarSources(player)
         if (sources.isEmpty()) return
-
-        val facing = player.facing
-        val (dx, dz) = when (facing) {
-            BlockFace.NORTH, BlockFace.SOUTH -> Pair(1, 0)
-            BlockFace.EAST, BlockFace.WEST   -> Pair(0, 1)
-            else -> Pair(1, 0)
-        }
 
         val loc1 = clickedBlock.location.clone().add( 1.0, 0.0,  1.0)
         val loc2 = clickedBlock.location.clone().add(-1.0, 0.0, -1.0)
@@ -83,8 +76,8 @@ class PathmakerItem : CustomItemFunctions() {
         }
 
         // 50% chance to silently steal 1-5 extra blocks from the hotbar
-        if (Random.nextBoolean()) {
-            val stolen = Random.nextInt(1, 6)
+        if (random.nextBoolean()) {
+            val stolen = random.nextInt(1, 6)
             repeat(stolen) {
                 val source = weightedRandomSource(sources) ?: return
                 source.reduce(1)
