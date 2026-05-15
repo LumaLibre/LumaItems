@@ -34,7 +34,7 @@ class BunnyBarillasItem : CustomItemFunctions() {
                 Enchantment.UNBREAKING to 10,
                 Enchantment.MENDING to 1
             )
-            .tier(Tier.EASTER_2025)
+            .tier(Tier.WONDERLAND_2026)
             .buildPair()
     }
 

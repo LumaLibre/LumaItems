@@ -30,7 +30,7 @@ class SeagullFeatherItem : CustomItem {
                 AttributeContainer.of("seagull-feather", Attribute.MOVEMENT_SPEED, AttributeModifier.Operation.ADD_NUMBER, 0.025, EquipmentSlotGroup.ANY)
             )
             .persistentData("seagull-feather")
-            .tier(Tier.VALENTIDE_2026)
+            .tier(Tier.WONDERLAND_2026)
             .buildPair()
     }
 

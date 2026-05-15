@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.misc
+package dev.lumas.lumaitems.items.tools.shears
 
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
@@ -6,17 +6,16 @@ import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.canBuild
+import dev.lumas.lumaitems.util.extensions.dustOptions
 import dev.lumas.lumaitems.util.extensions.hotbarContents
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.setBlockDataWithLog
 import kotlin.random.Random
-import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
-import org.bukkit.Particle.DustOptions
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.Action
@@ -27,15 +26,17 @@ class PathweaverItem : CustomItemFunctions() {
 
     private companion object {
         private val KEY = "pathweaver".namespacedKey()
+        private val RED_DUST = "#FF9595".dustOptions()
+        private val GREEN_DUST = "#CEFACF".dustOptions()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.builder()
+        return ItemFactory.Companion.builder()
             .name("<b><gradient:#948D27:#CD5278:#EC9A31>Pathweaver</gradient></b>")
             .material(Material.SHEARS)
             .persistentData(KEY)
             .tier(Tier.WONDERLAND_2026)
-            .vanillaEnchants(Enchantment.UNBREAKING to 1)
+            .vanillaEnchants(Enchantment.UNBREAKING to 3, Enchantment.MENDING to 1)
             .lore(
                 "<#CD5278>Right-click</#CD5278> grass to",
                 "replace a <#CD5278>3x1</#CD5278> area",
@@ -45,7 +46,7 @@ class PathweaverItem : CustomItemFunctions() {
                 "But beware, it may <#CD5278>steal</#CD5278>",
                 "some blocks...",
                 "",
-                "<red>Cooldown: 1s"
+                "<red>Cooldown: 1.5s"
             )
             .buildPair()
     }
@@ -67,7 +68,7 @@ class PathweaverItem : CustomItemFunctions() {
         val sources = collectHotbarSources(player)
 
         if (sources.isEmpty()) {
-            spawnDust(clickedBlock.location, Color.RED)
+            spawnDust(clickedBlock.location, RED_DUST)
             return
         }
 
@@ -78,17 +79,19 @@ class PathweaverItem : CustomItemFunctions() {
         for (target in cuboid.blockList()) {
             if (target.type != Material.GRASS_BLOCK) continue
             val source = weightedRandomSource(sources) ?: run {
-                spawnDust(target.location, Color.RED)
+                spawnDust(target.location, RED_DUST)
                 return
             }
             source.reduce(1)
             target.setBlockDataWithLog(player, source.material)
-            spawnDust(target.location, Color.BLUE)
+            spawnDust(target.location, GREEN_DUST)
         }
 
-        // 50% chance to silently steal 1-5 extra blocks from the hotbar
+        item.damage(7, player)
+
+        // 50% chance to silently steal 1-3 extra blocks from the hotbar
         if (random.nextBoolean()) {
-            val stolen = random.nextInt(1, 6)
+            val stolen = random.nextInt(1, 4)
             repeat(stolen) {
                 val source = weightedRandomSource(sources) ?: return
                 source.reduce(1)
@@ -117,7 +120,7 @@ class PathweaverItem : CustomItemFunctions() {
         }
         if (totalWeight <= 0) return null
 
-        var roll = Random.nextInt(totalWeight)
+        var roll = Random.Default.nextInt(totalWeight)
         for (source in sources) {
             if (source.amount <= 0) continue
             roll -= source.amount
@@ -140,14 +143,7 @@ class PathweaverItem : CustomItemFunctions() {
         }
     }
 
-    private fun spawnDust(location: Location, color: Color) {
-        location.world?.spawnParticle(
-            Particle.DUST,
-            location.clone().add(0.5, 1.0, 0.5),
-            5,
-            0.2, 0.2, 0.2,
-            0.0,
-            DustOptions(color, 1.0f)
-        )
+    private fun spawnDust(location: Location, dustOptions: Particle.DustOptions) {
+        location.world?.spawnParticle(Particle.DUST, location.clone().add(0.5, 1.0, 0.5), 5, 0.2, 0.2, 0.2, 0.0, dustOptions)
     }
 }
