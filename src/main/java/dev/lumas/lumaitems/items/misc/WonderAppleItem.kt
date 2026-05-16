@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-@Disable(standard = true, vanilla = true, invert = true)
+@Disable(standard = true, vanilla = true, invert = true, hard = true)
 class WonderAppleItem : CustomItemFunctions() {
 
     private companion object {
