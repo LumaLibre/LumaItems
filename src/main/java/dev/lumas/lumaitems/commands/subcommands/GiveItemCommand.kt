@@ -28,6 +28,7 @@ import org.bukkit.entity.Player
 class GiveItemCommand : SubCommand {
 
     override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
+        if (args.isEmpty()) return false
         val item = if (args[0] != "all") {
             ItemManager.getItemByName(args[0]) ?: ItemManager.getItemByKey(args[0]) ?: return false
         } else {
@@ -50,10 +51,17 @@ class GiveItemCommand : SubCommand {
 
 
         if (item != null) {
-            Util.giveItem(player, item.asQuantity(amount))
+            val maxStack = item.maxStackSize.coerceAtLeast(1)
+            var remaining = amount
+            while (remaining > 0) {
+                val give = remaining.coerceAtMost(maxStack)
+                Util.giveItem(player, item.asQuantity(give))
+                remaining -= give
+            }
             if (!args.contains("-silent")) {
                 Text.msg(player, item.itemMeta?.displayName()?.let {
-                    "<reset>You have been given</reset> <gold>${amount}x</gold> ".asComponent().append(it) } ?: "???".asComponent())
+                    "<reset>You have been given</reset> <gold>${amount}x</gold> ".asComponent().append(it)
+                } ?: "???".asComponent())
             }
         } else {
             for (customItem in ItemManager.getAllItems()) {

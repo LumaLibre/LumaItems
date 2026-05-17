@@ -133,6 +133,18 @@ fun ItemStack.setRemainingHealth(health: Int) {
     }
 }
 
+fun ItemStack.addHealth(health: Int) {
+    val meta = this.itemMeta as? Damageable ?: return
+    val maxDmg = if (meta.hasMaxDamage()) meta.maxDamage else type.maxDurability.toInt()
+    if (maxDmg <= 0) return
+    val newDamage = (meta.damage - health).coerceAtLeast(0)
+    if (meta.damage != newDamage) {
+        meta.damage = newDamage
+        this.itemMeta = meta
+    }
+}
+
+
 fun ItemStack.isTagged(tag: Tag<Material>) =
     tag.isTagged(this.type)
 
