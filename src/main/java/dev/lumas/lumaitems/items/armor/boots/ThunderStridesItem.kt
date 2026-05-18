@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.armor.boots
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.AbilityUtil.isOnGround
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
@@ -16,7 +16,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
@@ -88,13 +87,14 @@ class ThunderStridesItem : CustomItem {
         QuickTasks.addCooldown(this, player, 320L)
     }
 
+    @Suppress("DEPRECATION")
     private fun slideAbility(player: Player) {
         if (player.hasMetadata("thunderstrides")) return
 
         player.velocity = directions[player.uniqueId]?.multiply(7.5)?.setY(-0.1) ?: return
         player.world.spawnParticle(Particle.WAX_OFF, player.location, 6, 0.5, 0.5, 0.5, 0.3)
 
-        player.setMetadata("thunderstrides", FixedMetadataValue(instance(), true))
+        player.setMetadata("thunderstrides", org.bukkit.metadata.FixedMetadataValue(instance(), true))
 
         player.syncDelayed(17) {
             player.removeMetadata("thunderstrides", instance())

@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.commands.subcommands
 
-import dev.lumas.lumacore.manager.commands.CommandInfo
-import dev.lumas.lumacore.manager.modules.AutoRegister
-import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.CommandMeta
+import dev.lumas.core.annotation.Register
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
@@ -10,8 +10,8 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.send
 import org.bukkit.command.CommandSender
 
-@AutoRegister(RegisterType.SUBCOMMAND)
-@CommandInfo(
+@Register(Autowire.SUBCOMMAND)
+@CommandMeta(
     name = "reload",
     description = "Reloads all okaeri config files.",
     usage = "/<command> reload",

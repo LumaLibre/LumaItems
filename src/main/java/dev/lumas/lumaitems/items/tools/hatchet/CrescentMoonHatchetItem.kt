@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.items.tools.hatchet
 
 import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import org.bukkit.Material
@@ -12,7 +12,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 
 @Ignore // This disaster should never be used again
 class CrescentMoonHatchetItem : CustomItem {
@@ -41,13 +40,14 @@ class CrescentMoonHatchetItem : CustomItem {
         return true
     }
 
+    @Suppress("DEPRECATION")
     private fun treeFeller(block: Block, player: Player) {
         if (!block.type.toString().contains("LOG") || player.hasMetadata("BlockTreeFeller")) return
         val cuboid = Cuboid(
             block.location.add(-1.0, -5.0, -1.0),
             block.location.add(1.0, 25.0, 1.0)
         )
-        player.setMetadata("BlockTreeFeller", FixedMetadataValue(instance(), true))
+        player.setMetadata("BlockTreeFeller", org.bukkit.metadata.FixedMetadataValue(instance(), true))
         for (i in 0 until cuboid.blockList().size) {
             val b: Block = cuboid.blockList().get(i)
             if (b.type.toString().contains("LOG")) {

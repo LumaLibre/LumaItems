@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.events.item
 
 import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
-import dev.lumas.lumacore.manager.modules.AutoRegister
-import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.Register
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.astral.GrubbyRelicItem
@@ -14,7 +14,7 @@ import kotlin.random.Random
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 
-@AutoRegister(RegisterType.LISTENER, requires = "Jobs")
+@Register(Autowire.LISTENER, requires = "Jobs")
 class JobsListeners : ItemListener() {
 
     companion object {

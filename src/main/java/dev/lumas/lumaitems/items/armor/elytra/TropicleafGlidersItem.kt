@@ -47,7 +47,7 @@ class TropicleafGlidersItem : CustomItemFunctions() {
 
 
         // Tick durability
-        val item = player.equipment?.chestplate ?: return
+        val item = player.equipment.chestplate
         item.damage(1, player)
     }
 }

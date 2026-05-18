@@ -56,7 +56,7 @@ class RibbonSocksItem : CustomItemFunctions() {
 
     override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
         if (player.isItemInSlot(KEY, EquipmentSlot.FEET) && DAMAGE_TYPE.contains(event.cause)) {
-            val item = player.equipment?.boots ?: return
+            val item = player.equipment.boots
             if (!item.willBreak(1)) {
                 item.damage(event.damage.div(3.0).toInt(), player)
                 event.isCancelled = true

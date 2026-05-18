@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.hatchet
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.Random
 import org.bukkit.Material
@@ -10,12 +10,10 @@ import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityCategory
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
@@ -38,7 +36,7 @@ class ViperHatchetItem : CustomItem {
 
         when (type) {
             Action.ENTITY_DAMAGE -> {
-                entityDamageEvent?.damage = viper(entityDamageEvent!!.entity, entityDamageEvent.damage, player)
+                entityDamageEvent?.damage = viper(entityDamageEvent.entity, entityDamageEvent.damage, player)
             }
             else -> return false
         }
@@ -48,8 +46,9 @@ class ViperHatchetItem : CustomItem {
 
     private fun viper(e: Entity, damage: Double, player: Player): Double {
         if (e !is LivingEntity) return damage
-        if (e.category == EntityCategory.UNDEAD && !e.hasMetadata("viper")) {
-            e.setMetadata("viper", FixedMetadataValue(instance(), true))
+        if (/*e.category == EntityCategory.UNDEAD &&*/ !e.hasMetadata("viper")) {
+            @Suppress("DEPRECATION")
+            e.setMetadata("viper", org.bukkit.metadata.FixedMetadataValue(instance(), true))
 
             var count = 0
             e.syncTimer(0, 15) {

@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.items.misc.magical
 
 import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
@@ -20,7 +20,6 @@ import org.bukkit.entity.Snowball
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -115,12 +114,13 @@ class SummertideShellItem : CustomItem {
         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 4, false, false, false))
     }
 
+    @Suppress("DEPRECATION")
     private fun spellAbility(player: Player) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
             Text.msg(player, "You are on cooldown for this item.")
             return
         }
-        AbilityUtil.spawnSpell(player, Particle.ENTITY_EFFECT, ID, 120L).setMetadata("spell-ability", FixedMetadataValue(instance(), true))
+        AbilityUtil.spawnSpell(player, Particle.ENTITY_EFFECT, ID, 120L).setMetadata("spell-ability", org.bukkit.metadata.FixedMetadataValue(instance(), true))
     }
 
     private fun spellAbilityLand(player: Player, entity: LivingEntity) {
@@ -131,12 +131,13 @@ class SummertideShellItem : CustomItem {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun nourishAbility(player: Player) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
             Text.msg(player, "You are on cooldown for this item.")
             return
         }
-        AbilityUtil.spawnSpell(player, Particle.CRIMSON_SPORE, ID, 120L).setMetadata("nourish-ability", FixedMetadataValue(instance(), true))
+        AbilityUtil.spawnSpell(player, Particle.CRIMSON_SPORE, ID, 120L).setMetadata("nourish-ability", org.bukkit.metadata.FixedMetadataValue(instance(), true))
     }
 
     private fun nourishAbilityLand(player: Player, entity: LivingEntity) {

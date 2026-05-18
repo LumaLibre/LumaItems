@@ -1,15 +1,15 @@
 package dev.lumas.lumaitems.commands
 
-import dev.lumas.lumacore.manager.commands.AbstractCommand
-import dev.lumas.lumacore.manager.commands.CommandInfo
-import dev.lumas.lumacore.manager.modules.AutoRegister
-import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.CommandMeta
+import dev.lumas.core.annotation.Register
+import dev.lumas.core.model.command.AbstractCommand
 import dev.lumas.lumaitems.guis.AstralUpgradeGui
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-@AutoRegister(RegisterType.COMMAND)
-@CommandInfo(
+@Register(Autowire.COMMAND)
+@CommandMeta(
     name = "upgrade",
     description = "Open the Astral upgrade gui",
     usage = "/<command>",

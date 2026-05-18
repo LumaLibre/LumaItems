@@ -88,7 +88,7 @@ fun ItemStack.getHealth(): Int {
     return maxDmg - damage
 }
 
-fun Material.isDye(): Boolean = MaterialTags.DYES.isTagged(this)
+fun Material.isDye(): Boolean = Tag.ITEMS_DYES.isTagged(this)
 
 fun Material.toBundleMaterial(): Material? {
     if (!isDye()) return null

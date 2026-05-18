@@ -2,8 +2,8 @@ package dev.lumas.lumaitems.items.misc.magical
 
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
@@ -25,7 +25,6 @@ import org.bukkit.entity.Snowball
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 
@@ -118,6 +117,7 @@ class SweetBluetGemstoneItem : CustomItem {
     }
 
 
+    @Suppress("DEPRECATION")
     private fun magicalDownFall(player: Player) {//todo;rem
         if (activeSnowballs.contains(player.uniqueId)) return
         val targetBlock = player.getTargetBlockExact(170) ?: return
@@ -131,7 +131,7 @@ class SweetBluetGemstoneItem : CustomItem {
         val vector: Vector = BukkitVectors.direction(snowball.location, targetBlock.location)
 
         snowball.velocity = vector.multiply(0.1).normalize()
-        snowball.setMetadata("MAGIC_DOWNFALL", FixedMetadataValue(plugin, "MAGIC_DOWNFALL"))
+        snowball.setMetadata("MAGIC_DOWNFALL", org.bukkit.metadata.FixedMetadataValue(plugin, "MAGIC_DOWNFALL"))
         snowball.setGravity(false)
         snowball.shooter = player
         snowball.persistentDataContainer.set(NamespacedKey(plugin, "sweetbluetgemstone"), PersistentDataType.SHORT, 1)
@@ -167,6 +167,7 @@ class SweetBluetGemstoneItem : CustomItem {
     }
 
 
+    @Suppress("DEPRECATION")
     private fun magicGlacierExplosion(player: Player) {
         if (cooldownGlacier.contains(player.uniqueId)) {
             return
@@ -181,7 +182,7 @@ class SweetBluetGemstoneItem : CustomItem {
         snowball.velocity = player.location.direction.multiply(0.16).normalize()
         snowball.setGravity(false)
         snowball.persistentDataContainer.set(NamespacedKey(plugin, "sweetbluetgemstone"), PersistentDataType.SHORT, 1)
-        snowball.setMetadata("MAGIC_EXPLOSION", FixedMetadataValue(plugin, "MAGIC_EXPLOSION"))
+        snowball.setMetadata("MAGIC_EXPLOSION", org.bukkit.metadata.FixedMetadataValue(plugin, "MAGIC_EXPLOSION"))
         snowball.shooter = player
 
         cooldownGlacier.add(player.uniqueId)

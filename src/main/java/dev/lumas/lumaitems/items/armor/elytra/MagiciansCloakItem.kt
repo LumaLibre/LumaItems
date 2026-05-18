@@ -80,7 +80,7 @@ class MagiciansCloakItem : CustomItemFunctions() {
     }
 
     private fun appendCloakDamage(player: Player, amt: Short) {
-        val item = player.equipment?.chestplate ?: return
+        val item = player.equipment.chestplate
         val meta = item.itemMeta ?: return
 
         val currentDamage = meta.persistentDataContainer.get(KEY, PersistentDataType.SHORT) ?: 0
@@ -91,7 +91,7 @@ class MagiciansCloakItem : CustomItemFunctions() {
     }
 
     private fun updateCloakDamage(player: Player, amt: Short) {
-        val item = player.equipment?.chestplate ?: return
+        val item = player.equipment.chestplate
         val meta = item.itemMeta ?: return
 
         meta.persistentDataContainer.set(KEY, PersistentDataType.SHORT, amt)
@@ -99,7 +99,7 @@ class MagiciansCloakItem : CustomItemFunctions() {
     }
 
     private fun getTotalDamage(player: Player): Short {
-        val item = player.equipment?.chestplate ?: return 0
+        val item = player.equipment.chestplate
         val meta = item.itemMeta ?: return 0
         return meta.persistentDataContainer.get(KEY, PersistentDataType.SHORT) ?: 0
     }

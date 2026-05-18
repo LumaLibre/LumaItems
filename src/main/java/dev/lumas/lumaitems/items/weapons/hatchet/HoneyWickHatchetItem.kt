@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.asComponent
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable
 import io.papermc.paper.datacomponent.item.FoodProperties
@@ -82,7 +83,7 @@ class HoneyWickHatchetItem : CustomItemFunctions() {
         val list: MutableList<Entity> = mutableListOf()
         for (i in 0 until rand) {
             list.add(target.world.dropItemNaturally(target.boundingBox.center.toLocation(target.world), dropItem.clone().apply {
-                editMeta { it.setDisplayName(random().nextInt(50).toString()) } // prevent stacking
+                editMeta { it.displayName(random().nextInt(50).toString().asComponent()) } // prevent stacking
             }))
         }
         target.world.playSound(target.location, Sound.BLOCK_HONEY_BLOCK_HIT, 1.0f, 1.0f)

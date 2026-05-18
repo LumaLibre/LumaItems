@@ -48,6 +48,7 @@ class MagmaticShovelItem : CustomItem {
     private fun heatingUp(blockBroken: Block, drops: Collection<ItemStack>) {
         if (blockBroken.type != Material.SAND || blockBroken.type != Material.RED_SAND) return
         drops.forEach(Consumer { drop: ItemStack ->
+            @Suppress("DEPRECATION")
             if (drop.type == Material.SAND || drop.type == Material.RED_SAND) drop.setType(
                 Material.GLASS
             )

@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import java.util.function.Consumer
@@ -20,7 +20,6 @@ import org.bukkit.entity.Projectile
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 
 class PumpkinLauncherItem : CustomItem {
@@ -60,7 +59,8 @@ class PumpkinLauncherItem : CustomItem {
             event.isCancelled = true
             return
         }
-        player.setMetadata("pumpkinLauncher", FixedMetadataValue(instance(), true))
+        @Suppress("DEPRECATION")
+        player.setMetadata("pumpkinLauncher", org.bukkit.metadata.FixedMetadataValue(instance(), true))
 
         val armorStand: ArmorStand = projectile.world.spawnEntity(projectile.location, EntityType.ARMOR_STAND) as ArmorStand
         armorStand.equipment.setHelmet(ItemStack(Material.JACK_O_LANTERN));

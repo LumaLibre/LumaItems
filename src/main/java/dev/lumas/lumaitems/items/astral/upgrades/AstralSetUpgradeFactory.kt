@@ -69,6 +69,7 @@ class AstralSetUpgradeFactory (val item: ItemStack) {
             ToolType.SWORD, ToolType.PICKAXE, ToolType.AXE, ToolType.SHOVEL, ToolType.HOE
         )
 
+        @Suppress("DEPRECATION")
         fun upgradeAstralItem(item: ItemStack, upgradeTier: WrappedAstralUpgradeTier) {
             val genericMCToolType = ToolType.getToolType(item)
 

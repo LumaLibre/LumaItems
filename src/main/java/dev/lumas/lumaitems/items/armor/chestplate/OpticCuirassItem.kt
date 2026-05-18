@@ -41,6 +41,7 @@ class OpticCuirassItem : CustomItem {
         return true
     }
 
+    @Suppress("DEPRECATION")
     private fun swapArmor(opticCuirass: ItemStack, player: Player) {
         when (opticCuirass.type) {
             Material.NETHERITE_CHESTPLATE -> opticCuirass.type = Material.NETHERITE_LEGGINGS

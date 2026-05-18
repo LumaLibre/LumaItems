@@ -3,10 +3,8 @@ package dev.lumas.lumaitems.events.item
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.equipmentContainers
-import dev.lumas.lumaitems.util.extensions.equipmentSources
 import dev.lumas.lumaitems.util.extensions.sync
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.Bukkit

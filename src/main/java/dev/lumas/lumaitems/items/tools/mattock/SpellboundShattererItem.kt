@@ -3,8 +3,8 @@ package dev.lumas.lumaitems.items.tools.mattock
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.WorldName
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.shapes.Cuboid
 import dev.lumas.lumaitems.util.tags.Kind
 import java.util.Random
@@ -18,7 +18,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 
 @Disable(WorldName.EVENT_NEW)
 class SpellboundShattererItem : CustomItem {
@@ -58,6 +57,7 @@ class SpellboundShattererItem : CustomItem {
         return true
     }
 
+    @Suppress("DEPRECATION")
     private fun shatterNearbyBlocks(block: Block, player: Player) {
         if (player.hasMetadata("shattering")) return // Prevents infinite recursion
 
@@ -68,7 +68,7 @@ class SpellboundShattererItem : CustomItem {
         block.world.playSound(block.location, Sound.ENTITY_WITCH_AMBIENT, 0.5f, 1f)
         block.world.playSound(block.location, Sound.ENTITY_GENERIC_EXPLODE, 0.2f, 1f)
 
-        player.setMetadata("shattering", FixedMetadataValue(instance(), true))
+        player.setMetadata("shattering", org.bukkit.metadata.FixedMetadataValue(instance(), true))
         for (b in cuboid.blockList()) {
             if (Kind.BLACKLIST.isTagged(b.type)) continue
 

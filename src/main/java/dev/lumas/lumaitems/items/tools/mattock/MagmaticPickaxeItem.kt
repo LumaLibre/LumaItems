@@ -54,6 +54,7 @@ class MagmaticPickaxeItem : CustomItem {
         return true
     }
 
+    @Suppress("DEPRECATION")
     private fun heatingUp(blockBroken: Block, drops: Collection<ItemStack>) {
         if (!smeltOreTypes.contains(blockBroken.type)) return
         drops.forEach(Consumer { drop: ItemStack ->

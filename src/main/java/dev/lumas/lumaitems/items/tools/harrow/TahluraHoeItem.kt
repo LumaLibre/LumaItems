@@ -1,18 +1,18 @@
 package dev.lumas.lumaitems.items.tools.harrow
 
 import dev.lumas.lumaitems.LumaItems
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.sync
-import dev.lumas.lumaitems.util.Tier
 import java.awt.Color
 import java.util.UUID
 import kotlin.random.Random
@@ -30,7 +30,6 @@ import org.bukkit.entity.Snowball
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 
 
@@ -117,9 +116,10 @@ class TahluraHoeItem : CustomItemFunctions() {
         raincloud?.growAgeableBlocks(snowball.location)
     }
 
+    @Suppress("DEPRECATION")
     private fun rainCloudSeed(player: Player) {
         val snowball = player.launchProjectile(Snowball::class.java)
-        snowball.setMetadata(ACTIVATOR, FixedMetadataValue(LumaItems.getInstance(), true))
+        snowball.setMetadata(ACTIVATOR, org.bukkit.metadata.FixedMetadataValue(LumaItems.getInstance(), true))
         Util.setPersistentKey(snowball, KEY, PersistentDataType.SHORT, 1)
         snowball.velocity = snowball.velocity.multiply(0.35)
         snowball.isPersistent = false

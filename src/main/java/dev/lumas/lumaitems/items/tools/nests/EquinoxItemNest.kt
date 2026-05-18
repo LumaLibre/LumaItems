@@ -1,22 +1,21 @@
 package dev.lumas.lumaitems.items.tools.nests
 
-import com.destroystokyo.paper.MaterialTags
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
+import dev.lumas.lumaitems.util.extensions.canBuild
 import dev.lumas.lumaitems.util.extensions.random
 import dev.lumas.lumaitems.util.extensions.setAirWithLog
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
-import dev.lumas.lumaitems.util.Tier
-import dev.lumas.lumaitems.util.extensions.canBuild
 import java.awt.Color
 import kotlin.random.Random
 import org.bukkit.Location
@@ -203,7 +202,7 @@ abstract class EquinoxItemNest : CustomItemFunctions() {
                 if (seed) {
                     Util.setPersistentKey(ball, ACTIVATOR_KEY, PersistentDataType.BOOLEAN, true)
                 } else {
-                    ball.item = ItemStack(MaterialTags.DYES.random())
+                    ball.item = ItemStack(Tag.ITEMS_DYES.random())
                 }
 
                 Util.setPersistentKey(ball, key, PersistentDataType.SHORT, 1)

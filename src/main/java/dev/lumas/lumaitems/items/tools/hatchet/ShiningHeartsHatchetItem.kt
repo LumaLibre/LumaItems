@@ -39,6 +39,7 @@ class ShiningHeartsHatchetItem : CustomItem {
         return Pair("shiningheartshatchet", item.createItem())
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.BREAK_BLOCK -> {

@@ -1,13 +1,14 @@
 package dev.lumas.lumaitems.items.misc.magical
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import kotlin.random.Random
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.Registry
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
@@ -18,7 +19,6 @@ import org.bukkit.entity.TNTPrimed
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
 
 class ParallelParadigmWandItem : CustomItem {
 
@@ -84,7 +84,7 @@ class ParallelParadigmWandItem : CustomItem {
             entity.world.spawnParticle(Particle.WITCH, entity.location, 1, 0.3, 0.3, 0.3, 0.2)
         }
         entity.world.playSound(entity.location, Sound.ITEM_BOTTLE_FILL, 1f, 0.9f)
-        entity.addPotionEffect(PotionEffect(PotionEffectType.values().random(), 100, 1, false, true, false))
+        entity.addPotionEffect(PotionEffect(Registry.MOB_EFFECT.toList().random(), 100, 1, false, true, false))
     }
 
     private fun tntEntity(entity: LivingEntity) { // TODO: fake tnt?

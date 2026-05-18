@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.model.item
 
 import com.iridium.iridiumcolorapi.IridiumColorAPI
-import dev.lumas.lumacore.utility.ContextLogger
+import dev.lumas.core.util.ContextLogger
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.RomanNumeral
 import dev.lumas.lumaitems.util.Tier

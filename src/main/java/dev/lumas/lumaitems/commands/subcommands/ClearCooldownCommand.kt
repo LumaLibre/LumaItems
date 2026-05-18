@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.commands.subcommands
 
-import dev.lumas.lumacore.manager.commands.CommandInfo
-import dev.lumas.lumacore.manager.modules.AutoRegister
-import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.CommandMeta
+import dev.lumas.core.annotation.Register
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
@@ -12,8 +12,8 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-@AutoRegister(RegisterType.SUBCOMMAND)
-@CommandInfo(
+@Register(Autowire.SUBCOMMAND)
+@CommandMeta(
     name = "clearcooldown",
     description = "Clear cooldowns for a player",
     usage = "/<command> clearcooldown <player!>",

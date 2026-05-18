@@ -79,19 +79,19 @@ class RelicCreator (
         val numOfEnchants = Random.nextInt(1 + (algorithmWeight - 3).coerceAtMost(1), algorithmWeight)
 
         for (i in 0..numOfEnchants) {
-            var enchantment = Enchantment.values().random()
+            var enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).toList().random()
             while (enchantments.keys.contains(enchantment) || blackListedEnchants.contains(enchantment)) {
                 enchantment = if (forcedMaxEnchantLevel > 4 && Random.nextInt(100) < 40) {
                     compatibleEnchants.random()
                 } else {
-                    Enchantment.values().random()
+                    RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).toList().random()
                 }
             }
 
             var containsMendingAndSilk = enchantments.keys.contains(Enchantment.MENDING) && enchantment == Enchantment.SILK_TOUCH || enchantments.keys.contains(Enchantment.SILK_TOUCH) && enchantment == Enchantment.MENDING
 
             while (containsMendingAndSilk) {
-                enchantment = Enchantment.values().random()
+                enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).toList().random()
                 containsMendingAndSilk = enchantments.keys.contains(Enchantment.MENDING) && enchantment == Enchantment.SILK_TOUCH || enchantments.keys.contains(Enchantment.SILK_TOUCH) && enchantment == Enchantment.MENDING
             }
             // need to give higher numbers less of a likelyhood to be chosen

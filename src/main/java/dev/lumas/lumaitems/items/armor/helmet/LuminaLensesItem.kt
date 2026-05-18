@@ -1,13 +1,10 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Util
 import java.util.UUID
-import net.md_5.bungee.api.ChatMessageType
-import net.md_5.bungee.api.chat.TextComponent
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
@@ -44,7 +41,7 @@ class LuminaLensesItem : CustomItem {
             }
 
             Action.RIGHT_CLICK -> {
-                batteryCharge(player.inventory.helmet!!, player.inventory.itemInMainHand, player)
+                batteryCharge(player.inventory.helmet, player.inventory.itemInMainHand, player)
             }
             else -> return false
         }
@@ -53,20 +50,20 @@ class LuminaLensesItem : CustomItem {
 
 
     fun tickPlayer(player: Player): Boolean {
-        val helmet = player.inventory.helmet ?: return false
+        val helmet = player.inventory.helmet
         val meta = helmet.itemMeta ?: return false
         val currentCharge = meta.persistentDataContainer.get(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) ?: return false
         if (currentCharge <= 0) return false
-        ticker.set(player.uniqueId, ticker.get(player.uniqueId)?.plus(1) ?: 0)
+        ticker[player.uniqueId] = ticker[player.uniqueId]?.plus(1) ?: 0
 
-        if (ticker.get(player.uniqueId)!! >= 30) {
-            ticker.set(player.uniqueId, 0)
+        if (ticker[player.uniqueId]!! >= 30) {
+            ticker[player.uniqueId] = 0
             deductBatteryCharges(helmet)
         }
         return true
     }
 
-
+    @Suppress("DEPRECATION")
     private fun batteryCharge(eyeGlasses: ItemStack, copper: ItemStack, player: Player) {
         if (copper.type != Material.RAW_COPPER) return
         val amount = copper.amount.toShort()
@@ -81,16 +78,17 @@ class LuminaLensesItem : CustomItem {
         }
         val lore = meta.lore
         for (i in lore!!.indices) {
-            if (lore[i] != null && ChatColor.stripColor(lore[i])!!.contains("Battery")) {
+            if (lore[i] != null && org.bukkit.ChatColor.stripColor(lore[i])!!.contains("Battery")) {
                 lore[i] = Util.colorcode("&#3efeecB&#47e2efa&#50c5f1t&#5aa9f4t&#638df6e&#6c70f9r&#7554fby " + meta.persistentDataContainer.get(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) + "%")
             }
         }
         meta.lore = lore
         eyeGlasses.setItemMeta(meta)
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(ChatColor.BLUE.toString() + "Battery: " + meta.persistentDataContainer.get<Short, Short>(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) + "%"))
+        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent(org.bukkit.ChatColor.BLUE.toString() + "Battery: " + meta.persistentDataContainer.get<Short, Short>(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) + "%"))
         addNoctalEffects(player)
     }
 
+    @Suppress("DEPRECATION")
     private fun deductBatteryCharges(helmet: ItemStack) {
         val meta = helmet.itemMeta ?: return
         if (!meta.persistentDataContainer.has(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT)) return
@@ -99,7 +97,8 @@ class LuminaLensesItem : CustomItem {
             meta.persistentDataContainer.set(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT, (currentCharge - 1).toShort())
             val lore = meta.lore!!
             for (i in lore.indices) {
-                if (lore[i] != null && ChatColor.stripColor(lore[i])!!.contains("Battery")) {
+
+                if (lore[i] != null && org.bukkit.ChatColor.stripColor(lore[i])!!.contains("Battery")) {
                     lore[i] = Util.colorcode("&#3efeecB&#47e2efa&#50c5f1t&#5aa9f4t&#638df6e&#6c70f9r&#7554fby " + meta.persistentDataContainer.get(NamespacedKey(instance(), "LuminaLenses"), PersistentDataType.SHORT) + "%")
                 }
             }

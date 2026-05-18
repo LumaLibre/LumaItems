@@ -42,6 +42,7 @@ class KindlingBatonItem : CustomItemFunctions() {
             .buildPair()
     }
 
+    @Suppress("DEPRECATION")
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
         event.isCancelled = true
         val item = player.inventory.itemInMainHand
@@ -53,6 +54,7 @@ class KindlingBatonItem : CustomItemFunctions() {
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
 
         val block = event.block

@@ -1,9 +1,9 @@
 package dev.lumas.lumaitems.commands.subcommands
 
-import dev.lumas.lumacore.manager.commands.CommandInfo
-import dev.lumas.lumacore.manager.modules.AutoRegister
-import dev.lumas.lumacore.manager.modules.RegisterType
-import dev.lumas.lumacore.utility.Text
+import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.CommandMeta
+import dev.lumas.core.annotation.Register
+import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
 import dev.lumas.lumaitems.commands.SubCommand
@@ -13,8 +13,8 @@ import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-@AutoRegister(RegisterType.SUBCOMMAND)
-@CommandInfo(
+@Register(Autowire.SUBCOMMAND)
+@CommandMeta(
     name = "tier",
     description = "Add a tier to an item",
     usage = "/<command> tier <text>",

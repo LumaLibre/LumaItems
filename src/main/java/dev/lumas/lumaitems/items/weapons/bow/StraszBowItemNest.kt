@@ -2,11 +2,11 @@ package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.WorldName
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.BukkitVectors
-import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -23,7 +23,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 
@@ -37,7 +36,8 @@ abstract class StraszBowItemNest : CustomItemFunctions() {
     }
 
     private val key = NamespacedKey(instance(), "strasz-longbow")
-    private val metaDataValue = FixedMetadataValue(instance(), true)
+    @Suppress("DEPRECATION")
+    private val metaDataValue = org.bukkit.metadata.FixedMetadataValue(instance(), true)
 
     val baseBow = ItemFactory.builder()
         .customEnchants("<gradient:#cc6e9b:#eb94a6>Replication")

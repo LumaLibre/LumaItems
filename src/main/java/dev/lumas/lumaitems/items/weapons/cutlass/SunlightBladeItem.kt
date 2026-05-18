@@ -1,14 +1,12 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import java.util.Random
 import java.util.function.Consumer
-import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -86,8 +84,8 @@ class SunlightBladeItem : CustomItem {
         fireball.isGlowing = true
         fireball.world.playSound(fireball.location, Sound.ITEM_FIRECHARGE_USE, 1f, 1f)
 
-        val colors = listOf(ChatColor.YELLOW, ChatColor.GOLD, ChatColor.RED)
-        val rand = Random().nextInt(3)
+        //val colors = listOf(ChatColor.YELLOW, ChatColor.GOLD, ChatColor.RED)
+        //val rand = Random().nextInt(3)
         //GlowManager.setGlowColor(fireball, colors[rand])
         armorStand.syncDelayed(100) {
             armorStand.remove()

@@ -44,7 +44,7 @@ class GiantInflatableHammerItem : CustomItemFunctions() {
     }
 
     override fun onSmashAttack(player: Player, event: EntityAttemptSmashAttackEvent) {
-        stunEntity(event.target ?: return)
+        stunEntity(event.target)
 
         val loc = event.target.location
         if (!AbilityUtil.noBuildPermission(player, loc.block) && Random.Default.nextInt(10) == 1) {

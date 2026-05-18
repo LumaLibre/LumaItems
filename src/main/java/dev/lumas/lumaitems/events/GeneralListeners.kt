@@ -1,14 +1,14 @@
 package dev.lumas.lumaitems.events
 
-import dev.lumas.lumacore.manager.modules.AutoRegister
-import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.Register
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.EntityArmor
 import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.events.item.ItemListener
-import dev.lumas.lumaitems.guis.LumaItemsAbstractGui
 import dev.lumas.lumaitems.guis.DisassemblerGui
+import dev.lumas.lumaitems.guis.LumaItemsAbstractGui
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.PersistentDataRecord
 import dev.lumas.lumaitems.registry.NamespacedIdentifier
@@ -46,7 +46,7 @@ import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.persistence.PersistentDataType
 
 // TODO: These listeners are a mess
-@AutoRegister(RegisterType.LISTENER)
+@Register(Autowire.LISTENER)
 class GeneralListeners : Listener {
 
     companion object {
@@ -107,8 +107,8 @@ class GeneralListeners : Listener {
                 return
             }
 
-            val currentHelm = player.equipment?.helmet
-            if (currentHelm == null || currentHelm.isEmpty) {
+            val currentHelm = player.equipment.helmet
+            if (currentHelm.isEmpty) {
                 player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f)
                 player.equipment.setHelmet(item.asOne())
                 item.amount -= 1

@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.hatchet
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.sync
@@ -19,7 +19,6 @@ import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
@@ -62,6 +61,7 @@ class SoulEaterItem : CustomItem {
         return true
     }
 
+    @Suppress("DEPRECATION")
     fun swapWeapon(player: Player, item: ItemStack) {
         when (item.type) {
             Material.BOW -> item.setType(Material.NETHERITE_AXE)
@@ -71,10 +71,11 @@ class SoulEaterItem : CustomItem {
         player.inventory.setItemInMainHand(item)
     }
 
+    @Suppress("DEPRECATION")
     fun soulOrb(entity: LivingEntity) {
         val armorStand = entity.world.spawnEntity(entity.location, EntityType.ARMOR_STAND) as ArmorStand
-        armorStand.setMetadata("SolItem", FixedMetadataValue(instance(), "SolItem"))
-        armorStand.setMetadata("SoulOrb", FixedMetadataValue(instance(), "SoulOrb"))
+        armorStand.setMetadata("SolItem", org.bukkit.metadata.FixedMetadataValue(instance(), "SolItem"))
+        armorStand.setMetadata("SoulOrb", org.bukkit.metadata.FixedMetadataValue(instance(), "SoulOrb"))
         armorStand.isInvisible = true
         armorStand.setGravity(false)
         armorStand.maxHealth = entity.maxHealth
@@ -136,6 +137,7 @@ class SoulEaterItem : CustomItem {
         p.playSound(p.location, Sound.ENTITY_GENERIC_EAT, 1f, 1f)
         p.playSound(p.location, Sound.ENTITY_VEX_CHARGE, 1f, 1f)
         //overHeal player
+        @Suppress("DEPRECATION")
         val amplifier = (entity.maxHealth / 8).toInt()
         p.removePotionEffect(PotionEffectType.REGENERATION)
         p.removePotionEffect(PotionEffectType.HEALTH_BOOST)

@@ -3,14 +3,14 @@ package dev.lumas.lumaitems.events.item
 import com.gmail.nossr50.datatypes.skills.SubSkillType
 import com.gmail.nossr50.events.skills.secondaryabilities.SubSkillBlockEvent
 import com.gmail.nossr50.events.skills.woodcutting.TreeFellerDestroyTreeEvent
-import dev.lumas.lumacore.manager.modules.AutoRegister
-import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.Register
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.util.extensions.asSource
 import dev.lumas.lumaitems.util.extensions.itemInMainHand
 import org.bukkit.event.EventHandler
 
-@AutoRegister(RegisterType.LISTENER, requires = "mcMMO")
+@Register(Autowire.LISTENER, requires = "mcMMO")
 class McMMOListeners : ItemListener() {
 
     @EventHandler

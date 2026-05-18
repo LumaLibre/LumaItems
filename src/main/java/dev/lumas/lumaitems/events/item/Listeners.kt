@@ -5,12 +5,12 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
-import dev.lumas.lumacore.manager.modules.AutoRegister
-import dev.lumas.lumacore.manager.modules.RegisterType
+import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.Register
 import dev.lumas.lumaitems.annotations.AllSlots
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.PdcSource
 import dev.lumas.lumaitems.model.block.BlockCacheManager
+import dev.lumas.lumaitems.model.item.PdcSource
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.asSource
 import dev.lumas.lumaitems.util.extensions.equipmentSources
@@ -74,7 +74,6 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.EquipmentSlot
-import org.bukkit.inventory.ItemStack
 
 /**
  * Main listeners class for LumaItems
@@ -82,7 +81,7 @@ import org.bukkit.inventory.ItemStack
  * Blocks cannot store persistent data, so we will have to store in a file (if needed for long term)
  * Or have our listeners fire every single executeAbilities() method every time we need to grab data from a block
  */
-@AutoRegister(RegisterType.LISTENER)
+@Register(Autowire.LISTENER)
 class Listeners : ItemListener() {
 
     @EventHandler
@@ -283,7 +282,7 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onPlayerElytraBoost(event: PlayerElytraBoostEvent) {
         val player = event.player
-        val elytra = player.inventory.chestplate ?: return
+        val elytra = player.inventory.chestplate
         val source = elytra.asSource() ?: return
 
         fire(source, Action.ELYTRA_BOOST, player, event)

@@ -1,3 +1,4 @@
+@file:Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 package dev.lumas.lumaitems.util
 
 import com.comphenix.protocol.PacketType

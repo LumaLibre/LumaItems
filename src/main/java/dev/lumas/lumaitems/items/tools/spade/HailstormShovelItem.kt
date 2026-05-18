@@ -1,18 +1,18 @@
 package dev.lumas.lumaitems.items.tools.spade
 
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.tags.Kind
+import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.tags.Kind
 import java.awt.Color
 import kotlin.math.abs
 import org.bukkit.Location
@@ -27,7 +27,6 @@ import org.bukkit.entity.Snowball
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.BlockIterator
 import org.bukkit.util.Vector
@@ -83,6 +82,7 @@ class HailstormShovelItem : CustomItemFunctions() {
             .buildPair()
     }
 
+    @Suppress("DEPRECATION")
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (QuickTasks.isOnCooldown(this, player.uniqueId) || player.location.block.lightFromSky < 1) {
             return
@@ -90,7 +90,7 @@ class HailstormShovelItem : CustomItemFunctions() {
         QuickTasks.addCooldown(this, player.uniqueId, 3600) // 3 min
         val snowball = player.launchProjectile(Snowball::class.java)
         snowball.velocity = snowball.velocity.multiply(0.3)
-        snowball.setMetadata(ACTIVATOR, FixedMetadataValue(instance(), true))
+        snowball.setMetadata(ACTIVATOR, org.bukkit.metadata.FixedMetadataValue(instance(), true))
         snowball.item = ITEM_STACK
         Util.setPersistentKey(snowball, key, PersistentDataType.SHORT, 1)
         player.swingMainHand()

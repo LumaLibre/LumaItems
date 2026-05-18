@@ -77,6 +77,7 @@ class FrostbarkChiselItem : CustomItemFunctions() {
             ?: Mode.LOGS
     }
 
+    @Suppress("DEPRECATION")
     private fun setWoodTypeFromMode(mode: Mode, item: ItemStack): ItemStack {
         var materialName = item.type.name
         if (!materialName.contains("_LOG") && !materialName.contains("_STEM")) return item

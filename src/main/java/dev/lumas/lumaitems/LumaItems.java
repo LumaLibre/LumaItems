@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems;
 
-import dev.lumas.lumacore.manager.modules.ModuleManager;
-import dev.lumas.lumacore.reflect.ReflectionUtil;
-import dev.lumas.lumacore.utility.ContextLogger;
+import dev.lumas.core.manager.Modules;
+import dev.lumas.core.manager.Reflect;
+import dev.lumas.core.util.ContextLogger;
 import dev.lumas.lumaitems.enums.Action;
 import dev.lumas.lumaitems.events.item.PassiveListeners;
 import dev.lumas.lumaitems.guis.LumaItemsAbstractGui;
@@ -30,29 +30,29 @@ public final class LumaItems extends JavaPlugin {
     private static LumaItems instance;
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManager;
-    private static ModuleManager moduleManager;
+    private static Modules moduleManager;
 
     @Override
     public void onLoad() {
         instance = this;
         passiveListeners = new PassiveListeners(this);
         itemManager = new ItemManager();
-        moduleManager = new ModuleManager(this);
+        moduleManager = new Modules(this);
     }
 
     @Override
     public void onEnable() {
         long start = System.currentTimeMillis();
-        ReflectionUtil reflectionUtil = ReflectionUtil.of(getClass());
-        reflectionUtil.whitelistPackages("commands", "commands.subcommands", "events", "events.item");
+        Reflect reflectionUtil = Reflect.from(getClass());
+        reflectionUtil.packages("commands", "commands.subcommands", "events", "events.item");
 
-        Set<Class<?>> classSet = reflectionUtil.getAllClassesFor();
+        Set<Class<?>> classSet = reflectionUtil.scan();
         if (!Bukkit.getOnlinePlayers().isEmpty()) {
             LOGGER.info("Players are online, registering items asynchronously");
             Executors.async(task -> {
                 try {
                     initItemManager(itemManager);
-                    moduleManager.reflectivelyRegisterModules(classSet);
+                    moduleManager.register(classSet);
                 } catch (Throwable e) {
                     LOGGER.error("An error occurred while registering items asynchronously");
                     getServer().getPluginManager().disablePlugin(this);
@@ -61,7 +61,7 @@ public final class LumaItems extends JavaPlugin {
             });
         } else {
             initItemManager(itemManager);
-            moduleManager.reflectivelyRegisterModules(classSet);
+            moduleManager.register(classSet);
             LOGGER.info("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
@@ -99,7 +99,7 @@ public final class LumaItems extends JavaPlugin {
             }
         }
 
-        moduleManager.unregisterModules();
+        moduleManager.unregister();
         passiveListeners.onPluginAction(Action.PLUGIN_DISABLE); // Then fire this for whatever items need to use this
         passiveListeners.onPluginActionGlobal(Action.PLUGIN_DISABLE_GLOBAL);
     }

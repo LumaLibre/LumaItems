@@ -61,7 +61,7 @@ fun Player.isWearing(identifier: NamespacedKey): Boolean {
 }
 
 fun Player.isItemInSlot(identifier: NamespacedKey, slot: EquipmentSlot): Boolean {
-    val item = equipment?.getItem(slot) ?: return false
+    val item = equipment.getItem(slot)
     return item.persistentDataContainer.has(identifier) || Mixable.isMixable(item) // TODO: temporary solution
 }
 
@@ -123,7 +123,7 @@ fun Player.isHoldingTwoRods(): Boolean {
 }
 
 fun Player.firstEquipmentSource(key: NamespacedKey): PdcSource? {
-    val armor = equipment?.armorContents ?: return null
+    val armor = equipment.armorContents
 
     for (item in armor) {
         if (item != null) {
@@ -141,7 +141,7 @@ fun Player.firstEquipmentSource(key: NamespacedKey): PdcSource? {
 fun Player.equipmentSources(): List<PdcSource> {
     val result = ArrayList<PdcSource>(6)
 
-    equipment?.armorContents?.let { armor ->
+    equipment.armorContents.let { armor ->
         for (item in armor) {
             if (item != null) {
                 PdcSource.of(item)?.let(result::add)
@@ -169,7 +169,7 @@ fun Player.handSources(): List<PdcSource> {
 }
 
 fun Player.sources(vararg slots: EquipmentSlot): List<PdcSource> {
-    val eq = equipment ?: return emptyList()
+    val eq = equipment
     val result = ArrayList<PdcSource>(slots.size)
 
     for (slot in slots) {
@@ -186,7 +186,7 @@ fun Player.mainHandSource(): PdcSource? {
 fun Player.equipmentContainers(): List<PersistentDataContainer> {
     val result = ArrayList<PersistentDataContainer>(6)
     val inv = inventory
-    val armor = equipment?.armorContents ?: return result
+    val armor = equipment.armorContents
     for (item in armor) {
         item?.itemMeta?.persistentDataContainer?.let(result::add)
     }
@@ -200,7 +200,7 @@ fun Player.firstEquipmentContainer(key: NamespacedKey): ItemStack? {
     val result = ArrayList<ItemStack>(6)
     val inv = inventory
 
-    val armor = equipment.armorContents ?: return null
+    val armor = equipment.armorContents
     for (item in armor) {
         item?.let(result::add)
     }

@@ -20,6 +20,7 @@ import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.Tag
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
@@ -76,7 +77,7 @@ class ChikosCharmItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        val material = MaterialTags.DYES.values.random()
+        val material = Tag.ITEMS_DYES.values.random()
 
         return ItemFactory.builder()
             .name("<b><gradient:#90D13E:#FFE854:#F98C4C:#F68C86:#C45973>Chiko's Charm</gradient></b>")

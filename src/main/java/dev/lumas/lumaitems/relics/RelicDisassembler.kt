@@ -1,6 +1,6 @@
 package dev.lumas.lumaitems.relics
 
-import dev.lumas.lumacore.utility.Logging
+import dev.lumas.core.util.ContextLogger
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Rarity
 import dev.lumas.lumaitems.registry.Registry
@@ -21,6 +21,7 @@ object RelicDisassembler {
 
     val RELIC_RARITY_KEY = Util.namespacedKey("relic-rarity")
     val DISASSEMBLER_BLOCKS: MutableList<Block> = mutableListOf()
+    private val LOGGER = ContextLogger.getLogger()
 
     private val confirmCooldownTasks: MutableMap<UUID, ScheduledTask> = mutableMapOf()
 
@@ -32,11 +33,11 @@ object RelicDisassembler {
                 val location = it.value
                 try {
                     if (location.world == null) {
-                        Logging.warningLog("World for disassembler block $key is null!")
+                        LOGGER.error("World for disassembler block $key is null!")
                         return@forEach
                     }
-                } catch (ignored: IllegalArgumentException) {
-                    Logging.warningLog("World for disassembler block $key is unloaded!")
+                } catch (_: IllegalArgumentException) {
+                    LOGGER.error("World for disassembler block $key is unloaded!")
                     return@forEach
                 }
 

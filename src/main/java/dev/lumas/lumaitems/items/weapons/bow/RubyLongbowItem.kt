@@ -1,8 +1,8 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import java.util.Random
@@ -17,7 +17,6 @@ import org.bukkit.entity.Projectile
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.persistence.PersistentDataType
 
 class RubyLongbowItem : CustomItem {
@@ -52,15 +51,16 @@ class RubyLongbowItem : CustomItem {
     }
 
 
+    @Suppress("DEPRECATION")
     fun velocity(player: Player, proj: Projectile) {
         if (player.hasMetadata("RubyLongbow")) return
         val proj2: Projectile?
         proj.velocity = proj.velocity.multiply(2)
         if (Random().nextBoolean()) {
-            player.setMetadata("RubyLongbow", FixedMetadataValue(instance(), true))
+            player.setMetadata("RubyLongbow", org.bukkit.metadata.FixedMetadataValue(instance(), true))
             proj2 = player.launchProjectile(proj.javaClass, proj.velocity.multiply(0.8))
             player.removeMetadata("RubyLongbow", instance())
-            proj2.setMetadata("no-pickup", FixedMetadataValue(instance(), true))
+            proj2.setMetadata("no-pickup", org.bukkit.metadata.FixedMetadataValue(instance(), true))
             proj2.persistentDataContainer.set(NamespacedKey(instance(), "rubylongbow"), PersistentDataType.SHORT, 1)
         } else {
             proj2 = null

@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.guis
 
+import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.relics.RelicDisassembler
 import dev.lumas.lumaitems.util.Util
@@ -53,7 +54,7 @@ class DisassemblerGui : LumaItemsAbstractGui {
     }
 
     override fun getInventory(): Inventory {
-        val inv = Bukkit.createInventory(this, 45, Util.colorcode("&#F670F1&lDisassembler"))
+        val inv = Bukkit.createInventory(this, 45, Text.mm("<#F670F1><b>Disassembler"))
         for (i in 36..44) {
             inv.setItem(i, BORDER)
         }

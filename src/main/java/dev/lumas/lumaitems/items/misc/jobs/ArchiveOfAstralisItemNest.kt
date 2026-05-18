@@ -3,14 +3,13 @@ package dev.lumas.lumaitems.items.misc.jobs
 import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import com.gmail.nossr50.api.AbilityAPI as MCMMOAbilityAPI
-import dev.lumas.lumacore.utility.Logging
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.McMMOHook
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.Util
 import io.papermc.paper.persistence.PersistentDataContainerView
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -68,7 +67,7 @@ abstract class ArchiveOfAstralisItemNest(private val jobType: JobType) : CustomI
                 return false
             }
         } catch (throwable: Throwable) {
-            Logging.errorLog("Error checking mcMMO tree feller state for player ${player.name}", throwable)
+            throwable.printStackTrace()
         }
 
         val level: Short = container.get(nameSpacedKey, PersistentDataType.SHORT) ?: 2

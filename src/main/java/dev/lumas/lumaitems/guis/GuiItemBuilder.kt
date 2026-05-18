@@ -18,16 +18,6 @@ class GuiItemBuilder(material: Material) {
     val itemStack = ItemStack(material)
     val meta = itemStack.itemMeta ?: throw NullPointerException("ItemMeta is null")
 
-    fun setDisplayName(name: String): GuiItemBuilder {
-        meta.setDisplayName(name)
-        return this
-    }
-
-    fun setLore(lore: List<String>): GuiItemBuilder {
-        meta.lore = lore
-        return this
-    }
-
     fun displayName(name: String): GuiItemBuilder {
         meta.displayName(name.asComponent())
         return this

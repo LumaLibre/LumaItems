@@ -14,8 +14,6 @@ import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import dev.lumas.lumaitems.util.extensions.toColor
 import java.awt.Color as AwtColor
 import kotlin.random.Random
-import net.md_5.bungee.api.ChatColor as BungeeChatColor
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
@@ -73,6 +71,7 @@ object Util {
     }
 
 
+    @Suppress("DEPRECATION")
     fun createBasicItem(name: String, lore: List<String>, material: Material, datas: List<String>, glint: Boolean): ItemStack {
         val item = ItemStack(material)
         val meta = item.itemMeta!!
@@ -90,6 +89,7 @@ object Util {
     }
 
 
+    @Suppress("DEPRECATION")
     fun colorcode(text: String): String {
         val texts = text.split(String.format(WITH_DELIMITER, "&").toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()
@@ -100,9 +100,9 @@ object Util {
                 //get the next string
                 i++
                 if (texts[i][0] == '#') {
-                    finalText.append(BungeeChatColor.of(texts[i].substring(0, 7)).toString() + texts[i].substring(7))
+                    finalText.append(net.md_5.bungee.api.ChatColor.of(texts[i].substring(0, 7)).toString() + texts[i].substring(7))
                 } else {
-                    finalText.append(ChatColor.translateAlternateColorCodes('&', "&" + texts[i]))
+                    finalText.append(org.bukkit.ChatColor.translateAlternateColorCodes('&', "&" + texts[i]))
                 }
             } else {
                 finalText.append(texts[i])

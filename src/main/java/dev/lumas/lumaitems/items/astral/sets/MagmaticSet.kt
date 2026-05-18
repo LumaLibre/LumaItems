@@ -107,6 +107,7 @@ class MagmaticSet : AstralSet {
         entity.fireTicks = 100
     }
 
+    @Suppress("DEPRECATION")
     private fun pickaxeSmelt(blockBroken: Block, drops: Collection<ItemStack>): Boolean {
         if (!smeltOreTypes.contains(blockBroken.type)) return false
 
@@ -127,6 +128,7 @@ class MagmaticSet : AstralSet {
         return true
     }
 
+    @Suppress("DEPRECATION")
     private fun shovelSmelt(blockBroken: Block, drops: Collection<ItemStack>): Boolean {
         if (blockBroken.type != Material.SAND && blockBroken.type != Material.RED_SAND) return false
         for (drop in drops) {

@@ -59,6 +59,7 @@ class DarkRabbitHatchetItem : CustomItem {
         return true
     }
 
+    @Suppress("DEPRECATION")
     private fun chancityAbility(drops: Collection<ItemStack>, block: Block) {
         var doDropCharCoal = Random.Default.nextBoolean()
         val doMultiplyDrops = Random.Default.nextBoolean()

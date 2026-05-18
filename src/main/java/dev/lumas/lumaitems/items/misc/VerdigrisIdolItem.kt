@@ -100,7 +100,7 @@ class VerdigrisIdolItem : CustomItemFunctions() {
         val mainHand = player.inventory.itemInMainHand
         val mainHandIdol = mainHand.takeIf { it.isMatchingItem(KEY_NS) }
         val offHandIdol = if (mainHandIdol == null) player.inventory.itemInOffHand.takeIf { it.isMatchingItem(KEY_NS) } else null
-        val helmetIdol = if (mainHandIdol == null && offHandIdol == null) player.inventory.helmet?.takeIf { it.isMatchingItem(KEY_NS) } else null
+        val helmetIdol = if (mainHandIdol == null && offHandIdol == null) player.inventory.helmet.takeIf { it.isMatchingItem(KEY_NS) } else null
         val idol = mainHandIdol ?: offHandIdol ?: helmetIdol ?: return
 
         val block = event.block

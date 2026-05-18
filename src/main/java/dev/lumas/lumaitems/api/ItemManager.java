@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.api;
 
 import com.google.common.reflect.ClassPath;
-import dev.lumas.lumacore.utility.ContextLogger;
+import dev.lumas.core.util.ContextLogger;
 import dev.lumas.lumaitems.LumaItems;
 import dev.lumas.lumaitems.annotations.Ignore;
 import dev.lumas.lumaitems.annotations.Requires;
