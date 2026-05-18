@@ -1,6 +1,5 @@
 import java.nio.charset.Charset
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("java")

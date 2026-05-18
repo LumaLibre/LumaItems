@@ -1,5 +1,4 @@
 @file:JvmName("JvmQuickTasks")
-
 package dev.lumas.lumaitems.util.extensions
 
 import dev.lumas.lumaitems.model.spell.AbstractSpell

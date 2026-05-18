@@ -1,0 +1,5 @@
+*.xml
+*.iml
+!misc.xml
+!vcs.xml
+!shelf/

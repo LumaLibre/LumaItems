@@ -1,7 +1,6 @@
 @file:JvmName("ItemUtil")
 package dev.lumas.lumaitems.util.extensions
 
-import com.destroystokyo.paper.MaterialTags
 import com.destroystokyo.paper.profile.ProfileProperty
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.model.item.ItemFactory
@@ -16,7 +15,6 @@ import org.bukkit.Tag
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.entity.Player
-import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.ItemMeta
