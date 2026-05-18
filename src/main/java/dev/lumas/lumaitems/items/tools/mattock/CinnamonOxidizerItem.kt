@@ -12,6 +12,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.craftbukkit.block.CraftBlock
 import org.bukkit.craftbukkit.block.data.CraftBlockData
+import org.bukkit.craftbukkit.util.CraftMagicNumbers
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
@@ -55,10 +56,10 @@ class CinnamonOxidizerItem : CustomItemFunctions() {
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val bukkitBlock = event.block
         val craftBlock = bukkitBlock as CraftBlock
-        val block = WeatheringCopper.getNext(craftBlock.nms.block).getOrNull() ?: return
+        val block = WeatheringCopper.getNext(craftBlock.blockState.block).getOrNull() ?: return
 
         // back to bukkit
-        val newBlockData = CraftBlockData.fromData(block.defaultBlockState())
+        val newBlockData = block.defaultBlockState().asBlockData()
 
         bukkitBlock.blockData = newBlockData
         bukkitBlock.world.spawnParticle(Particle.DUST_PLUME, bukkitBlock.location.toCenterLocation(), 6, 0.3, 0.3, 0.3, 0.0)

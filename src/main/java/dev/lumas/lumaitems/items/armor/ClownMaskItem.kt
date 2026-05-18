@@ -44,8 +44,8 @@ class ClownMaskItem : CustomItemFunctions() {
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (event.item?.itemMeta?.persistentDataContainer?.has(namespacedKey, PersistentDataType.SHORT) == true) {
             event.isCancelled = true
-            if (player.equipment?.helmet == null) {
-                player.equipment?.helmet = event.item
+            if (player.equipment.helmet.type == Material.AIR) {
+                player.equipment.setHelmet(event.item)
                 event.item!!.amount -= 1
             }
         }

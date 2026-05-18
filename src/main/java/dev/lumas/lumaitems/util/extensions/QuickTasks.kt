@@ -132,7 +132,7 @@ fun Player.getFlag(customItem: CustomItem): Any? {
     return uniqueId.getFlag(customItem)
 }
 
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 fun <T> UUID.getFlag(customItem: CustomItem, expected: Class<T>): T? {
     val value = getFlag(customItem) ?: return null
     val boxed = when (expected) {

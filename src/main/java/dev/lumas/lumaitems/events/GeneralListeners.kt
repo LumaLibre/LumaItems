@@ -110,7 +110,7 @@ class GeneralListeners : Listener {
             val currentHelm = player.equipment?.helmet
             if (currentHelm == null || currentHelm.isEmpty) {
                 player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1f, 1f)
-                player.equipment?.helmet = item.asOne()
+                player.equipment.setHelmet(item.asOne())
                 item.amount -= 1
             }
 
@@ -157,7 +157,8 @@ class GeneralListeners : Listener {
             if (cursorItem.type == Material.AIR || cursorItem == player.inventory.helmet) return
             event.isCancelled = true
             player.setItemOnCursor(hatItem);
-            player.inventory.helmet = cursorItem;player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1f, 1f)
+            player.inventory.setHelmet(cursorItem)
+            player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1f, 1f)
         }
     }
 

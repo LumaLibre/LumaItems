@@ -200,7 +200,7 @@ fun Player.firstEquipmentContainer(key: NamespacedKey): ItemStack? {
     val result = ArrayList<ItemStack>(6)
     val inv = inventory
 
-    val armor = equipment?.armorContents ?: return null
+    val armor = equipment.armorContents ?: return null
     for (item in armor) {
         item?.let(result::add)
     }

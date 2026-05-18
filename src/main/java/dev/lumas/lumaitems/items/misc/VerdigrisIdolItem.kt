@@ -124,7 +124,7 @@ class VerdigrisIdolItem : CustomItemFunctions() {
             when {
                 mainHandIdol != null -> player.inventory.setItemInMainHand(newIdol)
                 offHandIdol != null -> player.inventory.setItemInOffHand(newIdol)
-                else -> player.inventory.helmet = newIdol
+                else -> player.inventory.setHelmet(newIdol)
             }
         }
 

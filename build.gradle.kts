@@ -4,9 +4,9 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id("java")
     id("maven-publish")
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.3.21"
     id("com.gradleup.shadow") version "9.2.2"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
     id("dev.jsinco.pterodactyldeploy") version "1.15-SNAPSHOT"
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
@@ -15,7 +15,7 @@ plugins {
 group = "dev.lumas.lumaitems"
 version = getGitCommitHashShort()
 
-val jdkVersion = 21
+val jdk = 25
 val charset = "UTF-8"
 
 repositories {
@@ -32,7 +32,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.glaremasters.me/repository/towny/")
     maven("https://repo.codemc.io/repository/EvenMoreFish/")
-    maven("https://maven.canvasmc.io/snapshots")
+    maven("https://maven.canvasmc.io/releases")
 }
 
 dependencies {
@@ -61,9 +61,8 @@ dependencies {
     implementation("com.iridium:IridiumColorAPI:1.0.9")
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")
 
-    // PaperWeight
-//    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
-    paperweight.devBundle("io.canvasmc.canvas", "1.21.11-R0.1-SNAPSHOT")
+
+    paperweight.devBundle("io.canvasmc.canvas", "26.1.2.build.+")
 }
 
 tasks {
@@ -118,12 +117,11 @@ tasks {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(jdkVersion)
-    withSourcesJar()
+    toolchain.languageVersion = JavaLanguageVersion.of(jdk)
 }
 
 kotlin {
-    jvmToolchain(jdkVersion)
+    jvmToolchain(jdk)
 }
 
 publishing {

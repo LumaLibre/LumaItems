@@ -207,7 +207,7 @@ abstract class ReformationPouchItemNest(private val target: WoodSet) : CustomIte
             val cursorNow = player.itemOnCursor
             val rewrittenCursor = rewriteBundleIfNeeded(cursorNow)
             if (rewrittenCursor != null) {
-                player.itemOnCursor = rewrittenCursor
+                player.setItemOnCursor(rewrittenCursor)
             }
         }
     }
