@@ -2,7 +2,6 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven("https://repo.jsinco.dev/releases")
     }
     plugins {
         kotlin("jvm") version "2.0.0"

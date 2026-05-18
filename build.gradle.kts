@@ -1,14 +1,15 @@
 import java.nio.charset.Charset
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("java")
     id("maven-publish")
-    kotlin("jvm") version "2.3.21"
     id("com.gradleup.shadow") version "9.2.2"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
-    id("dev.jsinco.pterodactyldeploy") version "1.15-SNAPSHOT"
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.run-paper") version "3.0.1"
+    id("de.eldoria.plugin-yml.bukkit") version "0.7.1"
+    kotlin("jvm") version "2.3.21"
 }
 
 
@@ -16,7 +17,6 @@ group = "dev.lumas.lumaitems"
 version = getGitCommitHashShort()
 
 val jdk = 25
-val charset = "UTF-8"
 
 repositories {
     mavenCentral()
@@ -67,15 +67,6 @@ dependencies {
 
 tasks {
 
-    processResources {
-        outputs.upToDateWhen { false }
-        filter<ReplaceTokens>(mapOf(
-            "tokens" to mapOf("version" to project.version),
-            "beginToken" to "\${",
-            "endToken" to "}"
-        )).filteringCharset = charset
-    }
-
     shadowJar {
         val pack = "dev.lumas.lumaitems.shaded"
         relocate("com.iridium.iridiumcolorapi", "$pack.iridiumcolorapi")
@@ -91,7 +82,7 @@ tasks {
     }
 
     withType<JavaCompile>().configureEach {
-        options.encoding = charset
+        options.encoding = "UTF-8"
     }
 
 
@@ -99,20 +90,8 @@ tasks {
         dependsOn(shadowJar)
     }
 
-    pterodactylDeploy {
-        url = System.getenv("PTERO_URL") ?: return@pterodactylDeploy
-        apiKey = System.getenv("PTERO_TOKEN")
-        serverId = System.getenv("PTERO_SERVER")
-
-        dropIn {
-            deployDirectory = "plugins"
-            uploadFiles = mutableListOf(file("build/libs/LumaItems.jar"))
-            deployCommands = mutableListOf("plugman reload LumaItems")
-        }
-    }
-
     runServer {
-        minecraftVersion("1.21.11")
+        minecraftVersion("26.1.2")
     }
 }
 
@@ -161,5 +140,27 @@ fun getGitCommitHashShort(): String {
     } catch (e: Exception) {
         println("Failed to get git commit hash! (No git repository found?)")
         "none"
+    }
+}
+
+bukkit {
+    name = "LumaItems"
+    main = "dev.lumas.lumaitems.LumaItems"
+    version = project.version.toString()
+    apiVersion = "1.21"
+    author = "Jsinco"
+    foliaSupported = true
+    depend = listOf("LumaCore")
+    softDepend = listOf(
+        "ProtocolLib",
+        "EvenMoreFish", // Soft depend on EMF to register listeners after it
+        "Jobs",
+        "mcMMO"
+    )
+    permissions {
+        register("lumaitems.disassemblergui") {
+            description = "Permission to open the disassembler GUI"
+            default = BukkitPluginDescription.Permission.Default.OP
+        }
     }
 }
