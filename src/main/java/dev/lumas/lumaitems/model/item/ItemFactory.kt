@@ -1,6 +1,5 @@
 package dev.lumas.lumaitems.model.item
 
-import com.iridium.iridiumcolorapi.IridiumColorAPI
 import dev.lumas.core.util.ContextLogger
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.RomanNumeral
@@ -106,13 +105,6 @@ class ItemFactory(
 
     fun addQuote(s: String): ItemFactory {
         taglines.add(s)
-        return this
-    }
-
-    fun addGradientQuote(s: String, color1: String, color2: String): ItemFactory {
-        val strippedColor1 = color1.replace("#", "").replace("&", "").trim()
-        val strippedColor2 = color2.replace("#", "").replace("&", "").trim()
-        taglines.add(IridiumColorAPI.process("<GRADIENT:$strippedColor1>\"$s\"</GRADIENT:$strippedColor2>"))
         return this
     }
 

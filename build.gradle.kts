@@ -22,7 +22,6 @@ repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
     maven("https://jitpack.io")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://nexus.neetgames.com/repository/maven-releases/")
@@ -58,9 +57,7 @@ dependencies {
         isTransitive = false
     }
 
-    implementation("com.iridium:IridiumColorAPI:1.0.9")
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")
-
 
     paperweight.devBundle("io.canvasmc.canvas", "26.1.2.build.+")
 }
@@ -69,7 +66,6 @@ tasks {
 
     shadowJar {
         val pack = "dev.lumas.lumaitems.shaded"
-        relocate("com.iridium.iridiumcolorapi", "$pack.iridiumcolorapi")
         relocate("eu.okaeri", "$pack.okaeri")
         exclude("kotlin/**")
         minimize()
