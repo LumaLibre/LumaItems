@@ -1,37 +1,40 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.core.util.Text
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.util.Util
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "copycoordinates",
     description = "Copy your current coordinates to clipboard",
-    usage = "/<command> copycoordinates",
-    permission =  "lumaitems.command.copycoordinates",
+    usage = "/<command> copycoordinates [includeYawPitch]",
+    permission = "lumaitems.command.copycoordinates",
     parent = CommandManager::class,
     playerOnly = true
 )
-class CopyCoordinatesCommand : SubCommand {
+class CopyCoordinatesCommand : BrigadierSubCommand {
 
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        sender as Player
-        val coordinatesString = if (args.contains("-yp")) {
-            "${sender.world.name},${sender.location.blockX},${sender.location.blockY},${sender.location.blockZ},${sender.location.yaw},${sender.location.pitch}"
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack, @Argument(value = "includeYawPitch", optional = true) includeYawPitch: Boolean?) {
+        val player = src.sender as Player
+        val loc = player.location
+
+        val coordinatesString = if (includeYawPitch == true) {
+            "${player.world.name},${loc.blockX},${loc.blockY},${loc.blockZ},${loc.yaw},${loc.pitch}"
         } else {
-            "${sender.world.name},${sender.location.blockX},${sender.location.blockY},${sender.location.blockZ}"
+            "${player.world.name},${loc.blockX},${loc.blockY},${loc.blockZ}"
         }
 
         val c = Util.getRandomColor()
@@ -39,12 +42,6 @@ class CopyCoordinatesCommand : SubCommand {
             .clickEvent(ClickEvent.copyToClipboard(coordinatesString))
             .hoverEvent(Component.text("Click to copy"))
             .color(TextColor.color(c.red, c.green, c.blue))
-        Text.msg(sender, comp)
-        return true
+        Text.msg(player, comp)
     }
-
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String> {
-        return listOf("-yp")
-    }
-
 }

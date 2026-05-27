@@ -1,29 +1,37 @@
 package dev.lumas.lumaitems.commands
 
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.core.model.command.AbstractCommand
+import dev.lumas.core.model.brigadier.BrigadierCommand
 import dev.lumas.lumaitems.guis.MixerUpgradeGui
-import org.bukkit.command.CommandSender
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.entity.Player
 
-@Register(Autowire.COMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "mixer",
     description = "Open the mixer upgrade gui",
-    usage = "/<command>",
-    playerOnly = true
+    usage = "/<command>"
 )
-class MixerCommand : AbstractCommand() {
-    override fun handle(sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val gui = MixerUpgradeGui()
-        val player = sender as Player
-        player.openInventory(gui.getInventory())
-        return true
-    }
+class MixerCommand : BrigadierCommand() {
 
-    override fun handleTabComplete(sender: CommandSender, label: String, args: Array<out String>): List<String> {
-        return emptyList()
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack, @Argument("target", optional = true) target: Player?) {
+        val sender = src.sender
+        val player: Player = if (target != null) {
+            if (sender.hasPermission("lumaitems.command.mixer.other")) {
+                target
+            } else {
+                sender as? Player ?: return
+            }
+        } else {
+            sender as? Player ?: return
+        }
+
+        val gui = MixerUpgradeGui()
+        player.openInventory(gui.inventory)
     }
 }

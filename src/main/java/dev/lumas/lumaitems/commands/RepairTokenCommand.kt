@@ -1,79 +1,93 @@
 package dev.lumas.lumaitems.commands
 
+import com.mojang.brigadier.Command
+import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.context.CommandContext
 import dev.lumas.core.annotation.Autowire
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.core.model.command.AbstractCommand
+import dev.lumas.core.model.brigadier.BrigadierCommand
 import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.items.misc.nests.RepairTokenTier1Item
 import dev.lumas.lumaitems.items.misc.nests.RepairTokenTier2Item
 import dev.lumas.lumaitems.items.misc.nests.RepairTokenTier3Item
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.asComponent
+import io.papermc.paper.command.brigadier.CommandSourceStack
+import io.papermc.paper.command.brigadier.Commands
+import io.papermc.paper.command.brigadier.argument.ArgumentTypes
+import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver
 import org.bukkit.Bukkit
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-@Register(Autowire.COMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "repairtoken",
     description = "Legacy repair token command from JetsRepairTokens",
-    usage = "/<command> <give|giveall> <Repair1|Repair2|Repair3> <amount?>",
+    usage = "/<command> <give|giveall> ...",
     aliases = ["rt", "jetsrepairtokens"],
-    permission = "lumaitems.command.repairtoken",
+    permission = "lumaitems.command.repairtoken"
 )
-class RepairTokenCommand : AbstractCommand() {
+class RepairTokenCommand : BrigadierCommand() {
 
-    override fun handle(sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val arg1 = args.getOrNull(0) ?: return false
-
-        when(arg1.lowercase()) {
-            "give" -> {
-                val player = args.getOrNull(1)?.let { Bukkit.getPlayerExact(it) } ?: return false
-                val type = args.getOrNull(2)?.lowercase() ?: return false
-                val quantity = args.getOrNull(3)?.toIntOrNull() ?: 1
-                giveRepairGem(player, type, quantity)
-            }
-
-            "giveall" -> {
-                val type = args.getOrNull(1)?.lowercase() ?: return false
-                val quantity = args.getOrNull(2)?.toIntOrNull() ?: 1
-                for (player in Bukkit.getOnlinePlayers()) {
-                    giveRepairGem(player, type, quantity)
-                }
-            }
-        }
-
-        return true
+    override fun buildTree(builder: LiteralArgumentBuilder<CommandSourceStack>, commands: Commands): LiteralArgumentBuilder<CommandSourceStack> {
+        return builder
+            // /repairtoken give <player> <type> [amount]
+            .then(Commands.literal("give")
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .then(typeArg { ctx, type -> giveOne(ctx, type, 1) }
+                        .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                            .executes { ctx ->
+                                val type = ctx.getArgument("type", String::class.java)
+                                val amount = IntegerArgumentType.getInteger(ctx, "amount")
+                                giveOne(ctx, type, amount)
+                            }
+                        )
+                    )
+                )
+            )
+            // /repairtoken giveall <type> [amount]
+            .then(Commands.literal("giveall")
+                .then(typeArg { ctx, type -> giveAll(type, 1) }
+                    .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                        .executes { ctx ->
+                            val type = ctx.getArgument("type", String::class.java)
+                            val amount = IntegerArgumentType.getInteger(ctx, "amount")
+                            giveAll(type, amount)
+                        }
+                    )
+                )
+            )
     }
 
-    override fun handleTabComplete(sender: CommandSender, label: String, args: Array<out String>): List<String>? {
-        return when (args.size) {
-            1 -> listOf("give", "giveall")
-            2 -> {
-                if (args[0].lowercase() == "give") {
-                    Bukkit.getOnlinePlayers().mapNotNull { it.name }
-                } else {
-                    listOf("Repair1", "Repair2", "Repair3")
-                }
-            }
-            3 -> {
-                if (args[0].lowercase() == "give") {
-                    listOf("Repair1", "Repair2", "Repair3")
-                } else {
-                    null
-                }
-            }
-            4 ->  {
-                if (args[0].lowercase() == "give") {
-                    listOf("<amount>")
-                } else {
-                    null
-                }
-            }
-            else -> null
+
+    private fun typeArg(defaultExecutor: (CommandContext<CommandSourceStack>, String) -> Int) = Commands.argument("type", com.mojang.brigadier.arguments.StringArgumentType.word())
+        .suggests { _, b ->
+            val partial = b.remaining.lowercase()
+            listOf("Repair1", "Repair2", "Repair3")
+                .filter { it.lowercase().startsWith(partial) }
+                .forEach(b::suggest)
+            b.buildFuture()
         }
+        .executes { ctx ->
+            val type = ctx.getArgument("type", String::class.java)
+            defaultExecutor(ctx, type)
+        }
+
+    private fun giveOne(ctx: CommandContext<CommandSourceStack>, type: String, amount: Int): Int {
+        val resolver = ctx.getArgument("player", PlayerSelectorArgumentResolver::class.java)
+        val target = resolver.resolve(ctx.source).firstOrNull() ?: return 0
+        giveRepairGem(target, type, amount)
+        return Command.SINGLE_SUCCESS
+    }
+
+    private fun giveAll(type: String, amount: Int): Int {
+        for (player in Bukkit.getOnlinePlayers()) {
+            giveRepairGem(player, type, amount)
+        }
+        return Command.SINGLE_SUCCESS
     }
 
     private fun giveRepairGem(player: Player, type: String, quantity: Int) {
@@ -85,7 +99,7 @@ class RepairTokenCommand : AbstractCommand() {
     }
 
     private fun getRepairToken(name: String, quantity: Int): ItemStack {
-        val itemClass = when(name.lowercase()) {
+        val itemClass = when (name.lowercase()) {
             "repair1" -> RepairTokenTier1Item::class
             "repair2" -> RepairTokenTier2Item::class
             "repair3" -> RepairTokenTier3Item::class
@@ -95,5 +109,4 @@ class RepairTokenCommand : AbstractCommand() {
         val customItem = Registry.CUSTOM_ITEMS.getOrThrow(itemClass)
         return customItem.createItem().second.asQuantity(quantity)
     }
-
 }

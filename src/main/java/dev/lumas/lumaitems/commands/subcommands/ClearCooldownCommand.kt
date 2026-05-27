@@ -1,40 +1,49 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.lumaitems.LumaItems
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.send
-import org.bukkit.Bukkit
-import org.bukkit.command.CommandSender
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.entity.Player
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "clearcooldown",
-    description = "Clear cooldowns for a player",
-    usage = "/<command> clearcooldown <player!>",
+    description = "Clear cooldowns for one or more players",
+    usage = "/<command> clearcooldown [targets]",
     permission = "lumaitems.command.clearcooldown",
     parent = CommandManager::class
 )
-class ClearCooldownCommand : SubCommand {
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val player = args.getOrNull(1)?.let { Bukkit.getPlayerExact(it) } ?: sender as? Player ?: run {
-            sender.send("Player not found")
-            return true
+class ClearCooldownCommand : BrigadierSubCommand {
+
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack, @Argument(value = "targets", optional = true) targets: List<@JvmSuppressWildcards Player>?) {
+        val sender = src.sender
+
+        val players: List<Player> = when {
+            !targets.isNullOrEmpty() -> targets
+            sender is Player -> listOf(sender)
+            else -> {
+                sender.send("Must specify at least one target.")
+                return
+            }
         }
 
-        QuickTasks.removeNow(player.uniqueId)
-        QuickTasks.removeAllFlags(player.uniqueId)
-        QuickTasks.removeAllSpellCooldowns(player.uniqueId)
-        sender.send("Cleared cooldown for player ${player.name}")
-        return true
-    }
+        for (player in players) {
+            QuickTasks.removeNow(player.uniqueId)
+            QuickTasks.removeAllFlags(player.uniqueId)
+            QuickTasks.removeAllSpellCooldowns(player.uniqueId)
+        }
 
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
-        return null
+        when (players.size) {
+            1 -> sender.send("Cleared cooldown for ${players[0].name}")
+            else -> sender.send("Cleared cooldowns for ${players.size} players")
+        }
     }
 }

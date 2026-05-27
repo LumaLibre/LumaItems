@@ -1,17 +1,17 @@
 package dev.lumas.lumaitems.commands.subcommands
 
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.lumaitems.LumaItems
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.extensions.setRemainingHealth
-import org.bukkit.command.CommandSender
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.entity.Player
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "debug",
     description = "Debug command",
@@ -20,19 +20,16 @@ import org.bukkit.entity.Player
     playerOnly = false,
     parent = CommandManager::class
 )
-class DebugCommand : SubCommand {
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val player = sender as Player
+class DebugCommand : BrigadierSubCommand {
+
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack) {
+        val player = src.sender as Player
         val item = player.inventory.itemInMainHand
         item.setRemainingHealth(1)
         for ((index, item) in player.inventory.contents.withIndex()) {
             player.send("Slot $index: ${item?.type ?: "null"}")
         }
-        return true
-    }
-
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String?>? {
-        return null
     }
 
 }

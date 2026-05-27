@@ -1,16 +1,16 @@
 package dev.lumas.lumaitems.commands.subcommands
 
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.lumaitems.LumaItems
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.send
-import org.bukkit.command.CommandSender
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "reload",
     description = "Reloads all okaeri config files.",
@@ -19,18 +19,14 @@ import org.bukkit.command.CommandSender
     playerOnly = false,
     parent = CommandManager::class
 )
-class ReloadFilesCommand : SubCommand {
+class ReloadFilesCommand : BrigadierSubCommand {
 
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack) {
         Registry.CONFIGS
             .map { it.value }
             .forEach { it.load(true) }
-        sender.send("Reloaded okaeri files.")
-        return true
-    }
-
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String> {
-        return emptyList()
+        src.sender.send("Reloaded okaeri files.")
     }
 
 }

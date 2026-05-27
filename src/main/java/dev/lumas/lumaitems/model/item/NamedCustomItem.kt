@@ -13,7 +13,8 @@ class NamedCustomItem(
     constructor(customItem: CustomItem) : this(customItem, null)
 
     private companion object {
-        val LOGGER: ContextLogger = ContextLogger.getLogger(true)
+        private val LOGGER: ContextLogger = ContextLogger.getLogger(true)
+        private val BRIGADIER_WORD_ALLOWED = Regex("[^a-zA-Z0-9_\\-.+]")
     }
 
     override fun identifier(): StringIdentifier {
@@ -36,8 +37,14 @@ class NamedCustomItem(
             LOGGER.error("Item " + itemStack.type + " does not have a display name or meta!")
             return "${itemStack.type}-${randomString(3)}"
         }
-        return PlainTextComponentSerializer.plainText().serialize(meta.customName()!!)
-            .replace(" ", "_").lowercase()
+        val raw = PlainTextComponentSerializer.plainText().serialize(meta.customName()!!)
+        return brigadierSafe(raw.replace(" ", "_").lowercase())
+    }
+
+    private fun brigadierSafe(input: String): String {
+        return input.replace(BRIGADIER_WORD_ALLOWED, "")
+            .replace(Regex("_+"), "_") // replace multiple underscores with one
+            .trim('_') // strip leading underscores
     }
 
     private fun randomString(length: Int): String {

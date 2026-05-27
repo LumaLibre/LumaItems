@@ -1,37 +1,48 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.lumaitems.LumaItems
+import dev.lumas.core.annotation.Suggests
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.datacomponent.DataComponentTypes
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.util.concurrent.CompletableFuture
 
-
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "itemmodel",
     description = "Change model of an item",
-    usage = "/<command> itemmodel",
+    usage = "/<command> itemmodel <model>",
     permission = "lumaitems.command.itemmodel",
     parent = CommandManager::class,
     playerOnly = true
 )
-class ItemModelCommand : SubCommand {
+class ItemModelCommand : BrigadierSubCommand {
 
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        sender as Player
-        val itemInHand = sender.inventory.itemInMainHand
-        itemInHand.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft(args[0]))
-        return true
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack, @Argument("model") model: String) {
+        val player = src.sender as Player
+        val itemInHand = player.inventory.itemInMainHand
+        itemInHand.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft(model))
     }
 
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String> {
-        return Material.entries.map { it.name.lowercase() }
+    @Suggests("model")
+    fun suggestModel(ctx: CommandContext<CommandSourceStack>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+        val partial = builder.remaining.lowercase()
+        Material.entries.asSequence()
+            .map { it.name.lowercase() }
+            .filter { it.startsWith(partial) }
+            .forEach(builder::suggest)
+        return builder.buildFuture()
     }
 }
