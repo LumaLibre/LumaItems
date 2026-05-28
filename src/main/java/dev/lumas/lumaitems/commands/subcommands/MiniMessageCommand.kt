@@ -1,32 +1,31 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.core.util.Text
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
-import org.bukkit.command.CommandSender
+import dev.lumas.lumaitems.commands.providers.GreedyStringProvider
+import io.papermc.paper.command.brigadier.CommandSourceStack
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "mm",
     aliases = ["minimessage"],
     description = "Minimessage some text",
     usage = "/<command> mm <text>",
     permission = "lumaitems.command.minimessage",
-    playerOnly = false,
     parent = CommandManager::class
 )
-class MiniMessageCommand : SubCommand {
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val text = args.joinToString(" ")
-        sender.sendMessage(Text.mm(text))
-        return true
+class MiniMessageCommand : BrigadierSubCommand {
+
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack, @Argument(value = "text", provider = GreedyStringProvider::class) text: String) {
+        src.sender.sendMessage(Text.mm(text))
     }
 
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String> {
-        return emptyList()
-    }
+
 }

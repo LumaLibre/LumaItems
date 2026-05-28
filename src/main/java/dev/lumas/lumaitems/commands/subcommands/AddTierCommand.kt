@@ -1,19 +1,23 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import com.mojang.brigadier.arguments.StringArgumentType
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
+import dev.lumas.core.model.brigadier.ArgumentTypeProvider
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.core.util.Text
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
+import dev.lumas.lumaitems.commands.providers.GreedyStringProvider
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.extensions.send
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "tier",
     description = "Add a tier to an item",
@@ -22,20 +26,17 @@ import org.bukkit.entity.Player
     playerOnly = true,
     parent = CommandManager::class
 )
-class AddTierCommand : SubCommand {
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        sender as Player
-        val item = sender.inventory.itemInMainHand
+class AddTierCommand : BrigadierSubCommand {
+
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack, @Argument(value = "text", provider = GreedyStringProvider::class) tier: String) {
+        val player = src.sender as Player
+        val item = player.inventory.itemInMainHand
+
         if (item.type.isAir) {
-            sender.send("You must be holding an item to add a tier!")
-            return false
+            player.send("You must be holding an item to add a tier!")
+            return
         }
-
-        if (args.isEmpty()) {
-            return false
-        }
-
-        val tier = args.joinToString(" ")
 
         item.editMeta { meta ->
             val lore: MutableList<Component> = meta?.lore() ?: mutableListOf()
@@ -43,11 +44,6 @@ class AddTierCommand : SubCommand {
             meta.lore(lore)
         }
 
-        sender.send("Successfully added tier to item.")
-        return true
-    }
-
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
-        return listOf("<text>")
+        player.send("Successfully added tier to item.")
     }
 }

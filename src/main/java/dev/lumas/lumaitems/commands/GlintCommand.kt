@@ -1,15 +1,16 @@
 package dev.lumas.lumaitems.commands
 
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.core.model.command.AbstractCommand
+import dev.lumas.core.model.brigadier.BrigadierCommand
 import dev.lumas.lumaitems.util.extensions.send
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.datacomponent.DataComponentTypes
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-@Register(Autowire.COMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "glint",
     description = "Override an item's enchantment glint",
@@ -17,22 +18,18 @@ import org.bukkit.entity.Player
     permission = "lumaitems.command.glint",
     playerOnly = true
 )
-class GlintCommand : AbstractCommand() {
+class GlintCommand : BrigadierCommand() {
 
-    override fun handle(sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val player = sender as? Player ?: return false
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack) {
+        val player = src.sender as Player
         val item = player.inventory.itemInMainHand
         if (!item.hasItemMeta() || item.itemMeta?.hasEnchants() == false) {
             player.send("<red>This item cannot have its glint toggled.")
-            return true
+            return
         }
 
         val glintOverrideCurrent = item.getData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE) ?: true
         item.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, !glintOverrideCurrent)
-        return true
-    }
-
-    override fun handleTabComplete(sender: CommandSender, label: String, args: Array<out String>): List<String> {
-        return listOf()
     }
 }

@@ -1,43 +1,61 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
+import dev.lumas.core.annotation.Suggests
+import dev.lumas.core.model.brigadier.ArgumentTypeProvider
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.core.util.Text
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.api.ItemManager
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
+import dev.lumas.lumaitems.commands.providers.FreeFormStringProvider
+import dev.lumas.lumaitems.commands.providers.NonNegativeIntProvider
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.registry.StringIdentifier
 import dev.lumas.lumaitems.util.extensions.asComponent
-import dev.lumas.lumaitems.util.extensions.getNextIntArgument
 import dev.lumas.lumaitems.util.extensions.send
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.util.concurrent.CompletableFuture
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "random",
     description = "Obtain a random amount of a custom item from a specified range",
-    usage = "/<command> random <item!> <player!> <from!> <until!> [-silent]",
+    usage = "/<command> random <item> <target> <from> <until> [silent]",
     permission = "lumaitems.command.random",
-    playerOnly = false,
     parent = CommandManager::class
 )
-class GiveItemRandomAmountCommand : SubCommand {
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val itemName = args.getOrNull(0) ?: return false
-        val target = args.getOrNull(1)?.let { plugin.server.getPlayerExact(it) } ?: sender as? Player ?: return false
-        val from = args.getOrNull(2)?.toIntOrNull() ?: return false
-        val until = args.getOrNull(3)?.toIntOrNull() ?: return false
+class GiveItemRandomAmountCommand : BrigadierSubCommand {
 
-        if (from < 0 || until < 0 || from > until) {
-            sender.send("Invalid range! Ensure that 'from' and 'until' are non-negative integers and that 'from' is less than or equal to 'until'.")
-            return false
+    @BrigadierExecutor
+    fun run(
+        src: CommandSourceStack,
+        @Argument("item") itemName: String,
+        @Argument("target") target: Player,
+        @Argument("from", provider = NonNegativeIntProvider::class) from: Int,
+        @Argument("until", provider = NonNegativeIntProvider::class) until: Int,
+        @Argument("silent", optional = true) silent: Boolean?
+    ) {
+        val sender: CommandSender = src.sender
+
+        if (from > until) {
+            sender.send("<red>Invalid range: 'from' ($from) must be ≤ 'until' ($until)")
+            return
         }
 
-        val item = ItemManager.getItemByName(itemName) ?: ItemManager.getItemByKey(itemName) ?: return false
+        val item = ItemManager.getItemByName(itemName) ?: ItemManager.getItemByKey(itemName) ?: run {
+            sender.send("<red>No item named $itemName")
+            return
+        }
 
         val amount = (from..until).random()
 
@@ -50,26 +68,22 @@ class GiveItemRandomAmountCommand : SubCommand {
             }
         }
 
-        if (!args.contains("-silent")) {
+        if (silent != true) {
             Text.msg(target, item.itemMeta?.displayName()?.let {
-                "<reset>You have been given</reset> <gold>${amount}x</gold> ".asComponent().append(it) } ?: "???".asComponent())
+                "<reset>You have been given</reset> <gold>${amount}x</gold> ".asComponent().append(it)
+            } ?: "???".asComponent())
         }
-        return true
     }
 
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String?>? {
-        return when (args.size) {
-            1 -> Registry.NAMED_CUSTOM_ITEMS.keySet(StringIdentifier::class).map { it.key() }
-            2 -> null
-            3 -> {
-                val arg = args.getOrNull(2) ?: return emptyList()
-                arg.getNextIntArgument()
-            }
-            4 -> {
-                val arg = args.getOrNull(3) ?: return emptyList()
-                arg.getNextIntArgument()
-            }
-            else -> listOf("-silent")
-        }
+    @Suggests("item")
+    fun suggestItem(ctx: CommandContext<CommandSourceStack>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+        val partial = builder.remaining.lowercase()
+        Registry.NAMED_CUSTOM_ITEMS.keySet(StringIdentifier::class).asSequence()
+            .map { it.key() }
+            .filter { it.lowercase().startsWith(partial) }
+            .forEach(builder::suggest)
+        return builder.buildFuture()
     }
+
+
 }

@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.api;
 
 import com.google.common.reflect.ClassPath;
-import dev.lumas.core.util.ContextLogger;
+import dev.lumas.core.util.PluginContextLogger;
 import dev.lumas.lumaitems.LumaItems;
 import dev.lumas.lumaitems.annotations.Ignore;
 import dev.lumas.lumaitems.annotations.Requires;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @ApiStatus.Internal
 public final class ItemManager {
 
-    private static final ContextLogger LOGGER = ContextLogger.getLogger(true);
+    private static final PluginContextLogger LOGGER = PluginContextLogger.getPluginLogger();
     private static final String BASE_PACKAGE = "dev.lumas.lumaitems.items";
 
 
@@ -102,10 +102,6 @@ public final class ItemManager {
         return list;
     }
 
-
-//    public ItemManager(LumaItems plugin) {
-//        this.plugin = plugin;
-//    }
 
 
     /**

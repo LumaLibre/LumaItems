@@ -1,94 +1,94 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
+import dev.lumas.core.annotation.Suggests
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.core.util.Text
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.api.ItemManager
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
+import dev.lumas.lumaitems.commands.providers.FreeFormStringProvider
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.registry.StringIdentifier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.asComponent
 import dev.lumas.lumaitems.util.extensions.send
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.util.concurrent.CompletableFuture
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "give",
     description = "Obtain a custom item",
-    usage = "/<command> give <item!> <player?> <amount?> [-silent]",
+    usage = "/<command> give <item> [target] [amount] [silent]",
     permission = "lumaitems.command.give",
-    playerOnly = false,
     parent = CommandManager::class
 )
-class GiveItemCommand : SubCommand {
+class GiveItemCommand : BrigadierSubCommand {
 
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        if (args.isEmpty()) return false
-        val item = if (args[0] != "all") {
-            ItemManager.getItemByName(args[0]) ?: ItemManager.getItemByKey(args[0]) ?: return false
-        } else {
-            null
-        }
+    @BrigadierExecutor
+    fun run(
+        src: CommandSourceStack,
+        @Argument(value = "item") itemName: String,
+        @Argument(value = "target", optional = true) target: Player?,
+        @Argument(value = "amount", optional = true) amount: Int?,
+        @Argument(value = "silent", optional = true) silent: Boolean?
+    ) {
+        val sender: CommandSender = src.sender
 
+        val recipient: Player = target ?: (sender as? Player ?: run {
+            Text.msg(sender, "<red>Must specify a target when running from console")
+            return
+        })
 
-        val player = if (args.size >= 2) {
-            plugin.server.getPlayerExact(args[1]) ?: return false
-        } else {
-            sender as Player
-        }
+        val giveAmount = amount ?: 1
+        val isSilent = silent ?: false
 
-
-        val amount = if (args.size >= 3) {
-            args[2].toIntOrNull() ?: 1
-        } else {
-            1
-        }
-
-
-        if (item != null) {
-            val maxStack = item.maxStackSize.coerceAtLeast(1)
-            var remaining = amount
-            while (remaining > 0) {
-                val give = remaining.coerceAtMost(maxStack)
-                Util.giveItem(player, item.asQuantity(give))
-                remaining -= give
-            }
-            if (!args.contains("-silent")) {
-                Text.msg(player, item.itemMeta?.displayName()?.let {
-                    "<reset>You have been given</reset> <gold>${amount}x</gold> ".asComponent().append(it)
-                } ?: "???".asComponent())
-            }
-        } else {
+        if (itemName == "all") {
             for (customItem in ItemManager.getAllItems()) {
                 if (customItem.isEmpty) continue
-                Util.giveItem(player, customItem)
+                Util.giveItem(recipient, customItem)
             }
-            player.send("You have been given all custom items!")
+            recipient.send("You have been given all custom items!")
+            return
         }
-        return true
+
+        val item = ItemManager.getItemByName(itemName) ?: ItemManager.getItemByKey(itemName) ?: run {
+            Text.msg(sender, "<red>No item named $itemName")
+            return
+        }
+
+        val maxStack = item.maxStackSize.coerceAtLeast(1)
+        var remaining = giveAmount
+        while (remaining > 0) {
+            val give = remaining.coerceAtMost(maxStack)
+            Util.giveItem(recipient, item.asQuantity(give))
+            remaining -= give
+        }
+
+        if (!isSilent) {
+            Text.msg(recipient, item.itemMeta?.displayName()?.let {
+                "<reset>You have been given</reset> <gold>${giveAmount}x</gold> ".asComponent().append(it)
+            } ?: "???".asComponent())
+        }
     }
 
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
-        return when (args.size) {
-            1 -> {
-                val list: MutableList<String> = Registry.NAMED_CUSTOM_ITEMS.keySet(StringIdentifier::class).map { it.key() }.toMutableList()
-                list.add("all")
-                list
-            }
-            2 -> {
-                null
-            }
-            3 -> {
-                listOf("<amount>")
-            }
-            else -> {
-                listOf("-silent")
-            }
-        }
+    @Suggests("item")
+    fun suggestItem(ctx: CommandContext<CommandSourceStack>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+        val partial = builder.remaining.lowercase()
+        Registry.NAMED_CUSTOM_ITEMS.keySet(StringIdentifier::class).asSequence()
+            .map { it.key() }
+            .plus("all")
+            .filter { it.lowercase().startsWith(partial) }
+            .forEach(builder::suggest)
+        return builder.buildFuture()
     }
 }

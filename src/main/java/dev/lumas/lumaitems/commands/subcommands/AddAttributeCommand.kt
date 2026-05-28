@@ -1,21 +1,27 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.lumaitems.LumaItems
+import dev.lumas.core.annotation.Suggests
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.util.extensions.send
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.NamespacedKey
 import org.bukkit.Registry
 import org.bukkit.attribute.AttributeModifier
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlotGroup
+import java.util.concurrent.CompletableFuture
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "addattributemod",
     description = "Add an attribute modifier to the held item",
@@ -24,7 +30,7 @@ import org.bukkit.inventory.EquipmentSlotGroup
     playerOnly = true,
     parent = CommandManager::class
 )
-class AddAttributeCommand : SubCommand {
+class AddAttributeCommand : BrigadierSubCommand {
 
     companion object {
         private val SLOT_GROUPS = mapOf(
@@ -41,30 +47,41 @@ class AddAttributeCommand : SubCommand {
         )
     }
 
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val player = sender as Player
+    @BrigadierExecutor
+    fun run(
+        src: CommandSourceStack,
+        @Argument("attribute") attributeName: String,
+        @Argument("operation") operationName: String,
+        @Argument("amount") amount: Double,
+        @Argument(value = "slot", optional = true) slotName: String?
+    ) {
+        val player = src.sender as Player
         val item = player.inventory.itemInMainHand
 
         if (item.type.isAir) {
             player.send("You must be holding an item!")
-            return false
+            return
         }
 
-        if (args.size < 3) return false
+        val lookupKey = NamespacedKey.fromString(attributeName.lowercase()) ?: NamespacedKey.minecraft(attributeName.lowercase())
+        val attribute = Registry.ATTRIBUTE.get(lookupKey) ?: run {
+            player.send("Unknown attribute: $attributeName")
+            return
+        }
 
-        val lookupKey = NamespacedKey.fromString(args[0].lowercase()) ?: NamespacedKey.minecraft(args[0].lowercase())
-        val attribute = Registry.ATTRIBUTE.get(lookupKey)
-            ?: run { player.send("Unknown attribute: ${args[0]}"); return false }
+        val operation = AttributeModifier.Operation.entries.find { it.name.equals(operationName, ignoreCase = true) } ?: run {
+            player.send("Unknown operation: $operationName")
+            return
+        }
 
-        val operation = AttributeModifier.Operation.entries.find { it.name.equals(args[1], ignoreCase = true) }
-            ?: run { player.send("Unknown operation: ${args[1]}"); return false }
-
-        val amount = args[2].toDoubleOrNull()
-            ?: run { player.send("Invalid amount: ${args[2]}"); return false }
-
-        val slot = args.getOrNull(3)?.let {
-            SLOT_GROUPS[it.lowercase()] ?: run { player.send("Unknown slot: $it"); return false }
-        } ?: EquipmentSlotGroup.ANY
+        val slot = if (slotName != null) {
+            SLOT_GROUPS[slotName.lowercase()] ?: run {
+                player.send("Unknown slot: $slotName")
+                return
+            }
+        } else {
+            EquipmentSlotGroup.ANY
+        }
 
         val container = AttributeContainer.of(
             AttributeContainer.generateStringKey(8),
@@ -79,18 +96,34 @@ class AddAttributeCommand : SubCommand {
         }
 
         player.send("Added ${attribute.key.key} modifier: $amount (${operation.name.lowercase()}) on slot $slot")
-        return true
     }
 
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String?>? {
-        return when (args.size) {
-            1 -> Registry.ATTRIBUTE.map { it.key.key }
-                .filter { it.startsWith(args[0], ignoreCase = true) }
-            2 -> AttributeModifier.Operation.entries.map { it.name.lowercase() }
-                .filter { it.startsWith(args[1], ignoreCase = true) }
-            3 -> listOf("<amount>")
-            4 -> SLOT_GROUPS.keys.filter { it.startsWith(args[3], ignoreCase = true) }
-            else -> null
-        }
+    @Suggests("attribute")
+    fun suggestAttribute(ctx: CommandContext<CommandSourceStack>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+        val partial = builder.remaining.lowercase()
+        Registry.ATTRIBUTE.asSequence()
+            .map { it.key.key }
+            .filter { it.lowercase().startsWith(partial) }
+            .forEach(builder::suggest)
+        return builder.buildFuture()
+    }
+
+    @Suggests("operation")
+    fun suggestOperation(ctx: CommandContext<CommandSourceStack>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+        val partial = builder.remaining.lowercase()
+        AttributeModifier.Operation.entries.asSequence()
+            .map { it.name.lowercase() }
+            .filter { it.startsWith(partial) }
+            .forEach(builder::suggest)
+        return builder.buildFuture()
+    }
+
+    @Suggests("slot")
+    fun suggestSlot(ctx: CommandContext<CommandSourceStack>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+        val partial = builder.remaining.lowercase()
+        SLOT_GROUPS.keys.asSequence()
+            .filter { it.startsWith(partial) }
+            .forEach(builder::suggest)
+        return builder.buildFuture()
     }
 }

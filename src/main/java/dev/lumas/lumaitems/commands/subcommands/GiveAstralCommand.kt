@@ -1,48 +1,54 @@
 package dev.lumas.lumaitems.commands.subcommands
 
+import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
+import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.lumaitems.LumaItems
+import dev.lumas.core.annotation.Suggests
+import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.SubCommand
 import dev.lumas.lumaitems.configuration.files.AstralYml
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.relics.RelicCrafting
-import dev.lumas.lumaitems.util.extensions.send
-import org.bukkit.command.CommandSender
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.entity.Player
+import java.util.concurrent.CompletableFuture
 
-@Register(Autowire.SUBCOMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "giveastral",
     description = "Obtain an Astral Set",
-    usage = "/<command> giveastral <rarity!>",
+    usage = "/<command> giveastral <rarity>",
     permission = "lumaitems.command.giveastral",
     playerOnly = true,
     parent = CommandManager::class
 )
-class GiveAstralCommand : SubCommand {
+class GiveAstralCommand : BrigadierSubCommand {
 
-    override fun execute(plugin: LumaItems, sender: CommandSender, label: String, args: Array<out String>): Boolean {
-        val player = sender as? Player ?: return false
-        if (args.size != 1) {
-            player.send("Invalid arguments")
-            return false
-        }
-        val items = RelicCrafting.getItemsFromClass(args[0])
+    @BrigadierExecutor
+    fun run(src: CommandSourceStack, @Argument("rarity") rarity: String) {
+        val player = src.sender as Player
+        val items = RelicCrafting.getItemsFromClass(rarity)
         for (item in items) {
             player.inventory.addItem(item)
         }
-        return true
     }
 
-    override fun tabComplete(plugin: LumaItems, sender: CommandSender, args: Array<out String>): List<String>? {
-        return Registry.CONFIGS.getOrThrow(AstralYml::class)
+    @Suggests("rarity")
+    fun suggestRarity(ctx: CommandContext<CommandSourceStack>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+        val partial = builder.remaining.lowercase()
+        Registry.CONFIGS.getOrThrow(AstralYml::class)
             .astralOrbRarities
             .keys
+            .asSequence()
             .map { it.setClass.simpleName }
-            .toList()
+            .filterNotNull()
+            .filter { it.lowercase().startsWith(partial) }
+            .forEach(builder::suggest)
+        return builder.buildFuture()
     }
-
 }
