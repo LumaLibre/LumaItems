@@ -6,14 +6,11 @@ import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
 import dev.lumas.core.model.brigadier.BrigadierCommand
-import dev.lumas.core.model.command.AbstractCommand
 import dev.lumas.lumaitems.guis.AstralUpgradeGui
-import dev.lumas.lumaitems.guis.MixerUpgradeGui
 import io.papermc.paper.command.brigadier.CommandSourceStack
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-@Register(Autowire.COMMAND)
+@Register(Autowire.BRIGADIER)
 @CommandMeta(
     name = "upgrade",
     description = "Open the Astral upgrade gui",
