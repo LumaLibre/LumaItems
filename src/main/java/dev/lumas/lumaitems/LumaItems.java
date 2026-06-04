@@ -52,7 +52,6 @@ public final class LumaItems extends JavaPlugin {
             Executors.async(task -> {
                 try {
                     initItemManager(itemManager);
-                    moduleManager.register(classSet);
                 } catch (Throwable e) {
                     LOGGER.error("An error occurred while registering items asynchronously");
                     getServer().getPluginManager().disablePlugin(this);
@@ -61,9 +60,10 @@ public final class LumaItems extends JavaPlugin {
             });
         } else {
             initItemManager(itemManager);
-            moduleManager.register(classSet);
             LOGGER.info("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
+
+        moduleManager.register(classSet);
 
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();

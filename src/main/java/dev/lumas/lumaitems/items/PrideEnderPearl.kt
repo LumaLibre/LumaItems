@@ -6,6 +6,7 @@ import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.addCooldown
+import dev.lumas.lumaitems.util.extensions.canDamage
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
@@ -60,7 +61,7 @@ class PrismPearlItem : CustomItemFunctions() {
         val nearestMob = player.world.getNearbyEntities(
             player.location, SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS
         )
-            .filter { it is Animals && it !is Enemy }
+            .filter { it is Animals && it !is Enemy && player.canDamage(it) }
             .minByOrNull { it.location.distanceSquared(player.location) }
 
         if (nearestMob == null) {
