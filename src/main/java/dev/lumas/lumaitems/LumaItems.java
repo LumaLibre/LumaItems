@@ -31,6 +31,7 @@ public final class LumaItems extends JavaPlugin {
     private static PassiveListeners passiveListeners;
     private static ItemManager itemManager;
     private static Modules moduleManager;
+    private static boolean finishedRegistration;
 
     @Override
     public void onLoad() {
@@ -83,6 +84,7 @@ public final class LumaItems extends JavaPlugin {
             passiveListeners.getPassiveListener(Action.ASYNC_RUNNABLE, PassiveListeners.ASYNC_PASSIVE_LISTENER_TICKS, false);
             passiveListeners.getPassiveListener(Action.FAST_ASYNC_RUNNABLE,  PassiveListeners.FAST_ASYNC_PASSIVE_LISTENER_TICKS, false);
             passiveListeners.getGlobalTask(PassiveListeners.ASYNC_GLOBAL_TASK_TICKS);
+            finishedRegistration = true;
         } catch (Exception e) {
             LOGGER.error("An error occurred while registering items", e);
             getServer().getPluginManager().disablePlugin(this);
@@ -118,4 +120,7 @@ public final class LumaItems extends JavaPlugin {
         return itemManager;
     }
 
+    public static boolean isFinishedRegistration() {
+        return finishedRegistration;
+    }
 }

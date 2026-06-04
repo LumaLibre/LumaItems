@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.events.item
 
 import com.gmail.nossr50.api.AbilityAPI as mcMMOAbilityAPI
 import dev.lumas.lumacore.utility.Logging
+import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.model.item.CustomItem
@@ -74,7 +75,7 @@ abstract class ItemListener : Listener {
         optimize: Boolean = false,
         withContainer: Boolean = false
     ) {
-
+        if (!LumaItems.isFinishedRegistration()) return
         if (!optimize && source?.isHealthTooLow() == true) {
             if (ServiceDeterrents.applyDeterrent(source.item, player, event, action) && player != null) {
                 tryPlayBreakSound(player)
@@ -99,6 +100,7 @@ abstract class ItemListener : Listener {
         optimize: Boolean = false,
         withContainer: Boolean = false
     ) {
+        if (!LumaItems.isFinishedRegistration()) return
         val containers = data.ifEmpty { listOf(null) }
         for (itemData in containers) {
             fire(itemData, action, player, event, optimize, withContainer)
@@ -107,6 +109,7 @@ abstract class ItemListener : Listener {
 
     // TODO: @FireAnyways
     fun fire(key: String, action: Action, player: Player?, event: Any, withContainer: Boolean = false) {
+        if (!LumaItems.isFinishedRegistration()) return
         for ((registryKey, item) in Registry.CUSTOM_ITEMS) {
             if (!key.equals(registryKey.asSimpleString(), true)) continue
             if (handleDisabledIfNeeded(item, player, event, action)) return
