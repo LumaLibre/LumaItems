@@ -34,6 +34,7 @@ class PrismPearlItem : CustomItemFunctions() {
             .persistentData(KEY)
             .tier(Tier.PRIDE_2026)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
+            .customEnchants("<#feff5d>Flair")
             .lore(
                 "A pearl with a strange",
                 "<#feff5d>connection</#feff5d> to passive",

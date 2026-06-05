@@ -24,6 +24,7 @@ class InfiniteMilkBucketItem : CustomItemFunctions() {
             .persistentData(KEY)
             .tier(Tier.PRIDE_2026)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
+            .customEnchants("<#FFFFFF>Bottomless")
             .lore(
                 "A bottomless bucket of",
                 "milk that never runs out.",

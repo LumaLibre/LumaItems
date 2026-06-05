@@ -38,6 +38,7 @@ class AurorasReachItem : CustomItemFunctions() {
             .persistentData(KEY)
             .tier(Tier.PRIDE_2026)
             .vanillaEnchants(Enchantment.UNBREAKING to 10)
+            .customEnchants("<#b5ead9>Harmony")
             .lore(
                 "A bow imbued with the",
                 "colours of the rainbow.",
