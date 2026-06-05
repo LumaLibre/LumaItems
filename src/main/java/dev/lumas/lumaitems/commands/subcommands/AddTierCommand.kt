@@ -1,12 +1,10 @@
 package dev.lumas.lumaitems.commands.subcommands
 
-import com.mojang.brigadier.arguments.StringArgumentType
 import dev.lumas.core.annotation.Argument
 import dev.lumas.core.annotation.Autowire
 import dev.lumas.core.annotation.BrigadierExecutor
 import dev.lumas.core.annotation.CommandMeta
 import dev.lumas.core.annotation.Register
-import dev.lumas.core.model.brigadier.ArgumentTypeProvider
 import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.commands.CommandManager
