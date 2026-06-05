@@ -1,6 +1,5 @@
 package dev.lumas.lumaitems.items.misc
 
-import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
@@ -19,7 +18,7 @@ class InfiniteMilkBucketItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.builder()
+        return ItemFactory.Companion.builder()
             .name("<b><gradient:#FFFFFF:#AAAAAA>Infinite Milk Bucket</gradient></b>")
             .material(Material.MILK_BUCKET)
             .persistentData(KEY)

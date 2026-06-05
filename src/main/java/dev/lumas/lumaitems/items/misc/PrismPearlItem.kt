@@ -1,6 +1,5 @@
 package dev.lumas.lumaitems.items.misc
 
-import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
@@ -15,10 +14,10 @@ import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Animals
 import org.bukkit.entity.Enemy
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 class PrismPearlItem : CustomItemFunctions() {
@@ -29,7 +28,7 @@ class PrismPearlItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.builder()
+        return ItemFactory.Companion.builder()
             .name("<b><gradient:#ff3b3b:#ff8848:#feff5d:#aaff59:#84ffd7>Prism Pearl</gradient></b>")
             .material(Material.ENDER_PEARL)
             .persistentData(KEY)
@@ -50,7 +49,7 @@ class PrismPearlItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (event.hand != org.bukkit.inventory.EquipmentSlot.HAND) return
+        if (event.hand != EquipmentSlot.HAND) return
         if (player.isOnCooldown(this)) return
 
         val item = player.inventory.itemInMainHand

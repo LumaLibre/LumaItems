@@ -1,12 +1,12 @@
-package dev.lumas.lumaitems.items.misc
+package dev.lumas.lumaitems.items.weapons.bow
 
-import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.namespacedKey
-import org.bukkit.Bukkit
+import dev.lumas.lumaitems.util.extensions.syncTimer
+import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.Material
@@ -15,7 +15,6 @@ import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
 
 class AurorasReachItem : CustomItemFunctions() {
@@ -24,7 +23,7 @@ class AurorasReachItem : CustomItemFunctions() {
         private val KEY = "auroras-reach".namespacedKey()
         private val RAINBOW_COLORS = listOf(
             Color.RED,
-            Color.fromRGB(0xFF7F00), // Orange
+            "#FF7F00".toBukkitColor(), // Orange
             Color.YELLOW,
             Color.GREEN,
             Color.BLUE,
@@ -33,7 +32,7 @@ class AurorasReachItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.builder()
+        return ItemFactory.Companion.builder()
             .name("<b><gradient:#e0f7fa:#a8e6cf:#dcedc8:#ffd54f:#ffab40:#ba68c8>Aurora's Reach</gradient></b>")
             .material(Material.BOW)
             .persistentData(KEY)
@@ -72,12 +71,11 @@ class AurorasReachItem : CustomItemFunctions() {
         val direction: Vector = player.location.direction.normalize()
         val speed = 1.5
         var ticksLived = 0
-        val plugin = JavaPlugin.getPlugin(LumaItems::class.java)
 
-        Bukkit.getScheduler().runTaskTimer(plugin, { task ->
+        firework.syncTimer(0L, 1L) { task ->
             if (firework.isDead || !firework.isValid) {
                 task.cancel()
-                return@runTaskTimer
+                return@syncTimer
             }
 
             val nextLocation = firework.location.add(direction.clone().multiply(speed))
@@ -85,7 +83,7 @@ class AurorasReachItem : CustomItemFunctions() {
             if (nextBlock?.type?.isSolid == true) {
                 firework.detonate()
                 task.cancel()
-                return@runTaskTimer
+                return@syncTimer
             }
 
             firework.velocity = direction.clone().multiply(speed)
@@ -94,6 +92,6 @@ class AurorasReachItem : CustomItemFunctions() {
                 firework.detonate()
                 task.cancel()
             }
-        }, 0L, 1L)
+        }
     }
 }
