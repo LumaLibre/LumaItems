@@ -12,6 +12,7 @@ import dev.lumas.core.annotation.Suggests
 import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.commands.CommandManager
+import dev.lumas.lumaitems.commands.providers.FreeFormStringProvider
 import dev.lumas.lumaitems.items.misc.jobs.JobsBoosterItem
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.asComponent
@@ -34,7 +35,7 @@ class JobsBoosterItemCommand : BrigadierSubCommand {
     fun run(
         src: CommandSourceStack,
         @Argument("type") typeName: String,
-        @Argument("value") value: String,
+        @Argument(value = "value", provider = FreeFormStringProvider::class) value: String,
         @Argument("duration") duration: String,
         @Argument(value = "target", optional = true) target: Player?
     ) {

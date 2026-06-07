@@ -32,7 +32,7 @@ class AurorasReachItem : CustomItemFunctions() {
     }
 
     override fun createItem(): Pair<String, ItemStack> {
-        return ItemFactory.Companion.builder()
+        return ItemFactory.builder()
             .name("<b><gradient:#e0f7fa:#a8e6cf:#dcedc8:#ffd54f:#ffab40:#ba68c8>Aurora's Reach</gradient></b>")
             .material(Material.BOW)
             .persistentData(KEY)
