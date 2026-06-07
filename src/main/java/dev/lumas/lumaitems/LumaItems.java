@@ -95,10 +95,15 @@ public final class LumaItems extends JavaPlugin {
     public void onDisable() {
         HandlerList.unregisterAll(this); // Immediately disable all listeners to prevent any further events from firing
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getOpenInventory().getTopInventory().getHolder(false) instanceof LumaItemsAbstractGui) {
-                player.closeInventory();
+
+        try {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getOpenInventory().getTopInventory().getHolder(false) instanceof LumaItemsAbstractGui) {
+                    player.closeInventory();
+                }
             }
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
 
         moduleManager.unregister();

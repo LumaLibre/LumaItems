@@ -23,6 +23,7 @@ class PrideTokenItem : CustomItemFunctions() {
             .material(Material.RED_TULIP)
             .hideEnchants(true)
             .tier(Tier.PRIDE_2026)
+            .persistentData("pride-token-2026")
             .buildPair()
     }
 
