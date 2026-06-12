@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -78,7 +79,7 @@ public final class FakeLootTable {
 
     private static LivingEntity createFakeAttacker(ServerLevel level, int lootingLevel) {
         net.minecraft.world.entity.decoration.ArmorStand armorStand =
-                new net.minecraft.world.entity.decoration.ArmorStand(EntityType.ARMOR_STAND, level);
+                new net.minecraft.world.entity.decoration.ArmorStand(EntityTypes.ARMOR_STAND, level);
 
         if (lootingLevel > 0) {
             ItemStack fakeWeapon = new ItemStack(Items.STICK);

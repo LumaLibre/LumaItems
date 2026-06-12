@@ -58,7 +58,8 @@ dependencies {
 
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")
 
-    paperweight.devBundle("io.canvasmc.canvas", "26.1.2.build.+")
+    //compileOnly("io.canvasmc.canvas:canvas-api:26.1.2.build.+")
+    paperweight.paperDevBundle("26.2-rc-2.build.+")
 }
 
 tasks {
@@ -86,6 +87,7 @@ tasks {
     }
 
     runServer {
+        serverJar(file("run/paper-26.2-rc-2-5.jar"))
         minecraftVersion("26.1.2")
     }
 }

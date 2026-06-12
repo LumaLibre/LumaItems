@@ -8,7 +8,8 @@ import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 
-@Register(Autowire.LISTENER, requires = "io.canvasmc.canvas.event.EntityTeleportAsyncEvent")
+// TODO: wait for canvas dev bundles
+@Register(Autowire.LISTENER, requires = "io.canvasmc.canvas.region.WorldRegionizer" /*"io.canvasmc.canvas.event.EntityTeleportAsyncEvent"*/)
 class CanvasListeners : ItemListener() {
 
     @EventHandler(ignoreCancelled = true)

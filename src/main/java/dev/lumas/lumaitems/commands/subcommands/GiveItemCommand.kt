@@ -70,6 +70,7 @@ class GiveItemCommand : BrigadierSubCommand {
         var remaining = giveAmount
         while (remaining > 0) {
             val give = remaining.coerceAtMost(maxStack)
+            recipient.world.dropItem(recipient.location, item.asQuantity(give)) // FIXME: player#give doesnt work in this rc i guess lol
             Util.giveItem(recipient, item.asQuantity(give))
             remaining -= give
         }
