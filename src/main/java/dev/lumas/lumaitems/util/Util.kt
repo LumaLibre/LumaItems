@@ -31,8 +31,15 @@ object Util {
     const val WITH_DELIMITER = "((?<=%1\$s)|(?=%1\$s))"
 
 
-    fun giveItem(player: Player, item: ItemStack) = player.sync { player.give(item) }
-    fun giveItem(player: Player, items: Collection<ItemStack>) = player.sync { player.give(items)}
+    fun giveItem(player: Player, item: ItemStack, drop: Boolean = false) {
+        player.sync {
+            if (!drop) {
+                player.give(item)
+            } else {
+                player.world.dropItem(player.eyeLocation, item)
+            }
+        }
+    }
 
     fun formatEnchantKey(key: String) = formatEnumerator(key.replace("minecraft:", ""))
     fun formatEnumerator(s: String) = s.formatSnakeCase()
