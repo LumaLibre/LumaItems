@@ -36,6 +36,7 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.MultipleFacing
 import org.bukkit.block.data.Orientable
+import org.bukkit.block.data.type.Chest
 import org.bukkit.block.data.type.Door
 import org.bukkit.block.data.type.Leaves
 import org.bukkit.block.data.type.Piston
@@ -61,7 +62,7 @@ class BuildersWandItem : CustomItemFunctions() {
         private val ACTIVE_VISUALIZERS = mutableMapOf<Player, PathVisualizer>()
         private val RED_DUST = "#EA6363".dustOptions()
         private val BLACKLIST_PREDICATE = { block: Block ->
-            !(block.blockData is Ageable || block.type.isTagged(MaterialTags.ORES))
+            !(block.blockData is Ageable || block.type.isTagged(MaterialTags.ORES) || block.blockData is Chest)
         }
     }
 
