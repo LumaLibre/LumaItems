@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.Tier
+import io.papermc.paper.datacomponent.DataComponentTypes
 import java.util.UUID
 import kotlin.random.Random
 import net.kyori.adventure.text.format.NamedTextColor
@@ -26,6 +27,7 @@ import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -194,13 +196,9 @@ class SplitSoulMultiToolItem : CustomItemFunctions() {
         if (highestDestroySpeed.first != item.type) {
             @Suppress("DEPRECATION")
             item.type = highestDestroySpeed.first
-        }
-    }
-
-    override fun onPlayerItemDamage(player: Player, event: PlayerItemDamageEvent) {
-        val item = event.item
-        if (item.type == Material.SHEARS)  {
-            event.isCancelled = true
+            if (highestDestroySpeed.first == Material.SHEARS) {
+                item.setData(DataComponentTypes.MAX_DAMAGE, 2031)
+            }
         }
     }
 
