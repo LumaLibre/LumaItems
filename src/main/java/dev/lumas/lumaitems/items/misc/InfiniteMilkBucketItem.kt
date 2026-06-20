@@ -8,13 +8,14 @@ import dev.lumas.lumaitems.util.extensions.namespacedKey
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.ItemStack
 
 class InfiniteMilkBucketItem : CustomItemFunctions() {
 
     private companion object {
-        private val KEY = "infinite-milk-bucket".namespacedKey()
+        val KEY = "infinite-milk-bucket".namespacedKey()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -41,5 +42,13 @@ class InfiniteMilkBucketItem : CustomItemFunctions() {
         if (!item.isMatchingItem(KEY)) return
 
         event.replacement = item.clone()
+    }
+
+    override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
+        val item = event.itemStack ?: return
+        if (!item.isMatchingItem(KEY)) return
+
+        event.itemStack = item.clone()
+        player.updateInventory()
     }
 }
