@@ -16,11 +16,9 @@ import kotlin.random.Random
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
-import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerMoveEvent
-import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 
 interface CustomItem : RegistryItem {
