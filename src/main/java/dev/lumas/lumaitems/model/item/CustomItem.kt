@@ -9,15 +9,18 @@ import dev.lumas.lumaitems.events.item.ItemListener
 import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.RegistryItem
 import dev.lumas.lumaitems.util.extensions.Executors
+import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.persistence.PersistentDataContainerView
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import kotlin.random.Random
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
+import org.bukkit.event.entity.EntityTeleportEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 
 interface CustomItem : RegistryItem {
@@ -86,7 +89,7 @@ interface CustomItem : RegistryItem {
 
     fun handleDisabled(player: Player, event: Any) {
         var persistNotif = false
-        if (this.isHardDisabled() && event is Cancellable && event !is PlayerMoveEvent && event !is PlayerJumpEvent && event !is PlayerItemHeldEvent && event !is InventoryClickEvent) {
+        if (this.isHardDisabled() && event is Cancellable && event !is PlayerMoveEvent && event !is PlayerJumpEvent && event !is PlayerItemHeldEvent && event !is InventoryClickEvent && event !is EntityTeleportAsyncEvent) {
             event.isCancelled = true
             persistNotif = true
         }
