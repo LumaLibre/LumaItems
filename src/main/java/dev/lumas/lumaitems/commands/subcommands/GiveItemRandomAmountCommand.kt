@@ -19,6 +19,7 @@ import dev.lumas.lumaitems.commands.providers.FreeFormStringProvider
 import dev.lumas.lumaitems.commands.providers.NonNegativeIntProvider
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.registry.StringIdentifier
+import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.asComponent
 import dev.lumas.lumaitems.util.extensions.send
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -43,7 +44,8 @@ class GiveItemRandomAmountCommand : BrigadierSubCommand {
         @Argument("target") target: Player,
         @Argument("from", provider = NonNegativeIntProvider::class) from: Int,
         @Argument("until", provider = NonNegativeIntProvider::class) until: Int,
-        @Argument("silent", optional = true) silent: Boolean?
+        @Argument(value = "drop", optional = true) drop: Boolean?,
+        @Argument(value = "silent", optional = true) silent: Boolean?
     ) {
         val sender: CommandSender = src.sender
 
@@ -60,11 +62,11 @@ class GiveItemRandomAmountCommand : BrigadierSubCommand {
         val amount = (from..until).random()
 
         if (amount < item.maxStackSize) {
-            target.give(item.asQuantity(amount))
+            Util.giveItem(target, item.asQuantity(amount), drop ?: false)
         } else {
             for (i in 0 until amount step item.maxStackSize) {
                 val stackAmount = minOf(item.maxStackSize, amount - i)
-                target.give(item.asQuantity(stackAmount))
+                Util.giveItem(target, item.asQuantity(stackAmount), drop ?: false)
             }
         }
 

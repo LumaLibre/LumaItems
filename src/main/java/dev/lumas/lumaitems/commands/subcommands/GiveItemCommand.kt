@@ -13,16 +13,15 @@ import dev.lumas.core.model.brigadier.BrigadierSubCommand
 import dev.lumas.core.util.Text
 import dev.lumas.lumaitems.api.ItemManager
 import dev.lumas.lumaitems.commands.CommandManager
-import dev.lumas.lumaitems.commands.providers.FreeFormStringProvider
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.registry.StringIdentifier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.asComponent
 import dev.lumas.lumaitems.util.extensions.send
 import io.papermc.paper.command.brigadier.CommandSourceStack
+import java.util.concurrent.CompletableFuture
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.util.concurrent.CompletableFuture
 
 @Register(Autowire.BRIGADIER)
 @CommandMeta(
@@ -40,6 +39,7 @@ class GiveItemCommand : BrigadierSubCommand {
         @Argument(value = "item") itemName: String,
         @Argument(value = "target", optional = true) target: Player?,
         @Argument(value = "amount", optional = true) amount: Int?,
+        @Argument(value = "drop", optional = true) drop: Boolean?,
         @Argument(value = "silent", optional = true) silent: Boolean?
     ) {
         val sender: CommandSender = src.sender
@@ -55,7 +55,7 @@ class GiveItemCommand : BrigadierSubCommand {
         if (itemName == "all") {
             for (customItem in ItemManager.getAllItems()) {
                 if (customItem.isEmpty) continue
-                Util.giveItem(recipient, customItem)
+                Util.giveItem(recipient, customItem, drop ?: false)
             }
             recipient.send("You have been given all custom items!")
             return
@@ -70,7 +70,7 @@ class GiveItemCommand : BrigadierSubCommand {
         var remaining = giveAmount
         while (remaining > 0) {
             val give = remaining.coerceAtMost(maxStack)
-            Util.giveItem(recipient, item.asQuantity(give))
+            Util.giveItem(recipient, item.asQuantity(give), drop ?: false)
             remaining -= give
         }
 

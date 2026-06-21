@@ -98,9 +98,11 @@ public final class LumaItems extends JavaPlugin {
 
         try {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getOpenInventory().getTopInventory().getHolder(false) instanceof LumaItemsAbstractGui) {
-                    player.closeInventory();
-                }
+                player.getScheduler().execute(this, () -> {
+                    if (player.getOpenInventory().getTopInventory().getHolder(false) instanceof LumaItemsAbstractGui) {
+                        player.closeInventory();
+                    }
+                }, null, 1);
             }
         } catch (Throwable t) {
             t.printStackTrace();
