@@ -62,7 +62,8 @@ class BuildersWandItem : CustomItemFunctions() {
         private val ACTIVE_VISUALIZERS = mutableMapOf<Player, PathVisualizer>()
         private val RED_DUST = "#EA6363".dustOptions()
         private val BLACKLIST_PREDICATE = { block: Block ->
-            !(block.blockData is Ageable || block.type.isTagged(MaterialTags.ORES) || block.blockData is Chest)
+            val blockData = block.blockData
+            block.type.isTagged(MaterialTags.ORES) || blockData is Chest || blockData is Ageable || blockData is Door || blockData is Piston || !blockData.material.isItem
         }
     }
 
@@ -135,7 +136,7 @@ class BuildersWandItem : CustomItemFunctions() {
         event.isCancelled = true
 
 
-        if (!player.canBuild(clickedBlock.location) || player.isOnCooldown(this) || BLACKLIST_PREDICATE.invoke(clickedBlock) || data is Door || data is Piston || !data.material.isItem) {
+        if (!player.canBuild(clickedBlock.location) || player.isOnCooldown(this) || BLACKLIST_PREDICATE.invoke(clickedBlock)) {
             val relative = clickedBlock.getRelative(clickedFace).location.toCenterLocation()
             relative.spawnDust()
             return
