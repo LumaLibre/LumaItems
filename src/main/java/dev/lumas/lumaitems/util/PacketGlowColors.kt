@@ -17,6 +17,7 @@ import java.lang.Byte
 import java.lang.reflect.Type
 import java.util.Optional
 import kotlin.Boolean
+import kotlin.Suppress
 import kotlin.getValue
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
@@ -51,7 +52,9 @@ object PacketGlowColors {
         removePacket.strings.write(0, teamName)
         removePacket.integers.write(0, 1) // REMOVE = 1
 
-        protocolManager.sendServerPacket(player, removePacket)
+        player.sync {
+            protocolManager.sendServerPacket(player, removePacket)
+        }
     }
 
     fun setProtocolTeamColor(player: Player, entity: Entity, color: EnumWrappers.ChatFormatting) {

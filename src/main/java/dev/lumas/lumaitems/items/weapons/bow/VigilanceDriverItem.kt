@@ -167,7 +167,9 @@ class VigilanceDriverItem : CustomItemFunctions() {
         // Remove glow from all entities
         for (entity in entities) {
             if (entity !is Player) {
-                PacketGlowColors.removeProtocolTeam(player, entity)
+                entity.sync {
+                    PacketGlowColors.removeProtocolTeam(player, entity)
+                }
             }
 
             if (!entity.isGlowing && !entity.hasPotionEffect(PotionEffectType.GLOWING)) {
