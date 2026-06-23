@@ -16,6 +16,7 @@ import org.bukkit.entity.Animals
 import org.bukkit.entity.Enemy
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.ProjectileLaunchEvent
+import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -78,9 +79,13 @@ class PrismPearlItem : CustomItemFunctions() {
     }
 
     override fun onProjectileLaunch(player: Player, event: ProjectileLaunchEvent) {
-        val item = player.inventory.itemInMainHand
-        if (!item.isMatchingItem(KEY)) return
+        val inventory = player.inventory
+        if (!inventory.itemInMainHand.isMatchingItem(KEY) && !inventory.itemInOffHand.isMatchingItem(KEY)) return
 
         event.isCancelled = true
+    }
+
+    override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
+        event.inventory.result = null
     }
 }
