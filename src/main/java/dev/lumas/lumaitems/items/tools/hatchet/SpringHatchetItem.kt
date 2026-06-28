@@ -39,7 +39,7 @@ class SpringHatchetItem : CustomItemFunctions() {
             return
         }
         val block = event.clickedBlock ?: return
-        if (!Kind.GLASS_BLOCK.isTagged(block.type)) {
+        if (!Kind.GLASS.isTagged(block.type)) {
             return
         }
         player.breakBlock(block)
