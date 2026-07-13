@@ -74,7 +74,7 @@ open class AstralSetFactory (val identifier: String, val name: String, val custo
             item.attributeContainers = attributeModifiers.map {
                 AttributeContainer.builder()
                     .setAttribute(it.key)
-                    .setKey(identifier)
+                    .setKey(it.value.key)
                     .setAmount(it.value.amount)
                     .setOperation(it.value.operation)
                     .setSlot(it.value.slotGroup)
