@@ -14,6 +14,7 @@ import dev.lumas.lumaitems.items.misc.nests.RepairTokenTier2Item
 import dev.lumas.lumaitems.items.misc.nests.RepairTokenTier3Item
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.asComponent
+import dev.lumas.lumaitems.util.extensions.sync
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes
@@ -92,7 +93,9 @@ class RepairTokenCommand : BrigadierCommand() {
 
     private fun giveRepairGem(player: Player, type: String, quantity: Int) {
         val item = getRepairToken(type, quantity)
-        player.give(item)
+        player.sync {
+            player.give(item)
+        }
         Text.msg(player, item.itemMeta?.displayName()?.let {
             "<reset>You have been given</reset> <gold>${quantity}x</gold> ".asComponent().append(it)
         } ?: "???".asComponent())
