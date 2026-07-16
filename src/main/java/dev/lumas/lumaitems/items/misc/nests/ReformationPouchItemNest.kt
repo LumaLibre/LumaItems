@@ -78,19 +78,17 @@ abstract class ReformationPouchItemNest(private val target: WoodSet) : CustomIte
         private val KEY = Util.namespacedKey("reformation-pouch")
         private val WOOD_KEY = Util.namespacedKey("preformation-pouch-type")
 
-        // TODO use enum
-        // TODO bamboo
         private val ALLOWED_PREFIXES = setOf(
             "oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "pale_oak", "bamboo"
         )
         private val SUFFIXES = listOf(
-            "log", "wood",
-            "planks", "stairs", "slab",
-            "fence", "fence_gate",
-            "door", "trapdoor",
+            "log", "wood", "planks",
+            "stairs", "slab", "shelf",
+            "fence_gate", "fence",
+            "trapdoor", "door",
             "pressure_plate", "button",
-            "sign", "hanging_sign",
-            "boat", "chest_boat"
+            "hanging_sign", "sign",
+            "chest_boat", "boat"
         )
 
         private fun matchMat(key: String): Material? = Material.matchMaterial(key)
