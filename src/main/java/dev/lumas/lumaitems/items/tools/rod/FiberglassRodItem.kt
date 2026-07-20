@@ -27,6 +27,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.CoralBlock
 import org.bukkit.Material
 import org.bukkit.craftbukkit.entity.CraftFishHook
 import org.bukkit.craftbukkit.entity.CraftPlayer
@@ -84,9 +85,9 @@ class FiberglassRodItem : CustomItemFunctions() {
         .customEnchants("<#CB364C>Tantalum")
         .material(Material.FISHING_ROD)
         .persistentData("fiberglass-rod")
-        .tier(Tier.SUMMERTIDE_2026)
+        .tier(Tier.LUMARINE_2026)
         .vanillaEnchants(
-            Enchantment.LURE to 6,
+            Enchantment.LURE to 5,
             Enchantment.LUCK_OF_THE_SEA to 4,
             Enchantment.UNBREAKING to 3,
             Enchantment.MENDING to 1

@@ -35,5 +35,21 @@ class PersistentDataRecord<P, C : Any>(
         ): PersistentDataRecord<P, C> {
             return PersistentDataRecord(nameSpacedKey, persistentDataType, value)
         }
+
+        @JvmStatic
+        fun <P, C : Any> builder() = Builder<P, C>()
+    }
+
+    class Builder<P, C : Any> {
+        private var nameSpacedKey: NamespacedKey? = null
+        private var persistentDataType: PersistentDataType<P, C>? = null
+        private var value: C? = null
+
+        fun key(key: String) = apply { this.nameSpacedKey = Util.namespacedKey(key) }
+        fun key(nameSpacedKey: NamespacedKey) = apply { this.nameSpacedKey = nameSpacedKey }
+        fun type(persistentDataType: PersistentDataType<P, C>) = apply { this.persistentDataType = persistentDataType }
+        fun value(value: C) = apply { this.value = value }
+
+        fun build() = PersistentDataRecord(nameSpacedKey!!, persistentDataType!!, value!!)
     }
 }
