@@ -18,7 +18,7 @@ class PassiveListeners(val plugin: LumaItems) {
     companion object {
         const val DEFAULT_PASSIVE_LISTENER_TICKS: Long = 70
         const val ASYNC_PASSIVE_LISTENER_TICKS: Long = 30
-        const val FAST_ASYNC_PASSIVE_LISTENER_TICKS: Long = 3
+        const val FAST_ASYNC_PASSIVE_LISTENER_TICKS: Long = 1
         const val ASYNC_GLOBAL_TASK_TICKS: Long = 20
     }
 

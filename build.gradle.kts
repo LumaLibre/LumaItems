@@ -61,6 +61,11 @@ dependencies {
     paperweight.devBundle("io.canvasmc.canvas", "26.1.2.build.+")
 }
 
+val jbrLauncher = javaToolchains.launcherFor {
+    vendor = JvmVendorSpec.JETBRAINS
+    languageVersion = JavaLanguageVersion.of(jdk)
+}
+
 tasks {
 
     shadowJar {
@@ -87,6 +92,8 @@ tasks {
 
     runServer {
         minecraftVersion("26.1.2")
+        //javaLauncher = jbrLauncher
+        jvmArgs("-XX:+AllowEnhancedClassRedefinition")
     }
 }
 

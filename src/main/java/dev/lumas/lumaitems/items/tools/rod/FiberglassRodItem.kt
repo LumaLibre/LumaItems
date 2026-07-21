@@ -4,6 +4,7 @@ import ca.spottedleaf.moonrise.common.util.TickThread
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isHoldingTwoRods
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.withMeta
 import io.papermc.paper.event.entity.FishHookStateChangeEvent
@@ -103,6 +104,8 @@ class FiberglassRodItem : CustomItemFunctions() {
         .buildPair()
 
     override fun onFish(player: org.bukkit.entity.Player, event: PlayerFishEvent) {
+        if (player.isHoldingTwoRods()) return
+
         val handle = (event.hook as? CraftFishHook)?.handle
         if (handle is LavaFishingHook && event.state in CATCH_STATES && handle.isLocatedInWater()) {
             event.isCancelled = true
