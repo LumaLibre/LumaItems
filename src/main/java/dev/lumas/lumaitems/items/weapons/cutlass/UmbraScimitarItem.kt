@@ -14,6 +14,7 @@ import dev.lumas.lumaitems.util.extensions.toColor
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import kotlin.math.min
 import kotlin.random.Random
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -161,8 +162,13 @@ class UmbraScimitarItem : CustomItemFunctions() {
 
     private fun victimsAround(center: Location, player: Player): List<Entity> {
         return center.getNearbyEntities(RADIUS, RADIUS, RADIUS).filter {
-            it != player && it !is Fireball && it !is ArmorStand && !it.isDead && (it !is Tameable || !it.isTamed) && it.customName() == null
+            it != player && it !is Fireball && it !is ArmorStand && !it.isDead && (it !is Tameable || !it.isTamed) && it.customName() == null && !it.isExempt()
         }
+    }
+
+    private fun Entity.isExempt(): Boolean {
+        if (hasMetadata("vanished")) return true
+        return this is Player && (gameMode == GameMode.CREATIVE || gameMode == GameMode.SPECTATOR)
     }
 
 

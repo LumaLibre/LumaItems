@@ -189,6 +189,7 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
         .vanillaEnchants(Enchantment.UNBREAKING to 10)
         .tier(Tier.LUMARINE_2026)
         .persistentData(KEY)
+        .maxStackSize(1)
         .build()
         .createItem()
 
