@@ -1,14 +1,14 @@
-package dev.lumas.lumaitems.items.tools.hatchet
+package dev.lumas.lumaitems.items.tools.mattock
 
-import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.shapes.Sphere
 import dev.lumas.lumaitems.util.AbilityUtil
-import dev.lumas.lumaitems.util.tags.Kind
+import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.actionBar
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
-import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.tags.Kind
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable
 import io.papermc.paper.datacomponent.item.FoodProperties
@@ -39,7 +39,7 @@ class HolidayHamItem : CustomItemFunctions() {
 
     @Suppress("UnstableApiUsage")
     override fun createItem(): Pair<String, ItemStack> {
-        val item = ItemFactory.builder()
+        val item = ItemFactory.Companion.builder()
             .name("<b><#CC8D7A>H<#D89C7C>o<#E4AC7D>l<#F0BB7F>i<#F3C48B>d<#F7CD97>a<#FAD5A3>y <#FEE2B5>H<#FEE6BC>a<#FFEAC2>m</b>")
             .customEnchants("<gray>Consumable", "<#f0bb7f>Leftovers")
             .persistentData("holidayham")

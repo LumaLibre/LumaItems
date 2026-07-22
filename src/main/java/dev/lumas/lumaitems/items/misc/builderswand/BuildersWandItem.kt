@@ -1,78 +1,47 @@
-package dev.lumas.lumaitems.items.misc
+package dev.lumas.lumaitems.items.misc.builderswand
 
-import com.destroystokyo.paper.MaterialTags
+import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
-import dev.lumas.lumaitems.model.task.Synchronizable
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.extensions.Executors
-import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.canBuild
-import dev.lumas.lumaitems.util.extensions.dustOptions
 import dev.lumas.lumaitems.util.extensions.flagFor
 import dev.lumas.lumaitems.util.extensions.isFlagged
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
-import dev.lumas.lumaitems.util.extensions.isTagged
-import dev.lumas.lumaitems.util.extensions.namespacedKey
-import dev.lumas.lumaitems.util.extensions.setBlockDataWithLog
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncTimer
-import dev.lumas.lumaitems.util.extensions.takeItem
 import dev.lumas.lumaitems.util.Tier
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
-import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.PriorityQueue
 import kotlin.math.abs
 import org.bukkit.ChunkSnapshot
-import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.block.data.Ageable
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.MultipleFacing
 import org.bukkit.block.data.Orientable
-import org.bukkit.block.data.type.Chest
-import org.bukkit.block.data.type.Door
-import org.bukkit.block.data.type.Leaves
-import org.bukkit.block.data.type.Piston
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.BlockDisplay
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import org.bukkit.util.Transformation
-import org.joml.AxisAngle4f
-import org.joml.Vector3f
 
 class BuildersWandItem : CustomItemFunctions() {
-
-    companion object {
-        private val ALLOWED_INV_TYPES = setOf(InventoryType.CRAFTING, InventoryType.PLAYER, InventoryType.CREATIVE)
-        private val KEY = "builders-wand".namespacedKey()
-        private val ACTIVE_VISUALIZERS = mutableMapOf<Player, PathVisualizer>()
-        private val RED_DUST = "#EA6363".dustOptions()
-        private val BLACKLIST_PREDICATE = { block: Block ->
-            val blockData = block.blockData
-            block.type.isTagged(MaterialTags.ORES) || blockData is Chest || blockData is Ageable || blockData is Door || blockData is Piston || !blockData.material.isItem
-        }
-    }
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gradient:#7D9FFC:#CDA9FF:#E28BDC:#F56868>Builder's Wand</gradient></b>")
             .customEnchants("<#CDA9FF>Architex")
             .material(Material.BREEZE_ROD)
-            .persistentData(KEY)
+            .persistentData(BUILDERS_WAND_KEY)
             .tier(Tier.WONDERLAND_2026)
             .tagline("#CDA9FF", "It's essential!")
             .vanillaEnchants(Enchantment.UNBREAKING to 10, Enchantment.KNOCKBACK to 2)
@@ -93,33 +62,15 @@ class BuildersWandItem : CustomItemFunctions() {
     }
 
     override fun onLeftClick(player: Player, event: PlayerInteractEvent) {
+        //if (player.isBuildersWandAddon()) return // hand off to addon
+
         event.isCancelled = true
         if (player.isFlagged(this)) return
         player.flagFor(this, 1)
 
-        val visualizer = ACTIVE_VISUALIZERS.remove(player)?.also { it.stop() }
+        val visualizer = WandVisualizers.take(player)
         if (visualizer != null) {
-            val blockData = visualizer.block.blockData.apply {
-                if (this is Leaves) {
-                    isPersistent = true
-                }
-            }
-
-            val material = blockData.material
-            val doPlace = player.gameMode == GameMode.CREATIVE || (material.isItem && player.takeItem(ItemStack.of(material, visualizer.path.size)))
-
-            for (loc in visualizer.path) {
-                if (doPlace) {
-                    if (!player.canBuild(loc)) break
-                    loc.block.setBlockDataWithLog(player, blockData)
-                } else {
-                    loc.spawnDust()
-                }
-            }
-
-            if (doPlace) {
-                player.addCooldown(this, 20 * 4)
-            }
+            commitWandBuild(visualizer, player, 20L * 4)
         } else {
             val clickedBlock = event.clickedBlock ?: return
             if (!player.canBuild(clickedBlock.location)) return
@@ -129,59 +80,44 @@ class BuildersWandItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        if (player.isBuildersWandAddon()) return
+
         val clickedBlock = event.clickedBlock ?: return
         val clickedFace = event.blockFace
-        val data = clickedBlock.blockData
-
         event.isCancelled = true
 
-
-        if (!player.canBuild(clickedBlock.location) || player.isOnCooldown(this) || BLACKLIST_PREDICATE.invoke(clickedBlock)) {
+        if (!player.canBuild(clickedBlock.location) || player.isOnCooldown(this) || WAND_BLACKLIST.invoke(clickedBlock)) {
             val relative = clickedBlock.getRelative(clickedFace).location.toCenterLocation()
-            relative.spawnDust()
+            relative.spawnWandDust()
             return
         }
 
-
-        ACTIVE_VISUALIZERS.remove(player)?.stop()
-
-        val visualizer = PathVisualizer(player, clickedBlock)
+        val visualizer = PathVisualizer(player, clickedBlock, this)
         visualizer.start(clickedFace)
-        ACTIVE_VISUALIZERS[player] = visualizer
-
+        WandVisualizers.put(player, visualizer)
     }
 
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
-        ACTIVE_VISUALIZERS.remove(player)?.also {
-            it.stop()
-            event.isCancelled = true
-        }
+        WandVisualizers.take(player)?.let { event.isCancelled = true }
     }
 
-    override fun asyncGlobalTask() {
-        for (player in ACTIVE_VISUALIZERS.keys) {
-            if (!ALLOWED_INV_TYPES.contains(player.openInventory.type) || !player.isItemInSlot(KEY, EquipmentSlot.HAND)) {
-                ACTIVE_VISUALIZERS.remove(player)?.let { v ->
-                    v.sync { v.stop() }
-                }
-            }
-        }
-    }
+    // Drives cleanup for the whole wand family
+    override fun asyncGlobalTask() = WandVisualizers.cleanupInvalid()
 
     override fun onPlayerQuit(player: Player, event: PlayerQuitEvent) {
-        ACTIVE_VISUALIZERS.remove(player)?.stop()
+        WandVisualizers.take(player)
     }
 
     override fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {
-        ACTIVE_VISUALIZERS.remove(player)?.stop()
+        WandVisualizers.take(player)
     }
 
     override fun onCanvasAsyncPlayerTeleport(player: Player, event: EntityTeleportAsyncEvent) {
-        ACTIVE_VISUALIZERS.remove(player)?.stop()
+        WandVisualizers.take(player)
     }
 
     override fun onPluginDisable(player: Player) {
-        ACTIVE_VISUALIZERS.remove(player)?.stop()
+        WandVisualizers.take(player)
     }
 
     private fun doHandleFaces(blockData: BlockData, clickedBlock: Block, clickedFace: BlockFace) {
@@ -206,34 +142,18 @@ class BuildersWandItem : CustomItemFunctions() {
         clickedBlock.blockData = blockData
     }
 
-    private fun Location.spawnDust() = world.spawnParticle(Particle.DUST, this, 5, 0.35, 0.35, 0.35, RED_DUST)
-
 
     private class PathVisualizer(
-        private val player: Player,
-        private val origin: Block,
+        player: Player,
+        origin: Block,
+        item: CustomItem,
         private val maxLength: Int = 48,
         private val reachLength: Int = 48
-    ) : Synchronizable.Block {
+    ) : WandVisualizer(player, origin, item) {
 
-        companion object {
-            private val TRANSFORMATION = Transformation(
-                Vector3f(-0.25f, -0.25f, -0.25f),
-                AxisAngle4f(),
-                Vector3f(0.5f, 0.5f, 0.5f),
-                AxisAngle4f()
-            )
-        }
+        override fun isStillEquipped(player: Player) = player.isItemInSlot(BUILDERS_WAND_KEY, EquipmentSlot.HAND)
 
-        override val block: Block = origin
-
-        private val activeDisplays = mutableListOf<BlockDisplay>()
-        private var task: ScheduledTask? = null
-        private var lastPath: List<Location> = emptyList()
-
-        val path: List<Location> get() = lastPath
-
-        fun start(face: BlockFace) {
+        override fun start(face: BlockFace) {
             val startPos = origin.getRelative(face).location.toCenterLocation()
             var lastTarget: Block? = null
             var lastFace: BlockFace? = null
@@ -264,42 +184,10 @@ class BuildersWandItem : CustomItemFunctions() {
                         lastPath
                     }
 
-                    player.sync {
-                        val newSet = renderPath.toSet()
-                        val oldSet = activeDisplays.associate { it.location.toCenterLocation() to it }
-
-                        val toRemove = oldSet.keys - newSet
-                        for (loc in toRemove) {
-                            oldSet[loc]?.remove()
-                        }
-
-                        val kept = oldSet.filterKeys { it in newSet }
-                        activeDisplays.clear()
-                        activeDisplays.addAll(kept.values)
-
-                        val toAdd = newSet - oldSet.keys
-                        for (point in toAdd) {
-                            val display = player.world.spawn(point, BlockDisplay::class.java) {
-                                it.isPersistent = false
-                                it.block = origin.blockData
-                                it.transformation = TRANSFORMATION
-                            }
-                            activeDisplays.add(display)
-                        }
-                    }
+                    player.sync { render(renderPath) }
                 }
             }
         }
-
-        fun stop() {
-            task?.cancel()
-            activeDisplays.forEach { it.remove() }
-            this.syncDelayed(4) {
-                activeDisplays.forEach { it.remove() }
-                activeDisplays.clear()
-            }
-        }
-
 
         fun findPath(start: Location, end: Location, snapshots: Map<Pair<Int, Int>, ChunkSnapshot>): List<Location> {
             // quick reject if too far apart

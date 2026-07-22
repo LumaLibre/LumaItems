@@ -92,7 +92,7 @@ tasks {
 
     runServer {
         minecraftVersion("26.1.2")
-        //javaLauncher = jbrLauncher
+        javaLauncher = jbrLauncher
         jvmArgs("-XX:+AllowEnhancedClassRedefinition")
     }
 }

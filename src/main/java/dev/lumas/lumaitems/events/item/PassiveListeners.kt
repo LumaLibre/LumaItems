@@ -64,7 +64,9 @@ class PassiveListeners(val plugin: LumaItems) {
 
     fun onPluginAction(action: Action) {
         for (player in Bukkit.getOnlinePlayers()) {
-            fire(player.equipmentContainers(), player, action)
+            player.scheduler.execute(LumaItems.getInstance(), Runnable {
+                fire(player.equipmentContainers(), player, action)
+            }, null, 1)
         }
     }
 

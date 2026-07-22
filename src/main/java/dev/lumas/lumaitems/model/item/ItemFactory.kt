@@ -338,8 +338,8 @@ class ItemFactory(
         fun build() = buildNoMiniMessage().apply { miniMessage() }
 
         fun buildPair(): Pair<String, ItemStack> {
-            if (persistentData.size != 1) {
-                LOGGER.error("persistentData must have exactly one value!")
+            if (persistentData.isEmpty()) {
+                LOGGER.error("persistentData must have at least one value!")
                 return Pair("", ItemStack(Material.AIR))
             }
             return Pair(persistentData[0], build().createItem())

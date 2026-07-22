@@ -21,9 +21,11 @@ import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
+import org.bukkit.entity.Fireball
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Tameable
+import org.bukkit.entity.WitherSkull
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.util.Vector
 
@@ -159,7 +161,7 @@ class UmbraScimitarItem : CustomItemFunctions() {
 
     private fun victimsAround(center: Location, player: Player): List<Entity> {
         return center.getNearbyEntities(RADIUS, RADIUS, RADIUS).filter {
-            it != player && it !is ArmorStand && !it.isDead && (it !is Tameable || !it.isTamed) && it.customName() == null
+            it != player && it !is Fireball && it !is ArmorStand && !it.isDead && (it !is Tameable || !it.isTamed) && it.customName() == null
         }
     }
 

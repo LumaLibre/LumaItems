@@ -28,7 +28,9 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
+import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.craftbukkit.entity.CraftFishHook
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.enchantments.Enchantment
@@ -155,6 +157,10 @@ class FiberglassRodItem : CustomItemFunctions() {
                         caught.isInvulnerable = false
                     }
                 }
+            }
+
+            PlayerFishEvent.State.CAUGHT_ENTITY -> {
+                event.hook.hookedEntity?.fireTicks = 100
             }
 
             else -> {}
@@ -326,12 +332,12 @@ class FiberglassRodItem : CustomItemFunctions() {
             val serverLevel = level() as ServerLevel
             var fishingSpeed = 1
             val above = blockPos.above()
-            if (rainInfluenced && random.nextFloat() < 0.25f && level().isRainingAt(above)) {
+            if (rainInfluenced && random.nextFloat() < 0.25f && level().world.environment == World.Environment.NETHER) { // changed from rain to nether
                 fishingSpeed++
             }
-            if (skyInfluenced && random.nextFloat() < 0.5f && !level().canSeeSky(above)) {
-                fishingSpeed--
-            }
+            //if (skyInfluenced && random.nextFloat() < 0.5f && !level().canSeeSky(above)) {
+            //    fishingSpeed--
+            //}
 
             if (nibbleTicks > 0) {
                 nibbleTicks--
