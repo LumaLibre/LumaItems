@@ -27,6 +27,7 @@ import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
 import org.bukkit.event.block.EntityBlockFormEvent
+import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
@@ -48,6 +49,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
+import org.bukkit.event.player.PlayerBucketEntityEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
@@ -158,6 +160,8 @@ abstract class CustomItemFunctions : CustomItem {
             Action.CRAFT_ITEM -> onCraftItem(player, event as CraftItemEvent)
             Action.MCMMO_HERBALISM_REPLANT -> onMcMMOHerbalismReplant(player, event as SubSkillBlockEvent)
             Action.ENTITY_COMPOST_ITEM -> onEntityCompostItem(event as EntityCompostItemEvent)
+            Action.BUCKET_CAPTURE_ENTITY -> onBucketCaptureEntity(player, event as PlayerBucketEntityEvent)
+            Action.BUCKET_RELEASE_ENTITY -> onBucketReleaseEntity(event as CreatureSpawnEvent)
         }
         return true
     }
@@ -238,6 +242,8 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onCraftItem(player: Player, event: CraftItemEvent) {}
     open fun onMcMMOHerbalismReplant(player: Player, event: SubSkillBlockEvent) {}
     open fun onEntityCompostItem(event: EntityCompostItemEvent) {}
+    open fun onBucketReleaseEntity(event: CreatureSpawnEvent) {}
+    open fun onBucketCaptureEntity(player: Player, event: PlayerBucketEntityEvent) {}
 
 
     // TODO: Optimize this with a static map in a companion object?

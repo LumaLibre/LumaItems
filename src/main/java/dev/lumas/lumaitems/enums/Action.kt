@@ -95,6 +95,8 @@ enum class Action {
     PREPARE_CRAFT,  // When crafting grid updates (preview result)
     CRAFT_ITEM,  // When the player takes the crafted item
     ENTITY_COMPOST_ITEM, // When a player or hopper minecart composts an item in a composter
+    BUCKET_CAPTURE_ENTITY, // When a player captures an entity into a bucket
+    BUCKET_RELEASE_ENTITY, // When an entity is released from a bucket
     ;
 
     val callSlowdown: Int

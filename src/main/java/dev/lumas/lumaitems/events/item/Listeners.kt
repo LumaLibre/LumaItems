@@ -31,6 +31,7 @@ import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
 import org.bukkit.event.block.EntityBlockFormEvent
+import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
@@ -55,6 +56,7 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
+import org.bukkit.event.player.PlayerBucketEntityEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -491,9 +493,27 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onPlayerFillBucket(event: PlayerBucketFillEvent) {
         val player = event.player
-        val source = event.itemStack.asSource() ?: return
+        val item = when (event.hand) {
+            EquipmentSlot.HAND -> player.inventory.itemInMainHand
+            EquipmentSlot.OFF_HAND -> player.inventory.itemInOffHand
+            else -> return
+        }
+        val source = item.asSource() ?: return
 
         fire(source, Action.FILL_BUCKET, player, event)
+    }
+
+    @EventHandler
+    fun onCreatureSpawn(event: CreatureSpawnEvent) {
+        if (event.spawnReason != CreatureSpawnEvent.SpawnReason.BUCKET) return
+        fire(null as PdcSource?, Action.BUCKET_RELEASE_ENTITY, null, event)
+    }
+
+    @EventHandler
+    fun onPlayerBucketEntity(event: PlayerBucketEntityEvent) {
+        val player = event.player
+        val source = event.originalBucket.asSource() ?: return
+        fire(source, Action.BUCKET_CAPTURE_ENTITY, player, event)
     }
 
     @EventHandler
