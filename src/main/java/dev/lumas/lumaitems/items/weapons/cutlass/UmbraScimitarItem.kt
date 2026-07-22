@@ -110,6 +110,11 @@ class UmbraScimitarItem : CustomItemFunctions() {
 
             val damageTick = elapsed % DAMAGE_INTERVAL == 0
             for (victim in victimsAround(location, player)) {
+                if (victim is LivingEntity && !player.canDamage(victim)) {
+                    task.cancel() // just break now
+                    return@syncTimer
+                }
+
                 if (victim.location.distanceSquared(location) <= PULL_RADIUS * PULL_RADIUS) {
                     val toCenter = location.toVector().subtract(victim.location.toVector())
                     val distance = toCenter.length()
@@ -168,7 +173,6 @@ class UmbraScimitarItem : CustomItemFunctions() {
                     && (it !is Tameable || !it.isTamed)
                     && (it !is Leashable || !it.isLeashed)
                     && it.customName() == null
-                    && (it !is LivingEntity || player.canDamage(it))
         }
     }
 
