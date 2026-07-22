@@ -6,15 +6,15 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Tier
-import dev.lumas.lumaitems.util.extensions.QuickTasks
 import dev.lumas.lumaitems.util.extensions.addCooldown
+import dev.lumas.lumaitems.util.extensions.canDamage
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toColor
+import io.papermc.paper.entity.Leashable
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import kotlin.math.min
 import kotlin.random.Random
-import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -26,7 +26,6 @@ import org.bukkit.entity.Fireball
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Tameable
-import org.bukkit.entity.WitherSkull
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.util.Vector
 
@@ -36,7 +35,7 @@ class UmbraScimitarItem : CustomItemFunctions() {
         const val DURATION_TICKS = 200
         const val COOLDOWN_TICKS = 600L
         const val PULL_STRENGTH = 0.15
-        const val PULL_DAMAGE = 10.0
+        const val PULL_DAMAGE = 8.0
         const val DAMAGE_INTERVAL = 20
         const val BURST_STRENGTH = 1.8
         const val RADIUS = 16.0
@@ -162,13 +161,15 @@ class UmbraScimitarItem : CustomItemFunctions() {
 
     private fun victimsAround(center: Location, player: Player): List<Entity> {
         return center.getNearbyEntities(RADIUS, RADIUS, RADIUS).filter {
-            it != player && it !is Fireball && it !is ArmorStand && !it.isDead && (it !is Tameable || !it.isTamed) && it.customName() == null && !it.isExempt()
+            it !is Player
+                    && it !is Fireball
+                    && it !is ArmorStand
+                    && !it.isDead
+                    && (it !is Tameable || !it.isTamed)
+                    && (it !is Leashable || !it.isLeashed)
+                    && it.customName() == null
+                    && (it !is LivingEntity || player.canDamage(it))
         }
-    }
-
-    private fun Entity.isExempt(): Boolean {
-        if (hasMetadata("vanished")) return true
-        return this is Player && (gameMode == GameMode.CREATIVE || gameMode == GameMode.SPECTATOR)
     }
 
 
