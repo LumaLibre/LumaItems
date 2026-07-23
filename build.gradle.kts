@@ -19,6 +19,7 @@ val jdk = 25
 
 repositories {
     mavenCentral()
+    maven("https://maven.canvasmc.io/releases/")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://jitpack.io")
@@ -30,7 +31,6 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.glaremasters.me/repository/towny/")
     maven("https://repo.codemc.io/repository/EvenMoreFish/")
-    maven("https://maven.canvasmc.io/releases")
 }
 
 dependencies {
@@ -58,7 +58,7 @@ dependencies {
 
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")
 
-    paperweight.devBundle("io.canvasmc.canvas", "26.1.2.build.+")
+    paperweight.devBundle("io.canvasmc.canvas", "26.2.build.+")
 }
 
 tasks {
@@ -86,7 +86,7 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("26.1.2")
+        minecraftVersion("26.2")
     }
 }
 
