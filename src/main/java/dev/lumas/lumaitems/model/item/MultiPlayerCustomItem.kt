@@ -16,7 +16,6 @@ abstract class MultiPlayerCustomItem(
         private const val SECRET_LENGTH = 16
         private val SECRET_CHARS = ('A'..'Z') + ('a'..'z') + ('0'..'9')
 
-    override fun asyncGlobalTask() {
         private val cachedBonds: MutableMap<NamespacedKey, MutableMap<UUID, Set<String>>> = ConcurrentHashMap()
 
         /**
