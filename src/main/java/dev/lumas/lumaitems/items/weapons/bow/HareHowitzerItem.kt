@@ -3,9 +3,8 @@ package dev.lumas.lumaitems.items.weapons.bow
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.QuickTasks
-import dev.lumas.lumaitems.util.extensions.sync
+import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -56,13 +55,11 @@ class HareHowitzerItem : CustomItemFunctions() {
 
         event.projectile = rabbit
 
-        Executors.asyncTimer(0, 1) { task ->
+        rabbit.syncTimer(1, 1) { task ->
             if (!rabbit.isValid) {
                 task.cancel()
             } else if (hasHitBlock(rabbit)) {
-                rabbit.sync {
-                    rabbit.world.createExplosion(rabbit.location, 2.4f, false, false)
-                }
+                rabbit.world.createExplosion(rabbit.location, 2.4f, false, false)
                 task.cancel()
             }
         }

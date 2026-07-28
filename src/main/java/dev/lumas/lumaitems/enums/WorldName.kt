@@ -20,7 +20,7 @@ enum class WorldName {
     RESOURCE_DESERT("worlds_resource_desert"),
     STAFF("worlds_staff"),
     INTRODUCTION("worlds_introduction"),
-    PINATA("worlds_pinata"),
+    PINATA("incu_pinata"),
     SPECIAL("worlds_special"),
 
     // Mainly for testing/debugging

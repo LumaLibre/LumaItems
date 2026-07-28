@@ -1,6 +1,7 @@
 package dev.lumas.lumaitems.model.item
 
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -10,73 +11,63 @@ import org.bukkit.persistence.PersistentDataType
 abstract class MultiPlayerCustomItem(
     val secretKey: NamespacedKey
 ) : CustomItemFunctions() {
-    
-    protected companion object {
-        val cachedBonds: MutableMap<UUID, String> = mutableMapOf()
+
+    companion object {
+        private const val SECRET_LENGTH = 16
+        private val SECRET_CHARS = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+
+        private val cachedBonds: MutableMap<NamespacedKey, MutableMap<UUID, Set<String>>> = ConcurrentHashMap()
+
+        /**
+         * A fresh secret for one bonded group. Every group needs its own: reusing a secret links every
+         * holder of it together instead of just the two intended players.
+         */
+        fun generateSecret(): String = (1..SECRET_LENGTH).map { SECRET_CHARS.random() }.joinToString("")
     }
+
+    private val bonds: MutableMap<UUID, Set<String>>
+        get() = cachedBonds.computeIfAbsent(secretKey) { ConcurrentHashMap() }
 
 
     override fun asyncGlobalTask() {
-        if (cachedBonds.isNotEmpty()) {
-            cachedBonds.entries.retainAll { entry ->
-                val player = Bukkit.getPlayer(entry.key) ?: return@retainAll false
-                findSecret(player) != null
+        val bonds = this.bonds
+        val online = Bukkit.getOnlinePlayers()
+        bonds.keys.retainAll(online.mapTo(mutableSetOf()) { it.uniqueId })
+
+        for (player in online) {
+            val secrets = findSecrets(player)
+            if (secrets.isEmpty()) {
+                bonds.remove(player.uniqueId)
+            } else {
+                bonds[player.uniqueId] = secrets
             }
         }
+    }
 
-        for (player in Bukkit.getOnlinePlayers()) {
-            if (cachedBonds.containsKey(player.uniqueId)) continue // already cached
-            val secret = findSecret(player) ?: continue
-            cachedBonds[player.uniqueId] = secret
+    protected fun getBondedPlayer(seeker: Player, secret: String): Player? {
+        val partner = bondedPartners(seeker, secret).singleOrNull() ?: return null
+        return Bukkit.getPlayer(partner)
+    }
+
+    protected fun isBondedPlayerOnline(seeker: Player, secret: String): Boolean {
+        return bondedPartners(seeker, secret).size == 1
+    }
+
+    private fun bondedPartners(seeker: Player, secret: String): List<UUID> {
+        val bonds = this.bonds
+        return bonds.keys.filter { it != seeker.uniqueId && bonds[it]?.contains(secret) == true }
+    }
+
+    private fun findSecrets(player: Player): Set<String> {
+        val secrets = mutableSetOf<String>()
+        for (item in player.inventory.contents) {
+            secrets.add(getSecret(item) ?: continue)
         }
+        return secrets
     }
 
-    protected fun getBondedPlayer(seeker: Player): Player? {
-        val secret = cachedBonds[seeker.uniqueId] ?: return null
-        for (bond in cachedBonds) {
-            if (bond.value == secret && bond.key != seeker.uniqueId) {
-                return Bukkit.getPlayer(bond.key)
-            }
-        }
-        return null
+    protected fun getSecret(item: ItemStack?): String? {
+        return item?.itemMeta?.persistentDataContainer?.get(secretKey, PersistentDataType.STRING)
     }
 
-    protected fun isBondedPlayerOnline(seeker: Player): Boolean {
-        return cachedBonds.hasSpecificValueMoreThanTwice(cachedBonds[seeker.uniqueId])
-    }
-
-    private fun findSecret(player: Player): String? {
-        for (item in player.inventory.contents.filterNotNull()) {
-            val secret = getSecret(item)
-            if (secret != null) {
-                return secret
-            }
-        }
-        return null
-    }
-
-    private fun getSecret(item: ItemStack): String? {
-        return item.itemMeta?.persistentDataContainer?.get(secretKey, PersistentDataType.STRING)
-    }
-
-    // Util
-
-    private fun <K, V> Map<K, V>.hasSpecificValueMoreThanTwice(value: V): Boolean {
-        return this.values.count { it == value } > 1
-    }
-
-
-    protected class SecretGenerator(val maxLength: Int = 7) {
-
-        val chars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        lateinit var secret: String
-        init {
-            reGenerate()
-        }
-
-        fun reGenerate() {
-            secret = (1..maxLength).map { chars.random() }.joinToString("")
-        }
-
-    }
 }
