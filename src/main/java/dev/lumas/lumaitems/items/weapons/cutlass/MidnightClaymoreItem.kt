@@ -1,11 +1,13 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
-import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
-import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.itemInOffHand
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -60,7 +62,8 @@ open class MidnightClaymoreItem : CustomItemFunctions() {
 
 
     open fun shouldDamage(player: Player): Boolean {
-        return player.isItemInSlot(KEY, EquipmentSlot.HAND)
+        val type = GenericToolType.getGenericToolType(player.itemInOffHand.type)
+        return player.isItemInSlot(KEY, EquipmentSlot.HAND) && (type != GenericToolType.WEAPON && type != GenericToolType.TOOL)
     }
 
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {

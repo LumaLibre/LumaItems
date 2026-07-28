@@ -36,9 +36,9 @@ class VerdigrisIdolItem : CustomItemFunctions() {
         val loreLine: String,
         val material: Material
     ) {
-        FRESH(1.0, "<#57C78A>✦ Unoxidized <gray>(100% efficiency)", Material.COPPER_GOLEM_STATUE),
-        EXPOSED(0.7, "<#B8CC5A>✦ Exposed <gray>(70% efficiency)", Material.EXPOSED_COPPER_GOLEM_STATUE),
-        WEATHERED(0.4, "<#7DA862>✦ Weathered <gray>(40% efficiency)", Material.WEATHERED_COPPER_GOLEM_STATUE),
+        FRESH(0.5, "<#57C78A>✦ Unoxidized <gray>(50% efficiency)", Material.COPPER_GOLEM_STATUE),
+        EXPOSED(0.25, "<#B8CC5A>✦ Exposed <gray>(25% efficiency)", Material.EXPOSED_COPPER_GOLEM_STATUE),
+        WEATHERED(0.1, "<#7DA862>✦ Weathered <gray>(10% efficiency)", Material.WEATHERED_COPPER_GOLEM_STATUE),
         OXIDIZED(0.0, "<#5A6B56>✦ Fully Oxidized <gray>(0% efficiency)", Material.OXIDIZED_COPPER_GOLEM_STATUE)
     }
 
@@ -48,7 +48,8 @@ class VerdigrisIdolItem : CustomItemFunctions() {
         private val OXIDATION_KEY: NamespacedKey = "verdigris-idol-oxidation".namespacedKey()
 
         private const val MAX_OXIDATION = 30
-        private const val OXIDATION_CHANCE = 0.1
+        private const val OXIDATION_CHANCE = 0.2
+        private const val CHARGE_COST = 10
 
         private val COPPER_DUST = Particle.DustOptions(Color.fromRGB(87, 160, 107), 1.5f)
 
@@ -150,8 +151,18 @@ class VerdigrisIdolItem : CustomItemFunctions() {
             return
         }
 
-        val chargesUsed = minOf(cursor.amount, currentOxidation)
-        val newOxidation = currentOxidation - chargesUsed
+        val maxRemovable = cursor.amount / CHARGE_COST
+        if (maxRemovable == 0) {
+            if (!player.isFlagged(this)) {
+                player.actionBar("<red>Need at least ${CHARGE_COST}x stacked Fire Charges to start deoxidization.")
+                player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1f, 0.8f)
+            }
+            return
+        }
+
+        val oxidationRemoved = minOf(maxRemovable, currentOxidation)
+        val chargesUsed = oxidationRemoved * CHARGE_COST
+        val newOxidation = currentOxidation - oxidationRemoved
 
         val oldStage = stageFromValue(currentOxidation)
         val newStage = stageFromValue(newOxidation)
@@ -202,15 +213,15 @@ class VerdigrisIdolItem : CustomItemFunctions() {
         val fortune = tool.getEnchantmentLevel(Enchantment.FORTUNE)
         // Some pickaxes on Luma average 20+ copper per copper ore
         // This item shouldn't be as strong, so we limit it here
-        val amount = fortuneRawCopper(fortune).coerceAtMost(9)
+        val amount = fortuneRawCopper(fortune).coerceAtMost(6)
         return ItemStack(Material.RAW_COPPER, amount)
     }
 
     // Mirrors vanilla copper ore fortune behaviour
     private fun fortuneRawCopper(fortune: Int): Int {
-        val base = Random.nextInt(2, 6)
+        val base = Random.nextInt(1, 4)
         if (fortune <= 0) return base
-        val multiplier = maxOf(1, Random.nextInt(fortune + 2))
+        val multiplier = maxOf(1, Random.nextInt(fortune.floorDiv(3)))
         return base * multiplier
     }
 

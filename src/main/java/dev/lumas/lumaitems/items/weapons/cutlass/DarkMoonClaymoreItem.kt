@@ -1,9 +1,11 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.lumaitems.enums.GenericToolType
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.itemInOffHand
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -51,6 +53,7 @@ class DarkMoonClaymoreItem : MidnightClaymoreItem() {
     }
 
     override fun shouldDamage(player: Player): Boolean {
-        return player.isItemInSlot(KEY, EquipmentSlot.HAND)
+        val type = GenericToolType.getGenericToolType(player.itemInOffHand.type)
+        return player.isItemInSlot(KEY, EquipmentSlot.HAND) && (type != GenericToolType.WEAPON && type != GenericToolType.TOOL)
     }
 }
