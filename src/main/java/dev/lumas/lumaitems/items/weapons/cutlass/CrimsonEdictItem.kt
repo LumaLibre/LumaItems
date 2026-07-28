@@ -5,21 +5,30 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.itemStack
 import dev.lumas.lumaitems.util.extensions.setTexture
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.namespacedKey
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDeathEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 class CrimsonEdictItem : CustomItemFunctions() {
+
+    private companion object {
+        val KEY = "crimson-edict".namespacedKey()
+    }
+
+
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gradient:#A71C2E:#E26736:#C31F54>Crimson Edict</gradient></b>")
             .customEnchants("<#A71C2E>Head Hunter")
             .material(Material.NETHERITE_SWORD)
-            .persistentData("crimson-edict")
+            .persistentData(KEY)
             .tier(Tier.WONDERLAND_2026)
             .lore(
                 "A sword that can behead",
@@ -40,7 +49,7 @@ class CrimsonEdictItem : CustomItemFunctions() {
     }
 
     override fun onEntityDeath(player: Player, event: EntityDeathEvent) {
-
+        if (!player.isItemInSlot(KEY, EquipmentSlot.HAND)) return
         val entity = event.entity
         val mapped = MappedHeads.fromEntityType(entity.type) ?: return
 
