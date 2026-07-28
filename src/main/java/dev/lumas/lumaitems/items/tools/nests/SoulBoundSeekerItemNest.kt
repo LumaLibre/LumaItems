@@ -59,8 +59,9 @@ class SoulboundSeeker : CustomItemFunctions() {
         item.amount -= 1
 
         player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)
-        Util.giveItem(player, parent.create(SoulboundSeekerItem.Style.STYLE_1).createItem())
-        Util.giveItem(player, parent.create(SoulboundSeekerItem.Style.STYLE_2).createItem())
+        for (mattock in parent.createPair()) {
+            Util.giveItem(player, mattock)
+        }
     }
 }
 
@@ -74,8 +75,6 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
 
     // Item creation
 
-    private val secretGenerator = SecretGenerator()
-
     enum class Style(val styleName: String, val baseColor: String) {
         STYLE_1(
             "<b><#B54476>S<#BB4C7B>o<#C15481>u<#C75C86>l<#CD648B>b<#D36C90>o<#D97496>u<#DF7C9B>n<#E584A0>d <#DE7591>S<#DA6E89>e<#D66781>e<#D26079>k<#CF5872>e<#CB516A>r",
@@ -87,7 +86,7 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
         )
     }
 
-    fun create(style: Style): ItemFactory {
+    fun create(style: Style, secret: String): ItemFactory {
         return ItemFactory.builder()
             .name(style.styleName)
             .customEnchants("${style.baseColor}Lover's Bond")
@@ -106,14 +105,18 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
             .material(Material.NETHERITE_PICKAXE)
             .tier(Tier.VALENTIDE_2026)
             .persistentData(KEY)
-            .persistentDataRecords(PersistentDataRecord.create(secretKey, PersistentDataType.STRING, secretGenerator.secret))
+            .persistentDataRecords(PersistentDataRecord.create(secretKey, PersistentDataType.STRING, secret))
             .vanillaEnchants(Enchantment.EFFICIENCY to 8, Enchantment.UNBREAKING to 10, Enchantment.FORTUNE to 5, Enchantment.MENDING to 1)
             .build()
     }
 
+    fun createPair(): List<ItemStack> {
+        val secret = generateSecret()
+        return Style.entries.map { create(it, secret).createItem() }
+    }
+
     override fun createItem(): Pair<String, ItemStack> {
-        val style = Style.entries.random()
-        return Pair(KEY, create(style).createItem())
+        return Pair(KEY, create(Style.entries.random(), generateSecret()).createItem())
     }
 
 
@@ -123,13 +126,15 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
         if (!player.isSneaking) {
             return
         }
+
+        val secret = getSecret(event.offHandItem) ?: getSecret(event.mainHandItem) ?: return
         event.isCancelled = true
 
         if (QuickTasks.isOnCooldown(this, player.uniqueId)) {
             return
         }
 
-        val bondedPlayer = getBondedPlayer(player) ?: return run {
+        val bondedPlayer = getBondedPlayer(player, secret) ?: return run {
             player.actionBar("<red>Couldn't find your partner.")
         }
 
@@ -141,11 +146,15 @@ class SoulboundSeekerItem : MultiPlayerCustomItem(NamespacedKey(LumaItems.getIns
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val type = event.block.type
-        if (!Kind.INCLUSIVE_ORES.isTagged(type) || !isBondedPlayerOnline(player)) {
-            return // Fast checks
+        if (!Kind.INCLUSIVE_ORES.isTagged(type)) {
+            return // Fast check
+        }
+        val item = player.inventory.itemInMainHand
+        val secret = getSecret(item) ?: return // mining with something else, or an unpaired mattock
+        if (!isBondedPlayerOnline(player, secret)) {
+            return
         }
         val blocks = Sphere(event.block.location, 9.0, 20.0).sphere
-        val item = player.inventory.itemInMainHand
 
         for (block in blocks) {
             if (block.type != type) continue

@@ -55,8 +55,11 @@ class ChargedBreezeRodItem : CustomItemFunctions() {
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
         if (!player.isItemInSlot(KEY, EquipmentSlot.HAND)) return
         val entity = event.entity as? LivingEntity ?: return
-        val dir = player.location.direction
 
+        // don't launch the entity the player is riding (or anything further up that stack)
+        if (generateSequence(player.vehicle) { it.vehicle }.any { it == entity }) return
+
+        val dir = player.location.direction
         entity.syncDelayed(1) { _ ->
             val vel = entity.velocity
             entity.velocity = vel
