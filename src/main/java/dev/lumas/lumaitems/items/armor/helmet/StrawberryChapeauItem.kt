@@ -1,4 +1,4 @@
-package dev.lumas.lumaitems.items.armor.boots
+package dev.lumas.lumaitems.items.armor.helmet
 
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
