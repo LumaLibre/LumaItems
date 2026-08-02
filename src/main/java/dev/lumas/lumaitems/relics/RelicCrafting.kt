@@ -71,40 +71,42 @@ object RelicCrafting {
 
     @JvmStatic
     fun registerRecipes() {
-        val lunarKey = NamespacedKey(plugin, "lunarorb")
-        val astralKey = NamespacedKey(plugin, "astralorb")
-        val upgradeCoreKey = NamespacedKey(plugin, "astralupgradecore")
+        val pending = mutableListOf<ShapedRecipe>()
 
-        if (Bukkit.getRecipe(lunarKey) != null || Bukkit.getRecipe(astralKey) != null || Bukkit.getRecipe(upgradeCoreKey) != null) {
+        buildIfMissing(NamespacedKey(plugin, "lunarorb"), lunarOrb, lunarCore)?.let { pending.add(it) }
+        buildIfMissing(NamespacedKey(plugin, "astralorb"), astralOrb, astralCore)?.let { pending.add(it) }
+        buildIfMissing(NamespacedKey(plugin, "astralupgradecore"), astralUpgradeCore, null)?.let { pending.add(it) }
+
+        if (pending.isEmpty()) return
+
+        if (Bukkit.getOnlinePlayers().isNotEmpty()) {
             return
         }
 
+        Executors.globalDelayed(10) {
+            for (recipe in pending) {
+                try {
+                    Bukkit.addRecipe(recipe, false)
+                } catch (e: Exception) {
+                    LumaItems.LOGGER.error("Failed to register relic recipe " + recipe.key, e)
+                }
+            }
+        }
+    }
 
-        val lunarRecipe = ShapedRecipe(lunarKey, lunarOrb)
-        lunarRecipe.shape(
+    private fun buildIfMissing(key: NamespacedKey, result: ItemStack, center: ItemStack?): ShapedRecipe? {
+        if (Bukkit.getRecipe(key) != null) return null
+
+        val recipe = ShapedRecipe(key, result)
+        recipe.shape(
             "AAA",
             "ABA",
             "AAA")
-        lunarRecipe.setIngredient('A', relicShard)
-        lunarRecipe.setIngredient('B', lunarCore)
-        Executors.globalDelayed(10) { Bukkit.addRecipe(lunarRecipe, false) }
-
-        val astralRecipe = ShapedRecipe(astralKey, astralOrb)
-        astralRecipe.shape(
-            "AAA",
-            "ABA",
-            "AAA")
-        astralRecipe.setIngredient('A', relicShard)
-        astralRecipe.setIngredient('B', astralCore)
-        Executors.globalDelayed(20) { Bukkit.addRecipe(astralRecipe, false) }
-
-        val upgradeCoreRecipe = ShapedRecipe(upgradeCoreKey, astralUpgradeCore, )
-        upgradeCoreRecipe.shape(
-            "AAA",
-            "ABA",
-            "AAA")
-        upgradeCoreRecipe.setIngredient('A', relicShard)
-        Executors.globalDelayed(30) { Bukkit.addRecipe(upgradeCoreRecipe, false) }
+        recipe.setIngredient('A', relicShard)
+        if (center != null) {
+            recipe.setIngredient('B', center)
+        }
+        return recipe
     }
 
     //TODO
