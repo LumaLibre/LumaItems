@@ -3,11 +3,15 @@ package dev.lumas.lumaitems.items.tools.rod
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.isHoldingTwoRods
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
 import net.minecraft.world.entity.projectile.FishingHook
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.craftbukkit.entity.CraftFishHook
 import org.bukkit.enchantments.Enchantment
@@ -20,7 +24,7 @@ import org.bukkit.util.Vector
 class FluxRodItem : CustomItemFunctions() {
 
     private companion object {
-        val activeMultiHooks: MutableSet<MultiHook> = mutableSetOf()
+        val activeMultiHooks: MutableMap<UUID, MultiHook> = ConcurrentHashMap()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -49,38 +53,51 @@ class FluxRodItem : CustomItemFunctions() {
     }
 
     override fun asyncGlobalTask() { // lazy cleanup
-        activeMultiHooks.removeIf { it.isInvalid() }
+        for ((uuid, multiHook) in activeMultiHooks) {
+            val player = Bukkit.getPlayer(uuid)
+            if (player == null) { // hooks discard themselves once their owner is gone
+                activeMultiHooks.remove(uuid, multiHook)
+                continue
+            }
+
+            player.sync {
+                if (multiHook.isInvalid() || multiHook.isOrphanedBy(player)) {
+                    multiHook.destroy()
+                    activeMultiHooks.remove(uuid, multiHook)
+                }
+            }
+        }
     }
 
     override fun onFish(player: Player, event: PlayerFishEvent) {
-        if (player.isHoldingTwoRods()) return
-
         val hook = event.hook
-        val multiHook = activeMultiHooks.find { it ->
-            it.hookPool.map { it.uniqueId }.contains(hook.uniqueId)
+        val multiHook = activeMultiHooks[player.uniqueId]
+
+        if (multiHook != null && multiHook.contains(hook)) {
+            if (multiHook.handleState(event, event.state)) {
+                activeMultiHooks.remove(player.uniqueId, multiHook)
+            }
+            return
         }
 
-        if (multiHook == null && event.state == PlayerFishEvent.State.FISHING) {
-            val originalDir = hook.velocity.clone().normalize()
-            val speed = hook.velocity.length()
-            val newMultiHook = MultiHook(hook).also { activeMultiHooks.add(it) }
+        if (event.state != PlayerFishEvent.State.FISHING) return
 
-            for (i in 0 until 2) {
-                var rand = random().nextDouble(10.0, 40.0)
-                if (i % 2 == 0) {
-                    rand = -rand
-                }
-                val dir = BukkitVectors.rotateVectorY(originalDir, Math.toRadians(rand))
-                newMultiHook.create(dir, speed)
-            }
-        } else {
-            val value = multiHook?.handleState(event, event.state)
+        multiHook?.destroy()
+        activeMultiHooks.remove(player.uniqueId)
 
-            if (value != null && value) {
-                activeMultiHooks.remove(multiHook)
-            } else if (value == null) {
-                LOGGER.error("MultiHook is null, but state is not FISHING",  IllegalStateException("MultiHook not found"))
+        if (player.isHoldingTwoRods()) return
+
+        val originalDir = hook.velocity.clone().normalize()
+        val speed = hook.velocity.length()
+        val newMultiHook = MultiHook(hook).also { activeMultiHooks[player.uniqueId] = it }
+
+        for (i in 0 until 2) {
+            var rand = random().nextDouble(10.0, 40.0)
+            if (i % 2 == 0) {
+                rand = -rand
             }
+            val dir = BukkitVectors.rotateVectorY(originalDir, Math.toRadians(rand))
+            newMultiHook.create(dir, speed)
         }
     }
 
@@ -169,6 +186,21 @@ class FluxRodItem : CustomItemFunctions() {
             }
         }
 
+
+        fun contains(hook: FishHook): Boolean {
+            return hookPool.any { it.uniqueId == hook.uniqueId }
+        }
+
+        fun isOrphanedBy(player: Player): Boolean {
+            val nmsPlayer: net.minecraft.world.entity.player.Player = (player as org.bukkit.craftbukkit.entity.CraftHumanEntity).handle
+            val current = nmsPlayer.fishing?.bukkitEntity?.uniqueId ?: return true
+            return hookPool.none { it.isValid && it.uniqueId == current }
+        }
+
+        fun destroy() {
+            hookPool.forEach { if (it.isValid) it.remove() }
+            hookPool.clear()
+        }
 
         fun isInvalid(): Boolean {
             return hookPool.all { !it.isValid }
