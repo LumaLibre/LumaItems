@@ -319,7 +319,9 @@ class PalomasVeilItem : CustomItemFunctions() {
     }
 
     override fun onPluginDisable(player: Player) {
-        removeOrbDisplay(player)
+        player.scheduler.execute(instance, {
+            removeOrbDisplay(player)
+        }, null, 1)
     }
 
     override fun onPlayerDeath(player: Player, event: PlayerDeathEvent) {

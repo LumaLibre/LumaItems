@@ -20,7 +20,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.world.entity.Display
-import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.ai.memory.MemoryModuleType
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Bukkit
@@ -43,9 +43,9 @@ import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Creeper
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Mob
+import org.bukkit.entity.Player
 import org.bukkit.entity.ShulkerBullet
 import org.bukkit.entity.Warden
-import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -346,7 +346,7 @@ class SmugglersCaskItem : CustomItemFunctions() {
     // A barrel block display entity that only exists as packets
     private class ClientSideBarrelEntity(private val location: Location) {
 
-        private val display = Display.BlockDisplay(EntityType.BLOCK_DISPLAY, (location.world as CraftWorld).handle).apply {
+        private val display = Display.BlockDisplay(EntityTypes.BLOCK_DISPLAY, (location.world as CraftWorld).handle).apply {
             setPos(location.x, location.y, location.z)
             blockState = (BARREL_DATA as CraftBlockData).state
         }
@@ -388,7 +388,7 @@ class SmugglersCaskItem : CustomItemFunctions() {
                     location.z,
                     0f,
                     0f,
-                    EntityType.BLOCK_DISPLAY,
+                    EntityTypes.BLOCK_DISPLAY,
                     0,
                     Vec3.ZERO,
                     0.0

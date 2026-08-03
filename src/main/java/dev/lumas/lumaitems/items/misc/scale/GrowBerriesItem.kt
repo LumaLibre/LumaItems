@@ -73,6 +73,7 @@ class GrowBerriesItem : CustomItemFunctions() {
         return Pair("grow-berries", item)
     }
 
+    // TODO: Cooldown?
     override fun onConsumeItem(player: Player, event: PlayerItemConsumeEvent) {
         if (!event.item.isMatchingItem(KEY)) return
         event.isCancelled = true
