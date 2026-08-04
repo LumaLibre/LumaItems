@@ -1,16 +1,16 @@
 package dev.lumas.lumaitems.items.misc.nests
 
-import dev.lumas.lumaitems.model.item.ItemFactory
-import dev.lumas.lumaitems.model.item.CustomItemFunctions
-import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.model.item.CustomItemFunctions
+import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
@@ -129,13 +129,12 @@ class InfiniteMilkBucketItem : CustomItemFunctions() {
 class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
 
     private val infiniteTropicalFishBucket: ItemStack = ItemFactory.builder()
-        .name("<b><gradient:#4498DB:#F5A623>Infinite Tro</gradient><gradient:#F5A623:#E94F37>pical Fish Bucket</gradient></b>")
-        .customEnchants("<#0098de>Bottomless", "<#F5A623>Fishy")
+        .name("<b><gradient:#4498DB:#F5A623:#F5A623:#E94F37>Infinite Fish Bucket</gradient></b>")
+        .customEnchants("<#0098de>Bottomless")
         .lore(
             "This bucket never runs",
-            "out of <#0098de>water</#0098de> and <#F5A623>tropical",
-            "<#F5A623>fish</#F5A623>, place to your",
-            "heart's content!"
+            "out of <#F5A623>tropical fish</#F5A623>",
+            "or <#0098de>water</#0098de> to place!"
         )
         .material(Material.TROPICAL_FISH_BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)
@@ -144,8 +143,7 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
         .build()
         .createItem()
 
-    private val plainBucketName: String? = infiniteTropicalFishBucket.itemMeta?.customName()
-        ?.let { PlainTextComponentSerializer.plainText().serialize(it) }
+    private val bucketName: Component? = infiniteTropicalFishBucket.itemMeta?.customName()
 
     override fun createItem(): Pair<String, ItemStack> {
         return Pair("infinite-tropical-fish-bucket", infiniteTropicalFishBucket)
@@ -157,9 +155,10 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
     }
 
     override fun onBucketReleaseEntity(event: CreatureSpawnEvent) {
+        // future note: this is an okay way to check if the fish is ours, bukkit doesnt fire enough events for this and there's no way to grab store on entity PDC
         val fish = event.entity as? TropicalFish ?: return
-        val name = fish.customName()?.let { PlainTextComponentSerializer.plainText().serialize(it) } ?: return
-        if (name != plainBucketName) return
+        val name = fish.customName() ?: return
+        if (name != bucketName) return
         fish.customName(null)
         fish.isCustomNameVisible = false
     }
@@ -170,9 +169,10 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
 
     private companion object {
         val KEY = "infinite-air-bucket".namespacedKey()
-        const val REFILL_COOLDOWN_TICKS = 20L
+        const val REFILL_COOLDOWN_TICKS = 1200L
         const val BUBBLE_POPS = 5
     }
+    // TODO: scope this to just removing liquids instead of refilling player air bars
 
     private val infiniteAirBucket: ItemStack = ItemFactory.builder()
         .name("<b><gradient:#B3E5FC:#E0F5FF:#B3E5FC:#E0F5FF>Infinite Air Bucket</gradient></b>")
@@ -183,7 +183,9 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
             "filling up.",
             "",
             "Press your <#B3E5FC>swap key (F)</#B3E5FC>",
-            "to refill your air bar."
+            "to refill your air bar.",
+            "",
+            "<red>Cooldown: 1m"
         )
         .material(Material.BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)

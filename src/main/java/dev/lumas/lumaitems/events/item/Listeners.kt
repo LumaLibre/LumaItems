@@ -505,8 +505,14 @@ class Listeners : ItemListener() {
 
     @EventHandler
     fun onCreatureSpawn(event: CreatureSpawnEvent) {
-        if (event.spawnReason != CreatureSpawnEvent.SpawnReason.BUCKET) return
-        fire(null as PdcSource?, Action.BUCKET_RELEASE_ENTITY, null, event)
+        if (event.spawnReason != CreatureSpawnEvent.SpawnReason.BUCKET) return // TODO
+
+//        val container = event.entity.persistentDataContainer
+//        if (container.isEmpty) return
+
+
+
+        fire(null as PdcSource? /*PdcSource.of(container)*/, Action.BUCKET_RELEASE_ENTITY, null, event)
     }
 
     @EventHandler

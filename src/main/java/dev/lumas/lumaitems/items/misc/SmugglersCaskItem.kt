@@ -40,6 +40,7 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData
 import org.bukkit.craftbukkit.entity.CraftCreeper
 import org.bukkit.craftbukkit.entity.CraftMob
 import org.bukkit.craftbukkit.entity.CraftPlayer
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Creeper
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Mob
@@ -58,6 +59,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
+@Suppress("UnstableApiUsage")
 class SmugglersCaskItem : CustomItemFunctions() {
 
     private companion object {
@@ -97,10 +99,11 @@ class SmugglersCaskItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gradient:#8c5a2b:#b07d43:#d9a566:#b07d43:#6f4520>Smuggler's Cask</gradient></b>")
-            .customEnchants("<gray>Unbreaking X", "<#d9a566>Stowaway")
+            .customEnchants("<#d9a566>Stowaway")
             .material(Material.BARREL)
             .maxStackSize(1)
             .persistentData(KEY)
+            .vanillaEnchants(Enchantment.UNBREAKING to 10)
             .tier(Tier.LUMARINE_2026)
             .lore(
                 "Half the contraband in",

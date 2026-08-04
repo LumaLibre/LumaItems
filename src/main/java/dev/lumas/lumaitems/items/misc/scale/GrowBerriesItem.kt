@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.items.misc.scale
 
+import dev.lumas.lumaitems.annotations.Ignore
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
@@ -24,6 +25,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.ItemStack
 
+@Ignore
 class GrowBerriesItem : CustomItemFunctions() {
 
     private companion object {
