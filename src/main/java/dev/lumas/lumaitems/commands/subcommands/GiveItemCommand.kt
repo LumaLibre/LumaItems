@@ -37,14 +37,14 @@ class GiveItemCommand : BrigadierSubCommand {
     fun run(
         src: CommandSourceStack,
         @Argument(value = "item") itemName: String,
-        @Argument(value = "target", optional = true) target: Player?,
+        @Argument(value = "target", optional = true) targets: List<@JvmSuppressWildcards Player>?,
         @Argument(value = "amount", optional = true) amount: Int?,
         @Argument(value = "drop", optional = true) drop: Boolean?,
         @Argument(value = "silent", optional = true) silent: Boolean?
     ) {
         val sender: CommandSender = src.sender
 
-        val recipient: Player = target ?: (sender as? Player ?: run {
+        val recipients: List<Player> = targets ?: ((sender as? Player)?.let { listOf(it) } ?: run {
             Text.msg(sender, "<red>Must specify a target when running from console")
             return
         })
@@ -53,6 +53,10 @@ class GiveItemCommand : BrigadierSubCommand {
         val isSilent = silent ?: false
 
         if (itemName == "all") {
+            if (recipients.size > 2) { // TODO: shitty temporary block
+                throw IllegalAccessException("Dangerous give all command: too many recipients")
+            }
+            val recipient = recipients.first()
             for (customItem in ItemManager.getAllItems()) {
                 if (customItem.isEmpty) continue
                 Util.giveItem(recipient, customItem, drop ?: false)
@@ -70,14 +74,18 @@ class GiveItemCommand : BrigadierSubCommand {
         var remaining = giveAmount
         while (remaining > 0) {
             val give = remaining.coerceAtMost(maxStack)
-            Util.giveItem(recipient, item.asQuantity(give), drop ?: false)
+            for (recipient in recipients) {
+                Util.giveItem(recipient, item.asQuantity(give), drop ?: false)
+            }
             remaining -= give
         }
 
         if (!isSilent) {
-            Text.msg(recipient, item.itemMeta?.displayName()?.let {
-                "<reset>You have been given</reset> <gold>${giveAmount}x</gold> ".asComponent().append(it)
-            } ?: "???".asComponent())
+            for (recipient in recipients) {
+                Text.msg(recipient, item.itemMeta?.displayName()?.let {
+                    "<reset>You have been given</reset> <gold>${giveAmount}x</gold> ".asComponent().append(it)
+                } ?: "???".asComponent())
+            }
         }
     }
 

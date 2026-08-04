@@ -96,7 +96,8 @@ class GalaHatchetItem : CustomItemFunctions() {
         .buildPair()
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
-        if (random.nextDouble() > 0.08 || player.isOnCooldown(this)) {
+        // TODO: check if we're breaking tree blocks
+        if (random.nextDouble() > 0.05 || player.isOnCooldown(this)) {
             return
         }
 

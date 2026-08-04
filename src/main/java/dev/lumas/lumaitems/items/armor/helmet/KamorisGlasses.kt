@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import java.util.EnumSet
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -21,12 +22,11 @@ import org.bukkit.block.data.type.Sapling
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.inventory.ItemStack
 
-class KamorisEyeglasses : CustomItemFunctions() {
+class KamorisGlasses : CustomItemFunctions() {
 
     private companion object {
-        private const val KEY = "kamoris-eyeglasses"
+        private const val KEY = "kamoris-glasses"
 
         private const val RADIUS = 5
         private const val HEIGHT = 3
@@ -73,8 +73,8 @@ class KamorisEyeglasses : CustomItemFunctions() {
             "their full stage.",
             "",
             "For <#CDB4DB>1 hour</#CDB4DB> each day,",
-            "they'll grow the way",
-            "up instead.",
+            "plants grow all the",
+            "way up instead.",
         )
         .buildPair()
 
@@ -108,7 +108,7 @@ class KamorisEyeglasses : CustomItemFunctions() {
 
                     block.blockData = data
                     sparkle(block)
-                    chime(player, fully)
+                    chime(player, block.location, fully)
                 }
             }
         }
@@ -127,12 +127,12 @@ class KamorisEyeglasses : CustomItemFunctions() {
         )
     }
 
-    private fun chime(player: Player, fully: Boolean) {
+    private fun chime(player: Player, loc: Location, fully: Boolean) {
         val now = System.currentTimeMillis()
         if (now - (lastChime[player.uniqueId] ?: 0L) < CHIME_INTERVAL_MS) return
 
         lastChime[player.uniqueId] = now
-        player.playSound(player.location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.6f, if (fully) 1.8f else 1.4f)
+        player.world.playSound(loc, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.6f, if (fully) 1.8f else 1.4f)
     }
 
     private fun grow(data: BlockData, fully: Boolean): Boolean {

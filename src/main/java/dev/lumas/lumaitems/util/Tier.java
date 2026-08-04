@@ -23,7 +23,7 @@ public final class Tier {
     public static final Tier VALENTIDE_2026 = new Tier("<b><gradient:#954381:#ee78c0:#ec6e95:#cb354e>Valentide 2026</gradient></b>");
     public static final Tier WONDERLAND_2026 = new Tier("<b><gradient:#5d85dc:#E56A91:#F3AA4C:#CA51CB>Wonderland '26</gradient></b>").alt("<b><gradient:#7B859D:#996779:#A7957B:#6B496B>Wonderland '26</gradient></b>");
     public static final Tier PRIDE_2026 = new Tier("<b><gradient:#e40303:#ff8c00:#ffed00:#008026:#004dff>Pride 2026</gradient></b>");
-    public static final Tier LUMARINE_2026 = new Tier("<b><gradient:#f7abdd:#ffefcd:#ec7464:#CB364C>Lumarine 2026</gradient></b>");
+    public static final Tier LUMARINE_2026 = new Tier("<b><gradient:#1e8abf:#9be4df:#f8898a:#EDB172:#ffe494>Lumarine 2026</gradient></b>");
 
 
     private final String main;
