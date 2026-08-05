@@ -96,12 +96,12 @@ class GalaHatchetItem : CustomItemFunctions() {
         .buildPair()
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
-        // TODO: check if we're breaking tree blocks
-        if (random.nextDouble() > 0.05 || player.isOnCooldown(this)) {
+        val block = event.block
+        if (!block.type.isTreeBlock() || random.nextDouble() > 0.05 || player.isOnCooldown(this)) {
             return
         }
 
-        launchVolley(player, event.block.location.toCenterLocation())
+        launchVolley(player, block.location.toCenterLocation())
         player.addCooldown(this, 5)
     }
 
@@ -168,9 +168,10 @@ class GalaHatchetItem : CustomItemFunctions() {
 
     private fun hitsWood(origin: Location, direction: Vector, reach: Double): Boolean {
         val hit = origin.world.rayTraceBlocks(origin, direction.clone().normalize(), reach) ?: return false
-        val type = hit.hitBlock?.type ?: return false
-        return type.isTagged(Tag.LOGS) || type.isTagged(Tag.LEAVES)
+        return hit.hitBlock?.type?.isTreeBlock() == true
     }
+
+    private fun Material.isTreeBlock(): Boolean = this.isTagged(Tag.LOGS) || this.isTagged(Tag.LEAVES)
 
     private fun launchRocket(player: Player, origin: Location, direction: Vector, crowdedVolley: Boolean) {
         val crowded = crowdedVolley || flightRoom(origin, direction) < CRAMPED_FLIGHT
@@ -213,7 +214,7 @@ class GalaHatchetItem : CustomItemFunctions() {
         }
 
         Sphere(center, BLAST_RADIUS).getSphereFast { block ->
-            if (block.isEmpty || block.isLiquid || (!block.type.isTagged(Tag.LOGS) && !block.type.isTagged(Tag.LEAVES))) {
+            if (block.isEmpty || block.isLiquid || !block.type.isTreeBlock()) {
                 return@getSphereFast
             }
             // ragged edges

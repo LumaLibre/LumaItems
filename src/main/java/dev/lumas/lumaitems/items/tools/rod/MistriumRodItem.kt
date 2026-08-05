@@ -129,10 +129,8 @@ class MistriumRodItem : CustomItemFunctions() {
                 task.cancel() // cancel first
 
                 hitBlock?.let { block ->
-                    BLOCK_EFFECTS[block.type]?.let {
-                        block.sync {
-                            it.accept(block)
-                        }
+                    block.sync {
+                        BLOCK_EFFECTS[block.type]?.accept(block)
                     }
                 }
                 return@asyncTimer

@@ -45,10 +45,10 @@ abstract class PinkAyuneTool : CustomItemFunctions() {
 
         val loc = block.location.toCenterLocation()
         val uuid = player.uniqueId
-        val threshold = if (procStreak.contains(uuid)) 50 else 25
+        val threshold = if (procStreak.contains(uuid)) 35 else 25
         if (random.nextInt(100) >= threshold) {
             procStreak.remove(uuid) // streak broken
-            if (random.nextInt(100) < 15) {
+            if (random.nextInt(100) < 18) {
                 event.isDropItems = false
                 block.world.playSound(block.location, Sound.ENTITY_WITCH_CELEBRATE, 0.1f, 1.8f)
                 block.world.spawnParticle(Particle.INSTANT_EFFECT, loc, 20, 0.4, 0.5, 0.4, 0.0, "#FFBCE2".spell())
