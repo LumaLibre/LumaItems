@@ -114,12 +114,14 @@ class SmugglersCaskItem : CustomItemFunctions() {
                 "<#d9a566>sneak</#d9a566> to hide from hostile",
                 "mobs and angry guards.",
             )
-            .paperDataComponents(PaperDataComponent.valued(
-                DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD)
-                    .apply { Registry.SOUNDS.getKey(Sound.BLOCK_BARREL_CLOSE)?.let { equipSound(it) } }
-                    .build()
-            ))
-            .buildPair()
+            .paperDataComponents(
+                PaperDataComponent.valued(
+                    DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD)
+                        .apply { Registry.SOUNDS.getKey(Sound.BLOCK_BARREL_CLOSE)?.let { equipSound(it) } }
+                        .build()
+                ),
+                PaperDataComponent.valued(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, false)
+            ).buildPair()
     }
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
