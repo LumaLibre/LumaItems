@@ -1,6 +1,8 @@
 package dev.lumas.lumaitems.items.misc
 
 import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.annotations.FireAnyways
+import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
@@ -10,7 +12,10 @@ import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.itemInOffHand
 import dev.lumas.lumaitems.util.extensions.namespacedKey
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
+import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.attribute.Attribute
@@ -18,11 +23,13 @@ import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
 @Disable(standard = true, vanilla = true, invert = true, hard = true)
+@FireAnyways(Action.PLAYER_TELEPORT, Action.CANVAS_ASYNC_PLAYER_TELEPORT)
 class WonderAppleItem : CustomItemFunctions() {
 
     private companion object {
@@ -80,8 +87,34 @@ class WonderAppleItem : CustomItemFunctions() {
         player.world.playSound(player.location, Sound.ITEM_BOTTLE_FILL, 1f, 1f)
 
         player.syncDelayed(30 * 20) {
-            attribute.removeModifier(modifier)
-            player.world.playSound(player.location, Sound.ITEM_BOTTLE_EMPTY, 1f, 1f)
+            shrinkBack(player)
         }
+    }
+
+    override fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {
+        stripInDisabledWorld(player, event.to)
+    }
+
+    override fun onCanvasAsyncPlayerTeleport(player: Player, event: EntityTeleportAsyncEvent) {
+        val destination = event.to
+        player.sync {
+            stripInDisabledWorld(player, destination)
+        }
+    }
+
+    private fun stripInDisabledWorld(player: Player, destination: Location) {
+        if (isDisabled(destination)) {
+            shrinkBack(player)
+        }
+    }
+
+    private fun shrinkBack(player: Player) {
+        val attribute = player.getAttribute(Attribute.SCALE) ?: return
+        if (attribute.getModifier(KEY) == null) {
+            return
+        }
+
+        attribute.removeModifier(KEY)
+        player.world.playSound(player.location, Sound.ITEM_BOTTLE_EMPTY, 1f, 1f)
     }
 }
