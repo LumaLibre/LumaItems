@@ -10,6 +10,7 @@ import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.syncDelayed
+import dev.lumas.lumaitems.util.extensions.withMeta
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -23,6 +24,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.TropicalFishBucketMeta
 
 class InfiniteWaterBucketItem : CustomItemFunctions() {
 
@@ -132,8 +134,8 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
         .name("<b><gradient:#4498DB:#F5A623:#F5A623:#E94F37>Infinite Fish Bucket</gradient></b>")
         .customEnchants("<#0098de>Bottomless")
         .lore(
-            "This bucket never runs",
-            "out of <#F5A623>tropical fish</#F5A623>",
+            "This bucket never",
+            "runs out of <#F5A623>fish</#F5A623>",
             "or <#0098de>water</#0098de> to place!"
         )
         .material(Material.TROPICAL_FISH_BUCKET)
@@ -183,9 +185,7 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
             "filling up.",
             "",
             "Press your <#B3E5FC>swap key (F)</#B3E5FC>",
-            "to refill your air bar.",
-            "",
-            "<red>Cooldown: 1m"
+            "to refill your air bar."
         )
         .material(Material.BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)
@@ -209,7 +209,7 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
         event.isCancelled = true
 
         if (player.remainingAir >= player.maximumAir) return
-        if (player.isOnCooldown(this)) return
+        if (player.isOnCooldown(this)) return // TODO: cooldown effects
 
         player.addCooldown(this, REFILL_COOLDOWN_TICKS)
         player.remainingAir = player.maximumAir
