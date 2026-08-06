@@ -8,6 +8,8 @@ import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.itemInOffHand
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -30,6 +32,9 @@ open class MidnightClaymoreItem : CustomItemFunctions() {
     }
 
     private val damageGuard = ThreadLocal.withInitial { false }
+
+    /** player -> (entity they swung at, tick of the swing) */
+    private val pendingSwings = ConcurrentHashMap<UUID, Pair<UUID, Int>>()
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -73,7 +78,7 @@ open class MidnightClaymoreItem : CustomItemFunctions() {
     }
 
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
-        if (damageGuard.get() || !isMeleeSwing(player, event) || !shouldDamage(player)) return
+        if (damageGuard.get() || !isMeleeSwing(player, event) || !shouldDamage(player) || event.cause == EntityDamageEvent.DamageCause.THORNS) return
         damageGuard.set(true)
 
         try {
