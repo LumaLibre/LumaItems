@@ -17,6 +17,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
@@ -25,6 +26,7 @@ open class MidnightClaymoreItem : CustomItemFunctions() {
 
     companion object {
         private val KEY = Util.namespacedKey("midnight-claymore")
+        private const val MAX_TARGETS = 20
     }
 
     private val damageGuard = ThreadLocal.withInitial { false }
@@ -61,13 +63,17 @@ open class MidnightClaymoreItem : CustomItemFunctions() {
     }
 
 
+    private fun isMeleeSwing(player: Player, event: EntityDamageByEntityEvent): Boolean {
+        return event.damager === player && event.cause == EntityDamageEvent.DamageCause.ENTITY_ATTACK
+    }
+
     open fun shouldDamage(player: Player): Boolean {
         val type = GenericToolType.getGenericToolType(player.itemInOffHand.type)
         return player.isItemInSlot(KEY, EquipmentSlot.HAND) && (type != GenericToolType.WEAPON && type != GenericToolType.TOOL)
     }
 
     override fun onEntityDamage(player: Player, event: EntityDamageByEntityEvent) {
-        if (damageGuard.get() || !shouldDamage(player)) return
+        if (damageGuard.get() || !isMeleeSwing(player, event) || !shouldDamage(player)) return
         damageGuard.set(true)
 
         try {
@@ -78,6 +84,7 @@ open class MidnightClaymoreItem : CustomItemFunctions() {
                         .sortedBy { it.location.distanceSquared(hitEntity.location) }
                 ) }
                 .filter { it != player && !it.isDead }
+                .take(MAX_TARGETS)
 
             // get block under entity
             val material = hitEntity.location.subtract(0.0, 1.0, 0.0).block.type
