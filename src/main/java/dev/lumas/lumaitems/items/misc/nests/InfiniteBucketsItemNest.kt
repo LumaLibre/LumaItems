@@ -171,7 +171,7 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
 
     private companion object {
         val KEY = "infinite-air-bucket".namespacedKey()
-        const val REFILL_COOLDOWN_TICKS = 1200L
+        const val REFILL_COOLDOWN_TICKS = 60L
         const val BUBBLE_POPS = 5
     }
     // TODO: scope this to just removing liquids instead of refilling player air bars
