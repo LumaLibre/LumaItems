@@ -10,7 +10,6 @@ import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import dev.lumas.lumaitems.util.extensions.withMeta
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -24,7 +23,6 @@ import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.TropicalFishBucketMeta
 
 class InfiniteWaterBucketItem : CustomItemFunctions() {
 
@@ -48,6 +46,11 @@ class InfiniteWaterBucketItem : CustomItemFunctions() {
     }
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
+        if (player.isOnCooldown(this)) {
+            event.isCancelled = true
+            return
+        }
+        player.addCooldown(this, 1)
         event.itemStack = infiniteWaterBucket
         player.updateInventory()
     }
@@ -80,6 +83,11 @@ class InfiniteLavaBucketItem : CustomItemFunctions() {
     }
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
+        if (player.isOnCooldown(this)) {
+            event.isCancelled = true
+            return
+        }
+        player.addCooldown(this, 1)
         event.itemStack = infiniteLavaBucket
         player.updateInventory()
     }
@@ -152,12 +160,18 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
     }
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
+        if (player.isOnCooldown(this)) {
+            event.isCancelled = true
+            return
+        }
+        player.addCooldown(this, 1)
         event.itemStack = infiniteTropicalFishBucket
         player.updateInventory()
     }
 
     override fun onBucketReleaseEntity(event: CreatureSpawnEvent) {
-        // future note: this is an okay way to check if the fish is ours, bukkit doesnt fire enough events for this and there's no way to grab store on entity PDC
+        // future note: this is an okay way to check if the fish is ours, bukkit doesn't
+        // fire enough events for this, and there's no way to grab store on entity PDC
         val fish = event.entity as? TropicalFish ?: return
         val name = fish.customName() ?: return
         if (name != bucketName) return
@@ -200,6 +214,11 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
     }
 
     override fun onPlayerFillBucket(player: Player, event: PlayerBucketFillEvent) {
+        if (player.isOnCooldown(this)) {
+            event.isCancelled = true
+            return
+        }
+        player.addCooldown(this, 1)
         event.itemStack = infiniteAirBucket
         player.updateInventory()
     }
