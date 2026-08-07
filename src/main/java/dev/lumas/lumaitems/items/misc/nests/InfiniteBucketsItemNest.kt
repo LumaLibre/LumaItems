@@ -164,7 +164,7 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
             event.isCancelled = true
             return
         }
-        player.addCooldown(this, 1)
+        player.addCooldown(this, 15*20)
         event.itemStack = infiniteTropicalFishBucket
         player.updateInventory()
     }
