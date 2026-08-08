@@ -6,6 +6,8 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.addCooldown
+import dev.lumas.lumaitems.util.extensions.flag
+import dev.lumas.lumaitems.util.extensions.isFlagged
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
@@ -23,6 +25,8 @@ import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
+import java.util.UUID
+import java.util.concurrent.atomic.AtomicReference
 
 class InfiniteWaterBucketItem : CustomItemFunctions() {
 
@@ -138,6 +142,10 @@ class InfiniteMilkBucketItem : CustomItemFunctions() {
 @FireAnyways(Action.BUCKET_RELEASE_ENTITY)
 class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
 
+    private companion object {
+        const val FISH_COOLDOWN_TICKS = 15L * 20
+    }
+
     private val infiniteTropicalFishBucket: ItemStack = ItemFactory.builder()
         .name("<b><gradient:#4498DB:#F5A623:#F5A623:#E94F37>Infinite Fish Bucket</gradient></b>")
         .customEnchants("<#0098de>Bottomless")
@@ -154,17 +162,18 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
         .createItem()
 
     private val bucketName: Component? = infiniteTropicalFishBucket.itemMeta?.customName()
+    private val pendingRelease = AtomicReference<UUID>()
 
     override fun createItem(): Pair<String, ItemStack> {
         return Pair("infinite-tropical-fish-bucket", infiniteTropicalFishBucket)
     }
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
-        if (player.isOnCooldown(this)) {
-            event.isCancelled = true
+        if (player.isFlagged(this)) {
             return
         }
-        player.addCooldown(this, 15*20)
+        player.flag(this, 1)
+        pendingRelease.set(player.uniqueId)
         event.itemStack = infiniteTropicalFishBucket
         player.updateInventory()
     }
@@ -175,6 +184,16 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
         val fish = event.entity as? TropicalFish ?: return
         val name = fish.customName() ?: return
         if (name != bucketName) return
+
+        val uuid = pendingRelease.getAndSet(null)
+        if (uuid != null) {
+            if (uuid.isOnCooldown(this)) {
+                event.isCancelled = true
+                return
+            }
+            uuid.addCooldown(this, FISH_COOLDOWN_TICKS)
+        }
+
         fish.customName(null)
         fish.isCustomNameVisible = false
     }
