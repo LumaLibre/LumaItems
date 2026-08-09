@@ -211,7 +211,7 @@ class GeneralListeners : Listener {
     }
 
 
-    @EventHandler
+    //@EventHandler
     fun onItemDamage(event: PlayerItemDamageEvent) {
         val item = event.item
 

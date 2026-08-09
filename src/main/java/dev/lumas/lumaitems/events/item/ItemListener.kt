@@ -8,7 +8,6 @@ import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.model.item.PdcSource
 import dev.lumas.lumaitems.registry.Registry
-import dev.lumas.lumaitems.util.ServiceDeterrents
 import dev.lumas.lumaitems.util.extensions.actionBar
 import io.papermc.paper.persistence.PersistentDataContainerView
 import java.util.EnumMap
@@ -76,12 +75,6 @@ abstract class ItemListener : Listener {
         withContainer: Boolean = false
     ) {
         if (!LumaItems.isFinishedRegistration()) return
-        if (!optimize && source?.isHealthTooLow() == true) {
-            if (ServiceDeterrents.applyDeterrent(source.item, player, event, action) && player != null) {
-                tryPlayBreakSound(player)
-            }
-            return
-        }
 
         for ((registryKey, item) in Registry.CUSTOM_ITEMS) {
             if (!shouldFire(item, source?.data, registryKey.asNameSpacedKey(), action)) continue
