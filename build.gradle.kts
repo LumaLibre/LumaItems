@@ -31,6 +31,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.glaremasters.me/repository/towny/")
     maven("https://repo.codemc.io/repository/EvenMoreFish/")
+    maven("https://nexus.prism-mc.org/repository/maven-releases/")
 }
 
 dependencies {
@@ -55,6 +56,7 @@ dependencies {
     compileOnly("com.oheers.evenmorefish:even-more-fish-api:2.1.14") {
         isTransitive = false
     }
+    compileOnly("org.prism_mc.prism:prism-paper-api:4.4")
 
     implementation("eu.okaeri:okaeri-configs-yaml-snakeyaml:6.1.0-beta.1")
 
@@ -154,10 +156,11 @@ bukkit {
     foliaSupported = true
     depend = listOf("LumaCore")
     softDepend = listOf(
-        "ProtocolLib",
+        "ProtocolLib", // TODO: get rid of this and use our own packet handlers
         "EvenMoreFish", // Soft depend on EMF to register listeners after it
         "Jobs",
-        "mcMMO"
+        "mcMMO",
+        "prism"
     )
     permissions {
         register("lumaitems.disassemblergui") {

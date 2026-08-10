@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.hooks.Hook;
 import dev.lumas.lumaitems.hooks.LumaGlowAPIHook;
 import dev.lumas.lumaitems.hooks.McMMOHook;
 import dev.lumas.lumaitems.hooks.MythicMobsHook;
+import dev.lumas.lumaitems.hooks.PrismHook;
 import dev.lumas.lumaitems.hooks.ProtocolLibHook;
 import dev.lumas.lumaitems.hooks.TownyHook;
 import dev.lumas.lumaitems.hooks.WorldGuardHook;
@@ -38,7 +39,7 @@ public final class Registry<T extends RegistryItem> implements Iterable<Map.Entr
     public static final Registry<CustomItem> CUSTOM_ITEMS = new Registry<>();
     public static final Registry<NamedCustomItem> NAMED_CUSTOM_ITEMS = new Registry<>();
     public static final Registry<OkaeriFile> CONFIGS = fromClassesWithCrafter(new ConfigManager(), RelicsYml.class, AstralYml.class, HeadsYml.class, JobsBoostersYml.class);
-    public static final Registry<Hook> HOOKS = fromClasses(ProtocolLibHook.class, MythicMobsHook.class, McMMOHook.class, CoreProtectHook.class, LumaGlowAPIHook.class, WorldGuardHook.class, TownyHook.class);
+    public static final Registry<Hook> HOOKS = fromClasses(ProtocolLibHook.class, MythicMobsHook.class, McMMOHook.class, CoreProtectHook.class, LumaGlowAPIHook.class, WorldGuardHook.class, TownyHook.class, PrismHook.class);
 
     private final Map<Identifier, T> map;
 
