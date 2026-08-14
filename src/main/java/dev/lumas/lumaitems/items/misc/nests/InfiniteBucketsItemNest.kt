@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.canBuild
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
@@ -161,7 +162,7 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
         event.isCancelled = true
 
         val target = event.block
-        placeFluid(player, target, Material.WATER, Sound.ITEM_BUCKET_EMPTY_FISH, SoundCategory.NEUTRAL)
+        if (!placeFluid(player, target, Material.WATER, Sound.ITEM_BUCKET_EMPTY_FISH, SoundCategory.NEUTRAL)) return
 
         if (player.isOnCooldown(this)) return
         player.addCooldown(this, FISH_COOLDOWN_TICKS)
@@ -267,12 +268,12 @@ private val CAULDRONS = setOf(
 
 @Suppress("DEPRECATION") // World#isUltraWarm: in contrast to world.getEnvironment(), this is backed by
 // world.environmentAttributes().getDimensionValue(EnvironmentAttributes.WATER_EVAPORATES), so it should be more safe
-private fun placeFluid(player: Player, target: Block, fluid: Material, emptySound: Sound, category: SoundCategory) {
+private fun placeFluid(player: Player, target: Block, fluid: Material, emptySound: Sound, category: SoundCategory): Boolean {
+    if (!player.canBuild(target.location)) return false
     val world = target.world
 
     if (target.type in CAULDRONS) {
-        fillCauldron(player, target, fluid, emptySound, category)
-        return
+        return fillCauldron(player, target, fluid, emptySound, category)
     }
 
     if (fluid == Material.WATER && world.isUltraWarm) {
@@ -280,7 +281,7 @@ private fun placeFluid(player: Player, target: Block, fluid: Material, emptySoun
         val pitch = 2.6f + (Random.nextFloat() - Random.nextFloat()) * 0.8f
         target.playBucketSound(player, Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5f, pitch)
         world.spawnParticle(Particle.LARGE_SMOKE, location, 8, 0.25, 0.25, 0.25, 0.0)
-        return
+        return true
     }
 
     val data = target.blockData
@@ -290,30 +291,32 @@ private fun placeFluid(player: Player, target: Block, fluid: Material, emptySoun
             target.setBlockDataWithLog(player, data)
         }
         target.playBucketSound(player, emptySound, category)
-        return
+        return true
     }
 
-    if (!target.isReplaceable) return
+    if (!target.isReplaceable) return false
     if (!target.isLiquid && !target.type.isAir) {
         target.breakNaturallyWithLog(player, true, false)
     }
     target.setBlockDataWithLog(player, fluid)
 
     target.playBucketSound(player, emptySound, category)
+    return true
 }
 
-private fun fillCauldron(player: Player, target: Block, fluid: Material, emptySound: Sound, category: SoundCategory) {
+private fun fillCauldron(player: Player, target: Block, fluid: Material, emptySound: Sound, category: SoundCategory): Boolean {
     val filled = when (fluid) {
         Material.WATER -> Material.WATER_CAULDRON.createBlockData().apply {
             (this as? Levelled)?.let { it.level = it.maximumLevel }
         }
         // Lava cannot be poured into a cauldron that is submerged, apparently
-        Material.LAVA -> if (target.isUnderWater()) return else Material.LAVA_CAULDRON.createBlockData()
-        else -> return
+        Material.LAVA -> if (target.isUnderWater()) return false else Material.LAVA_CAULDRON.createBlockData()
+        else -> return false
     }
 
-    if (!target.changeCauldron(player, filled, CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) return
+    if (!target.changeCauldron(player, filled, CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) return false
     target.playBucketSound(null, emptySound, category)
+    return true
 }
 
 private fun emptyCauldron(player: Player, target: Block): Boolean {
@@ -347,6 +350,8 @@ private fun Block.isUnderWater(): Boolean {
 }
 
 private fun drainFluid(player: Player, target: Block): Boolean {
+    if (!player.canBuild(target.location)) return false
+
     val data = target.blockData
     val type = target.type
 
