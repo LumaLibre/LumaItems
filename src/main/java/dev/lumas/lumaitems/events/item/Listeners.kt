@@ -490,7 +490,7 @@ class Listeners : ItemListener() {
         fire(player.equipmentSources(), Action.INVENTORY_CLOSE, player, event)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerFillBucket(event: PlayerBucketFillEvent) {
         val player = event.player
         val item = when (event.hand) {
@@ -515,14 +515,14 @@ class Listeners : ItemListener() {
         fire(null as PdcSource? /*PdcSource.of(container)*/, Action.BUCKET_RELEASE_ENTITY, null, event)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerBucketEntity(event: PlayerBucketEntityEvent) {
         val player = event.player
         val source = event.originalBucket.asSource() ?: return
         fire(source, Action.BUCKET_CAPTURE_ENTITY, player, event)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onPlayerBucketEmpty(event: PlayerBucketEmptyEvent) {
         val player = event.player
         val item = when (event.hand) {

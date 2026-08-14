@@ -1,23 +1,32 @@
 package dev.lumas.lumaitems.items.misc.nests
 
-import dev.lumas.lumaitems.annotations.FireAnyways
-import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.addCooldown
-import dev.lumas.lumaitems.util.extensions.flag
-import dev.lumas.lumaitems.util.extensions.isFlagged
+import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
+import dev.lumas.lumaitems.util.extensions.setAirWithLog
+import dev.lumas.lumaitems.util.extensions.setBlockDataWithLog
+import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.extensions.syncDelayed
-import net.kyori.adventure.text.Component
+import kotlin.random.Random
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
+import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.SoundCategory
+import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
+import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.Levelled
+import org.bukkit.block.data.Waterlogged
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.entity.TropicalFish
+import org.bukkit.event.block.CauldronLevelChangeEvent
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketEntityEvent
@@ -25,8 +34,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
-import java.util.concurrent.atomic.AtomicReference
+import org.bukkit.persistence.PersistentDataType
 
 class InfiniteWaterBucketItem : CustomItemFunctions() {
 
@@ -50,13 +58,8 @@ class InfiniteWaterBucketItem : CustomItemFunctions() {
     }
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
-        if (player.isOnCooldown(this)) {
-            event.isCancelled = true
-            return
-        }
-        player.addCooldown(this, 1)
-        event.itemStack = infiniteWaterBucket
-        player.updateInventory()
+        event.isCancelled = true
+        placeFluid(player, event.block, Material.WATER, Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS)
     }
 
     override fun onBucketCaptureEntity(player: Player, event: PlayerBucketEntityEvent) {
@@ -87,13 +90,8 @@ class InfiniteLavaBucketItem : CustomItemFunctions() {
     }
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
-        if (player.isOnCooldown(this)) {
-            event.isCancelled = true
-            return
-        }
-        player.addCooldown(this, 1)
-        event.itemStack = infiniteLavaBucket
-        player.updateInventory()
+        event.isCancelled = true
+        placeFluid(player, event.block, Material.LAVA, Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS)
     }
 
 }
@@ -129,21 +127,15 @@ class InfiniteMilkBucketItem : CustomItemFunctions() {
 
         event.replacement = item.clone()
     }
-
-    override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
-        val item = event.itemStack ?: return
-        if (!item.isMatchingItem(KEY)) return
-
-        event.itemStack = item.clone()
-        player.updateInventory()
-    }
 }
 
-@FireAnyways(Action.BUCKET_RELEASE_ENTITY)
 class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
 
-    private companion object {
-        const val FISH_COOLDOWN_TICKS = 15L * 20
+    companion object {
+        val INFINITE_FISH_KEY: NamespacedKey = "infinite-fish".namespacedKey()
+        private const val ID = "infinite-tropical-fish-bucket"
+        private val KEY = ID.namespacedKey()
+        private const val FISH_COOLDOWN_TICKS = 4L
     }
 
     private val infiniteTropicalFishBucket: ItemStack = ItemFactory.builder()
@@ -157,45 +149,32 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
         .material(Material.TROPICAL_FISH_BUCKET)
         .vanillaEnchants(Enchantment.UNBREAKING to 10)
         .tier(Tier.LUMARINE_2026)
-        .persistentData("infinite-tropical-fish-bucket")
+        .persistentData(KEY)
         .build()
         .createItem()
 
-    private val bucketName: Component? = infiniteTropicalFishBucket.itemMeta?.customName()
-    private val pendingRelease = AtomicReference<UUID>()
-
     override fun createItem(): Pair<String, ItemStack> {
-        return Pair("infinite-tropical-fish-bucket", infiniteTropicalFishBucket)
+        return Pair(ID, infiniteTropicalFishBucket)
     }
 
     override fun onPlayerEmptyBucket(player: Player, event: PlayerBucketEmptyEvent) {
-        if (player.isFlagged(this)) {
-            return
-        }
-        player.flag(this, 1)
-        pendingRelease.set(player.uniqueId)
-        event.itemStack = infiniteTropicalFishBucket
-        player.updateInventory()
+        event.isCancelled = true
+
+        val target = event.block
+        placeFluid(player, target, Material.WATER, Sound.ITEM_BUCKET_EMPTY_FISH, SoundCategory.NEUTRAL)
+
+        if (player.isOnCooldown(this)) return
+        player.addCooldown(this, FISH_COOLDOWN_TICKS)
+        spawnFish(player, target)
     }
 
-    override fun onBucketReleaseEntity(event: CreatureSpawnEvent) {
-        // future note: this is an okay way to check if the fish is ours, bukkit doesn't
-        // fire enough events for this, and there's no way to grab store on entity PDC
-        val fish = event.entity as? TropicalFish ?: return
-        val name = fish.customName() ?: return
-        if (name != bucketName) return
-
-        val uuid = pendingRelease.getAndSet(null)
-        if (uuid != null) {
-            if (uuid.isOnCooldown(this)) {
-                event.isCancelled = true
-                return
-            }
-            uuid.addCooldown(this, FISH_COOLDOWN_TICKS)
+    private fun spawnFish(player: Player, target: Block) {
+        val location = target.location.toCenterLocation()
+        target.world.spawn(location, TropicalFish::class.java, CreatureSpawnEvent.SpawnReason.BUCKET) { fish ->
+            fish.isFromBucket = true
+            fish.setPersistentKey(INFINITE_FISH_KEY, PersistentDataType.SHORT, 1)
         }
-
-        fish.customName(null)
-        fish.isCustomNameVisible = false
+        target.playBucketSound(player, Sound.ENTITY_TROPICAL_FISH_AMBIENT, SoundCategory.NEUTRAL)
     }
 
 }
@@ -206,8 +185,12 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
         val KEY = "infinite-air-bucket".namespacedKey()
         const val REFILL_COOLDOWN_TICKS = 60L
         const val BUBBLE_POPS = 5
+        val DRAINABLE_RESULTS = setOf(
+            Material.WATER_BUCKET,
+            Material.LAVA_BUCKET,
+            Material.POWDER_SNOW_BUCKET
+        )
     }
-    // TODO: scope this to just removing liquids instead of refilling player air bars
 
     private val infiniteAirBucket: ItemStack = ItemFactory.builder()
         .name("<b><gradient:#B3E5FC:#E0F5FF:#B3E5FC:#E0F5FF>Infinite Air Bucket</gradient></b>")
@@ -233,13 +216,12 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
     }
 
     override fun onPlayerFillBucket(player: Player, event: PlayerBucketFillEvent) {
-        if (player.isOnCooldown(this)) {
-            event.isCancelled = true
-            return
-        }
-        player.addCooldown(this, 1)
-        event.itemStack = infiniteAirBucket
-        player.updateInventory()
+        event.isCancelled = true
+
+        val result = event.itemStack?.type ?: return
+        if (result !in DRAINABLE_RESULTS) return
+
+        drainFluid(player, event.block)
     }
 
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
@@ -270,3 +252,139 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
 }
 
 // TODO: Infinite Powder Snow Bucket - more suited for a winter event
+
+
+// Helpers simulating the canceled bucket behavior:
+
+private const val BUCKET_SOUND_RADIUS_SQUARED = 16.0 * 16.0
+
+private val CAULDRONS = setOf(
+    Material.CAULDRON,
+    Material.WATER_CAULDRON,
+    Material.LAVA_CAULDRON,
+    Material.POWDER_SNOW_CAULDRON
+)
+
+@Suppress("DEPRECATION") // World#isUltraWarm: in contrast to world.getEnvironment(), this is backed by
+// world.environmentAttributes().getDimensionValue(EnvironmentAttributes.WATER_EVAPORATES), so it should be more safe
+private fun placeFluid(player: Player, target: Block, fluid: Material, emptySound: Sound, category: SoundCategory) {
+    val world = target.world
+
+    if (target.type in CAULDRONS) {
+        fillCauldron(player, target, fluid, emptySound, category)
+        return
+    }
+
+    if (fluid == Material.WATER && world.isUltraWarm) {
+        val location = target.location.toCenterLocation()
+        val pitch = 2.6f + (Random.nextFloat() - Random.nextFloat()) * 0.8f
+        target.playBucketSound(player, Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5f, pitch)
+        world.spawnParticle(Particle.LARGE_SMOKE, location, 8, 0.25, 0.25, 0.25, 0.0)
+        return
+    }
+
+    val data = target.blockData
+    if (fluid == Material.WATER && data is Waterlogged) {
+        if (!data.isWaterlogged) {
+            data.isWaterlogged = true
+            target.setBlockDataWithLog(player, data)
+        }
+        target.playBucketSound(player, emptySound, category)
+        return
+    }
+
+    if (!target.isReplaceable) return
+    if (!target.isLiquid && !target.type.isAir) {
+        target.breakNaturallyWithLog(player, true, false)
+    }
+    target.setBlockDataWithLog(player, fluid)
+
+    target.playBucketSound(player, emptySound, category)
+}
+
+private fun fillCauldron(player: Player, target: Block, fluid: Material, emptySound: Sound, category: SoundCategory) {
+    val filled = when (fluid) {
+        Material.WATER -> Material.WATER_CAULDRON.createBlockData().apply {
+            (this as? Levelled)?.let { it.level = it.maximumLevel }
+        }
+        // Lava cannot be poured into a cauldron that is submerged, apparently
+        Material.LAVA -> if (target.isUnderWater()) return else Material.LAVA_CAULDRON.createBlockData()
+        else -> return
+    }
+
+    if (!target.changeCauldron(player, filled, CauldronLevelChangeEvent.ChangeReason.BUCKET_EMPTY)) return
+    target.playBucketSound(null, emptySound, category)
+}
+
+private fun emptyCauldron(player: Player, target: Block): Boolean {
+    val sound = when (target.type) {
+        Material.LAVA_CAULDRON -> Sound.ITEM_BUCKET_FILL_LAVA
+        Material.POWDER_SNOW_CAULDRON -> Sound.ITEM_BUCKET_FILL_POWDER_SNOW
+        else -> Sound.ITEM_BUCKET_FILL
+    }
+
+    val emptied = Material.CAULDRON.createBlockData()
+    if (!target.changeCauldron(player, emptied, CauldronLevelChangeEvent.ChangeReason.BUCKET_FILL)) return false
+
+    target.playBucketSound(null, sound, SoundCategory.BLOCKS)
+    return true
+}
+
+private fun Block.changeCauldron(player: Player, newData: BlockData, reason: CauldronLevelChangeEvent.ChangeReason): Boolean {
+    val snapshot = state
+    snapshot.blockData = newData
+
+    val event = CauldronLevelChangeEvent(this, player, reason, snapshot)
+    if (!event.callEvent()) return false
+
+    setBlockDataWithLog(player, event.newState.blockData)
+    return true
+}
+
+private fun Block.isUnderWater(): Boolean {
+    val above = getRelative(BlockFace.UP)
+    return above.type == Material.WATER || (above.blockData as? Waterlogged)?.isWaterlogged == true
+}
+
+private fun drainFluid(player: Player, target: Block): Boolean {
+    val data = target.blockData
+    val type = target.type
+
+    if (type in CAULDRONS) return emptyCauldron(player, target)
+
+    when {
+        data is Waterlogged && data.isWaterlogged -> {
+            data.isWaterlogged = false
+            target.setBlockDataWithLog(player, data)
+        }
+
+        type == Material.WATER || type == Material.LAVA || type == Material.POWDER_SNOW -> {
+            target.setAirWithLog(player)
+        }
+
+        else -> return false
+    }
+
+    val sound = when (type) {
+        Material.LAVA -> Sound.ITEM_BUCKET_FILL_LAVA
+        Material.POWDER_SNOW -> Sound.ITEM_BUCKET_FILL_POWDER_SNOW
+        else -> Sound.ITEM_BUCKET_FILL
+    }
+    target.playBucketSound(player, sound, SoundCategory.PLAYERS)
+    return true
+}
+
+private fun Block.playBucketSound(
+    except: Player?,
+    sound: Sound,
+    category: SoundCategory,
+    volume: Float = 1.0f,
+    pitch: Float = 1.0f
+) {
+    val location = this.location.toCenterLocation()
+    for (nearby in world.players) {
+        if (nearby.uniqueId == except?.uniqueId) continue
+        if (nearby.location.distanceSquared(location) > BUCKET_SOUND_RADIUS_SQUARED) continue
+        nearby.playSound(location, sound, category, volume, pitch)
+    }
+}

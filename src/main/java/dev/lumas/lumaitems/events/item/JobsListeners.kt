@@ -7,10 +7,13 @@ import dev.lumas.core.annotation.Register
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.astral.GrubbyRelicItem
+import dev.lumas.lumaitems.items.misc.nests.InfiniteTropicalFishBucketItem
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.equipmentSources
+import dev.lumas.lumaitems.util.extensions.hasPersistentKey
 import kotlin.random.Random
+import org.bukkit.entity.Entity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 
@@ -23,6 +26,11 @@ class JobsListeners : ItemListener() {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     fun onJobsExpGain(event: JobsExpGainEvent) {
+        if (isInfiniteFish(event.entity) || isInfiniteFish(event.livingEntity)) {
+            event.isCancelled = true
+            return
+        }
+
         val player = event.player.player ?: return
         if (this.isTreeFeller(player)) return
         fire(player.equipmentSources(), Action.JOBS_EXP_GAIN, player, event, optimize = false, withContainer = true)
@@ -30,6 +38,11 @@ class JobsListeners : ItemListener() {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     fun onJobsPrePayment(event: JobsPrePaymentEvent) {
+        if (isInfiniteFish(event.entity) || isInfiniteFish(event.livingEntity)) {
+            event.isCancelled = true
+            return
+        }
+
         val player = event.player?.player ?: return
         if (!this.isTreeFeller(player)) {
             fire(player.equipmentSources(), Action.JOBS_PRE_PAYMENT, player, event, optimize = false, withContainer = true)
@@ -39,5 +52,9 @@ class JobsListeners : ItemListener() {
 
         val grubby = Registry.CUSTOM_ITEMS.getOrThrow(GrubbyRelicItem::class).createItem().second
         Util.giveItem(player, grubby)
+    }
+
+    private fun isInfiniteFish(entity: Entity?): Boolean {
+        return entity.hasPersistentKey(InfiniteTropicalFishBucketItem.INFINITE_FISH_KEY)
     }
 }
