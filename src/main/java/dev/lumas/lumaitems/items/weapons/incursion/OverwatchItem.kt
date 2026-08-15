@@ -86,6 +86,7 @@ class OverwatchItem : CustomItemFunctions() {
         var charged = false
         var seenActive = false
         var ticks = 0
+        val slot = player.inventory.heldItemSlot
 
         val poller = player.syncTimer(1, 1) { task ->
             ticks++
@@ -101,6 +102,12 @@ class OverwatchItem : CustomItemFunctions() {
                 if (!seenActive) return@syncTimer
 
                 player.clearTitle()
+
+                val stillHeld = player.isValid &&
+                    player.inventory.heldItemSlot == slot &&
+                    player.inventory.itemInMainHand.isMatchingItem(KEY)
+                if (!stillHeld) return@syncTimer
+
                 if (charged) {
                     fire(player)
                 } else {
@@ -124,7 +131,7 @@ class OverwatchItem : CustomItemFunctions() {
                     player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BELL, 1f, 1f)
                 }
                 player.showTitle(
-                    Title.title(Text.mm("<green><b>◎"), Text.mm("<green><b>READY"), CHARGE_TITLE_TIMES)
+                    Title.title(Text.mm("<green><b>⌄"), Text.mm("<green><b>READY"), CHARGE_TITLE_TIMES)
                 )
                 return@syncTimer
             }
@@ -132,7 +139,7 @@ class OverwatchItem : CustomItemFunctions() {
             val filled = ((held.toDouble() / CHARGE_TICKS) * CHARGE_BAR_SEGMENTS).roundToInt()
             player.showTitle(
                 Title.title(
-                    Text.mm("<yellow><b>◎"),
+                    Text.mm("<yellow><b>⌄"),
                     Text.mm("<yellow>" + "|".repeat(filled) + "<dark_gray>" + "|".repeat(CHARGE_BAR_SEGMENTS - filled)),
                     CHARGE_TITLE_TIMES
                 )
