@@ -54,8 +54,8 @@ class RimelureRodItem : CustomItemFunctions() {
                 if (random().nextInt(101) > 8) return
                 val item = event.caught as Item
 
-                if (item.itemStack.maxStackSize > 1) {
-                    item.itemStack.amount = 2
+                if (item.itemStack.maxStackSize > 1 && item.itemStack.amount < item.itemStack.maxStackSize) {
+                    item.itemStack.amount += 1
                     item.world.spawnParticle(Particle.WITCH, item.location.add(0.0, 0.6, 0.0), 10, 0.3, 0.1, 0.3, 0.1)
                 }
             }
