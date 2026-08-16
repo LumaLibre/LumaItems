@@ -39,7 +39,7 @@ class OverwatchItem : CustomItemFunctions() {
         private const val COOLDOWN_TICKS = 45
         private const val RANGE = 100.0
         private const val HIT_RADIUS = 0.1
-        private const val DAMAGE = 14.0
+        private const val DAMAGE = 40.0
         private const val HEADSHOT_MULTIPLIER = 2.0
 
         private const val CHARGE_BAR_SEGMENTS = 10

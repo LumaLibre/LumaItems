@@ -26,7 +26,8 @@ import org.bukkit.util.Vector
 abstract class IncursionEggItem : CustomItemFunctions() {
 
     companion object {
-        private const val DAMAGE = 25.0
+        private const val COOLDOWN_TICKS = 30
+        private const val DAMAGE = 110.0
         private const val RADIUS = 4.5
         private const val DAMAGE_FALLOFF = 0.85
         private const val THROW_SPEED = 1.5
@@ -59,6 +60,12 @@ abstract class IncursionEggItem : CustomItemFunctions() {
 
         event.setUseItemInHand(Event.Result.DENY)
         event.isCancelled = true
+
+        if (player.hasCooldown(material)) {
+            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_HAT, 0.7f, 0.5f)
+            return
+        }
+        player.setCooldown(material, COOLDOWN_TICKS)
 
         val carried = player.velocity
         val velocity = player.eyeLocation.direction.normalize().multiply(THROW_SPEED)

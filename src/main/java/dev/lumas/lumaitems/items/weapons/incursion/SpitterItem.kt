@@ -36,7 +36,7 @@ class SpitterItem : CustomItemFunctions() {
         private const val LAUNCH_ANGLE_DEGREES = 10.0
         private const val RANGE = 22.0
         private const val HIT_RADIUS = 0.15
-        private const val DAMAGE = 7.5
+        private const val DAMAGE = 40.0
         private const val DAMAGE_FALLOFF = 0.25
         private const val TRAIL_STEPS = 2
 

@@ -32,7 +32,7 @@ class BlunderhornItem : CustomItemFunctions() {
         private const val COOLDOWN_TICKS = 30
         private const val RANGE = 6.5
         private const val CONE_DEGREES = 45.0
-        private const val DAMAGE = 30.0
+        private const val DAMAGE = 90.0
         private const val DAMAGE_FALLOFF = 0.85
 
         private const val PELLETS = 16
