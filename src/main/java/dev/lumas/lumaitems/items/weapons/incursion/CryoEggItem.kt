@@ -17,13 +17,19 @@ class CryoEggItem : IncursionEggItem() {
     }
 
     override val key = "incursion-cryo-egg"
-    override val displayName = "<b><aqua>Cryo Egg</aqua></b>"
+    override val displayName = "<b><gradient:#8fd0ea:#9dd9e2:#aedcd0>Cryo Egg</gradient></b>"
+    override val customEnchant = "<#9be4df>Cold Snap"
     override val material = Material.BLUE_EGG
     override val burstColor: Color = Color.AQUA
 
     override val loreLines = listOf(
-        "<gray>Throw it. It goes off where it lands.",
-        "<gray>Frosts & slows whoever it catches."
+        "Best before: several",
+        "weeks ago, arguably.",
+        "",
+        "Best served chilled, which",
+        "it insists on arranging itself.",
+        "",
+        "<red>Cooldown: 1.5s"
     )
 
     override fun applyEffect(target: LivingEntity) {

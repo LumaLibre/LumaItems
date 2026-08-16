@@ -24,6 +24,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
@@ -56,16 +57,23 @@ class OverwatchItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
-            .name("<b><light_purple>Overwatch</light_purple></b>")
+            .name("<b><gradient:#9b8fe0:#c07fd6:#d97fc0>Overwatch</gradient></b>")
+            .vanillaEnchants(Enchantment.PIERCING to 10)
+            .customEnchants("<#c774b2>Sightline")
             .lore(
-                "<gray>Hold to charge, release to fire",
-                "<gray>Pierces through enemies"
+                "<#c774b2>Hold</#c774b2> to charge, <#c774b2>release</#c774b2> to",
+                "fire. Heads count double.",
+                "",
+                "Built to spot things on the",
+                "horizon. It has since learned",
+                "to do something about them.",
+                "",
+                "<red>Cooldown: 2.25s"
             )
-            .addSpace(false)
             .material(Material.SPYGLASS)
             .persistentData(KEY)
             .unbreakable(true)
-            .tier(Tier.BLANK)
+            .tier(Tier.LUMARINE_2026)
             .buildPair()
     }
 

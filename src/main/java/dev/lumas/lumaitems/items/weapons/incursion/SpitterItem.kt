@@ -18,6 +18,7 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.World
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerInteractEvent
@@ -45,15 +46,20 @@ class SpitterItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {
         val (key, item) = ItemFactory.builder()
-            .name("<b><aqua>Spitter</aqua></b>")
+            .name("<b><gradient:#52b9d9:#5fcbd2:#74cfae>Spitter</gradient></b>")
+            .vanillaEnchants(Enchantment.AQUA_AFFINITY to 10)
+            .customEnchants("<#57c6e1>Waterjet")
             .lore(
-                "<gray>Right click to spit water",
-                "<gray>Weak but quick"
+                "<#57c6e1>Right-click</#57c6e1> to squeeze out",
+                "a pressurised jet of brine.",
+                "",
+                "The fish is not happy",
+                "about this arrangement.",
             )
-            .addSpace(false)
             .material(Material.PUFFERFISH)
+            .maxStackSize(1)
             .persistentData(KEY)
-            .tier(Tier.BLANK)
+            .tier(Tier.LUMARINE_2026)
             .paperDataComponents(
                 PaperDataComponent.valued(
                     DataComponentTypes.TOOLTIP_DISPLAY,

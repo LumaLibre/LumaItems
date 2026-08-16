@@ -13,6 +13,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
@@ -35,6 +36,7 @@ abstract class IncursionEggItem : CustomItemFunctions() {
 
     protected abstract val key: String
     protected abstract val displayName: String
+    protected abstract val customEnchant: String
     protected abstract val loreLines: List<String>
     protected abstract val material: Material
     protected abstract val burstColor: Color
@@ -46,11 +48,13 @@ abstract class IncursionEggItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name(displayName)
+            .vanillaEnchants(Enchantment.INFINITY to 10)
+            .customEnchants(customEnchant)
             .lore(loreLines)
-            .addSpace(false)
             .material(material)
+            .maxStackSize(1)
             .persistentData(key)
-            .tier(Tier.BLANK)
+            .tier(Tier.LUMARINE_2026)
             .buildPair()
     }
 

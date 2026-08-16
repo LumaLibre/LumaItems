@@ -13,13 +13,19 @@ class IncendiaryEggItem : IncursionEggItem() {
     }
 
     override val key = "incursion-incendiary-egg"
-    override val displayName = "<b><gold>Incendiary Egg</gold></b>"
+    override val displayName = "<b><gradient:#e08a6a:#e6a05f:#e9b673>Incendiary Egg</gradient></b>"
+    override val customEnchant = "<#EDB172>Scorch"
     override val material = Material.BROWN_EGG
     override val burstColor: Color = Color.ORANGE
 
     override val loreLines = listOf(
-        "<gray>Throw it. It goes off where it lands.",
-        "<gray>Sets whoever it catches alight."
+        "Best before: several",
+        "weeks ago, arguably.",
+        "",
+        "Do not preheat! It has",
+        "handled that already.",
+        "",
+        "<red>Cooldown: 1.5s"
     )
 
     override fun applyEffect(target: LivingEntity) {
