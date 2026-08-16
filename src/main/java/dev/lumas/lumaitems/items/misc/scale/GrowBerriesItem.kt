@@ -1,13 +1,20 @@
 package dev.lumas.lumaitems.items.misc.scale
 
-import dev.lumas.lumaitems.annotations.Ignore
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.annotations.FireAnyways
+import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.actionBar
+import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
+import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
+import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable
 import io.papermc.paper.datacomponent.item.FoodProperties
@@ -15,6 +22,7 @@ import io.papermc.paper.event.entity.EntityCompostItemEvent
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.attribute.Attribute
@@ -23,14 +31,17 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 
-@Ignore
+@Disable(standard = true, vanilla = true, invert = true, hard = true)
+@FireAnyways(Action.PLAYER_TELEPORT, Action.CANVAS_ASYNC_PLAYER_TELEPORT)
 class GrowBerriesItem : CustomItemFunctions() {
 
     private companion object {
         val KEY = "grow-berries".namespacedKey()
         const val DURATION_TICKS = 60L * 20L
+        const val COOLDOWN_TICKS = 120L * 20L
 
         val GROWN_ATTRIBUTES = listOf(
             Attribute.SCALE,
@@ -65,6 +76,8 @@ class GrowBerriesItem : CustomItemFunctions() {
                 "as big for one minute:",
                 "doubled size, speed,",
                 "health, and more.",
+                "",
+                "<red>Cooldown: 2m"
             )
             .build()
             .createItem()
@@ -75,10 +88,15 @@ class GrowBerriesItem : CustomItemFunctions() {
         return Pair("grow-berries", item)
     }
 
-    // TODO: Cooldown?
     override fun onConsumeItem(player: Player, event: PlayerItemConsumeEvent) {
         if (!event.item.isMatchingItem(KEY)) return
         event.isCancelled = true
+
+        if (player.isOnCooldown(this)) {
+            player.actionBar("<red>This item is on cooldown!")
+            return
+        }
+        player.addCooldown(this, COOLDOWN_TICKS)
 
         val healthFraction = player.getAttribute(Attribute.MAX_HEALTH)
             ?.let { if (it.value > 0) player.health / it.value else 1.0 } ?: 1.0
@@ -95,10 +113,25 @@ class GrowBerriesItem : CustomItemFunctions() {
         player.world.playSound(player.location, Sound.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, 1f, 0.8f)
 
         player.syncDelayed(DURATION_TICKS) {
-            clearGrownModifiers(player)
-            activeTimers.remove(player.uniqueId)
-            player.world.playSound(player.location, Sound.ITEM_BOTTLE_EMPTY, 1f, 1.2f)
+            shrinkBack(player)
         }?.let { activeTimers[player.uniqueId] = it }
+    }
+
+    override fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {
+        if (isDisabled(event.to)) shrinkBack(player)
+    }
+
+    override fun onCanvasAsyncPlayerTeleport(player: Player, event: EntityTeleportAsyncEvent) {
+        if (isDisabled(event.to)) player.sync {
+            shrinkBack(player)
+        }
+    }
+
+    private fun shrinkBack(player: Player) {
+        activeTimers.remove(player.uniqueId)?.cancel()
+        if (!clearGrownModifiers(player)) return
+
+        player.world.playSound(player.location, Sound.ITEM_BOTTLE_EMPTY, 1f, 1.2f)
     }
 
     private fun applyGrownModifiers(player: Player) {
@@ -114,13 +147,18 @@ class GrowBerriesItem : CustomItemFunctions() {
         }
     }
 
-    private fun clearGrownModifiers(player: Player) {
+    private fun clearGrownModifiers(player: Player): Boolean {
+        var removed = false
         for (attribute in GROWN_ATTRIBUTES) {
             val instance = player.getAttribute(attribute) ?: continue
             instance.modifiers
                 .filter { it.key == KEY }
-                .forEach { instance.removeModifier(it) }
+                .forEach {
+                    instance.removeModifier(it)
+                    removed = true
+                }
         }
+        return removed
     }
 
     override fun onPlaceBlock(player: Player, event: BlockPlaceEvent) {
