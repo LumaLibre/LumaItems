@@ -1,6 +1,5 @@
 package dev.lumas.lumaitems.items.weapons.incursion
 
-import dev.lumas.lumaitems.util.extensions.sync
 import kotlin.math.max
 import org.bukkit.Color
 import org.bukkit.Material
@@ -29,9 +28,6 @@ class IncendiaryEggItem : IncursionEggItem() {
     )
 
     override fun applyEffect(target: LivingEntity) {
-        target.sync {
-            if (!target.isValid || target.isDead) return@sync
-            target.fireTicks = max(target.fireTicks, FIRE_TICKS)
-        }
+        target.fireTicks = max(target.fireTicks, FIRE_TICKS)
     }
 }

@@ -97,12 +97,14 @@ internal object IncursionArsenal {
     }
 
     // No true damage here, so protection plugins can do their thing
-    fun hurt(target: LivingEntity, shooter: Player, damage: Double) {
-        if (damage <= 0) return
+    fun hurt(target: LivingEntity, shooter: Player, damage: Double, beforeDamage: ((LivingEntity) -> Unit)? = null) {
+        if (damage <= 0 && beforeDamage == null) return
 
         target.sync {
             if (!target.isValid || target.isDead) return@sync
-            target.damage(damage, shooter)
+
+            beforeDamage?.invoke(target)
+            if (damage > 0) target.damage(damage, shooter)
         }
     }
 

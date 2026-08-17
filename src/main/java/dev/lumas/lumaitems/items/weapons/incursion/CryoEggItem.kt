@@ -1,6 +1,5 @@
 package dev.lumas.lumaitems.items.weapons.incursion
 
-import dev.lumas.lumaitems.util.extensions.sync
 import kotlin.math.max
 import org.bukkit.Color
 import org.bukkit.Material
@@ -33,13 +32,9 @@ class CryoEggItem : IncursionEggItem() {
     )
 
     override fun applyEffect(target: LivingEntity) {
-        target.sync {
-            if (!target.isValid || target.isDead) return@sync
-
-            target.freezeTicks = max(target.freezeTicks, FREEZE_TICKS)
-            target.addPotionEffect(
-                PotionEffect(PotionEffectType.SLOWNESS, SLOWNESS_TICKS, SLOWNESS_AMPLIFIER, false, true, true)
-            )
-        }
+        target.freezeTicks = max(target.freezeTicks, FREEZE_TICKS)
+        target.addPotionEffect(
+            PotionEffect(PotionEffectType.SLOWNESS, SLOWNESS_TICKS, SLOWNESS_AMPLIFIER, false, true, true)
+        )
     }
 }

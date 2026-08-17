@@ -110,8 +110,9 @@ abstract class IncursionEggItem : CustomItemFunctions() {
 
             if (distance > 1.0E-4 && !IncursionArsenal.hasClearShot(at, toTarget.clone().multiply(1.0 / distance), distance)) continue
 
-            IncursionArsenal.hurt(target.entity, thrower, DAMAGE * (1.0 - (DAMAGE_FALLOFF * (distance / RADIUS))))
-            applyEffect(target.entity)
+            IncursionArsenal.hurt(target.entity, thrower, DAMAGE * (1.0 - (DAMAGE_FALLOFF * (distance / RADIUS)))) {
+                applyEffect(it)
+            }
             connected = true
         }
 
