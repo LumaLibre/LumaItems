@@ -18,6 +18,7 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.World
+import org.bukkit.attribute.Attribute
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -34,6 +35,10 @@ internal object IncursionArsenal {
     private const val HEAD_HALF_OF_WIDTH = 0.35
     private const val MIN_HEAD_HALF = 0.15
     private const val MAX_HEAD_HALF = 0.5
+
+    private const val HAND_SIDE_OFFSET = 0.4
+    private const val HAND_FORWARD_OFFSET = 0.4
+    private const val HAND_DROP_OFFSET = 1.0
 
     private val BODY_SAMPLE_FRACTIONS = doubleArrayOf(0.2, 0.5, 0.8)
 
@@ -157,10 +162,12 @@ internal object IncursionArsenal {
         val right = Vector(-Math.cos(yaw), 0.0, -Math.sin(yaw))
         if (player.mainHand == MainHand.LEFT) right.multiply(-1)
 
+        val scale = player.getAttribute(Attribute.SCALE)?.value ?: 1.0
+
         return eye.clone()
-            .add(right.multiply(0.4))
-            .add(eye.direction.multiply(0.4))
-            .subtract(Vector(0.0, 1.0, 0.0))
+            .add(right.multiply(HAND_SIDE_OFFSET * scale))
+            .add(eye.direction.multiply(HAND_FORWARD_OFFSET * scale))
+            .subtract(Vector(0.0, HAND_DROP_OFFSET * scale, 0.0))
     }
 
     fun beamTouches(box: BoundingBox, eye: Location, direction: Vector, maxDistance: Double): Boolean {
