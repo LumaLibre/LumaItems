@@ -108,7 +108,7 @@ abstract class IncursionEggItem : CustomItemFunctions() {
             val distance = toTarget.length()
             if (distance > RADIUS) continue
 
-            if (distance > 1.0E-4 && !IncursionArsenal.hasClearShot(at, toTarget.clone().multiply(1.0 / distance), distance)) continue
+            //if (distance > 1.0E-4 && !IncursionArsenal.hasClearShot(at, toTarget.clone().multiply(1.0 / distance), distance)) continue
 
             IncursionArsenal.hurt(target.entity, thrower, DAMAGE * (1.0 - (DAMAGE_FALLOFF * (distance / RADIUS)))) {
                 applyEffect(it)

@@ -139,7 +139,7 @@ internal object IncursionArsenal {
     }
 
     fun headshotFeedback(shooter: Player, headshots: List<Double>) {
-        shooter.playSound(shooter.location, Sound.ENTITY_ARROW_HIT_PLAYER, 1f, 1.9f)
+        shooter.playSound(shooter.location, Sound.ENTITY_ARROW_HIT_PLAYER, 1f, 1.4f)
         shooter.playSound(shooter.location, Sound.ITEM_TRIDENT_RETURN, 0.6f, 1.8f)
 
         val format = DecimalFormat("0.#")
