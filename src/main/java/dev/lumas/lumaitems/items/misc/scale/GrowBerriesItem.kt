@@ -13,8 +13,10 @@ import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
+import dev.lumas.lumaitems.util.extensions.remainingCooldown
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.syncDelayed
+import dev.lumas.lumaitems.util.extensions.ticksAsFormattedTime
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.datacomponent.DataComponentTypes
 import io.papermc.paper.datacomponent.item.Consumable
@@ -93,7 +95,8 @@ class GrowBerriesItem : CustomItemFunctions() {
         event.isCancelled = true
 
         if (player.isOnCooldown(this)) {
-            player.actionBar("<red>This item is on cooldown!")
+            player.actionBar("<red>On cooldown: ${player.remainingCooldown(this).ticksAsFormattedTime()}")
+            player.playSound(player.location, Sound.ITEM_BUNDLE_INSERT_FAIL, 1.0f, 1.0f)
             return
         }
         player.addCooldown(this, COOLDOWN_TICKS)
