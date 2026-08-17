@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.misc.collectible
 
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
@@ -22,7 +22,7 @@ import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-@Disable(WorldName.EVENT_NEW, WorldName.SPAWN, WorldName.PINATA, hard = true)
+@Disable(WorldKey.EVENT_NEW, WorldKey.SPAWN, WorldKey.PINATA, hard = true)
 abstract class PaintballCollectibleItem(
     private val paintball: Material,
     private val paint: Material,

@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.misc.scale
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.enums.WorldGroup
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
@@ -22,7 +23,6 @@ import io.papermc.paper.event.entity.EntityCompostItemEvent
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.attribute.Attribute
@@ -34,7 +34,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 
-@Disable(standard = true, vanilla = true, invert = true, hard = true)
+@Disable(groups = [WorldGroup.STANDARD_WORLDS], invert = true, hard = true)
 @FireAnyways(Action.PLAYER_TELEPORT, Action.CANVAS_ASYNC_PLAYER_TELEPORT)
 class GrowBerriesItem : CustomItemFunctions() {
 

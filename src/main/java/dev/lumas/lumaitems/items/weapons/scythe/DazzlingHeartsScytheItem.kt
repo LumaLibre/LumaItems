@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.weapons.scythe
 
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Util
@@ -26,7 +26,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 
-@Disable(WorldName.PINATA)
+@Disable(WorldKey.PINATA)
 class DazzlingHeartsScytheItem : CustomItemFunctions() {
 
     companion object {
