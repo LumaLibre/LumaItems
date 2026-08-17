@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.getOreColor
 import dev.lumas.lumaitems.util.extensions.isTagged
+import dev.lumas.lumaitems.util.extensions.itemStack
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.spell
 import dev.lumas.lumaitems.util.extensions.syncDelayed
@@ -139,8 +140,10 @@ class PinkAyuneHatchetItem : PinkAyuneTool() {
 
     override fun isValidBlock(block: Block): Boolean = block.isTagged(Tag.LOGS)
 
+    private val AIR = Material.AIR.itemStack()
+
     override fun transformDrop(drop: ItemStack): ItemStack {
-        val wood = LinkedTags.LOG_TO_WOOD.get(drop.type) ?: return drop
+        val wood = LinkedTags.LOG_TO_WOOD.get(drop.type) ?: return AIR
         return ItemStack.of(wood, drop.amount)
     }
 
