@@ -24,6 +24,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.MainHand
 import org.bukkit.util.BoundingBox
 import org.bukkit.util.Vector
+import java.text.DecimalFormat
 
 internal object IncursionArsenal {
 
@@ -139,8 +140,9 @@ internal object IncursionArsenal {
         shooter.playSound(shooter.location, Sound.ENTITY_ARROW_HIT_PLAYER, 1f, 1.9f)
         shooter.playSound(shooter.location, Sound.ITEM_TRIDENT_RETURN, 0.6f, 1.8f)
 
+        val format = DecimalFormat("0.#")
         val subtitle = headshots.sorted().joinToString(", ") { distance ->
-            (if (distance % 1 == 0.0) "%.0f".format(distance) else "%.1f".format(distance)) + "m"
+            format.format(distance) + "m"
         }
         shooter.showTitle(
             Title.title(Text.mm("<red>HEADSHOT"), Text.mm("<gray>$subtitle"), HEADSHOT_TITLE_TIMES)
