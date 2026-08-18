@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.api.ItemManager;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.relics.RelicCrafting;
 import dev.lumas.lumaitems.relics.RelicDisassembler;
+import dev.lumas.lumaitems.util.ItemExpiration;
 import dev.lumas.lumaitems.util.extensions.Executors;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -68,6 +69,7 @@ public final class LumaItems extends JavaPlugin {
 
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();
+        ItemExpiration.startSweepTask();
 
         List<String> enabledHooks = Registry.HOOKS.values()
                 .stream().filter(Hook::isWith)
