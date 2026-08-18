@@ -4,9 +4,9 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGround
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
+import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.Color
 import org.bukkit.Location
@@ -19,6 +19,7 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
 import org.bukkit.event.Event
 import org.bukkit.event.entity.ProjectileHitEvent
+import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -59,7 +60,6 @@ abstract class IncursionEggItem : CustomItemFunctions() {
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (event.hand != EquipmentSlot.HAND) return
         if (event.item?.isMatchingItem(key) != true) return
 
         event.setUseItemInHand(Event.Result.DENY)
@@ -71,9 +71,10 @@ abstract class IncursionEggItem : CustomItemFunctions() {
         }
         player.setCooldown(material, COOLDOWN_TICKS)
 
-        val carried = player.velocity
+        val handle = (player as CraftPlayer).handle
+        val carried = handle.knownMovement
         val velocity = player.eyeLocation.direction.normalize().multiply(THROW_SPEED)
-            .add(Vector(carried.x, if (player.isBoundingBoxOnGround()) 0.0 else carried.y, carried.z))
+            .add(Vector(carried.x, if (handle.onGround()) 0.0 else carried.y, carried.z))
 
         val thrown = player.launchProjectile(Snowball::class.java, velocity)
         thrown.item = ItemStack(material)
@@ -117,5 +118,9 @@ abstract class IncursionEggItem : CustomItemFunctions() {
         }
 
         if (connected) thrower.sync { IncursionArsenal.hitFeedback(thrower) }
+    }
+
+    override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
+        event.inventory.result = null
     }
 }

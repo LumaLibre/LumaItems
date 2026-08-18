@@ -96,7 +96,7 @@ class GrowBerriesItem : CustomItemFunctions() {
 
         if (player.isOnCooldown(this)) {
             player.actionBar("<red>On cooldown: ${player.remainingCooldown(this).ticksAsFormattedTime()}")
-            player.playSound(player.location, Sound.ITEM_BUNDLE_INSERT_FAIL, 1.0f, 1.0f)
+            player.playSound(player.location, Sound.BLOCK_CAVE_VINES_BREAK, 1.0f, 1.2f)
             return
         }
         player.addCooldown(this, COOLDOWN_TICKS)
