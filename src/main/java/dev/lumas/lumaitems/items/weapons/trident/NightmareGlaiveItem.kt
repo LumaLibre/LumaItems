@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.weapons.trident
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.particles.ParticleDisplay
@@ -36,7 +36,7 @@ import org.bukkit.potion.PotionEffectType
 
 
 @FireAnyways(Action.ENTITY_DAMAGE)
-@Disable(WorldName.PINATA, WorldName.SPAWN, WorldName.EVENT_NEW)
+@Disable(WorldKey.PINATA, WorldKey.SPAWN, WorldKey.EVENT_NEW)
 class NightmareGlaiveItem : CustomItemFunctions() {
 
     companion object {

@@ -4,7 +4,6 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import dev.lumas.lumaitems.LumaItems
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.enums.WorldName
 import dev.lumas.lumaitems.events.item.ItemListener
 import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.RegistryItem
@@ -70,13 +69,8 @@ interface CustomItem : RegistryItem {
     fun isDisabled(inLocation: Location): Boolean {
         val disable = this::class.java.getAnnotation(Disable::class.java) ?: return false
 
-        val disabledWorlds = buildList {
-            addAll(disable.value)
-            if (disable.vanilla) addAll(WorldName.TEST_WORLDS)
-            if (disable.standard) addAll(WorldName.STANDARD_WORLDS)
-        }
-
-        val inListedWorld = disabledWorlds.any { it.isInWorld(inLocation) }
+        val world = inLocation.world
+        val inListedWorld = disable.groups.any { it.matches(world) } || disable.value.any { it.matches(world) }
         return if (disable.invert) !inListedWorld else inListedWorld
     }
 

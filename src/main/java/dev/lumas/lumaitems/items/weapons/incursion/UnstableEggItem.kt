@@ -6,11 +6,15 @@ import org.bukkit.Material
 class UnstableEggItem : IncursionEggItem() {
 
     override val key = "incursion-unstable-egg"
-    override val displayName = "<b><white>Unstable Egg</white></b>"
+    override val displayName = "<b><gradient:#cdd6de:#d6d2c8:#c9d9d2>Unstable Egg</gradient></b>"
+    override val customEnchant = "<#cfd6dd>Volatile"
     override val material = Material.EGG
     override val burstColor: Color = Color.WHITE
 
     override val loreLines = listOf(
-        "<gray>Throw it. It goes off where it lands."
+        "Best before: several",
+        "weeks ago, arguably.",
+        "",
+        "<red>Cooldown: 1.5s"
     )
 }

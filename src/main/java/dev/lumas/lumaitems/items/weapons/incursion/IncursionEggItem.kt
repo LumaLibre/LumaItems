@@ -4,20 +4,22 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGround
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.sync
+import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
 import org.bukkit.event.Event
 import org.bukkit.event.entity.ProjectileHitEvent
+import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -35,6 +37,7 @@ abstract class IncursionEggItem : CustomItemFunctions() {
 
     protected abstract val key: String
     protected abstract val displayName: String
+    protected abstract val customEnchant: String
     protected abstract val loreLines: List<String>
     protected abstract val material: Material
     protected abstract val burstColor: Color
@@ -46,16 +49,17 @@ abstract class IncursionEggItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name(displayName)
+            .vanillaEnchants(Enchantment.INFINITY to 10)
+            .customEnchants(customEnchant)
             .lore(loreLines)
-            .addSpace(false)
             .material(material)
+            .maxStackSize(1)
             .persistentData(key)
-            .tier(Tier.BLANK)
+            .tier(Tier.LUMARINE_2026)
             .buildPair()
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (event.hand != EquipmentSlot.HAND) return
         if (event.item?.isMatchingItem(key) != true) return
 
         event.setUseItemInHand(Event.Result.DENY)
@@ -67,9 +71,10 @@ abstract class IncursionEggItem : CustomItemFunctions() {
         }
         player.setCooldown(material, COOLDOWN_TICKS)
 
-        val carried = player.velocity
+        val handle = (player as CraftPlayer).handle
+        val carried = handle.knownMovement
         val velocity = player.eyeLocation.direction.normalize().multiply(THROW_SPEED)
-            .add(Vector(carried.x, if (player.isBoundingBoxOnGround()) 0.0 else carried.y, carried.z))
+            .add(Vector(carried.x, if (handle.onGround()) 0.0 else carried.y, carried.z))
 
         val thrown = player.launchProjectile(Snowball::class.java, velocity)
         thrown.item = ItemStack(material)
@@ -104,13 +109,18 @@ abstract class IncursionEggItem : CustomItemFunctions() {
             val distance = toTarget.length()
             if (distance > RADIUS) continue
 
-            if (distance > 1.0E-4 && !IncursionArsenal.hasClearShot(at, toTarget.clone().multiply(1.0 / distance), distance)) continue
+            //if (distance > 1.0E-4 && !IncursionArsenal.hasClearShot(at, toTarget.clone().multiply(1.0 / distance), distance)) continue
 
-            IncursionArsenal.hurt(target.entity, thrower, DAMAGE * (1.0 - (DAMAGE_FALLOFF * (distance / RADIUS))))
-            applyEffect(target.entity)
+            IncursionArsenal.hurt(target.entity, thrower, DAMAGE * (1.0 - (DAMAGE_FALLOFF * (distance / RADIUS)))) {
+                applyEffect(it)
+            }
             connected = true
         }
 
         if (connected) thrower.sync { IncursionArsenal.hitFeedback(thrower) }
+    }
+
+    override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
+        event.inventory.result = null
     }
 }

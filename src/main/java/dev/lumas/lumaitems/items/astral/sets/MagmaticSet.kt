@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.astral.sets
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.ToolType
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.util.AbilityUtil
@@ -22,7 +22,7 @@ import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
-@Disable(WorldName.EVENT_NEW)
+@Disable(WorldKey.EVENT_NEW)
 class MagmaticSet : AstralSet {
 
     companion object {

@@ -3,6 +3,7 @@ package dev.lumas.lumaitems.items.misc
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
+import dev.lumas.lumaitems.enums.WorldGroup
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
@@ -28,7 +29,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-@Disable(standard = true, vanilla = true, invert = true, hard = true)
+@Disable(groups = [WorldGroup.STANDARD_WORLDS], invert = true, hard = true)
 @FireAnyways(Action.PLAYER_TELEPORT, Action.CANVAS_ASYNC_PLAYER_TELEPORT)
 class WonderAppleItem : CustomItemFunctions() {
 

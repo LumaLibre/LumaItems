@@ -3,7 +3,7 @@ package dev.lumas.lumaitems.items.astral.sets
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.enums.GenericToolType
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFactory
 import dev.lumas.lumaitems.util.Util
@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-@Disable(WorldName.EVENT_NEW)
+@Disable(WorldKey.EVENT_NEW)
 class MelukaSet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
