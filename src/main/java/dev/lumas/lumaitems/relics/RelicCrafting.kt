@@ -5,7 +5,6 @@ import dev.lumas.lumaitems.items.astral.AstralSet
 import dev.lumas.lumaitems.items.astral.AstralSetFunctions
 import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.util.Util
-import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -71,42 +70,29 @@ object RelicCrafting {
 
     @JvmStatic
     fun registerRecipes() {
-        val pending = mutableListOf<ShapedRecipe>()
-
-        buildIfMissing(NamespacedKey(plugin, "lunarorb"), lunarOrb, lunarCore)?.let { pending.add(it) }
-        buildIfMissing(NamespacedKey(plugin, "astralorb"), astralOrb, astralCore)?.let { pending.add(it) }
-        buildIfMissing(NamespacedKey(plugin, "astralupgradecore"), astralUpgradeCore, null)?.let { pending.add(it) }
-
-        if (pending.isEmpty()) return
-
-        if (Bukkit.getOnlinePlayers().isNotEmpty()) {
-            return
-        }
-
-        Executors.globalDelayed(10) {
-            for (recipe in pending) {
-                try {
-                    Bukkit.addRecipe(recipe, false)
-                } catch (e: Exception) {
-                    LumaItems.LOGGER.error("Failed to register relic recipe " + recipe.key, e)
-                }
-            }
-        }
+        registerIfMissing(NamespacedKey(plugin, "lunarorb"), lunarOrb, lunarCore)
+        registerIfMissing(NamespacedKey(plugin, "astralorb"), astralOrb, astralCore)
+        registerIfMissing(NamespacedKey(plugin, "astralupgradecore"), astralUpgradeCore, null)
     }
 
-    private fun buildIfMissing(key: NamespacedKey, result: ItemStack, center: ItemStack?): ShapedRecipe? {
-        if (Bukkit.getRecipe(key) != null) return null
+    private fun registerIfMissing(key: NamespacedKey, result: ItemStack, center: ItemStack?) {
+        if (Bukkit.getRecipe(key) != null) return
 
         val recipe = ShapedRecipe(key, result)
         recipe.shape(
             "AAA",
-            "ABA",
+            if (center == null) "A A" else "ABA",
             "AAA")
         recipe.setIngredient('A', relicShard)
         if (center != null) {
             recipe.setIngredient('B', center)
         }
-        return recipe
+
+        try {
+            Bukkit.addRecipe(recipe, true)
+        } catch (e: Exception) {
+            LumaItems.LOGGER.error("Failed to register relic recipe $key", e)
+        }
     }
 
     //TODO
