@@ -42,7 +42,7 @@ class BuildersWandItem : CustomItemFunctions() {
             .customEnchants("<#CDA9FF>Architex")
             .material(Material.BREEZE_ROD)
             .persistentData(BUILDERS_WAND_KEY)
-            .tier(Tier.WONDERLAND_2026)
+            .tier(Tier.LUMARINE_2026)
             .tagline("#CDA9FF", "It's essential!")
             .vanillaEnchants(Enchantment.UNBREAKING to 10, Enchantment.KNOCKBACK to 2)
             .lore(
