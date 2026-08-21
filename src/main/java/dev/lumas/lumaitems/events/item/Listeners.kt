@@ -395,7 +395,7 @@ class Listeners : ItemListener() {
         fire(event.player.handSources(), Action.PLAYER_INTERACT_AT_ENTITY, event.player, event)
     }
 
-    //@EventHandler unused
+    @EventHandler
     fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
         fire(event.player.handSources(), Action.PLAYER_INTERACT_ENTITY, event.player, event)
     }
