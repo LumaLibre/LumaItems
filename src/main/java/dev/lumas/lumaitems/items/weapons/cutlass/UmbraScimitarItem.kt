@@ -1,5 +1,7 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.particles.ParticleDisplay
@@ -32,6 +34,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.util.Vector
 
+@Disable(value = [WorldKey.PINATA])
 class UmbraScimitarItem : CustomItemFunctions() {
 
     private companion object {
