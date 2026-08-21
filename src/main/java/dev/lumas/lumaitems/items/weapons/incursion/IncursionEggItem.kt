@@ -18,6 +18,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Snowball
 import org.bukkit.event.Event
+import org.bukkit.event.block.BlockDispenseEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -122,5 +123,10 @@ abstract class IncursionEggItem : CustomItemFunctions() {
 
     override fun onPrepareCraft(player: Player, event: PrepareItemCraftEvent) {
         event.inventory.result = null
+    }
+
+    override fun onBlockDispenseItem(event: BlockDispenseEvent) {
+        if (event.block.type != Material.DISPENSER) return
+        event.isCancelled = true
     }
 }

@@ -97,6 +97,7 @@ enum class Action {
     ENTITY_COMPOST_ITEM, // When a player or hopper minecart composts an item in a composter
     BUCKET_CAPTURE_ENTITY, // When a player captures an entity into a bucket
     BUCKET_RELEASE_ENTITY, // When an entity is released from a bucket
+    BLOCK_DISPENSE_ITEM, // When a block dispenses an item (e.g. dropper)
     ;
 
     val callSlowdown: Int
