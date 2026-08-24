@@ -36,7 +36,7 @@ class BlunderhornItem : CustomItemFunctions() {
         private const val DAMAGE = 90.0
         private const val DAMAGE_FALLOFF = 0.85
 
-        private const val PELLETS = 16
+        private const val PELLETS = 25
         private val PELLET_DUST = Particle.DustOptions(Color.fromRGB(88, 92, 99), 0.6f)
     }
 

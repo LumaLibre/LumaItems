@@ -20,6 +20,7 @@ class CryoEggItem : IncursionEggItem() {
     override val customEnchant = "<#9be4df>Cold Snap"
     override val material = Material.BLUE_EGG
     override val burstColor: Color = Color.AQUA
+    override val damage = 65.0
 
     override val loreLines = listOf(
         "Best before: several",
@@ -28,7 +29,10 @@ class CryoEggItem : IncursionEggItem() {
         "Best served chilled, which",
         "it insists on arranging itself.",
         "",
-        "<red>Cooldown: 1.5s"
+        "Press your <#9be4df>swap key (F)</#9be4df>",
+        "to cycle variants.",
+        "",
+        "<red>Cooldown: 3.5s"
     )
 
     override fun applyEffect(target: LivingEntity) {

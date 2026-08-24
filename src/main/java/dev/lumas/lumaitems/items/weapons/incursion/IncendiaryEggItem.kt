@@ -16,6 +16,7 @@ class IncendiaryEggItem : IncursionEggItem() {
     override val customEnchant = "<#EDB172>Scorch"
     override val material = Material.BROWN_EGG
     override val burstColor: Color = Color.ORANGE
+    override val damage = 65.0
 
     override val loreLines = listOf(
         "Best before: several",
@@ -24,7 +25,10 @@ class IncendiaryEggItem : IncursionEggItem() {
         "Do not preheat! It has",
         "handled that already.",
         "",
-        "<red>Cooldown: 1.5s"
+        "Press your <#EDB172>swap key (F)</#EDB172>",
+        "to cycle variants.",
+        "",
+        "<red>Cooldown: 3.5s"
     )
 
     override fun applyEffect(target: LivingEntity) {

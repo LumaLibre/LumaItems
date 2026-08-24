@@ -10,11 +10,15 @@ class UnstableEggItem : IncursionEggItem() {
     override val customEnchant = "<#cfd6dd>Volatile"
     override val material = Material.EGG
     override val burstColor: Color = Color.WHITE
+    override val damage = 80.0
 
     override val loreLines = listOf(
         "Best before: several",
         "weeks ago, arguably.",
         "",
-        "<red>Cooldown: 1.5s"
+        "Press your <#cfd6dd>swap key (F)</#cfd6dd>",
+        "to cycle variants.",
+        "",
+        "<red>Cooldown: 3.5s"
     )
 }

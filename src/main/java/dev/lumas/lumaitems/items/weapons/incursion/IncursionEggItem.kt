@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
+import dev.lumas.lumaitems.util.extensions.itemInMainHand
 import dev.lumas.lumaitems.util.extensions.sync
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.persistence.PersistentDataType
@@ -22,6 +23,7 @@ import org.bukkit.event.block.BlockDispenseEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
@@ -29,8 +31,7 @@ import org.bukkit.util.Vector
 abstract class IncursionEggItem : CustomItemFunctions() {
 
     companion object {
-        private const val COOLDOWN_TICKS = 30
-        private const val DAMAGE = 110.0
+        private const val COOLDOWN_TICKS = 70
         private const val RADIUS = 4.5
         private const val DAMAGE_FALLOFF = 0.85
         private const val THROW_SPEED = 1.5
@@ -42,6 +43,7 @@ abstract class IncursionEggItem : CustomItemFunctions() {
     protected abstract val loreLines: List<String>
     protected abstract val material: Material
     protected abstract val burstColor: Color
+    protected abstract val damage: Double
 
     private val burstDust: Particle.DustOptions by lazy { Particle.DustOptions(burstColor, 1.4f) }
 
@@ -84,6 +86,26 @@ abstract class IncursionEggItem : CustomItemFunctions() {
         player.world.playSound(player.location, Sound.ENTITY_EGG_THROW, 0.8f, 1.1f)
     }
 
+    override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
+        val hand = when {
+            player.inventory.itemInMainHand.isMatchingItem(key) -> EquipmentSlot.HAND
+            player.inventory.itemInOffHand.isMatchingItem(key) -> EquipmentSlot.OFF_HAND
+            else -> return
+        }
+
+        event.isCancelled = true
+        val current = player.inventory.getItem(hand)
+        player.inventory.setItem(hand, nextVariant(current) ?: return)
+        player.playSound(player, Sound.ENTITY_CHICKEN_EGG, 0.8f, 1.0f)
+    }
+
+    private fun nextVariant(item: ItemStack): ItemStack? = when (item.type) {
+        Material.EGG -> CryoEggItem().createItem().second
+        Material.BLUE_EGG -> IncendiaryEggItem().createItem().second
+        Material.BROWN_EGG -> UnstableEggItem().createItem().second
+        else -> null
+    }
+
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
         val projectile = event.entity
         val at = when {
@@ -112,7 +134,7 @@ abstract class IncursionEggItem : CustomItemFunctions() {
 
             //if (distance > 1.0E-4 && !IncursionArsenal.hasClearShot(at, toTarget.clone().multiply(1.0 / distance), distance)) continue
 
-            IncursionArsenal.hurt(target.entity, thrower, DAMAGE * (1.0 - (DAMAGE_FALLOFF * (distance / RADIUS)))) {
+            IncursionArsenal.hurt(target.entity, thrower, damage * (1.0 - (DAMAGE_FALLOFF * (distance / RADIUS)))) {
                 applyEffect(it)
             }
             connected = true
