@@ -571,9 +571,12 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onEntityKnockbackByEntity(event: EntityKnockbackByEntityEvent) {
         val player = event.hitBy as? Player ?: return
-        val source = player.inventory.itemInMainHand.asSource() ?: return
+        val sources = listOfNotNull(
+            player.inventory.itemInMainHand.asSource(),
+            PdcSource.of(event.entity.persistentDataContainer)
+        )
 
-        fire(source, Action.PLAYER_KNOCKBACK_ENTITY, player, event)
+        fire(sources, Action.PLAYER_KNOCKBACK_ENTITY, player, event)
     }
 
     @EventHandler
