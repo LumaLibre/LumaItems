@@ -27,6 +27,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDamageEvent
+import org.bukkit.event.block.BlockDispenseEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
@@ -630,5 +631,10 @@ class Listeners : ItemListener() {
             .mapNotNull { it.asSource() }
             .ifEmpty { return }
         fire(sources, Action.CRAFT_ITEM, player, event)
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onBlockDispenseItem(event: BlockDispenseEvent) {
+        fire(event.item.asSource(), Action.BLOCK_DISPENSE_ITEM, null, event)
     }
 }
