@@ -106,8 +106,8 @@ internal object IncursionArsenal {
     // No true damage here, so protection plugins can do their thing
     fun hurt(target: LivingEntity, shooter: Player, damage: Double, beforeDamage: ((LivingEntity) -> Unit)? = null) {
         if (damage <= 0 && beforeDamage == null) return
-        
-        val scaledDamage = if (isBossMob(target)) damage / 0.5 else damage
+
+        val scaledDamage = if (isBossMob(target)) damage * 0.5 else damage
 
         target.sync {
             if (!target.isValid || target.isDead) return@sync
