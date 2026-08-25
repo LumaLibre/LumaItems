@@ -13,7 +13,7 @@ class PrismHook : Hook {
     private var cached: Any? = null
 
     override fun identifier(): Identifier {
-        return StringIdentifier.of("Prism")
+        return StringIdentifier.of("prism")
     }
 
     fun getPrismAPI(): PrismPaperApi? {
