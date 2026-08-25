@@ -8,6 +8,7 @@ import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.canBuild
 import dev.lumas.lumaitems.util.extensions.dustOptions
 import dev.lumas.lumaitems.util.extensions.hotbarContents
+import dev.lumas.lumaitems.util.extensions.isLumaItem
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.namespacedKey
@@ -105,7 +106,7 @@ class PathweaverItem : CustomItemFunctions() {
         player.inventory.hotbarContents.forEachIndexed { index, stack ->
             if (stack == null) return@forEachIndexed
             val blockType = stack.type.asBlockType() ?: return@forEachIndexed
-            if (stack.amount <= 0 || !blockType.isOccluding) return@forEachIndexed
+            if (stack.amount <= 0 || !blockType.isOccluding || stack.isLumaItem()) return@forEachIndexed
             sources.add(HotbarSource(index, stack))
         }
 

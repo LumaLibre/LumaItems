@@ -1,6 +1,7 @@
 package dev.lumas.lumaitems.items.weapons.incursion
 
 import dev.lumas.core.util.Text
+import dev.lumas.lumaitems.items.weapons.incursion.IncursionArsenal.BEAM_STEP
 import dev.lumas.lumaitems.util.extensions.canDamage
 import dev.lumas.lumaitems.util.extensions.sync
 import java.time.Duration
@@ -20,6 +21,7 @@ import org.bukkit.Sound
 import org.bukkit.World
 import org.bukkit.attribute.Attribute
 import org.bukkit.block.Block
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.MainHand
@@ -105,13 +107,21 @@ internal object IncursionArsenal {
     fun hurt(target: LivingEntity, shooter: Player, damage: Double, beforeDamage: ((LivingEntity) -> Unit)? = null) {
         if (damage <= 0 && beforeDamage == null) return
 
+        val scaledDamage = if (isBossMob(target)) damage * 0.5 else damage
+
         target.sync {
             if (!target.isValid || target.isDead) return@sync
 
             beforeDamage?.invoke(target)
-            if (damage > 0) target.damage(damage, shooter)
+            if (scaledDamage > 0) target.damage(scaledDamage, shooter)
         }
     }
+
+    private fun isBossMob(entity: LivingEntity): Boolean =
+        entity.type == EntityType.ELDER_GUARDIAN ||
+        entity.type == EntityType.ENDER_DRAGON ||
+        entity.type == EntityType.WITHER ||
+        entity.type == EntityType.WARDEN
 
     fun forced(
         world: World,

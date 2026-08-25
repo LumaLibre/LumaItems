@@ -30,9 +30,9 @@ public interface Kind<T extends Keyed> extends Tag<T> {
      */
     Tag<Material> INCLUSIVE_ORES = Kind.material("inclusive_ores", ORES, Material.NETHER_QUARTZ_ORE).lock();
 
-    Tag<Material> GLASS = Kind.material("glass", Pattern.compile("(?i)^(?:glass|tinted_glass|[a-z]+_stained_glass(?:_pane)?|glass_pane)$")).lock();
+    Tag<Material> GLASS = Kind.material("glass", Pattern.compile("(?i)^(?:glass|tinted_glass|[a-z]+(?:_[a-z]+)*_stained_glass(?:_pane)?|glass_pane)$")).lock();
 
-    Tag<Material> GLASS_BLOCK = Kind.material("glass_block", Pattern.compile("(?i)^(?:glass|tinted_glass|[a-z]+_stained_glass)$")).lock();
+    Tag<Material> GLASS_BLOCK = Kind.material("glass_block", Pattern.compile("(?i)^(?:glass|tinted_glass|[a-z]+(?:_[a-z]+)*_stained_glass)$")).lock();
 
     Tag<Material> COLORED_GLASS = Kind.material("colored_glass").endsWith("STAINED_GLASS").ensureSize("COLORED_GLASS", 16).lock();
 
