@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.registry;
 
+import dev.lumas.core.util.PluginContextLogger;
 import dev.lumas.lumaitems.configuration.ConfigManager;
 import dev.lumas.lumaitems.configuration.OkaeriFile;
 import dev.lumas.lumaitems.configuration.files.AstralYml;
@@ -22,7 +23,6 @@ import kotlin.reflect.KClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public final class Registry<T extends RegistryItem> implements Iterable<Map.Entry<Identifier, T>> {
+
+    private static final PluginContextLogger LOGGER = PluginContextLogger.getPluginLogger();
 
     public static final Registry<CustomItem> CUSTOM_ITEMS = new Registry<>();
     public static final Registry<NamedCustomItem> NAMED_CUSTOM_ITEMS = new Registry<>();
@@ -241,9 +243,10 @@ public final class Registry<T extends RegistryItem> implements Iterable<Map.Entr
 
                 try {
                     tClasses.add((T) clazz.getConstructor(constructorTypes).newInstance(constructorValues));
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                         InvocationTargetException e) {
+                } catch (NoSuchMethodException e) {
                     throw new RuntimeException("No constructor found for " + clazz.getName(), e);
+                } catch (Throwable e) {
+                    LOGGER.error("Failed to construct registry item " + clazz.getName() + ", skipping it", e);
                 }
             }
             return new Registry<>(tClasses);

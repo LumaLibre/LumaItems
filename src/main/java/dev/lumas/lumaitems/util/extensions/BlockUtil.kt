@@ -28,18 +28,18 @@ fun Block.getOreColor(): Color? {
 }
 
 fun Block.breakNaturallyWithLog(player: Player, itemStack: ItemStack? = null, triggerEffects: Boolean = false, dropExp: Boolean = false) {
-    Registry.HOOKS.getOrThrow(PrismHook::class).recordBlockBreak(player, this.state)
-    Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
+    Registry.HOOKS.get(PrismHook::class)?.recordBlockBreak(player, this.state)
+    Registry.HOOKS.get(CoreProtectHook::class)?.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
     itemStack?.let { this.breakNaturally(it, triggerEffects, dropExp) } ?: this.breakNaturally()
 }
 fun Block.breakNaturallyWithLog(player: Player, triggerEffects: Boolean, dropExp: Boolean) {
-    Registry.HOOKS.getOrThrow(PrismHook::class).recordBlockBreak(player, this.state)
-    Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
+    Registry.HOOKS.get(PrismHook::class)?.recordBlockBreak(player, this.state)
+    Registry.HOOKS.get(CoreProtectHook::class)?.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
     this.breakNaturally(triggerEffects, dropExp)
 }
 fun Block.setAirWithLog(player: Player) {
-    Registry.HOOKS.getOrThrow(PrismHook::class).recordBlockBreak(player, this.state)
-    Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
+    Registry.HOOKS.get(PrismHook::class)?.recordBlockBreak(player, this.state)
+    Registry.HOOKS.get(CoreProtectHook::class)?.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
     this.type = Material.AIR
 }
 
@@ -49,7 +49,7 @@ fun Block.setBlockDataWithLog(player: Player, material: Material) {
 
 fun Block.setBlockDataWithLog(player: Player, blockData: BlockData) {
     val prism = Registry.HOOKS.get(PrismHook::class)
-    val coreprotect = Registry.HOOKS.getOrThrow(CoreProtectHook::class).getCoreProtectAPI()
+    val coreprotect = Registry.HOOKS.get(CoreProtectHook::class)?.getCoreProtectAPI()
     if (!this.type.isAir) {
         prism?.recordBlockBreak(player, this.state)
         coreprotect?.logRemoval(player.name, this.location, this.type, this.blockData)
