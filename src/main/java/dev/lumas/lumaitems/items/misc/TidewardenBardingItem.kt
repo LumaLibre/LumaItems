@@ -2,6 +2,8 @@ package dev.lumas.lumaitems.items.misc
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent
 import dev.lumas.lumaitems.LumaItems
+import dev.lumas.lumaitems.annotations.FireAnyways
+import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
@@ -12,7 +14,6 @@ import io.papermc.paper.event.entity.EntityEquipmentChangedEvent
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -20,12 +21,11 @@ import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.AbstractNautilus
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
+@FireAnyways(Action.ENTITY_EQUIPMENT_CHANGED, Action.ENTITY_ADD_TO_WORLD)
 class TidewardenBardingItem : CustomItemFunctions() {
 
     companion object {
@@ -39,29 +39,6 @@ class TidewardenBardingItem : CustomItemFunctions() {
             Color.fromRGB(0x9B, 0xE4, 0xDF),
             1.1f
         )
-
-        init {
-            Bukkit.getGlobalRegionScheduler().run(LumaItems.getInstance()) {
-                Bukkit.getPluginManager().registerEvents(BardingListener, LumaItems.getInstance())
-            }
-        }
-
-        private object BardingListener : Listener {
-
-            @EventHandler
-            fun onEquipmentChanged(event: EntityEquipmentChangedEvent) {
-                val nautilus = event.entity as? AbstractNautilus ?: return
-                event.equipmentChanges[EquipmentSlot.BODY] ?: return
-
-                refresh(nautilus, celebrate = true)
-            }
-
-            @EventHandler
-            fun onAddToWorld(event: EntityAddToWorldEvent) {
-                val nautilus = event.entity as? AbstractNautilus ?: return
-                refresh(nautilus, celebrate = false)
-            }
-        }
 
         private fun isWearingBarding(nautilus: AbstractNautilus): Boolean {
             return nautilus.equipment.getItem(EquipmentSlot.BODY).isMatchingItem(KEY)
@@ -159,6 +136,17 @@ class TidewardenBardingItem : CustomItemFunctions() {
                 "into the deep."
             )
             .buildPair()
+    }
+
+    override fun onEntityEquipmentChanged(event: EntityEquipmentChangedEvent) {
+        val nautilus = event.entity as? AbstractNautilus ?: return
+        event.equipmentChanges[EquipmentSlot.BODY] ?: return
+        refresh(nautilus, celebrate = true)
+    }
+
+    override fun onEntityAddToWorld(event: EntityAddToWorldEvent) {
+        val nautilus = event.entity as? AbstractNautilus ?: return
+        refresh(nautilus, celebrate = false)
     }
 
     override fun onPlayerInteractEntity(player: Player, event: PlayerInteractEntityEvent) {

@@ -98,6 +98,8 @@ enum class Action {
     BUCKET_CAPTURE_ENTITY, // When a player captures an entity into a bucket
     BUCKET_RELEASE_ENTITY, // When an entity is released from a bucket
     BLOCK_DISPENSE_ITEM, // When a block dispenses an item (e.g. dropper)
+    ENTITY_EQUIPMENT_CHANGED, // When a living entity's equipment changes in any slot
+    ENTITY_ADD_TO_WORLD, // When a living entity is added to a world (e.g. spawned, or its chunk loaded)
     ;
 
     val callSlowdown: Int
