@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.shapes.ShapeUtil
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
-@Disable(WorldName.EVENT_NEW)
+@Disable(WorldKey.EVENT_NEW)
 open class BlueGarnetMattockItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {

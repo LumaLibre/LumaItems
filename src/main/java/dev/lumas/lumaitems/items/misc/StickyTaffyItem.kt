@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.BlockStateMeta
 
-//@Disable(WorldName.ALL)
+//@Disable(groups = [WorldGroup.ALL_WORLDS])
 class StickyTaffyItem : CustomItemFunctions() {
 
     companion object {

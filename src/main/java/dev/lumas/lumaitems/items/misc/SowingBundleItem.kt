@@ -7,6 +7,8 @@ import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.computeDyedBundleResult
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.remainingCooldown
+import dev.lumas.lumaitems.util.extensions.ticksAsFormattedTime
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -29,18 +31,23 @@ class SowingBundleItem : CustomItemFunctions() {
         private const val KEY = "sowing-bundle"
 
         private val SEED_TO_CROP = mapOf(
-            Material.WHEAT_SEEDS to Material.WHEAT,
-            Material.CARROT to Material.CARROTS,
-            Material.POTATO to Material.POTATOES,
-            Material.BEETROOT_SEEDS to Material.BEETROOTS,
-            Material.TORCHFLOWER_SEEDS to Material.TORCHFLOWER,
-            Material.PITCHER_POD to Material.PITCHER_CROP,
-            Material.PUMPKIN_SEEDS to Material.PUMPKIN_STEM,
-            Material.MELON_SEEDS to Material.MELON_STEM,
+            Material.WHEAT_SEEDS to Sowable(Material.FARMLAND, Material.WHEAT),
+            Material.CARROT to Sowable(Material.FARMLAND, Material.CARROTS),
+            Material.POTATO to Sowable(Material.FARMLAND, Material.POTATOES),
+            Material.BEETROOT_SEEDS to Sowable(Material.FARMLAND, Material.BEETROOTS),
+            Material.TORCHFLOWER_SEEDS to Sowable(Material.FARMLAND, Material.TORCHFLOWER),
+            Material.PITCHER_POD to Sowable(Material.FARMLAND, Material.PITCHER_CROP),
+            Material.PUMPKIN_SEEDS to Sowable(Material.FARMLAND, Material.PUMPKIN_STEM),
+            Material.MELON_SEEDS to Sowable(Material.FARMLAND, Material.MELON_STEM),
+            Material.NETHER_WART to Sowable(Material.SOUL_SAND, Material.NETHER_WART)
         )
+
+        private val SOILS = SEED_TO_CROP.values.mapTo(mutableSetOf()) { it.soil }
 
         private val ADJACENT_FACES = listOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST)
     }
+
+    private data class Sowable(val soil: Material, val crop: Material)
 
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
@@ -69,9 +76,10 @@ class SowingBundleItem : CustomItemFunctions() {
         if (event.action != BukkitAction.RIGHT_CLICK_BLOCK) return
 
         val clickedBlock = event.clickedBlock ?: return
-        if (clickedBlock.type != Material.FARMLAND) {
+        val soil = clickedBlock.type
+        if (soil !in SOILS) {
             // Event is fired multiple times for the main hand. This is needed.
-            if (clickedBlock.getRelative(BlockFace.DOWN).type == Material.FARMLAND) {
+            if (clickedBlock.getRelative(BlockFace.DOWN).type in SOILS) {
                 event.setUseInteractedBlock(Event.Result.DENY)
                 event.setUseItemInHand(Event.Result.DENY)
             }
@@ -85,16 +93,16 @@ class SowingBundleItem : CustomItemFunctions() {
         val bundleMeta = item.itemMeta as? BundleMeta ?: return
         val contents = bundleMeta.items.toMutableList()
 
-        if (contents.none { it.type in SEED_TO_CROP }) return
+        if (contents.none { SEED_TO_CROP[it.type]?.soil == soil }) return
 
         if (player.isOnCooldown(this)) {
-            player.actionBar("<red>The Sowing Bundle is still recovering!")
+            player.actionBar("<red>The Sowing Bundle is still recovering! (${player.remainingCooldown(this).ticksAsFormattedTime()})")
             player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.5f)
             player.world.spawnParticle(Particle.SMOKE, player.location.add(0.0, 1.0, 0.0), 12, 0.3, 0.3, 0.3, 0.02)
             return
         }
 
-        val seedsPlanted = sow(clickedBlock, contents)
+        val seedsPlanted = sow(clickedBlock, soil, contents)
         if (seedsPlanted == 0) return
 
         player.addCooldown(this, seedsPlanted.toLong() * 20L)
@@ -104,7 +112,7 @@ class SowingBundleItem : CustomItemFunctions() {
         item.itemMeta = bundleMeta
     }
 
-    private fun sow(origin: Block, contents: MutableList<ItemStack>): Int {
+    private fun sow(origin: Block, soil: Material, contents: MutableList<ItemStack>): Int {
         val queue = ArrayDeque<Block>()
         val visited = mutableSetOf<Block>()
         var planted = 0
@@ -117,11 +125,11 @@ class SowingBundleItem : CustomItemFunctions() {
             val above = block.getRelative(BlockFace.UP)
 
             if (above.type == Material.AIR) {
-                val seedIndex = contents.indexOfFirst { it.type in SEED_TO_CROP }
+                val seedIndex = contents.indexOfFirst { SEED_TO_CROP[it.type]?.soil == soil }
                 if (seedIndex == -1) return planted
 
                 val seedStack = contents[seedIndex]
-                above.type = SEED_TO_CROP[seedStack.type]!!
+                above.type = SEED_TO_CROP[seedStack.type]!!.crop
 
                 val loc = above.location.add(0.5, 0.3, 0.5)
                 above.world.spawnParticle(Particle.HAPPY_VILLAGER, loc, 4, 0.2, 0.15, 0.2, 0.0)
@@ -133,7 +141,7 @@ class SowingBundleItem : CustomItemFunctions() {
 
             for (face in ADJACENT_FACES) {
                 val neighbor = block.getRelative(face)
-                if (neighbor.type == Material.FARMLAND && neighbor !in visited) {
+                if (neighbor.type == soil && neighbor !in visited) {
                     visited.add(neighbor)
                     queue.add(neighbor)
                 }

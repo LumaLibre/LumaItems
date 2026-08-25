@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.weapons.scythe
 
 import dev.lumas.glowapi.model.GlowColorManager
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
@@ -95,7 +95,7 @@ class HeavyPrismCoreItem : CustomItemFunctions() {
 
 }
 
-@Disable(value = [WorldName.PINATA, WorldName.SPAWN])
+@Disable(value = [WorldKey.PINATA, WorldKey.SPAWN])
 class HeavyPrismSickleItem : CustomItemFunctions() {
 
     companion object {

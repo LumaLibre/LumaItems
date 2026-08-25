@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.model.item
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
@@ -14,6 +15,7 @@ import dev.lumas.lumaitems.annotations.FireAnyways
 import dev.lumas.lumaitems.enums.Action
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent
 import io.papermc.paper.event.entity.EntityCompostItemEvent
+import io.papermc.paper.event.entity.EntityEquipmentChangedEvent
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
@@ -23,6 +25,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDamageEvent
+import org.bukkit.event.block.BlockDispenseEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
@@ -162,6 +165,9 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_COMPOST_ITEM -> onEntityCompostItem(event as EntityCompostItemEvent)
             Action.BUCKET_CAPTURE_ENTITY -> onBucketCaptureEntity(player, event as PlayerBucketEntityEvent)
             Action.BUCKET_RELEASE_ENTITY -> onBucketReleaseEntity(event as CreatureSpawnEvent)
+            Action.BLOCK_DISPENSE_ITEM -> onBlockDispenseItem(event as BlockDispenseEvent)
+            Action.ENTITY_EQUIPMENT_CHANGED -> onEntityEquipmentChanged(event as EntityEquipmentChangedEvent)
+            Action.ENTITY_ADD_TO_WORLD -> onEntityAddToWorld(event as EntityAddToWorldEvent)
         }
         return true
     }
@@ -244,6 +250,9 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityCompostItem(event: EntityCompostItemEvent) {}
     open fun onBucketReleaseEntity(event: CreatureSpawnEvent) {}
     open fun onBucketCaptureEntity(player: Player, event: PlayerBucketEntityEvent) {}
+    open fun onBlockDispenseItem(event: BlockDispenseEvent) {}
+    open fun onEntityEquipmentChanged(event: EntityEquipmentChangedEvent) {}
+    open fun onEntityAddToWorld(event: EntityAddToWorldEvent) {}
 
 
     // TODO: Optimize this with a static map in a companion object?

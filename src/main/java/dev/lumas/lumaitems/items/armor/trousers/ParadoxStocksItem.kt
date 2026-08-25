@@ -2,7 +2,8 @@ package dev.lumas.lumaitems.items.armor.trousers
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.SimpleDirection
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldGroup
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import org.bukkit.Location
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 
-@Disable(WorldName.SPAWN, WorldName.PINATA, WorldName.EVENT, WorldName.EVENT_NEW, WorldName.EVENT_THE_END)
+@Disable(WorldKey.SPAWN, WorldKey.PINATA, groups = [WorldGroup.EVENT_WORLDS])
 class ParadoxStocksItem : CustomItemFunctions() {
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()

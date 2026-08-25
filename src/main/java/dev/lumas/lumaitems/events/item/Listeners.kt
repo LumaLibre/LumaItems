@@ -1,5 +1,6 @@
 package dev.lumas.lumaitems.events.item
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent
@@ -17,16 +18,19 @@ import dev.lumas.lumaitems.util.extensions.equipmentSources
 import dev.lumas.lumaitems.util.extensions.handSources
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityCompostItemEvent
+import io.papermc.paper.event.entity.EntityEquipmentChangedEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Bukkit
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDamageEvent
+import org.bukkit.event.block.BlockDispenseEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.block.BlockShearEntityEvent
@@ -395,7 +399,7 @@ class Listeners : ItemListener() {
         fire(event.player.handSources(), Action.PLAYER_INTERACT_AT_ENTITY, event.player, event)
     }
 
-    //@EventHandler unused
+    @EventHandler
     fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
         fire(event.player.handSources(), Action.PLAYER_INTERACT_ENTITY, event.player, event)
     }
@@ -571,9 +575,12 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onEntityKnockbackByEntity(event: EntityKnockbackByEntityEvent) {
         val player = event.hitBy as? Player ?: return
-        val source = player.inventory.itemInMainHand.asSource() ?: return
+        val sources = listOfNotNull(
+            player.inventory.itemInMainHand.asSource(),
+            PdcSource.of(event.entity.persistentDataContainer)
+        )
 
-        fire(source, Action.PLAYER_KNOCKBACK_ENTITY, player, event)
+        fire(sources, Action.PLAYER_KNOCKBACK_ENTITY, player, event)
     }
 
     @EventHandler
@@ -627,5 +634,21 @@ class Listeners : ItemListener() {
             .mapNotNull { it.asSource() }
             .ifEmpty { return }
         fire(sources, Action.CRAFT_ITEM, player, event)
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    fun onBlockDispenseItem(event: BlockDispenseEvent) {
+        fire(event.item.asSource(), Action.BLOCK_DISPENSE_ITEM, null, event)
+    }
+
+    @EventHandler
+    fun onEntityEquipmentChanged(event: EntityEquipmentChangedEvent) {
+        fire(PdcSource.of(event.entity.persistentDataContainer), Action.ENTITY_EQUIPMENT_CHANGED, event.entity as? Player, event)
+    }
+
+    @EventHandler
+    fun onEntityAddToWorld(event: EntityAddToWorldEvent) {
+        val entity = event.entity as? LivingEntity ?: return
+        fire(PdcSource.of(entity.persistentDataContainer), Action.ENTITY_ADD_TO_WORLD, entity as? Player, event)
     }
 }

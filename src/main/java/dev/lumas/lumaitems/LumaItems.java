@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.api.ItemManager;
 import dev.lumas.lumaitems.registry.Registry;
 import dev.lumas.lumaitems.relics.RelicCrafting;
 import dev.lumas.lumaitems.relics.RelicDisassembler;
+import dev.lumas.lumaitems.util.ItemExpiration;
 import dev.lumas.lumaitems.util.extensions.Executors;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -60,7 +61,9 @@ public final class LumaItems extends JavaPlugin {
                 LOGGER.info("Finished asynchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
             });
         } else {
-            initItemManager(itemManager);
+            if (!initItemManager(itemManager)) {
+                return;
+            }
             LOGGER.info("Finished synchronous item registration!" + " Took " + (System.currentTimeMillis() - start) + "ms");
         }
 
@@ -68,6 +71,7 @@ public final class LumaItems extends JavaPlugin {
 
         RelicCrafting.registerRecipes();
         RelicDisassembler.setupDisassemblerBlocks();
+        ItemExpiration.startSweepTask();
 
         List<String> enabledHooks = Registry.HOOKS.values()
                 .stream().filter(Hook::isWith)
@@ -76,7 +80,7 @@ public final class LumaItems extends JavaPlugin {
         LOGGER.info("Enabled Hooks: <gold>" + String.join(", ", enabledHooks));
     }
 
-    private void initItemManager(ItemManager itemManager) {
+    private boolean initItemManager(ItemManager itemManager) {
         try {
             itemManager.registerItems(() -> LOGGER.info("Registered <gold>" + Registry.CUSTOM_ITEMS.size() + "</gold> classes through reflection"));
             passiveListeners.onPluginAction(Action.PLUGIN_ENABLE); // Fire this as soon as we're done registering our items
@@ -85,9 +89,11 @@ public final class LumaItems extends JavaPlugin {
             passiveListeners.getPassiveListener(Action.FAST_ASYNC_RUNNABLE,  PassiveListeners.FAST_ASYNC_PASSIVE_LISTENER_TICKS, false);
             passiveListeners.getGlobalTask(PassiveListeners.ASYNC_GLOBAL_TASK_TICKS);
             finishedRegistration = true;
-        } catch (Exception e) {
+            return true;
+        } catch (Throwable e) {
             LOGGER.error("An error occurred while registering items", e);
             getServer().getPluginManager().disablePlugin(this);
+            return false;
         }
     }
 

@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.tools.hatchet
 
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
@@ -19,7 +19,7 @@ import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
-@Disable(value = [WorldName.PINATA], hard = true)
+@Disable(value = [WorldKey.PINATA], hard = true)
 class HeartstringHatchetItem : CustomItemFunctions() {
 
     companion object {

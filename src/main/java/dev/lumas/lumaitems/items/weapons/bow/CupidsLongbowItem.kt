@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.weapons.bow
 
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.BukkitVectors
@@ -24,7 +24,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-@Disable(WorldName.PINATA)
+@Disable(WorldKey.PINATA)
 class CupidsLongbowItem : CustomItemFunctions() {
 
     private companion object {

@@ -16,7 +16,7 @@ private val ACTIVE_SPELL_COOLDOWNS: MutableSet<SpellCooldown<*>> = ConcurrentHas
 
 private fun CustomItem.getOrCreateCooldown(): CustomItemCooldown {
     return ACTIVE_COOLDOWNS.getOrPut(this::class.java) {
-        CustomItemCooldown(this::class.java, mutableListOf())
+        CustomItemCooldown(this::class.java)
     }
 }
 
@@ -33,9 +33,17 @@ fun Player.isOnCooldown(customItem: CustomItem): Boolean {
     return uniqueId.isOnCooldown(customItem)
 }
 
+fun UUID.remainingCooldown(customItem: CustomItem): Long {
+    return ACTIVE_COOLDOWNS[customItem::class.java]?.remainingTicks(this) ?: 0
+}
+
+fun Player.remainingCooldown(customItem: CustomItem): Long {
+    return uniqueId.remainingCooldown(customItem)
+}
+
 fun UUID.addCooldown(customItem: CustomItem, ticks: Long) {
     val cooldown = customItem.getOrCreateCooldown()
-    cooldown.addCooldown(this)
+    cooldown.addCooldown(this, ticks)
     Executors.asyncDelayed(ticks) { cooldown.removeCooldown(this) }
 }
 
@@ -46,7 +54,7 @@ fun Player.addCooldown(customItem: CustomItem, ticks: Long) {
 
 fun UUID.addCooldown(customItem: CustomItem, ticks: Long, callback: () -> Unit) {
     val cooldown = customItem.getOrCreateCooldown()
-    cooldown.addCooldown(this)
+    cooldown.addCooldown(this, ticks)
     Executors.asyncDelayed(ticks) {
         cooldown.removeCooldown(this)
         callback()
@@ -236,6 +244,9 @@ object QuickTasks {
 
     fun isOnCooldown(customItem: CustomItem, uuid: UUID) = uuid.isOnCooldown(customItem)
     fun isOnCooldown(customItem: CustomItem, player: Player) = player.isOnCooldown(customItem)
+
+    fun remainingCooldown(customItem: CustomItem, uuid: UUID) = uuid.remainingCooldown(customItem)
+    fun remainingCooldown(customItem: CustomItem, player: Player) = player.remainingCooldown(customItem)
 
     fun addCooldown(customItem: CustomItem, player: Player, ticks: Long) = player.addCooldown(customItem, ticks)
     fun addCooldown(customItem: CustomItem, player: Player, ticks: Long, callback: () -> Unit) = player.addCooldown(customItem, ticks, callback)

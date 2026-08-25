@@ -1,6 +1,5 @@
 package dev.lumas.lumaitems.items.weapons.incursion
 
-import dev.lumas.lumaitems.util.extensions.sync
 import kotlin.math.max
 import org.bukkit.Color
 import org.bukkit.Material
@@ -13,19 +12,26 @@ class IncendiaryEggItem : IncursionEggItem() {
     }
 
     override val key = "incursion-incendiary-egg"
-    override val displayName = "<b><gold>Incendiary Egg</gold></b>"
+    override val displayName = "<b><gradient:#e08a6a:#e6a05f:#e9b673>Incendiary Egg</gradient></b>"
+    override val customEnchant = "<#EDB172>Scorch"
     override val material = Material.BROWN_EGG
     override val burstColor: Color = Color.ORANGE
+    override val damage = 65.0
 
     override val loreLines = listOf(
-        "<gray>Throw it. It goes off where it lands.",
-        "<gray>Sets whoever it catches alight."
+        "Best before: several",
+        "weeks ago, arguably.",
+        "",
+        "Do not preheat! It has",
+        "handled that already.",
+        "",
+        "Press your <#EDB172>swap key (F)</#EDB172>",
+        "to cycle variants.",
+        "",
+        "<red>Cooldown: 3.5s"
     )
 
     override fun applyEffect(target: LivingEntity) {
-        target.sync {
-            if (!target.isValid || target.isDead) return@sync
-            target.fireTicks = max(target.fireTicks, FIRE_TICKS)
-        }
+        target.fireTicks = max(target.fireTicks, FIRE_TICKS)
     }
 }

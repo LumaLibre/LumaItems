@@ -136,7 +136,7 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
         val INFINITE_FISH_KEY: NamespacedKey = "infinite-fish".namespacedKey()
         private const val ID = "infinite-tropical-fish-bucket"
         private val KEY = ID.namespacedKey()
-        private const val FISH_COOLDOWN_TICKS = 4L
+        private const val FISH_COOLDOWN_TICKS = 20L * 8
     }
 
     private val infiniteTropicalFishBucket: ItemStack = ItemFactory.builder()

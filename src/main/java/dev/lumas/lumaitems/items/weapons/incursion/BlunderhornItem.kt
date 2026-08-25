@@ -17,6 +17,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerInteractEvent
@@ -35,22 +36,29 @@ class BlunderhornItem : CustomItemFunctions() {
         private const val DAMAGE = 90.0
         private const val DAMAGE_FALLOFF = 0.85
 
-        private const val PELLETS = 16
+        private const val PELLETS = 25
         private val PELLET_DUST = Particle.DustOptions(Color.fromRGB(88, 92, 99), 0.6f)
     }
 
     override fun createItem(): Pair<String, ItemStack> {
         val (key, item) = ItemFactory.builder()
-            .name("<b><gold>Blunderhorn</gold></b>")
+            .name("<b><gradient:#9fa39a:#bfa46d:#d3a95f:#d9b56d>Blunderhorn</gradient></b>")
+            .vanillaEnchants(Enchantment.MULTISHOT to 10)
+            .customEnchants("<#d9a566>Broadside")
             .lore(
-                "<gray>Right click for a blast",
-                "<gray>Hurts less at range"
+                "<#d9a566>Right-click</#d9a566> to unload a",
+                "cone of scrap into whatever",
+                "is unlucky enough to be close.",
+                "",
+                "There is no melody. There is",
+                "only volume, and consequences.",
+                "",
+                "<red>Cooldown: 1.5s"
             )
-            .addSpace(false)
             .material(Material.GOAT_HORN)
             .persistentData(KEY)
             .unbreakable(true)
-            .tier(Tier.BLANK)
+            .tier(Tier.LUMARINE_2026)
             .paperDataComponents(
                 PaperDataComponent.valued(
                     DataComponentTypes.TOOLTIP_DISPLAY,

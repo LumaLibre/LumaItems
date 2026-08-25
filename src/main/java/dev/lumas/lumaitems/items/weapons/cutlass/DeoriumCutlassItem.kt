@@ -1,7 +1,7 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
@@ -27,7 +27,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 
-@Disable(WorldName.PINATA, WorldName.SPAWN, WorldName.EVENT_NEW)
+@Disable(WorldKey.PINATA, WorldKey.SPAWN, WorldKey.EVENT_NEW)
 class DeoriumCutlassItem : CustomItemFunctions() {
 
     companion object {

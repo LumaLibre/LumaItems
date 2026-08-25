@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.tools.mattock
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.CardinalDirection
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
@@ -19,7 +19,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
-@Disable(value = [WorldName.PINATA], hard = true)
+@Disable(value = [WorldKey.PINATA], hard = true)
 class BigSwingPickaxeItem : CustomItemFunctions() {
 
     override fun createItem(): Pair<String, ItemStack> {

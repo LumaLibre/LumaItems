@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.misc.scale
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent
 import dev.lumas.lumaitems.annotations.Disable
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
 
-@Disable(WorldName.EVENT_NEW, WorldName.PINATA, hard = true)
+@Disable(WorldKey.EVENT_NEW, WorldKey.PINATA, hard = true)
 class BigDandelionItem : CustomItemFunctions() {
 
 

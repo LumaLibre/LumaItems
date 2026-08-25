@@ -1,5 +1,7 @@
 package dev.lumas.lumaitems.items.weapons.cutlass
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.particles.ParticleDisplay
@@ -8,7 +10,9 @@ import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.canDamage
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
+import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toColor
 import io.papermc.paper.entity.Leashable
@@ -27,8 +31,10 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Tameable
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.util.Vector
 
+@Disable(value = [WorldKey.PINATA])
 class UmbraScimitarItem : CustomItemFunctions() {
 
     private companion object {
@@ -43,7 +49,7 @@ class UmbraScimitarItem : CustomItemFunctions() {
         const val SEIZE_RELEASE_RADIUS = 5.0
         const val BURST_DAMAGE = 25.0
 
-        val colors = listOf(
+        val COLORS = listOf(
             "#210B2F",
             "#420d4b",
             "#7b347f",
@@ -52,13 +58,14 @@ class UmbraScimitarItem : CustomItemFunctions() {
             "#f4d5e0"
         ).map { it.toColor() }
 
-        val dust = ParticleDisplay.of(Particle.DUST)
+        val DUST = ParticleDisplay.of(Particle.DUST)
+        val KEY = "umbra-scimitar".namespacedKey()
     }
 
     override fun createItem() = ItemFactory.builder()
         .name("<b><gradient:#210B2F:#420d4b:#7b347f:#8665C7:#c774b2:#f4d5e0>Umbra Scimitar</gradient></b>")
         .customEnchants("<#5F2165>Singularity")
-        .persistentData("umbra-scimitar")
+        .persistentData(KEY)
         .material(Material.NETHERITE_SWORD)
         .tier(Tier.LUMARINE_2026)
         .vanillaEnchants(Enchantment.SHARPNESS to 8,
@@ -80,7 +87,7 @@ class UmbraScimitarItem : CustomItemFunctions() {
         .buildPair()
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        if (player.isOnCooldown(this)) return
+        if (player.isOnCooldown(this) || !player.isItemInSlot(KEY, EquipmentSlot.HAND)) return
 
         val targetBlock = player.getTargetBlockExact(75) ?: return
         val yAdd = if (targetBlock.isSolid) 1.2 else 0.1
@@ -92,7 +99,7 @@ class UmbraScimitarItem : CustomItemFunctions() {
             .withLocation(location)
             .directional()
             .withExtra(0.1)
-        val preparedDust = dust.clone().withColor(colors.random())
+        val preparedDust = DUST.clone().withColor(COLORS.random())
 
         Particles.blackhole(instance, 16, 3.0, 40.0, 1, DURATION_TICKS, particleDisplay)
 

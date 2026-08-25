@@ -2,7 +2,7 @@ package dev.lumas.lumaitems.items.tools.hatchet
 
 import dev.lumas.lumaitems.annotations.Disable
 import dev.lumas.lumaitems.enums.Action
-import dev.lumas.lumaitems.enums.WorldName
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItem
 import kotlin.random.Random
@@ -16,7 +16,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
 
-@Disable(WorldName.EVENT_NEW)
+@Disable(WorldKey.EVENT_NEW)
 class DarkRabbitHatchetItem : CustomItem {
 
     override fun createItem(): Pair<String, ItemStack> {
