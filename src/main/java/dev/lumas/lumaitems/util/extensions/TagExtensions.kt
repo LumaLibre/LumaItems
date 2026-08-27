@@ -26,3 +26,7 @@ fun Material.isTagged(tag: Tag<Material>): Boolean {
 fun Block.isTagged(tag: Tag<Material>): Boolean {
     return tag.isTagged(type)
 }
+
+fun Block.isTagged(vararg tag: Tag<Material>): Boolean {
+    return tag.any { it.isTagged(type) }
+}

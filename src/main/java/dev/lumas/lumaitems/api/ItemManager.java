@@ -36,18 +36,39 @@ public final class ItemManager {
 
 
     /**
+     * Get a Custom Item's ItemStack by its display name.
+     * Spaces are replaced with underscores ('_'), colors are negated, and the name is case-insensitive.
+     * <p>
+     * Display names are not unique. When several items share one, this returns one of them at
+     * random; append the item's key to the name ({@code <name>_<key>}) to ask for a specific one.
+     * @param name Display name of the Custom Item
+     * @return ItemStack if found, null otherwise
+     */
+    @Nullable
+    public static ItemStack getItemByName(String name) {
+        var customItem = getCustomItemByName(name);
+        if (customItem == null) {
+            return null;
+        }
+        return customItem.createItem().component2();
+    }
+
+    /**
      * Get a Custom Item by its display name.
      * Spaces are replaced with underscores ('_'), colors are negated, and the name is case-insensitive.
+     * <p>
+     * Display names are not unique. When several items share one, this returns one of them at
+     * random; append the item's key to the name ({@code <name>_<key>}) to ask for a specific one.
      * @param name Display name of the Custom Item
      * @return Custom Item if found, null otherwise
      */
     @Nullable
-    public static ItemStack getItemByName(String name) {
-        var customItem = Registry.NAMED_CUSTOM_ITEMS.get(StringIdentifier.normalized(name));
-        if (customItem == null) {
+    public static CustomItem getCustomItemByName(String name) {
+        var named = Registry.NAMED_CUSTOM_ITEMS.get(StringIdentifier.normalized(name));
+        if (named == null) {
             return null;
         }
-        return customItem.getCustomItem().createItem().component2();
+        return named.randomVariant();
     }
 
     @Nullable
@@ -151,7 +172,37 @@ public final class ItemManager {
         if (!AstralSet.class.isAssignableFrom(item.getClass())) {
             String customTabName = item.tabCompleteName();
             NamedCustomItem namedCustomItem = new NamedCustomItem(item, customTabName);
-            Registry.NAMED_CUSTOM_ITEMS.put(namedCustomItem);
+            registerNamedItem(namedCustomItem);
+        }
+    }
+
+    /**
+     * Registers an item under its display name, keeping items that share a display name reachable
+     * instead of letting the last one registered silently replace the others.
+     * <p>
+     * An item whose name is already taken joins the existing entry rather than replacing it, so the
+     * bare name resolves to one of them at random. Every item sharing the name also gets a
+     * key-qualified alias ({@code <name>_<key>}) for when a specific one is wanted.
+     */
+    private void registerNamedItem(NamedCustomItem named) {
+        StringIdentifier name = named.identifier();
+        NamedCustomItem entry = Registry.NAMED_CUSTOM_ITEMS.get(name);
+
+        if (entry == null) {
+            Registry.NAMED_CUSTOM_ITEMS.put(named);
+            return;
+        }
+        if (!entry.addVariant(named.getCustomItem())) {
+            return;
+        }
+
+        for (CustomItem variant : entry.variants()) {
+            NamedCustomItem alias = NamedCustomItem.alias(name, variant);
+            // An item that shares both a name and a key with another has no alias of its own left;
+            // it stays reachable through the random pick on the bare name.
+            if (!Registry.NAMED_CUSTOM_ITEMS.exists(alias.identifier())) {
+                Registry.NAMED_CUSTOM_ITEMS.put(alias);
+            }
         }
     }
 
