@@ -47,11 +47,11 @@ class BlunderhornItem : CustomItemFunctions() {
             .customEnchants("<#d9a566>Broadside")
             .lore(
                 "<#d9a566>Right-click</#d9a566> to unload a",
-                "cone of scrap into whatever",
-                "is unlucky enough to be close.",
+                "cone of scrap into anything",
+                "unlucky to be close enough.",
                 "",
                 "There is no melody. There is",
-                "only volume, and consequences.",
+                "only volume, and aftermath.",
                 "",
                 "<red>Cooldown: 1.5s"
             )

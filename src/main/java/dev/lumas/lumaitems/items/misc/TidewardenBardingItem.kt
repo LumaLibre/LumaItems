@@ -128,7 +128,7 @@ class TidewardenBardingItem : CustomItemFunctions() {
             .unbreakable(true)
             .tier(Tier.LUMARINE_2026)
             .lore(
-                "Fit this to a nautilus",
+                "Fit this to a <#9be4df>nautilus</#9be4df>",
                 "to bind it to the tide.",
                 "",
                 "It will take no harm, and",

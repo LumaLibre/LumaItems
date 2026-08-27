@@ -11,14 +11,14 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 
-class TidepullSpadeItem : CustomItemFunctions() {
+class UndertowSpadeItem : CustomItemFunctions() {
 
 
     override fun createItem() = ItemFactory.builder()
-        .name("<b><gradient:#1e8abf:#9be4df:#ffe494>Tidepull Spade</gradient></b>")
-        .customEnchants("<#9be4df>Undertow")
+        .name("<b><gradient:#1e8abf:#9be4df:#ffe494>Undertow Spade</gradient></b>")
+        .customEnchants("<#9be4df>Tidepull")
         .material(Material.NETHERITE_SHOVEL)
-        .persistentData("tidepull-spade")
+        .persistentData("undertow-spade")
         .tier(Tier.LUMARINE_2026)
         .vanillaEnchants(
             Enchantment.EFFICIENCY to 5,
@@ -27,8 +27,8 @@ class TidepullSpadeItem : CustomItemFunctions() {
         )
         .lore(
             "Blocks <#9be4df>broken</#9be4df> with this",
-            "spade is swept straight",
-            "into your inventory!"
+            "spade are swept straight",
+            "into your inventory."
         )
         .buildPair()
 

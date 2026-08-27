@@ -27,10 +27,10 @@ class CryoEggItem : IncursionEggItem() {
         "weeks ago, arguably.",
         "",
         "Best served chilled, which",
-        "it insists on arranging itself.",
+        "it insists on doing itself.",
         "",
-        "Press your <#9be4df>swap key (F)</#9be4df>",
-        "to cycle variants.",
+        "Press your <#9be4df>swap key</#9be4df>",
+        "<#9be4df>(F)</#9be4df> to cycle variants.",
         "",
         "<red>Cooldown: 3.5s"
     )

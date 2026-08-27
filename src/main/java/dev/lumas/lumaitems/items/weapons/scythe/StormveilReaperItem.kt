@@ -28,6 +28,7 @@ import java.awt.Color
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.floor
 import kotlin.math.sin
@@ -49,6 +50,7 @@ import org.bukkit.event.entity.ItemMergeEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.MainHand
 import org.bukkit.loot.LootContext
 import org.bukkit.loot.Lootable
 import org.bukkit.persistence.PersistentDataHolder
@@ -65,7 +67,7 @@ class StormveilReaperItem : CustomItemFunctions() {
         const val SEARCH_RADIUS = 6.0
         const val LOOM_TICKS = 900
         const val DAMAGE_MULTIPLIER = 2.0
-        const val COOLDOWN_TICKS = 30 * 20L
+        const val COOLDOWN_TICKS = 23 * 20L
 
         const val VOID_TICKS = 30
 
@@ -85,12 +87,24 @@ class StormveilReaperItem : CustomItemFunctions() {
         const val FALL_SPEED = 1.1
         const val DROP_INTERVAL = 2
 
+        const val HAND_SIDE_OFFSET = 0.4
+        const val HAND_FORWARD_OFFSET = 0.4
+        const val HAND_DROP_OFFSET = 1.0
+        const val CAST_DURATION_TICKS = 12
+        const val CAST_SAMPLE_DISTANCE = 0.45
+        const val CAST_TURNS = 2.0
+        const val CAST_MIN_RADIUS = 0.08
+        const val CAST_MAX_RADIUS = 0.28
+        const val CAST_MIN_ARC_HEIGHT = 0.4
+        const val CAST_MAX_ARC_HEIGHT = 2.0
+
         val RAIN = ParticleDisplay.of(Particle.RAIN)
 
         val LOOT_RANDOM: ThreadLocal<java.util.Random> = ThreadLocal.withInitial { java.util.Random() }
         val BOUNTY = "#97dcfb".spell()
         val DUST = ParticleDisplay.of(Particle.DUST).withColor(Color.DARK_GRAY)
         val STANDARD_COLORS = listOf("#3f4a63", "#6f82b6", "#97dcfb", "#f9ecde", "#c9d4e8").map { it.toColor() }
+        val CAST_ACCENT = "#97dcfb".toColor()
 
         fun expiryOf(holder: PersistentDataHolder): Long? =
             Util.getPersistentKey(holder, KEY, PersistentDataType.LONG)
@@ -145,26 +159,101 @@ class StormveilReaperItem : CustomItemFunctions() {
             "the loot, or swallow it",
             "whole.",
             "",
-            "<red>Cooldown: 30s"
+            "<red>Cooldown: 23s"
         )
         .buildPair()
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (player.isOnCooldown(this) || !player.isItemInSlot(KEY, EquipmentSlot.HAND)) return
-        player.addCooldown(this, COOLDOWN_TICKS)
 
         val loc = (player.getTargetEntity(50) as? LivingEntity)?.location
             ?: player.getTargetBlockExact(15)?.location
             ?: player.location.add(player.location.direction.multiply(10))
 
-        player.world.playSound(loc, Sound.ENTITY_EVOKER_PREPARE_ATTACK, 0.1f, 1.5f)
+        val targets = loc.getNearbyLivingEntities(SEARCH_RADIUS).filter { target ->
+            target != player && !looming(target) && player.canDamage(target) && target !is Player && target !is ArmorStand
+        }
+        if (targets.isEmpty()) return
 
-        loc.getNearbyLivingEntities(SEARCH_RADIUS).forEach { target ->
-            if (target == player || looming(target) || !player.canDamage(target) || target is Player || target is ArmorStand) {
-                return@forEach
+        targets.forEach(::loomOver)
+        player.addCooldown(this, COOLDOWN_TICKS)
+
+        castTrails(player, targets)
+        player.world.playSound(loc, Sound.ENTITY_EVOKER_PREPARE_ATTACK, 0.1f, 1.5f)
+    }
+
+    private fun castTrails(player: Player, targets: Collection<LivingEntity>) {
+        val eye = player.eyeLocation
+        val yaw = Math.toRadians(eye.yaw.toDouble())
+        val side = Vector(-cos(yaw), 0.0, -sin(yaw))
+        if (player.mainHand == MainHand.LEFT) side.multiply(-1)
+
+        val origin = eye.clone()
+            .add(side.multiply(HAND_SIDE_OFFSET))
+            .add(eye.direction.multiply(HAND_FORWARD_OFFSET))
+            .subtract(0.0, HAND_DROP_OFFSET, 0.0)
+
+        origin.world.spawnParticle(Particle.CLOUD, origin, 6, 0.12, 0.08, 0.12, 0.01)
+
+        targets.forEach { target ->
+            castWisp(origin, target.eyeLocation.add(0.0, CLOUD_HEIGHT, 0.0), heldColor(player))
+        }
+    }
+
+    private fun castWisp(origin: Location, end: Location, color: Color) {
+        val path = end.toVector().subtract(origin.toVector())
+        val length = path.length()
+        if (length < 0.001) return
+
+        val direction = path.clone().multiply(1.0 / length)
+        val reference = if (abs(direction.y) > 0.9) Vector(1, 0, 0) else Vector(0, 1, 0)
+        val side = direction.clone().crossProduct(reference).normalize()
+        val up = side.clone().crossProduct(direction).normalize()
+        val arcHeight = (length * 0.12).coerceIn(CAST_MIN_ARC_HEIGHT, CAST_MAX_ARC_HEIGHT)
+        val displays = listOf(
+            DUST.clone().withColor(color, 1.15f),
+            DUST.clone().withColor(CAST_ACCENT, 0.85f)
+        )
+
+        fun centerAt(progress: Double): Location = origin.clone()
+            .add(path.clone().multiply(progress))
+            .add(up.clone().multiply(sin(Math.PI * progress) * arcHeight))
+
+        fun strandAt(progress: Double, phase: Double): Location {
+            val radius = CAST_MIN_RADIUS + sin(Math.PI * progress) * (CAST_MAX_RADIUS - CAST_MIN_RADIUS)
+            val angle = (Math.TAU * CAST_TURNS * progress) + phase
+
+            return centerAt(progress)
+                .add(side.clone().multiply(cos(angle) * radius))
+                .add(up.clone().multiply(sin(angle) * radius))
+        }
+
+        var tick = 0
+        Executors.asyncTimer(0, 1) { task ->
+            val previous = tick.toDouble() / CAST_DURATION_TICKS
+            tick++
+            val progress = (tick.toDouble() / CAST_DURATION_TICKS).coerceAtMost(1.0)
+            val samples = ceil(length * (progress - previous) / CAST_SAMPLE_DISTANCE)
+                .toInt()
+                .coerceAtLeast(1)
+
+            repeat(samples) { sample ->
+                val point = previous + (progress - previous) * ((sample + 1.0) / samples)
+                displays.forEachIndexed { strand, display ->
+                    display.spawn(strandAt(point, strand * Math.PI))
+                }
             }
 
-            loomOver(target)
+            val head = centerAt(progress)
+            if (tick % 2 == 0) {
+                head.world.spawnParticle(Particle.ELECTRIC_SPARK, head, 2, 0.08, 0.08, 0.08, 0.02)
+            }
+
+            if (progress >= 1.0) {
+                head.world.spawnParticle(Particle.CLOUD, head, 14, 0.4, 0.15, 0.4, 0.02)
+                head.world.spawnParticle(Particle.ELECTRIC_SPARK, head, 8, 0.3, 0.2, 0.3, 0.03)
+                task.cancel()
+            }
         }
     }
 

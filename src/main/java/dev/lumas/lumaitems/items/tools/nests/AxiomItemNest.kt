@@ -41,6 +41,7 @@ abstract class AxiomMattock : CustomItemFunctions() {
         private const val COOLDOWN_TICKS = 180 * 20L
         private const val BEAM_RADIUS = 0.75
         private const val BEAMS_PER_TICK = 2
+        private val MAX_BLOCK_HARDNESS = Material.OBSIDIAN.hardness
     }
 
     protected abstract val runeColor: Pair<Color, Color>
@@ -157,8 +158,16 @@ abstract class AxiomMattock : CustomItemFunctions() {
             .distinct()
             .forEach { block ->
                 block.sync {
-                    if (!block.type.isAir && block.isTagged(Tag.MINEABLE_PICKAXE, Tag.MINEABLE_SHOVEL)) {
-                        block.breakNaturallyWithLog(player, player.inventory.itemInMainHand, true)
+                    val material = block.type
+                    val hardness = material.hardness
+                    if (!material.isAir &&
+                        hardness >= 0.0f &&
+                        hardness < MAX_BLOCK_HARDNESS &&
+                        block.isTagged(Tag.MINEABLE_PICKAXE, Tag.MINEABLE_SHOVEL)
+                    ) {
+                        val brokenBlockData = block.blockData
+                        block.breakNaturallyWithLog(player, player.inventory.itemInMainHand, false)
+                        block.world.spawnParticle(Particle.BLOCK, block.location.add(0.5, 0.5, 0.5), 4, 0.3, 0.3, 0.3, brokenBlockData)
                     }
                 }
             }
@@ -212,7 +221,7 @@ class UnionAxiomMattockItem : AxiomMattock() {
 
     override fun createItem() = base()
         .name("<b><gradient:#D8B9FB:#C08EFF:#E07DFF>Axiom Mattock</gradient></b>")
-        .customEnchants("<gray>Reach II", "<#ED70BB>Axi/Union")
+        .customEnchants("<gray>Reach II", "<#ED70BB>Union")
         .persistentData("union-paradox-mattock")
         .buildPair()
 }
@@ -233,7 +242,7 @@ class FluxAxiomMattockItem : AxiomMattock() {
 
     override fun createItem() = base()
         .name("<b><gradient:#D8B9FB:#AC8EFF:#7D9AFF>Axiom Mattock</gradient></b>")
-        .customEnchants("<gray>Reach II", "<#5FE8FF>Axi/Flux")
+        .customEnchants("<gray>Reach II", "<#5FE8FF>Flux")
         .persistentData("flux-paradox-mattock")
         .buildPair()
 }

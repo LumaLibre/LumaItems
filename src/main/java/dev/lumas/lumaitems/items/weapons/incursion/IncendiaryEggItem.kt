@@ -25,8 +25,8 @@ class IncendiaryEggItem : IncursionEggItem() {
         "Do not preheat! It has",
         "handled that already.",
         "",
-        "Press your <#EDB172>swap key (F)</#EDB172>",
-        "to cycle variants.",
+        "Press your <#EDB172>swap key</#EDB172>",
+        "<#EDB172>(F)</#EDB172> to cycle variants.",
         "",
         "<red>Cooldown: 3.5s"
     )

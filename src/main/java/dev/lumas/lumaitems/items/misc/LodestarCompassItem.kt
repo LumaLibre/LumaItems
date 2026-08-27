@@ -444,7 +444,7 @@ class LodestarCompassItem : CustomItemFunctions() {
             .lore(
                 mutableListOf(
                     "<#DBCDF0>Left-click</#DBCDF0> to scan biomes",
-                    "within <#DBCDF0>{${SCAN_RADIUS.toString().format("%,d,")}}</#DBCDF0> blocks.",
+                    "within <#DBCDF0>${String.format("%,d", SCAN_RADIUS)}</#DBCDF0> blocks.",
                     "",
                     "<#DBCDF0>Right-click</#DBCDF0> to read the",
                     "next biome found.",

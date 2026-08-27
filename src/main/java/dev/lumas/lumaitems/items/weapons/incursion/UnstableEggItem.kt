@@ -16,8 +16,8 @@ class UnstableEggItem : IncursionEggItem() {
         "Best before: several",
         "weeks ago, arguably.",
         "",
-        "Press your <#cfd6dd>swap key (F)</#cfd6dd>",
-        "to cycle variants.",
+        "Press your <#cfd6dd>swap key</#cfd6dd>",
+        "<#cfd6dd>(F)</#cfd6dd> to cycle variants.",
         "",
         "<red>Cooldown: 3.5s"
     )
