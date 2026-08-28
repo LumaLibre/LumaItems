@@ -49,6 +49,9 @@ val PlayerInventory.hotbarContents: Array<ItemStack?>
         return result
     }
 
+val Player.isVanished: Boolean
+    get() = hasMetadata("vanished")
+
 
 fun Player.isWearing(identifier: String): Boolean {
     return isWearing(identifier.namespacedKey())
