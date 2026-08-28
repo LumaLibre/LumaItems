@@ -47,6 +47,13 @@ class AestivaBarillasItem : CustomItemFunctions() {
                 .setOperation(AttributeModifier.Operation.ADD_NUMBER)
                 .setSlot(EquipmentSlotGroup.FEET)
                 .setAmount(1.0)
+                .build(),
+            AttributeContainer.builder()
+                .setKey(KEY)
+                .setAttribute(Attribute.SAFE_FALL_DISTANCE)
+                .setOperation(AttributeModifier.Operation.ADD_NUMBER)
+                .setSlot(EquipmentSlotGroup.FEET)
+                .setAmount(10.0)
                 .build()
         )
         .buildPair()

@@ -17,6 +17,7 @@ import dev.lumas.lumaitems.util.extensions.toColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.Sound
 import org.bukkit.Tag
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -48,6 +49,7 @@ abstract class AxiomMattock : CustomItemFunctions() {
     protected abstract val shellColor: Pair<Color, Color>
     protected abstract val coreColor: Pair<Color, Color>
     protected abstract val loreColor: String
+    protected abstract val soundPitch: Float
 
     protected abstract fun beamAxis(): Vector
 
@@ -74,11 +76,20 @@ abstract class AxiomMattock : CustomItemFunctions() {
             val tick = ++ticksRan
             if (tick > DURATION_TICKS) {
                 Particles.sphere(RADIUS, 12.0, shellDisplay.clone().withLocation(center))
+                play(center, Sound.BLOCK_BEACON_DEACTIVATE, 1.0f, soundPitch)
                 it.cancel()
                 return@asyncTimer
             }
             if (tick == 1) {
                 Particles.spikeSphere(1.0, 14.0, 70, 2.0, 5.0, coreDisplay.clone().withLocation(center))
+                play(center, Sound.ENTITY_EVOKER_PREPARE_SUMMON, 1.5f, soundPitch)
+                play(center, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, soundPitch * 0.7f)
+            }
+            if (tick % 20 == 0) {
+                play(center, Sound.BLOCK_PORTAL_AMBIENT, 0.5f, soundPitch * 0.6f)
+            }
+            if (tick % 45 == 0) {
+                play(center, Sound.ENTITY_WARDEN_HEARTBEAT, 0.6f, soundPitch * 0.8f)
             }
 
             val spin = tick * 0.06
@@ -188,8 +199,16 @@ abstract class AxiomMattock : CustomItemFunctions() {
             walked += 0.55
         }
 
+        if (random().nextInt(6) == 0) {
+            play(entry, Sound.BLOCK_CONDUIT_ATTACK_TARGET, 0.4f, soundPitch * random().nextDouble(0.8, 1.3).toFloat())
+        }
+
         flareRing(entry, perpA, perpB, BEAM_RADIUS, flareDisplay)
         flareRing(exit, perpA, perpB, BEAM_RADIUS, flareDisplay)
+    }
+
+    private fun play(location: Location, sound: Sound, volume: Float, pitch: Float) {
+        location.sync { location.world.playSound(location, sound, volume, pitch.coerceIn(0.5f, 2.0f)) }
     }
 
     private fun perpendicularBasis(axis: Vector): Pair<Vector, Vector> {
@@ -212,6 +231,8 @@ abstract class AxiomMattock : CustomItemFunctions() {
 
 class UnionAxiomMattockItem : AxiomMattock() {
 
+    override val soundPitch = 0.8f
+
     override val runeColor = "#954381".toColor() to "#ED70BB".toColor()
     override val shellColor = "#ED70BB".toColor() to "#954381".toColor()
     override val coreColor = "#FFD9F0".toColor() to "#ED70BB".toColor()
@@ -227,6 +248,8 @@ class UnionAxiomMattockItem : AxiomMattock() {
 }
 
 class FluxAxiomMattockItem : AxiomMattock() {
+
+    override val soundPitch = 1.25f
 
     override val runeColor = "#3B3FA8".toColor() to "#5FE8FF".toColor()
     override val shellColor = "#5FE8FF".toColor() to "#3B3FA8".toColor()
