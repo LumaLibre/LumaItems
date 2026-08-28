@@ -7,6 +7,7 @@ import dev.lumas.lumaitems.particles.ParticleDisplay
 import dev.lumas.lumaitems.particles.Particles
 import dev.lumas.lumaitems.util.BukkitVectors
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
@@ -27,6 +28,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.EquipmentSlotGroup
+import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 import java.awt.Color
 import kotlin.math.PI
@@ -34,6 +36,43 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+
+class AxiomMattockVoucherItem : CustomItemFunctions() {
+
+    override fun createItem(): Pair<String, ItemStack> {
+        return ItemFactory.builder()
+            .name("<b><gradient:#E07DFF:#C08EFF:#D8B9FB:#C08EFF:#7D9AFF>Axiom Mattock Core</gradient></b>")
+            .material(Material.PRISMARINE_CRYSTALS)
+            .tier(Tier.LUMARINE_2026)
+            .persistentData("axiom-mattock-core")
+            .vanillaEnchants(Enchantment.UNBREAKING to 10)
+            .lore(
+                "<dark_gray>Right-click to open.",
+                "",
+                "A sealed claim on a",
+                "mattock that has not",
+                "settled on an axiom.",
+                "",
+                "Redeem it to reveal",
+                "either <#5FE8FF>Flux</#5FE8FF> or <#ED70BB>Union</#ED70BB>."
+            )
+            .buildPair()
+    }
+
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        val item = event.item ?: return
+        item.amount -= 1
+
+        val mattock = if (random.nextBoolean()) {
+            UnionAxiomMattockItem()
+        } else {
+            FluxAxiomMattockItem()
+        }.createItem().second
+
+        player.playSound(player.location, Sound.ITEM_ARMOR_EQUIP_NETHERITE, 1f, 1f)
+        Util.giveItem(player, mattock)
+    }
+}
 
 abstract class AxiomMattock : CustomItemFunctions() {
 
