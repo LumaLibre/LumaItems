@@ -11,6 +11,7 @@ import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGround
 import dev.lumas.lumaitems.util.extensions.isItemInSlot
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.isTagged
+import dev.lumas.lumaitems.util.extensions.isVanished
 import dev.lumas.lumaitems.util.extensions.mix
 import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.syncDelayed
@@ -210,13 +211,15 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
         flight.airspeed = carried.coerceIn(MIN_SPEED, MAX_SPEED)
         flight.ticks = 0
 
-        val location = player.location
-        player.world.playSound(location, Sound.ENTITY_WIND_CHARGE_THROW, 0.5f, 1.5f)
-        player.playSound(location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.35f, 1.7f)
-        player.world.spawnParticle(
-            Particle.DUST_COLOR_TRANSITION, location.clone().add(0.0, CANOPY_HEIGHT - CANOPY_DEPTH * 0.35, 0.0), 24, 0.55, 0.15, 0.55, 0.0,
-            Particle.DustTransition(LEAF, SKY, 1.2f)
-        )
+        if (!player.isVanished) {
+            val location = player.location
+            player.world.playSound(location, Sound.ENTITY_WIND_CHARGE_THROW, 0.5f, 1.5f)
+            player.playSound(location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.35f, 1.7f)
+            player.world.spawnParticle(
+                Particle.DUST_COLOR_TRANSITION, location.clone().add(0.0, CANOPY_HEIGHT - CANOPY_DEPTH * 0.35, 0.0), 24, 0.55, 0.15, 0.55, 0.0,
+                Particle.DustTransition(LEAF, SKY, 1.2f)
+            )
+        }
 
         flight.task = player.syncTimer(1, 1) { task ->
             if (!stillFlying(player)) {
@@ -232,7 +235,7 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
 
     private fun closeCanopy(player: Player, flight: Flight) {
         flight.task = null
-        if (!player.isValid) return
+        if (!player.isValid || player.isVanished) return
 
         player.playSound(player.location, Sound.ENTITY_BREEZE_DEFLECT, 0.35f, 1.6f)
         player.world.spawnParticle(
@@ -273,6 +276,8 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
     }
 
     private fun drawCanopy(player: Player, flight: Flight) {
+        if (player.isVanished) return
+
         val world = player.world
         val apex = player.location.clone().add(0.0, CANOPY_HEIGHT, 0.0)
         val speedRatio = ((flight.airspeed - MIN_SPEED) / (MAX_SPEED - MIN_SPEED)).coerceIn(0.0, 1.0)
@@ -353,6 +358,8 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
     }
 
     private fun trySlipstream(player: Player, travelled: Vector) {
+        if (player.isVanished) return
+
         val velocity = player.velocity
         // Player velocity reads stale under creative flight, and the move delta is short when
         // several packets land in one tick - whichever reads faster is the honest one.
@@ -433,8 +440,10 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
         }
 
         sword.damage(1, player)
-        player.world.playSound(player.location, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.9f, 1.4f)
-        player.world.playSound(player.location, Sound.ENTITY_BREEZE_SHOOT, 0.7f, 1.2f)
+        if (!player.isVanished) {
+            player.world.playSound(player.location, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.9f, 1.4f)
+            player.world.playSound(player.location, Sound.ENTITY_BREEZE_SHOOT, 0.7f, 1.2f)
+        }
     }
 
     private fun launchCrescent(player: Player, yawOffset: Double, rollDegrees: Double, damage: Double) {
@@ -470,14 +479,16 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
                     break
                 }
 
-                drawCrescent(position, forward, bladeRight, bladeUp, travelled / SLASH_RANGE)
+                if (!player.isVanished) drawCrescent(position, forward, bladeRight, bladeUp, travelled / SLASH_RANGE)
                 cut(player, position, struck, damage)
                 if (travelled >= SLASH_RANGE) break
             }
 
             if (blocked) {
-                world.spawnParticle(Particle.GUST_EMITTER_SMALL, position, 1, 0.0, 0.0, 0.0, 0.0)
-                world.playSound(position, Sound.ENTITY_BREEZE_DEFLECT, 0.5f, 1.5f)
+                if (!player.isVanished) {
+                    world.spawnParticle(Particle.GUST_EMITTER_SMALL, position, 1, 0.0, 0.0, 0.0, 0.0)
+                    world.playSound(position, Sound.ENTITY_BREEZE_DEFLECT, 0.5f, 1.5f)
+                }
                 task.cancel()
             }
         }
@@ -524,6 +535,7 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
                 dealingCrescentDamage.remove(player.uniqueId)
             }
 
+            if (player.isVanished) continue
             val impact = victim.boundingBox.center.toLocation(victim.world)
             victim.world.spawnParticle(Particle.SWEEP_ATTACK, impact, 1, 0.3, 0.3, 0.3, 0.0)
             victim.world.spawnParticle(
