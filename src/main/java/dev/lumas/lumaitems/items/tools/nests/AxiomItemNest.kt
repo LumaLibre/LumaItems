@@ -10,6 +10,7 @@ import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.Executors
 import dev.lumas.lumaitems.util.extensions.addCooldown
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
+import dev.lumas.lumaitems.util.extensions.canBuild
 import dev.lumas.lumaitems.util.extensions.isOnCooldown
 import dev.lumas.lumaitems.util.extensions.isTagged
 import dev.lumas.lumaitems.util.extensions.sync
@@ -164,24 +165,27 @@ abstract class AxiomMattock : CustomItemFunctions() {
         val entry = midpoint.clone().subtract(axis.clone().multiply(halfLength))
         val exit = midpoint.clone().add(axis.clone().multiply(halfLength))
 
-        BukkitVectors.line(entry, exit, 0.3)
+        val blocks = BukkitVectors.line(entry, exit, 0.3)
             .map { loc -> loc.block }
             .distinct()
-            .forEach { block ->
-                block.sync {
-                    val material = block.type
-                    val hardness = material.hardness
-                    if (!material.isAir &&
-                        hardness >= 0.0f &&
-                        hardness < MAX_BLOCK_HARDNESS &&
-                        block.isTagged(Tag.MINEABLE_PICKAXE, Tag.MINEABLE_SHOVEL)
-                    ) {
-                        val brokenBlockData = block.blockData
-                        block.breakNaturallyWithLog(player, player.inventory.itemInMainHand, false)
-                        block.world.spawnParticle(Particle.BLOCK, block.location.add(0.5, 0.5, 0.5), 4, 0.3, 0.3, 0.3, brokenBlockData)
-                    }
+
+        center.sync {
+            for (block in blocks) {
+                if (!player.canBuild(block.location)) break
+
+                val material = block.type
+                val hardness = material.hardness
+                if (!material.isAir &&
+                    hardness >= 0.0f &&
+                    hardness < MAX_BLOCK_HARDNESS &&
+                    block.isTagged(Tag.MINEABLE_PICKAXE, Tag.MINEABLE_SHOVEL)
+                ) {
+                    val brokenBlockData = block.blockData
+                    block.breakNaturallyWithLog(player, player.inventory.itemInMainHand, false)
+                    block.world.spawnParticle(Particle.BLOCK, block.location.add(0.5, 0.5, 0.5), 4, 0.3, 0.3, 0.3, brokenBlockData)
                 }
             }
+        }
 
         Particles.line(entry, exit, 0.35, coreDisplay)
         val helix = coreDisplay.clone().withLocation(entry)
