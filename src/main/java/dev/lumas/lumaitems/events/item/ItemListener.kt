@@ -8,6 +8,7 @@ import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.model.item.PdcSource
 import dev.lumas.lumaitems.registry.Registry
+import dev.lumas.lumaitems.util.ItemExpiration
 import dev.lumas.lumaitems.util.extensions.actionBar
 import io.papermc.paper.persistence.PersistentDataContainerView
 import java.util.EnumMap
@@ -75,13 +76,17 @@ abstract class ItemListener : Listener {
         withContainer: Boolean = false
     ) {
         if (!LumaItems.isFinishedRegistration()) return
+        val expiries = ItemExpiration.snapshot(player, source)
+        try {
+            for ((registryKey, item) in Registry.CUSTOM_ITEMS) {
+                if (!shouldFire(item, source?.data, registryKey.asNameSpacedKey(), action)) continue
+                if (!action.isHot && handleDisabledIfNeeded(item, player, event, action)) return
 
-        for ((registryKey, item) in Registry.CUSTOM_ITEMS) {
-            if (!shouldFire(item, source?.data, registryKey.asNameSpacedKey(), action)) continue
-            if (!action.isHot && handleDisabledIfNeeded(item, player, event, action)) return
-
-            val effectivePlayer = player ?: getDummyPlayer() ?: return
-            item.fireVerbosely(action, effectivePlayer, event, if (withContainer) source?.data else null)
+                val effectivePlayer = player ?: getDummyPlayer() ?: return
+                item.fireVerbosely(action, effectivePlayer, event, if (withContainer) source?.data else null)
+            }
+        } finally {
+            expiries?.restore()
         }
     }
 
