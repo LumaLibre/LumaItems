@@ -18,6 +18,7 @@ import dev.lumas.lumaitems.util.extensions.syncDelayed
 import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toBukkitColor
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
+import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -447,7 +448,6 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
     }
 
     private fun launchCrescent(player: Player, yawOffset: Double, rollDegrees: Double, damage: Double) {
-        val world = player.world
         val forward = player.eyeLocation.direction.rotateAroundY(Math.toRadians(yawOffset)).normalize()
         val position = player.eyeLocation.add(forward.clone().multiply(0.8))
 
@@ -460,19 +460,31 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
         val bladeRight = right.clone().multiply(cos(roll)).add(up.clone().multiply(sin(roll)))
         val bladeUp = up.clone().multiply(cos(roll)).subtract(right.clone().multiply(sin(roll)))
 
-        val struck = HashSet<UUID>()
-        var travelled = 0.0
+        advanceCrescent(player, position, forward, bladeRight, bladeUp, damage, HashSet(), 0.0)
+    }
 
-        player.syncTimer(0, 1) { task ->
+    private fun advanceCrescent(player: Player, position: Location, forward: Vector, bladeRight: Vector, bladeUp: Vector, damage: Double, struck: MutableSet<UUID>, travelledSoFar: Double) {
+        val world = position.world
+        var travelled = travelledSoFar
+
+        position.syncTimer(0, 1) { task ->
             if (!player.isValid || travelled >= SLASH_RANGE) {
                 task.cancel()
                 return@syncTimer
             }
 
             var blocked = false
+            var handed = false
             for (substep in 0 until SLASH_SUBSTEPS) {
                 position.add(forward.x * SLASH_STEP, forward.y * SLASH_STEP, forward.z * SLASH_STEP)
                 travelled += SLASH_STEP
+
+                if (!Bukkit.isOwnedByCurrentRegion(position)) {
+                    task.cancel()
+                    advanceCrescent(player, position.clone(), forward, bladeRight, bladeUp, damage, struck, travelled)
+                    handed = true
+                    break
+                }
 
                 if (!position.block.isPassable) {
                     blocked = true
@@ -483,6 +495,8 @@ class SunbrellaHatNouveauItem : CustomItemFunctions() {
                 cut(player, position, struck, damage)
                 if (travelled >= SLASH_RANGE) break
             }
+
+            if (handed) return@syncTimer
 
             if (blocked) {
                 if (!player.isVanished) {
