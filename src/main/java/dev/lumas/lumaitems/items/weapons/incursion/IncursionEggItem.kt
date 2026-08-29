@@ -2,6 +2,7 @@ package dev.lumas.lumaitems.items.weapons.incursion
 
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
+import dev.lumas.lumaitems.util.ItemExpiration
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
@@ -99,11 +100,16 @@ abstract class IncursionEggItem : CustomItemFunctions() {
         player.playSound(player, Sound.ENTITY_CHICKEN_EGG, 0.8f, 1.0f)
     }
 
-    private fun nextVariant(item: ItemStack): ItemStack? = when (item.type) {
-        Material.EGG -> CryoEggItem().createItem().second
-        Material.BLUE_EGG -> IncendiaryEggItem().createItem().second
-        Material.BROWN_EGG -> UnstableEggItem().createItem().second
-        else -> null
+    private fun nextVariant(item: ItemStack): ItemStack? {
+        val next = when (item.type) {
+            Material.EGG -> CryoEggItem().createItem().second
+            Material.BLUE_EGG -> IncendiaryEggItem().createItem().second
+            Material.BROWN_EGG -> UnstableEggItem().createItem().second
+            else -> null
+        } ?: return null
+
+        ItemExpiration.transfer(item, next)
+        return next
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {

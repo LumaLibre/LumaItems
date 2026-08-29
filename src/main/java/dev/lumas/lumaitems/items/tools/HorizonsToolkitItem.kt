@@ -16,6 +16,7 @@ import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.send
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.extensions.withMeta
+import dev.lumas.lumaitems.util.ItemExpiration
 import dev.lumas.lumaitems.util.Tier
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -163,8 +164,7 @@ class HorizonsToolkitItem : CustomItem, Mixable {
             this.persistentDataContainer.copyTo(it, true)
             it.remove(handleKey)
         }
-        // copy durability
-        return newItem.cloneDurability(this).setDecals()
+        return newItem.cloneDurability(this).setDecals().also { ItemExpiration.transfer(this, it) }
     }
 
     private fun ItemStack.doMix(handle: CustomItem): ItemStack {
@@ -179,27 +179,27 @@ class HorizonsToolkitItem : CustomItem, Mixable {
             this.persistentDataContainer.copyTo(it, false)
             it.remove(handleKey)
         }
-        return newItem.setDecals()
+        return newItem.setDecals().also { ItemExpiration.transfer(this, it) }
     }
 
     private fun getDefault(provided: ItemStack, intendedMaterial: Material, deep: Boolean): ItemStack {
         val createdItem = this.createItem().second
-        if (deep) {
+        val result = if (deep) {
             val item = createdItem.withMeta { meta ->
                 provided.persistentDataContainer.copyTo(meta.persistentDataContainer, true)
             }
-            if (item.type != intendedMaterial) {
-                return item.withType(intendedMaterial)
-            }
-            return item
+            if (item.type != intendedMaterial) item.withType(intendedMaterial) else item
         } else {
             // only swap displayName and lore
-            return provided.withMeta { meta ->
+            provided.withMeta { meta ->
                 val createdMeta = createdItem.itemMeta ?: return@withMeta
                 meta.displayName(createdMeta.displayName())
                 meta.lore(createdMeta.lore())
             }
         }
+
+        ItemExpiration.transfer(provided, result)
+        return result
     }
 
     private fun ItemStack.getHandle(intendedMaterial: Material): CustomItem? {
