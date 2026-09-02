@@ -62,7 +62,7 @@ class DarksunScythe : CustomItemFunctions() {
         .tier(Tier.LUMARINE_2026)
         .lore(
             "<#D59580>Right-click</#D59580> to reap",
-            "an area with seveeral",
+            "an area with several",
             "waves of slashes.",
             "",
             "The first wave roots",
