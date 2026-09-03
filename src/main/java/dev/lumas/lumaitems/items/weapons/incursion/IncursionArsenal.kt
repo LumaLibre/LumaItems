@@ -13,6 +13,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 import net.kyori.adventure.title.Title
+import net.minecraft.world.entity.TamableAnimal
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -24,6 +25,7 @@ import org.bukkit.block.Block
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
+import org.bukkit.entity.Tameable
 import org.bukkit.inventory.MainHand
 import org.bukkit.util.BoundingBox
 import org.bukkit.util.Vector
@@ -106,6 +108,8 @@ internal object IncursionArsenal {
     // No true damage here, so protection plugins can do their thing
     fun hurt(target: LivingEntity, shooter: Player, damage: Double, beforeDamage: ((LivingEntity) -> Unit)? = null) {
         if (damage <= 0 && beforeDamage == null) return
+        if (target is Tameable && target.isTamed) return
+        if (target !is Player && target.customName() != null) return
 
         val scaledDamage = if (isBossMob(target)) damage * 0.5 else damage
 
