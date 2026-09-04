@@ -154,6 +154,10 @@ object ItemExpiration {
         "<gray>Expired items are deleted</gray>"
     )
 
+    fun appendedLoreLines(meta: ItemMeta?): Int {
+        return meta?.persistentDataContainer?.get(EXPIRY_LORE_LINES, PersistentDataType.INTEGER) ?: 0
+    }
+
     private fun stripLore(meta: ItemMeta) {
         val count = meta.persistentDataContainer.get(EXPIRY_LORE_LINES, PersistentDataType.INTEGER) ?: return
         meta.persistentDataContainer.remove(EXPIRY_LORE_LINES)

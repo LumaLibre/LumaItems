@@ -5,9 +5,13 @@ import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.ItemExpiration
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.Util
+import dev.lumas.lumaitems.util.extensions.asPlainText
 import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.itemInMainHand
+import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.sync
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.Color
@@ -27,6 +31,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.util.Vector
 
 abstract class IncursionEggItem : CustomItemFunctions() {
@@ -36,6 +42,15 @@ abstract class IncursionEggItem : CustomItemFunctions() {
         private const val RADIUS = 4.5
         private const val DAMAGE_FALLOFF = 0.85
         private const val THROW_SPEED = 1.5
+
+        private val JSON = GsonComponentSerializer.gson()
+        private val LORE_TYPE = PersistentDataType.LIST.strings()
+        private val VARIANT_KEYS: List<String> by lazy {
+            listOf(CryoEggItem(), IncendiaryEggItem(), UnstableEggItem()).map { it.key }
+        }
+
+        private fun nameKey(variant: String) = "$variant-custom-name".namespacedKey()
+        private fun loreKey(variant: String) = "$variant-custom-lore".namespacedKey()
     }
 
     protected abstract val key: String
@@ -101,15 +116,65 @@ abstract class IncursionEggItem : CustomItemFunctions() {
     }
 
     private fun nextVariant(item: ItemStack): ItemStack? {
-        val next = when (item.type) {
-            Material.EGG -> CryoEggItem().createItem().second
-            Material.BLUE_EGG -> IncendiaryEggItem().createItem().second
-            Material.BROWN_EGG -> UnstableEggItem().createItem().second
+        val variant = when (item.type) {
+            Material.EGG -> CryoEggItem()
+            Material.BLUE_EGG -> IncendiaryEggItem()
+            Material.BROWN_EGG -> UnstableEggItem()
             else -> null
         } ?: return null
 
+        val next = variant.createItem().second
+        carryCustomizations(item, next, variant.key)
         ItemExpiration.transfer(item, next)
         return next
+    }
+
+    private fun carryCustomizations(from: ItemStack, to: ItemStack, nextKey: String) {
+        val fromMeta = from.itemMeta ?: return
+        val toMeta = to.itemMeta ?: return
+        val stash = toMeta.persistentDataContainer
+
+        for (variant in VARIANT_KEYS) {
+            copyStash(fromMeta.persistentDataContainer, stash, variant)
+        }
+        stashCustomizations(fromMeta, stash)
+
+        stash.get(nameKey(nextKey), PersistentDataType.STRING)?.let { toMeta.customName(JSON.deserialize(it)) }
+        stash.get(loreKey(nextKey), LORE_TYPE)?.let { lore -> toMeta.lore(lore.map { JSON.deserialize(it) }) }
+
+        to.itemMeta = toMeta
+    }
+
+    private fun copyStash(from: PersistentDataContainer, to: PersistentDataContainer, variant: String) {
+        val name = from.get(nameKey(variant), PersistentDataType.STRING)
+        if (name != null) to.set(nameKey(variant), PersistentDataType.STRING, name) else to.remove(nameKey(variant))
+
+        val lore = from.get(loreKey(variant), LORE_TYPE)
+        if (lore != null) to.set(loreKey(variant), LORE_TYPE, lore) else to.remove(loreKey(variant))
+    }
+
+    private fun stashCustomizations(from: ItemMeta, stash: PersistentDataContainer) {
+        val pristine = createItem().second.itemMeta
+
+        val name = from.customName()
+        if (name != null && name.asPlainText() != pristine?.customName()?.asPlainText()) {
+            stash.set(nameKey(key), PersistentDataType.STRING, JSON.serialize(name))
+        } else {
+            stash.remove(nameKey(key))
+        }
+
+        val lore = ownLore(from)
+        if (lore != null && lore.map { it.asPlainText() } != pristine?.lore()?.map { it.asPlainText() }) {
+            stash.set(loreKey(key), LORE_TYPE, lore.map { JSON.serialize(it) })
+        } else {
+            stash.remove(loreKey(key))
+        }
+    }
+
+    private fun ownLore(meta: ItemMeta): List<Component>? {
+        val lore = meta.lore() ?: return null
+        val appended = ItemExpiration.appendedLoreLines(meta)
+        return if (appended <= 0) lore else lore.dropLast(minOf(appended, lore.size))
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
