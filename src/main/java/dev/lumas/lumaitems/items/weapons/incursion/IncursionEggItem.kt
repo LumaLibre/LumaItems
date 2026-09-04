@@ -178,6 +178,8 @@ abstract class IncursionEggItem : CustomItemFunctions() {
     }
 
     override fun onProjectileLand(player: Player, event: ProjectileHitEvent) {
+        event.isCancelled = true
+
         val projectile = event.entity
         val at = when {
             event.hitBlock != null -> projectile.location
