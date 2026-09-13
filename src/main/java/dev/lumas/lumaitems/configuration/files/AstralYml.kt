@@ -117,7 +117,7 @@ class AstralYml : OkaeriFile() {
             }
         }
 
-        buildTiers("mistral-set") {
+        buildTiers("avalon-set") {
             tier(2) {
                 material(AstralMaterial.DIAMOND)
                 enchants(

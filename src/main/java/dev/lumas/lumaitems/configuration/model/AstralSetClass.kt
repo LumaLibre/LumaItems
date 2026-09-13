@@ -8,8 +8,6 @@ class AstralSetClass(
 ) {
 
     constructor(setClass: KClass<*>) : this(setClass.java)
-    //dev.lumas.lumaitems.items.astral.sets.MistralSet
-    //dev.lumas.lumaitems.astral.sets.MistralSet
 
     @Suppress("UNCHECKED_CAST")
     fun getAstralSetClass(): Class<out AstralSet> {

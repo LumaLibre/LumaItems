@@ -17,10 +17,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-class MistralSet : AstralSet {
+class AvalonSet : AstralSet {
 
     override fun setItems(): List<ItemStack> {
-        val astralSetFactory = AstralSetFactory("mistral-set", "Mistral", mutableListOf("&#AC87FBSwift"))
+        val astralSetFactory = AstralSetFactory("avalon-set", "Avalon", mutableListOf("&#AC87FBSwift"))
 
         astralSetFactory.commonEnchants = mutableMapOf(
             Enchantment.PROTECTION to 4, Enchantment.PROJECTILE_PROTECTION to 5, Enchantment.FEATHER_FALLING to 5,
@@ -54,12 +54,12 @@ class MistralSet : AstralSet {
     }
 
     override fun setIdentifier(): String {
-        return "mistral-set"
+        return "avalon-set"
     }
     override fun executeActions(type: Action, player: Player, event: Any): Boolean {
         when (type) {
             Action.RUNNABLE -> {
-                if (RelicCrafting.hasFullSet("mistral-set", player)) {
+                if (RelicCrafting.hasFullSet("avalon-set", player) || RelicCrafting.hasFullSet("mistral-set", player)) {
                     player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 240, 0, false, false, false))
                 }
             }
