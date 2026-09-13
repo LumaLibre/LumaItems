@@ -22,8 +22,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Nautilus
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
-import org.bukkit.event.player.PlayerInteractAtEntityEvent
-import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -177,10 +175,5 @@ class SpitterItem : CustomItemFunctions() {
         IncursionArsenal.forced(world, Particle.DUST, at, 10, 0.18, 0.0, SPIT_DUST)
         IncursionArsenal.forced(world, Particle.FALLING_WATER, at, 6, 0.15, 0.0)
         world.playSound(at, Sound.ENTITY_GENERIC_SPLASH, 0.35f, 1.6f)
-    }
-
-    override fun onPlayerInteractEntity(player: Player, event: PlayerInteractEntityEvent) {
-        if (event.rightClicked !is Nautilus) return
-        event.isCancelled = true
     }
 }

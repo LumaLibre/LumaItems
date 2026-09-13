@@ -16,6 +16,7 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.asSource
 import dev.lumas.lumaitems.util.extensions.equipmentSources
 import dev.lumas.lumaitems.util.extensions.handSources
+import dev.lumas.lumaitems.util.extensions.isLumaItem
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityCompostItemEvent
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent
@@ -23,6 +24,7 @@ import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Bukkit
+import org.bukkit.entity.Animals
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
@@ -402,6 +404,12 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
         fire(event.player.handSources(), Action.PLAYER_INTERACT_ENTITY, event.player, event)
+        if (event.isCancelled) return
+
+        val item = event.player.inventory.getItem(event.hand)
+        val animal = event.rightClicked as? Animals ?: return
+        if (!item.isLumaItem() || !animal.isBreedItem(item)) return
+        event.isCancelled = true
     }
 
     @EventHandler

@@ -17,6 +17,7 @@ import dev.lumas.lumaitems.util.extensions.syncTimer
 import dev.lumas.lumaitems.util.extensions.toColor
 import io.papermc.paper.entity.Leashable
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
+import java.util.UUID
 import kotlin.math.min
 import kotlin.random.Random
 import org.bukkit.Location
@@ -105,10 +106,14 @@ class UmbraScimitarItem : CustomItemFunctions() {
 
         location.world.playSound(location, Sound.BLOCK_END_PORTAL_SPAWN, 0.8f, 1.6f)
 
+        // One seize per entity for the lifetime of the gravity well, not one per tick
+        val seizes = mutableMapOf<UUID, Seize>()
+
         var elapsed = 0
         location.syncTimer(1, 1) { task ->
             if (elapsed++ >= DURATION_TICKS) {
                 task.cancel()
+                seizes.values.toList().forEach(Seize::stop)
                 burst(location, player)
                 return@syncTimer
             }
@@ -117,11 +122,6 @@ class UmbraScimitarItem : CustomItemFunctions() {
 
             val damageTick = elapsed % DAMAGE_INTERVAL == 0
             for (victim in victimsAround(location, player)) {
-                if (victim is LivingEntity && !player.canDamage(victim)) {
-                    task.cancel() // just break now
-                    return@syncTimer
-                }
-
                 if (victim.location.distanceSquared(location) <= PULL_RADIUS * PULL_RADIUS) {
                     val toCenter = location.toVector().subtract(victim.location.toVector())
                     val distance = toCenter.length()
@@ -129,9 +129,13 @@ class UmbraScimitarItem : CustomItemFunctions() {
                         val pull = toCenter.normalize().multiply(PULL_STRENGTH * min(1.0, distance / 2.0))
                         victim.velocity = victim.velocity.multiply(0.85).add(pull)
                     }
-                } else if (victim is LivingEntity) {
-                    val seize = Seize(player, victim, location, elapsed, preparedDust)
-                    seize.pull()
+                } else if (victim is LivingEntity && victim.uniqueId !in seizes) {
+                    val seize = Seize(player, victim, location, DURATION_TICKS - elapsed, preparedDust) {
+                        seizes.remove(victim.uniqueId)
+                    }
+                    if (seize.pull()) {
+                        seizes[victim.uniqueId] = seize
+                    }
                 }
 
 
@@ -176,10 +180,11 @@ class UmbraScimitarItem : CustomItemFunctions() {
             it !is Player
                     && it !is Fireball
                     && it !is ArmorStand
-                    && !it.isDead
+                    && it.isValid
                     && (it !is Tameable || !it.isTamed)
                     && (it !is Leashable || !it.isLeashed)
                     && it.customName() == null
+                    && (it !is LivingEntity || player.canDamage(it))
         }
     }
 
@@ -190,14 +195,15 @@ class UmbraScimitarItem : CustomItemFunctions() {
         val pin: Location,
         val remainingTicks: Int,
         val particleDisplay: ParticleDisplay,
+        val onStop: () -> Unit,
     ) {
 
         var task: ScheduledTask? = null
 
-        fun pull() {
+        fun pull(): Boolean {
             val remainingTicks = this.remainingTicks - 10
-            if (entity.isDead || remainingTicks <= 1) {
-                return
+            if (!entity.isValid || remainingTicks <= 1) {
+                return false
             }
 
             var count = 0
@@ -205,7 +211,10 @@ class UmbraScimitarItem : CustomItemFunctions() {
             pin.world.playSound(pin, Sound.ITEM_LEAD_BREAK, 2.0f, Random.nextDouble(0.5, 0.8).toFloat())
 
             this.task = pin.syncTimer(0, 1) { task ->
-                if (++count > remainingTicks || entity.isDead || entity.location.distanceSquared(pin) < SEIZE_RELEASE_RADIUS * SEIZE_RELEASE_RADIUS) {
+                if (++count > remainingTicks
+                    || !entity.isValid
+                    || !player.canDamage(entity)
+                    || entity.location.distanceSquared(pin) < SEIZE_RELEASE_RADIUS * SEIZE_RELEASE_RADIUS) {
                     this.stop()
                     return@syncTimer
                 }
@@ -224,10 +233,13 @@ class UmbraScimitarItem : CustomItemFunctions() {
                     entity.world.spawnParticle(Particle.WAX_OFF, center, 3, 0.2, 0.2, 0.2, 0.9)
                 }
             }
+            return true
         }
 
         fun stop() {
             this.task?.cancel()
+            this.task = null
+            this.onStop()
         }
     }
 }

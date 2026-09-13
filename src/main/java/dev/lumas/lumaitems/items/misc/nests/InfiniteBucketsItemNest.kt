@@ -25,6 +25,7 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Levelled
 import org.bukkit.block.data.Waterlogged
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Axolotl
 import org.bukkit.entity.Player
 import org.bukkit.entity.TropicalFish
 import org.bukkit.event.block.CauldronLevelChangeEvent
