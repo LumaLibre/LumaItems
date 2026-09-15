@@ -1,5 +1,7 @@
 package dev.lumas.lumaitems.items.armor.helmet
 
+import dev.lumas.lumaitems.annotations.Disable
+import dev.lumas.lumaitems.enums.WorldKey
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.AbilityUtil
@@ -44,6 +46,7 @@ import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
+@Disable(WorldKey.PINATA)
 class SunbrellaHatNouveauItem : CustomItemFunctions() {
 
     private companion object {
