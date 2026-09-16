@@ -27,14 +27,16 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Levelled
 import org.bukkit.block.data.Waterlogged
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Axolotl
+import org.bukkit.entity.Cow
 import org.bukkit.entity.Player
 import org.bukkit.entity.TropicalFish
+import org.bukkit.event.Event
 import org.bukkit.event.block.CauldronLevelChangeEvent
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketEntityEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
@@ -229,6 +231,10 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
         drainFluid(player, event.block)
     }
 
+    override fun onPlayerInteractEntity(player: Player, event: PlayerInteractEntityEvent) {
+        if (event.rightClicked is Cow) event.isCancelled = true
+    }
+
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
         if (event.item?.isMatchingItem(KEY) != true) return
 
@@ -236,9 +242,7 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
         val target = player.rayTraceBlocks(range, FluidCollisionMode.ALWAYS)?.hitBlock ?: return
         if (!target.isFlowingFluid()) return
 
-        val vanillaTarget = player.rayTraceBlocks(range, FluidCollisionMode.SOURCE_ONLY)?.hitBlock
-        if (vanillaTarget != null && vanillaTarget.isVanillaDrainable()) return
-
+        event.setUseItemInHand(Event.Result.DENY)
         drainFluid(player, target)
     }
 
@@ -369,12 +373,6 @@ private fun Block.isUnderWater(): Boolean {
 private fun Block.isFlowingFluid(): Boolean {
     if (type != Material.WATER && type != Material.LAVA) return false
     return (blockData as? Levelled)?.level != 0
-}
-
-private fun Block.isVanillaDrainable(): Boolean {
-    if (type in CAULDRONS || type == Material.POWDER_SNOW) return true
-    if ((blockData as? Waterlogged)?.isWaterlogged == true) return true
-    return (type == Material.WATER || type == Material.LAVA) && !isFlowingFluid()
 }
 
 private fun drainFluid(player: Player, target: Block): Boolean {
