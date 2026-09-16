@@ -23,6 +23,7 @@ import io.papermc.paper.event.entity.EntityEquipmentChangedEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
+import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Animals
 import org.bukkit.entity.LivingEntity
@@ -410,6 +411,11 @@ class Listeners : ItemListener() {
         val animal = event.rightClicked as? Animals ?: return
         if (!item.isLumaItem() || !animal.isBreedItem(item)) return
         event.isCancelled = true
+    }
+
+    @EventHandler
+    fun onPlayerPreAttackEntity(event: PrePlayerAttackEntityEvent) {
+        fire(event.player.handSources(), Action.PLAYER_PRE_ATTACK_ENTITY, event.player, event)
     }
 
     @EventHandler
