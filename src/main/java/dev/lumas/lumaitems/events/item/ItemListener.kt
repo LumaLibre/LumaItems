@@ -7,11 +7,13 @@ import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.hooks.McMMOHook
 import dev.lumas.lumaitems.model.item.CustomItem
 import dev.lumas.lumaitems.model.item.PdcSource
+import dev.lumas.lumaitems.registry.NamespacedIdentifier
 import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.ItemExpiration
 import dev.lumas.lumaitems.util.extensions.actionBar
 import io.papermc.paper.persistence.PersistentDataContainerView
 import java.util.EnumMap
+import java.util.EnumSet
 import java.util.UUID
 import java.util.WeakHashMap
 import org.bukkit.Bukkit
@@ -34,6 +36,10 @@ abstract class ItemListener : Listener {
         private val reducedCalls: EnumMap<Action, Int> = EnumMap(Action::class.java)
         private val lastBreakSound: MutableMap<UUID, Long> = WeakHashMap()
         private const val BREAK_SOUND_COOLDOWN_MS = 1500L
+        // Actions that at least one registered item uses @FireAnyways for
+        @Volatile private var fireAnywaysActions: EnumSet<Action>? = null
+        // @FireAnyways registry size, used to rebuild the registry when it changes
+        @Volatile private var fireAnywaysRegistrySize: Int = -1
 
 
         fun getDummyPlayer(): Player? {
@@ -76,18 +82,7 @@ abstract class ItemListener : Listener {
         withContainer: Boolean = false
     ) {
         if (!LumaItems.isFinishedRegistration()) return
-        val expiries = ItemExpiration.snapshot(player, source)
-        try {
-            for ((registryKey, item) in Registry.CUSTOM_ITEMS) {
-                if (!shouldFire(item, source?.data, registryKey.asNameSpacedKey(), action)) continue
-                if (!action.isHot && handleDisabledIfNeeded(item, player, event, action)) return
-
-                val effectivePlayer = player ?: getDummyPlayer() ?: return
-                item.fireVerbosely(action, effectivePlayer, event, if (withContainer) source?.data else null)
-            }
-        } finally {
-            expiries?.restore()
-        }
+        fire(source, keysOf(source), action, player, event, withContainer)
     }
 
     fun fire(
@@ -99,10 +94,45 @@ abstract class ItemListener : Listener {
         withContainer: Boolean = false
     ) {
         if (!LumaItems.isFinishedRegistration()) return
-        val containers = data.ifEmpty { listOf(null) }
-        for (itemData in containers) {
-            fire(itemData, action, player, event, optimize, withContainer)
+        if (data.isEmpty()) {
+            fire(null, emptySet(), action, player, event, withContainer)
+            return
         }
+        // Store every source's keys here because item PDC views are live
+        val keys = data.map(::keysOf)
+        for (index in data.indices) {
+            fire(data[index], keys[index], action, player, event, withContainer)
+        }
+    }
+
+    private fun fire(
+        source: PdcSource?,
+        keys: Set<NamespacedKey>,
+        action: Action,
+        player: Player?,
+        event: Any,
+        withContainer: Boolean
+    ) {
+        // Nothing can match, so skip the expiry snapshot and the registry scan
+        if (!hasFireAnywaysItems(action) && keys.none { Registry.CUSTOM_ITEMS.exists(NamespacedIdentifier(it)) }) return
+
+        val expiries = ItemExpiration.snapshot(player, source)
+        try {
+            for ((registryKey, item) in Registry.CUSTOM_ITEMS) {
+                if (!shouldFire(item, keys, registryKey.asNameSpacedKey(), action)) continue
+                if (!action.isHot && handleDisabledIfNeeded(item, player, event, action)) return
+
+                val effectivePlayer = player ?: getDummyPlayer() ?: return
+                item.fireVerbosely(action, effectivePlayer, event, if (withContainer) source?.data else null)
+            }
+        } finally {
+            expiries?.restore()
+        }
+    }
+
+    private fun keysOf(source: PdcSource?): Set<NamespacedKey> {
+        val data = source?.data ?: return emptySet()
+        return if (data.isEmpty) emptySet() else data.keys
     }
 
     // TODO: @FireAnyways
@@ -123,12 +153,26 @@ abstract class ItemListener : Listener {
     /** Whether the given item should fire for this action, considering PDC presence and fire-anyways flag. */
     private fun shouldFire(
         item: CustomItem,
-        data: PersistentDataContainerView?,
+        keys: Set<NamespacedKey>,
         key: NamespacedKey,
         action: Action
     ): Boolean {
-        val hasKey = data?.has(key) == true
-        return hasKey || item.fireAnyways(action)
+        return key in keys || item.fireAnyways(action)
+    }
+
+    /** Whether any registered item uses @FireAnyways for [action]. */
+    private fun hasFireAnywaysItems(action: Action): Boolean {
+        val size = Registry.CUSTOM_ITEMS.size()
+        var actions = fireAnywaysActions
+        if (actions == null || size != fireAnywaysRegistrySize) {
+            actions = EnumSet.noneOf(Action::class.java)
+            for (item in Registry.CUSTOM_ITEMS.values()) {
+                Action.entries.filterTo(actions, item::fireAnyways)
+            }
+            fireAnywaysActions = actions
+            fireAnywaysRegistrySize = size
+        }
+        return action in actions
     }
 
     /**
