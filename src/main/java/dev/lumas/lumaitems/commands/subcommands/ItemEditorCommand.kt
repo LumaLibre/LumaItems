@@ -25,6 +25,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
 import java.util.Locale
 
 @Register(Autowire.BRIGADIER)
@@ -60,6 +61,14 @@ class ItemEditorCommand : BrigadierSubCommand {
             .then(loreBranch())
             .then(enchantmentBranch())
             .then(flagBranch())
+            .then(durabilityBranch())
+    }
+
+    private fun durabilityBranch(): LiteralArgumentBuilder<CommandSourceStack> {
+        return Commands.literal("durability")
+            .then(Commands.argument("durability", IntegerArgumentType.integer(1))
+                .executes { ctx -> setDurability(ctx, IntegerArgumentType.getInteger(ctx, "durability")) }
+            )
     }
 
     private fun nameBranch(): LiteralArgumentBuilder<CommandSourceStack> {
@@ -182,6 +191,7 @@ class ItemEditorCommand : BrigadierSubCommand {
         player.sendMessage(commandHelp("/lumaitems edit lore add ", "Append a MiniMessage lore line"))
         player.sendMessage(commandHelp("/lumaitems edit enchant add ", "Add a vanilla enchantment"))
         player.sendMessage(commandHelp("/lumaitems edit flag add ", "Add an item flag"))
+        player.sendMessage(commandHelp("/lumaitems edit durability ", "Set the remaining durability"))
         return Command.SINGLE_SUCCESS
     }
 
@@ -436,6 +446,32 @@ class ItemEditorCommand : BrigadierSubCommand {
         }
         player.sendMessage(mm("<gold><b>Item flags</b></gold>"))
         flags.forEach { player.sendMessage(mm("<dark_gray>•</dark_gray> <white><flag></white>", Placeholder.unparsed("flag", it.name.lowercase(Locale.ROOT)))) }
+        return Command.SINGLE_SUCCESS
+    }
+
+    private fun setDurability(ctx: CommandContext<CommandSourceStack>, durability: Int): Int {
+        val player = ctx.source.sender as Player
+        val item = heldItem(player) ?: return 0
+        val meta = item.itemMeta as? Damageable
+        val maxDamage = if (meta == null) 0 else if (meta.hasMaxDamage()) meta.maxDamage else item.type.maxDurability.toInt()
+        if (meta == null || maxDamage <= 0) {
+            player.sendMessage(mm("<red>This item has no durability."))
+            return 0
+        }
+        if (durability > maxDamage) {
+            player.sendMessage(mm(
+                "<red>Durability must be between 1 and <max>.</red>",
+                Placeholder.unparsed("max", maxDamage.toString())
+            ))
+            return 0
+        }
+        meta.damage = maxDamage - durability
+        item.itemMeta = meta
+        player.sendMessage(mm(
+            "<green>Set durability to <durability>/<max>.</green>",
+            Placeholder.unparsed("durability", durability.toString()),
+            Placeholder.unparsed("max", maxDamage.toString())
+        ))
         return Command.SINGLE_SUCCESS
     }
 
