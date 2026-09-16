@@ -4,6 +4,7 @@ import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.spell
+import dev.lumas.lumaitems.util.extensions.willBreak
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -62,6 +63,10 @@ class PeachPlumApronItem : CustomItemFunctions() {
             val loc = player.boundingBox.center.toLocation(player.world)
             player.playSound(loc, Sound.ITEM_BOTTLE_FILL, 1.0f, 1.0f)
             player.spawnParticle(Particle.INSTANT_EFFECT, loc, 20, 0.4, 0.3, 0.4, PARTICLE_DATA)
+
+            if (random.nextBoolean() && !player.inventory.chestplate.willBreak(1)) {
+                player.damageItemStack(EquipmentSlot.CHEST, 1)
+            }
         }
 
         event.isCancelled = true
