@@ -14,11 +14,13 @@ import dev.lumas.lumaitems.util.extensions.setBlockDataWithLog
 import dev.lumas.lumaitems.util.extensions.setPersistentKey
 import dev.lumas.lumaitems.util.extensions.syncDelayed
 import kotlin.random.Random
+import org.bukkit.FluidCollisionMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
+import org.bukkit.attribute.Attribute
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
@@ -33,6 +35,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketEntityEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
@@ -226,6 +229,19 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
         drainFluid(player, event.block)
     }
 
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        if (event.item?.isMatchingItem(KEY) != true) return
+
+        val range = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE)?.value ?: 4.5
+        val target = player.rayTraceBlocks(range, FluidCollisionMode.ALWAYS)?.hitBlock ?: return
+        if (!target.isFlowingFluid()) return
+
+        val vanillaTarget = player.rayTraceBlocks(range, FluidCollisionMode.SOURCE_ONLY)?.hitBlock
+        if (vanillaTarget != null && vanillaTarget.isVanillaDrainable()) return
+
+        drainFluid(player, target)
+    }
+
     override fun onPlayerSwapHands(player: Player, event: PlayerSwapHandItemsEvent) {
         if (!event.mainHandItem.isMatchingItem(KEY) && !event.offHandItem.isMatchingItem(KEY)) return
         event.isCancelled = true
@@ -350,6 +366,17 @@ private fun Block.isUnderWater(): Boolean {
     return above.type == Material.WATER || (above.blockData as? Waterlogged)?.isWaterlogged == true
 }
 
+private fun Block.isFlowingFluid(): Boolean {
+    if (type != Material.WATER && type != Material.LAVA) return false
+    return (blockData as? Levelled)?.level != 0
+}
+
+private fun Block.isVanillaDrainable(): Boolean {
+    if (type in CAULDRONS || type == Material.POWDER_SNOW) return true
+    if ((blockData as? Waterlogged)?.isWaterlogged == true) return true
+    return (type == Material.WATER || type == Material.LAVA) && !isFlowingFluid()
+}
+
 private fun drainFluid(player: Player, target: Block): Boolean {
     if (!player.canBuild(target.location)) return false
 
@@ -365,7 +392,7 @@ private fun drainFluid(player: Player, target: Block): Boolean {
         }
 
         type == Material.WATER || type == Material.LAVA || type == Material.POWDER_SNOW -> {
-            target.setAirWithLog(player)
+            target.setAirWithLog(player, false)
         }
 
         else -> return false

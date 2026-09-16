@@ -43,6 +43,7 @@ class KamorisGlasses : CustomItemFunctions() {
             Material.SOUL_FIRE,
             Material.FROSTED_ICE,
             Material.CHORUS_FLOWER,
+            Material.SWEET_BERRY_BUSH
         )
 
         private val GROWABLE: Set<Material> = Material.entries

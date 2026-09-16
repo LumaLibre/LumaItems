@@ -5,7 +5,6 @@ import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.inventory.ItemStack
 
 class LumarineCharmItem : CustomItemFunctions() {
     override fun createItem() = ItemFactory.builder()

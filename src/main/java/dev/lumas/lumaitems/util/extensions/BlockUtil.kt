@@ -37,10 +37,10 @@ fun Block.breakNaturallyWithLog(player: Player, triggerEffects: Boolean, dropExp
     Registry.HOOKS.get(CoreProtectHook::class)?.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
     this.breakNaturally(triggerEffects, dropExp)
 }
-fun Block.setAirWithLog(player: Player) {
+fun Block.setAirWithLog(player: Player, applyPhysics: Boolean = true) {
     Registry.HOOKS.get(PrismHook::class)?.recordBlockBreak(player, this.state)
     Registry.HOOKS.get(CoreProtectHook::class)?.getCoreProtectAPI()?.logRemoval(player.name, this.location, this.type, this.blockData)
-    this.type = Material.AIR
+    this.setType(Material.AIR, applyPhysics)
 }
 
 fun Block.setBlockDataWithLog(player: Player, material: Material) {
