@@ -27,7 +27,6 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Levelled
 import org.bukkit.block.data.Waterlogged
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Cow
 import org.bukkit.entity.Player
 import org.bukkit.entity.TropicalFish
 import org.bukkit.event.Event
@@ -36,7 +35,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketEntityEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
-import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
@@ -229,10 +227,6 @@ class InfiniteAirBucketItem : CustomItemFunctions() {
         if (result !in DRAINABLE_RESULTS) return
 
         drainFluid(player, event.block)
-    }
-
-    override fun onPlayerInteractEntity(player: Player, event: PlayerInteractEntityEvent) {
-        if (event.rightClicked is Cow) event.isCancelled = true
     }
 
     override fun onRightClick(player: Player, event: PlayerInteractEvent) {
