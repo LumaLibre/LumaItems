@@ -273,7 +273,7 @@ class OverwatchItem : CustomItemFunctions() {
             val maxReach = maxDistance + hitbox.height
             if (eye.toVector().distanceSquared(hitbox.center) > maxReach * maxReach) continue
 
-            if (target.bodyHitboxes(HIT_RADIUS).none { IncursionArsenal.beamTouches(it, eye, direction, maxDistance) }) continue
+            if (target.hitboxes(HIT_RADIUS).none { IncursionArsenal.beamTouches(it, eye, direction, maxDistance) }) continue
 
             val headshot = IncursionArsenal.beamTouches(target.headHitbox(HIT_RADIUS), eye, direction, maxDistance)
             IncursionArsenal.hurt(target.entity, player, if (headshot) DAMAGE * HEADSHOT_MULTIPLIER else DAMAGE, headshot)

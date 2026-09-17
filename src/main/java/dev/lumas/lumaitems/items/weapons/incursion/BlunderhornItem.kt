@@ -107,12 +107,15 @@ class BlunderhornItem : CustomItemFunctions() {
 
         var hits = 0
         for (target in IncursionArsenal.targetsAround(player, muzzle, RANGE + 2.0)) {
-            val hitbox = target.hitbox
-            val distance = IncursionArsenal.coneHitDistance(apex, direction, RANGE, tanHalfAngle, cosHalfAngle, hitbox)
+            var distance = -1.0
+            for (hitbox in target.hitboxes(0.0)) {
+                val reached = IncursionArsenal.coneHitDistance(apex, direction, RANGE, tanHalfAngle, cosHalfAngle, hitbox)
+                if (reached >= 0 && (distance < 0 || reached < distance)) distance = reached
+            }
             if (distance < 0) continue
 
             // Occlusion has to be checked towards the target, not down the middle of the cone
-            val toTarget = hitbox.center.subtract(apex)
+            val toTarget = target.nearestCentre(apex).subtract(apex)
             val length = toTarget.length()
             if (length > 1.0E-4 && !IncursionArsenal.hasClearShot(muzzle, toTarget.multiply(1.0 / length), length)) {
                 continue

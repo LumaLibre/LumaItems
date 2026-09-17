@@ -63,9 +63,25 @@ internal object IncursionArsenal {
 
         fun expandedHitbox(radius: Double): BoundingBox = hitbox.clone().expand(radius)
 
-        fun bodyHitboxes(radius: Double): List<BoundingBox> =
+        fun hitboxes(radius: Double): List<BoundingBox> =
             if (partHitboxes.isEmpty()) listOf(expandedHitbox(radius))
             else partHitboxes.map { it.clone().expand(radius) }
+
+        fun nearestCentre(to: Vector): Vector {
+            if (partHitboxes.isEmpty()) return hitbox.center
+
+            var nearest = hitbox.center
+            var best = Double.MAX_VALUE
+            for (box in partHitboxes) {
+                val centre = box.center
+                val distance = centre.distanceSquared(to)
+                if (distance < best) {
+                    best = distance
+                    nearest = centre
+                }
+            }
+            return nearest
+        }
 
         fun headHitbox(radius: Double): BoundingBox {
             if (headPartHitbox != null) return headPartHitbox.clone().expand(radius)
@@ -87,9 +103,13 @@ internal object IncursionArsenal {
         }
 
         fun containsWithin(radius: Double, x: Double, y: Double, z: Double): Boolean =
-            x >= hitbox.minX - radius && x < hitbox.maxX + radius &&
-                y >= hitbox.minY - radius && y < hitbox.maxY + radius &&
-                z >= hitbox.minZ - radius && z < hitbox.maxZ + radius
+            if (partHitboxes.isEmpty()) within(hitbox, radius, x, y, z)
+            else partHitboxes.any { within(it, radius, x, y, z) }
+
+        private fun within(box: BoundingBox, radius: Double, x: Double, y: Double, z: Double): Boolean =
+            x >= box.minX - radius && x < box.maxX + radius &&
+                y >= box.minY - radius && y < box.maxY + radius &&
+                z >= box.minZ - radius && z < box.maxZ + radius
     }
 
     // Must be called from the region owning [around], which is where the hitboxes are read

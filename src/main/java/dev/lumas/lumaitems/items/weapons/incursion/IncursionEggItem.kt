@@ -201,7 +201,7 @@ abstract class IncursionEggItem : CustomItemFunctions() {
 
         var connected = false
         for (target in IncursionArsenal.targetsAround(thrower, at, RADIUS)) {
-            val toTarget: Vector = target.hitbox.center.subtract(at.toVector())
+            val toTarget: Vector = target.nearestCentre(at.toVector()).subtract(at.toVector())
             val distance = toTarget.length()
             if (distance > RADIUS) continue
 
