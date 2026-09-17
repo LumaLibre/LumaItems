@@ -104,8 +104,31 @@ internal object IncursionArsenal {
     fun targetsInChunk(shooter: Player, world: World, chunkX: Int, chunkZ: Int): List<Target> {
         if (!Bukkit.isOwnedByCurrentRegion(world, chunkX, chunkZ)) return emptyList()
 
-        return world.getChunkAt(chunkX, chunkZ).entities
-            .mapNotNull { snapshot(shooter, it as? LivingEntity ?: return@mapNotNull null) }
+        val targets = world.getChunkAt(chunkX, chunkZ).entities
+            .mapNotNullTo(mutableListOf()) { snapshot(shooter, it as? LivingEntity ?: return@mapNotNullTo null) }
+
+        // Turns out entities can be at the edge of a chunk...
+        val minX = (chunkX shl 4).toDouble()
+        val minZ = (chunkZ shl 4).toDouble()
+        for (offsetX in -1..1) {
+            for (offsetZ in -1..1) {
+                if (offsetX == 0 && offsetZ == 0) continue
+                val neighbourX = chunkX + offsetX
+                val neighbourZ = chunkZ + offsetZ
+                if (!world.isChunkLoaded(neighbourX, neighbourZ)) continue
+                if (!Bukkit.isOwnedByCurrentRegion(world, neighbourX, neighbourZ)) continue
+
+                for (entity in world.getChunkAt(neighbourX, neighbourZ).entities) {
+                    if (entity !is LivingEntity) continue
+                    val box = entity.boundingBox
+                    // Dragon parts can apparently trail outside the dragon's own hitbox
+                    val reachesIn = entity is CraftEnderDragon ||
+                        (box.maxX > minX && box.minX < minX + 16 && box.maxZ > minZ && box.minZ < minZ + 16)
+                    if (reachesIn) snapshot(shooter, entity)?.let { targets.add(it) }
+                }
+            }
+        }
+        return targets
     }
 
     private fun snapshot(shooter: Player, entity: LivingEntity): Target? {
@@ -114,11 +137,15 @@ internal object IncursionArsenal {
         val yaw = Math.toRadians(entity.location.yaw.toDouble())
         val facing = Vector(-sin(yaw), 0.0, cos(yaw))
         if (entity is CraftEnderDragon) {
-            val dragon = entity.handle
+            val parts = entity.handle.subEntities
+            // Only the neck hitbox surrounds the whole head for some reason
+            val head = parts.filter { it.name == "head" || it.name == "neck" }
+                .map { it.bukkitEntity.boundingBox }
+                .reduce { union, box -> union.union(box) }
             return Target(
                 entity, entity.boundingBox, entity.eyeHeight, facing,
-                dragon.subEntities.map { it.bukkitEntity.boundingBox },
-                dragon.head.bukkitEntity.boundingBox
+                parts.map { it.bukkitEntity.boundingBox },
+                head
             )
         }
         return Target(entity, entity.boundingBox, entity.eyeHeight, facing)
