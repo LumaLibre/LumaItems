@@ -13,6 +13,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 import net.kyori.adventure.title.Title
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.TamableAnimal
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -22,6 +23,8 @@ import org.bukkit.Sound
 import org.bukkit.World
 import org.bukkit.attribute.Attribute
 import org.bukkit.block.Block
+import org.bukkit.craftbukkit.entity.CraftEnderDragon
+import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -53,12 +56,20 @@ internal object IncursionArsenal {
         val entity: LivingEntity,
         val hitbox: BoundingBox,
         val eyeHeight: Double,
-        val facing: Vector
+        val facing: Vector,
+        val partHitboxes: List<BoundingBox> = emptyList(),
+        val headPartHitbox: BoundingBox? = null
     ) {
 
         fun expandedHitbox(radius: Double): BoundingBox = hitbox.clone().expand(radius)
 
+        fun bodyHitboxes(radius: Double): List<BoundingBox> =
+            if (partHitboxes.isEmpty()) listOf(expandedHitbox(radius))
+            else partHitboxes.map { it.clone().expand(radius) }
+
         fun headHitbox(radius: Double): BoundingBox {
+            if (headPartHitbox != null) return headPartHitbox.clone().expand(radius)
+
             val half = min(
                 hitbox.height * HEAD_HALF_OF_HEIGHT,
                 min(hitbox.widthX, hitbox.widthZ) * HEAD_HALF_OF_WIDTH
@@ -102,11 +113,25 @@ internal object IncursionArsenal {
         if (!shooter.canDamage(entity)) return null
         val yaw = Math.toRadians(entity.location.yaw.toDouble())
         val facing = Vector(-sin(yaw), 0.0, cos(yaw))
+        if (entity is CraftEnderDragon) {
+            val dragon = entity.handle
+            return Target(
+                entity, entity.boundingBox, entity.eyeHeight, facing,
+                dragon.subEntities.map { it.bukkitEntity.boundingBox },
+                dragon.head.bukkitEntity.boundingBox
+            )
+        }
         return Target(entity, entity.boundingBox, entity.eyeHeight, facing)
     }
 
     // No true damage here, so protection plugins can do their thing
-    fun hurt(target: LivingEntity, shooter: Player, damage: Double, beforeDamage: ((LivingEntity) -> Unit)? = null) {
+    fun hurt(
+        target: LivingEntity,
+        shooter: Player,
+        damage: Double,
+        headshot: Boolean = false,
+        beforeDamage: ((LivingEntity) -> Unit)? = null
+    ) {
         if (damage <= 0 && beforeDamage == null) return
         if (target is Tameable && target.isTamed) return
         if (target !is Player && target.customName() != null) return
@@ -117,7 +142,15 @@ internal object IncursionArsenal {
             if (!target.isValid || target.isDead) return@sync
 
             beforeDamage?.invoke(target)
-            if (scaledDamage > 0) target.damage(scaledDamage, shooter)
+            if (scaledDamage <= 0) return@sync
+
+            if (headshot && target is CraftEnderDragon) {
+                val dragon = target.handle
+                val source = (shooter as CraftPlayer).handle.createDamageSource()
+                dragon.head.hurtServer(dragon.level() as ServerLevel, source, scaledDamage.toFloat())
+            } else {
+                target.damage(scaledDamage, shooter)
+            }
         }
     }
 
