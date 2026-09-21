@@ -153,6 +153,25 @@ fun ItemStack.isLumaItem(): Boolean {
     return meta.persistentDataContainer.has(ItemFactory.LUMAITEM)
 }
 
+private const val TIER_PREFIX = "Tier •"
+
+fun ItemStack?.isCollectible(): Boolean {
+    return !(this == null || !hasItemMeta() || isLumaItem()) && hasTier()
+}
+
+fun ItemStack?.isProtected(): Boolean {
+    return !(this == null || !hasItemMeta()) && (isLumaItem() || hasTier())
+}
+
+private fun ItemStack.hasTier(): Boolean {
+    val lore = lore() ?: return false
+    return lore.any { line ->
+        val plain = line.asPlainText()
+        val tier = plain.indexOf(TIER_PREFIX)
+        tier >= 0
+    }
+}
+
 fun ItemStack.isRelic(): Boolean {
     val meta = this.itemMeta ?: return false
     return meta.persistentDataContainer.has(RelicCrafting.RELIC_KEY)
