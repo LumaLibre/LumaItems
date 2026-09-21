@@ -251,7 +251,9 @@ class Listeners : ItemListener() {
 
         fire(source, Action.PLACE_BLOCK, player, event)
 
-        if (event.itemInHand.isProtected()) {
+        // Also fires for item uses that change blocks (stripping, tilling, waxing)
+        val item = event.itemInHand
+        if (item.type.asItemType()?.hasBlockType() == true && item.isProtected()) {
             event.isCancelled = true
         }
     }

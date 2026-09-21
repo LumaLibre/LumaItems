@@ -71,6 +71,12 @@ class ItemProtectionListener : Listener {
             add(Material.BOWL)
         }
 
+        private val CONSUMED_WORKSTATION_SLOT: Map<InventoryType, Int> = mapOf(
+            InventoryType.CARTOGRAPHY to 1, // paper, glass pane, or empty map
+            InventoryType.STONECUTTER to 0, // input block
+            InventoryType.LOOM to 1 // dye
+        )
+
         // Right-clicking these with a collectible is harmless (containers are checked separately)
         private val SAFE_INTERACT_BLOCKS: Set<Material> = buildSet {
             listOf(
@@ -218,10 +224,11 @@ class ItemProtectionListener : Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun onStonecutterTake(event: InventoryClickEvent) {
+    fun onWorkstationTake(event: InventoryClickEvent) {
         val inventory = event.clickedInventory ?: return
-        if (inventory.type != InventoryType.STONECUTTER || event.slotType != InventoryType.SlotType.RESULT) return
-        if (inventory.getItem(0).isProtected()) event.isCancelled = true
+        if (event.slotType != InventoryType.SlotType.RESULT) return
+        val consumedSlot = CONSUMED_WORKSTATION_SLOT[inventory.type] ?: return
+        if (inventory.getItem(consumedSlot).isProtected()) event.isCancelled = true
     }
 
     // Whether crafting this recipe would use up a protected item and result in an unprotected item
