@@ -69,6 +69,7 @@ enum class Action {
     ENTITY_TELEPORT,  // When a living entity with a specific persistent data teleports
     PLAYER_INTERACT_AT_ENTITY,  // When a player interacts at a living entity
     PLAYER_INTERACT_ENTITY,  // When a player right-clicks a entity
+    PLAYER_PRE_ATTACK_ENTITY,  // When a player tries to attack an entity, before any damage logic runs
 
     //INVENTORY_CLICK, // When a player clicks in their inventory
     SHEAR_ENTITY,  // When a player shears a living entity

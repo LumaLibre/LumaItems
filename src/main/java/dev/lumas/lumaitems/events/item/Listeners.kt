@@ -16,15 +16,15 @@ import dev.lumas.lumaitems.registry.Registry
 import dev.lumas.lumaitems.util.extensions.asSource
 import dev.lumas.lumaitems.util.extensions.equipmentSources
 import dev.lumas.lumaitems.util.extensions.handSources
-import dev.lumas.lumaitems.util.extensions.isLumaItem
+import dev.lumas.lumaitems.util.extensions.isProtected
 import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityCompostItemEvent
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
+import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import org.bukkit.Bukkit
-import org.bukkit.entity.Animals
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
@@ -250,6 +250,12 @@ class Listeners : ItemListener() {
         val source = event.itemInHand.asSource() ?: return
 
         fire(source, Action.PLACE_BLOCK, player, event)
+
+        // Also fires for item uses that change blocks (stripping, tilling, waxing)
+        val item = event.itemInHand
+        if (item.type.asItemType()?.hasBlockType() == true && item.isProtected()) {
+            event.isCancelled = true
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -404,12 +410,11 @@ class Listeners : ItemListener() {
     @EventHandler
     fun onPlayerInteractEntity(event: PlayerInteractEntityEvent) {
         fire(event.player.handSources(), Action.PLAYER_INTERACT_ENTITY, event.player, event)
-        if (event.isCancelled) return
+    }
 
-        val item = event.player.inventory.getItem(event.hand)
-        val animal = event.rightClicked as? Animals ?: return
-        if (!item.isLumaItem() || !animal.isBreedItem(item)) return
-        event.isCancelled = true
+    @EventHandler
+    fun onPlayerPreAttackEntity(event: PrePlayerAttackEntityEvent) {
+        fire(event.player.handSources(), Action.PLAYER_PRE_ATTACK_ENTITY, event.player, event)
     }
 
     @EventHandler

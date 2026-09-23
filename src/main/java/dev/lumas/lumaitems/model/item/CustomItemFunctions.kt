@@ -20,6 +20,7 @@ import io.papermc.paper.event.entity.EntityAttemptSmashAttackEvent
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
+import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import java.util.EnumSet
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
@@ -137,6 +138,7 @@ abstract class CustomItemFunctions : CustomItem {
             Action.ENTITY_TELEPORT -> onEntityTeleport(event as EntityTeleportEvent)
             Action.PLAYER_INTERACT_AT_ENTITY -> onPlayerInteractAtEntity(player, event as PlayerInteractAtEntityEvent)
             Action.PLAYER_INTERACT_ENTITY -> onPlayerInteractEntity(player, event as PlayerInteractEntityEvent)
+            Action.PLAYER_PRE_ATTACK_ENTITY -> onPlayerPreAttackEntity(player, event as PrePlayerAttackEntityEvent)
             Action.SHEAR_ENTITY -> onShearEntity(player, event as PlayerShearEntityEvent)
             Action.BLOCK_SHEAR_ENTITY -> onBlockShearEntity(event as BlockShearEntityEvent)
             Action.PLAYER_TELEPORT -> onPlayerTeleport(player, event as PlayerTeleportEvent)
@@ -222,6 +224,7 @@ abstract class CustomItemFunctions : CustomItem {
     open fun onEntityTeleport(event: EntityTeleportEvent) {}
     open fun onPlayerInteractAtEntity(player: Player, event: PlayerInteractAtEntityEvent) {}
     open fun onPlayerInteractEntity(player: Player, event: PlayerInteractEntityEvent) {}
+    open fun onPlayerPreAttackEntity(player: Player, event: PrePlayerAttackEntityEvent) {}
     open fun onShearEntity(player: Player, event: PlayerShearEntityEvent) {}
     open fun onBlockShearEntity(event: BlockShearEntityEvent) {}
     open fun onPlayerTeleport(player: Player, event: PlayerTeleportEvent) {}

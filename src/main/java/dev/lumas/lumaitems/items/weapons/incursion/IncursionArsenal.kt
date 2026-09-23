@@ -13,6 +13,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 import net.kyori.adventure.title.Title
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.TamableAnimal
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -22,6 +23,8 @@ import org.bukkit.Sound
 import org.bukkit.World
 import org.bukkit.attribute.Attribute
 import org.bukkit.block.Block
+import org.bukkit.craftbukkit.entity.CraftEnderDragon
+import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -53,12 +56,36 @@ internal object IncursionArsenal {
         val entity: LivingEntity,
         val hitbox: BoundingBox,
         val eyeHeight: Double,
-        val facing: Vector
+        val facing: Vector,
+        val partHitboxes: List<BoundingBox> = emptyList(),
+        val headPartHitbox: BoundingBox? = null
     ) {
 
         fun expandedHitbox(radius: Double): BoundingBox = hitbox.clone().expand(radius)
 
+        fun hitboxes(radius: Double): List<BoundingBox> =
+            if (partHitboxes.isEmpty()) listOf(expandedHitbox(radius))
+            else partHitboxes.map { it.clone().expand(radius) }
+
+        fun nearestCentre(to: Vector): Vector {
+            if (partHitboxes.isEmpty()) return hitbox.center
+
+            var nearest = hitbox.center
+            var best = Double.MAX_VALUE
+            for (box in partHitboxes) {
+                val centre = box.center
+                val distance = centre.distanceSquared(to)
+                if (distance < best) {
+                    best = distance
+                    nearest = centre
+                }
+            }
+            return nearest
+        }
+
         fun headHitbox(radius: Double): BoundingBox {
+            if (headPartHitbox != null) return headPartHitbox.clone().expand(radius)
+
             val half = min(
                 hitbox.height * HEAD_HALF_OF_HEIGHT,
                 min(hitbox.widthX, hitbox.widthZ) * HEAD_HALF_OF_WIDTH
@@ -76,9 +103,13 @@ internal object IncursionArsenal {
         }
 
         fun containsWithin(radius: Double, x: Double, y: Double, z: Double): Boolean =
-            x >= hitbox.minX - radius && x < hitbox.maxX + radius &&
-                y >= hitbox.minY - radius && y < hitbox.maxY + radius &&
-                z >= hitbox.minZ - radius && z < hitbox.maxZ + radius
+            if (partHitboxes.isEmpty()) within(hitbox, radius, x, y, z)
+            else partHitboxes.any { within(it, radius, x, y, z) }
+
+        private fun within(box: BoundingBox, radius: Double, x: Double, y: Double, z: Double): Boolean =
+            x >= box.minX - radius && x < box.maxX + radius &&
+                y >= box.minY - radius && y < box.maxY + radius &&
+                z >= box.minZ - radius && z < box.maxZ + radius
     }
 
     // Must be called from the region owning [around], which is where the hitboxes are read
@@ -93,8 +124,31 @@ internal object IncursionArsenal {
     fun targetsInChunk(shooter: Player, world: World, chunkX: Int, chunkZ: Int): List<Target> {
         if (!Bukkit.isOwnedByCurrentRegion(world, chunkX, chunkZ)) return emptyList()
 
-        return world.getChunkAt(chunkX, chunkZ).entities
-            .mapNotNull { snapshot(shooter, it as? LivingEntity ?: return@mapNotNull null) }
+        val targets = world.getChunkAt(chunkX, chunkZ).entities
+            .mapNotNullTo(mutableListOf()) { snapshot(shooter, it as? LivingEntity ?: return@mapNotNullTo null) }
+
+        // Turns out entities can be at the edge of a chunk...
+        val minX = (chunkX shl 4).toDouble()
+        val minZ = (chunkZ shl 4).toDouble()
+        for (offsetX in -1..1) {
+            for (offsetZ in -1..1) {
+                if (offsetX == 0 && offsetZ == 0) continue
+                val neighbourX = chunkX + offsetX
+                val neighbourZ = chunkZ + offsetZ
+                if (!world.isChunkLoaded(neighbourX, neighbourZ)) continue
+                if (!Bukkit.isOwnedByCurrentRegion(world, neighbourX, neighbourZ)) continue
+
+                for (entity in world.getChunkAt(neighbourX, neighbourZ).entities) {
+                    if (entity !is LivingEntity) continue
+                    val box = entity.boundingBox
+                    // Dragon parts can apparently trail outside the dragon's own hitbox
+                    val reachesIn = entity is CraftEnderDragon ||
+                        (box.maxX > minX && box.minX < minX + 16 && box.maxZ > minZ && box.minZ < minZ + 16)
+                    if (reachesIn) snapshot(shooter, entity)?.let { targets.add(it) }
+                }
+            }
+        }
+        return targets
     }
 
     private fun snapshot(shooter: Player, entity: LivingEntity): Target? {
@@ -102,11 +156,29 @@ internal object IncursionArsenal {
         if (!shooter.canDamage(entity)) return null
         val yaw = Math.toRadians(entity.location.yaw.toDouble())
         val facing = Vector(-sin(yaw), 0.0, cos(yaw))
+        if (entity is CraftEnderDragon) {
+            val parts = entity.handle.subEntities
+            // Only the neck hitbox surrounds the whole head for some reason
+            val head = parts.filter { it.name == "head" || it.name == "neck" }
+                .map { it.bukkitEntity.boundingBox }
+                .reduce { union, box -> union.union(box) }
+            return Target(
+                entity, entity.boundingBox, entity.eyeHeight, facing,
+                parts.map { it.bukkitEntity.boundingBox },
+                head
+            )
+        }
         return Target(entity, entity.boundingBox, entity.eyeHeight, facing)
     }
 
     // No true damage here, so protection plugins can do their thing
-    fun hurt(target: LivingEntity, shooter: Player, damage: Double, beforeDamage: ((LivingEntity) -> Unit)? = null) {
+    fun hurt(
+        target: LivingEntity,
+        shooter: Player,
+        damage: Double,
+        headshot: Boolean = false,
+        beforeDamage: ((LivingEntity) -> Unit)? = null
+    ) {
         if (damage <= 0 && beforeDamage == null) return
         if (target is Tameable && target.isTamed) return
         if (target !is Player && target.customName() != null) return
@@ -117,7 +189,15 @@ internal object IncursionArsenal {
             if (!target.isValid || target.isDead) return@sync
 
             beforeDamage?.invoke(target)
-            if (scaledDamage > 0) target.damage(scaledDamage, shooter)
+            if (scaledDamage <= 0) return@sync
+
+            if (headshot && target is CraftEnderDragon) {
+                val dragon = target.handle
+                val source = (shooter as CraftPlayer).handle.createDamageSource()
+                dragon.head.hurtServer(dragon.level() as ServerLevel, source, scaledDamage.toFloat())
+            } else {
+                target.damage(scaledDamage, shooter)
+            }
         }
     }
 
