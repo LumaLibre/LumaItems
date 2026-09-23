@@ -393,7 +393,9 @@ private fun drainFluid(player: Player, target: Block): Boolean {
         }
 
         type == Material.WATER || type == Material.LAVA || type == Material.POWDER_SNOW -> {
-            target.setAirWithLog(player, false)
+            data as Levelled
+            val physics = data.level >= data.maximumLevel
+            target.setAirWithLog(player, physics)
         }
 
         else -> return false

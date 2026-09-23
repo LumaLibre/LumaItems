@@ -31,6 +31,8 @@ class KamorisRake : CustomItemFunctions() {
             .map { it.toColor() }
     }
 
+    private val breakGuard = ThreadLocal.withInitial { false }
+
     override fun createItem(): Pair<String, ItemStack> {
         return ItemFactory.builder()
             .name("<b><gradient:#ebb2ff:#FFC2E7:#FAD4D4:#CCF0FF:#CCCCFF>Kamori's Rake</gradient></b>")
@@ -61,7 +63,7 @@ class KamorisRake : CustomItemFunctions() {
 
     override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
         val block = event.block
-        if (!block.isTagged(Kind.CROPS) || random().nextDouble() > 0.1) {
+        if (breakGuard.get() || !block.isTagged(Kind.CROPS) || random().nextDouble() > 0.1) {
             return
         }
 
@@ -74,7 +76,17 @@ class KamorisRake : CustomItemFunctions() {
 
         for ((index, b) in randomBlocks.withIndex()) {
             b.syncDelayed(index * 5L) {
-                b.breakNaturallyWithLog(player, item, true)
+                breakGuard.set(true)
+                val broken = try {
+                    player.breakBlock(b)
+                } finally {
+                    breakGuard.set(false)
+                }
+
+                if (!broken) {
+                    return@syncDelayed
+                }
+
                 item.damage(2, player)
                 Particles.line(player.location.add(0.0,1.0,0.0), b.location, 0.2, particleDisplay.withColor(COLORS.random()))
             }
