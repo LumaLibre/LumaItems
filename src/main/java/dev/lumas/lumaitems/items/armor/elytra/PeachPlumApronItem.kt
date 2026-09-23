@@ -3,6 +3,8 @@ package dev.lumas.lumaitems.items.armor.elytra
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isItemInSlot
+import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.spell
 import dev.lumas.lumaitems.util.extensions.willBreak
 import org.bukkit.Material
@@ -21,13 +23,14 @@ class PeachPlumApronItem : CustomItemFunctions() {
 
     private companion object {
         val PARTICLE_DATA = "#FFDAC1".spell()
+        val KEY = "peach-plum-apron".namespacedKey()
     }
 
     override fun createItem() = ItemFactory.builder()
         .name("<b><gradient:#FFE5B4:#FFD1BA:#FFC6A5:#FFB7B2:#FFDAC1>Peach Plum Apron</gradient></b>")
         .customEnchants("<#FFB7B2>Delight")
         .material(Material.ELYTRA)
-        .persistentData("peach-plum-apron")
+        .persistentData(KEY)
         .tier(Tier.LUMARINE_2026)
         .vanillaEnchants(
             Enchantment.PROTECTION to 6,
@@ -49,7 +52,9 @@ class PeachPlumApronItem : CustomItemFunctions() {
         .buildPair()
 
     override fun onPotionEffect(player: Player, event: EntityPotionEffectEvent) {
-        if (event.cause != EntityPotionEffectEvent.Cause.BEACON || player.inventory.chestplate.willBreak(1)) {
+
+
+        if (!player.isItemInSlot(KEY, EquipmentSlot.CHEST) || event.cause != EntityPotionEffectEvent.Cause.BEACON || player.inventory.chestplate.willBreak(1)) {
             return
         }
 
