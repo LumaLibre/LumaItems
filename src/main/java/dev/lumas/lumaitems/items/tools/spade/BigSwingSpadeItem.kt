@@ -8,6 +8,7 @@ import dev.lumas.lumaitems.shapes.Ellipsoid
 import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.actionBar
 import org.bukkit.Material
 import org.bukkit.Tag
 import org.bukkit.attribute.Attribute
@@ -58,6 +59,12 @@ class BigSwingSpadeItem : CustomItemFunctions() {
             return
         }
 
+        if (player.hasPotionEffect(PotionEffectType.HASTE)) {
+            player.removePotionEffect(PotionEffectType.HASTE)
+            player.actionBar("<yellow>Cannot be used with Haste.")
+            return
+        }
+
         val cardinalDirection = CardinalDirection.fromEntity(player)
 
 
@@ -70,10 +77,6 @@ class BigSwingSpadeItem : CustomItemFunctions() {
         }
         for (block in ellipsoidBlocks) {
             block.breakNaturallyWithLog(player, item, true)
-        }
-
-        if (player.hasPotionEffect(PotionEffectType.HASTE)) {
-            player.removePotionEffect(PotionEffectType.HASTE)
         }
     }
 }

@@ -10,6 +10,7 @@ import dev.lumas.lumaitems.shapes.Ellipsoid
 import dev.lumas.lumaitems.util.tags.Kind
 import dev.lumas.lumaitems.util.extensions.breakNaturallyWithLog
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.actionBar
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
@@ -18,6 +19,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.EquipmentSlotGroup
 import org.bukkit.inventory.ItemStack
+import org.bukkit.potion.PotionEffectType
 
 @Disable(value = [WorldKey.PINATA], hard = true)
 class BigSwingPickaxeItem : CustomItemFunctions() {
@@ -64,6 +66,12 @@ class BigSwingPickaxeItem : CustomItemFunctions() {
 
         val block = event.block
         if (block.getBreakSpeed(player) >= Float.POSITIVE_INFINITY) {
+            return
+        }
+
+        if (player.hasPotionEffect(PotionEffectType.HASTE)) {
+            player.removePotionEffect(PotionEffectType.HASTE)
+            player.actionBar("<yellow>Cannot be used with Haste.")
             return
         }
 
