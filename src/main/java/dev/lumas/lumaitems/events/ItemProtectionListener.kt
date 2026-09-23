@@ -145,6 +145,7 @@ class ItemProtectionListener : Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onInteractEntity(event: PlayerInteractEntityEvent) {
+        if (event.rightClicked is ItemFrame) return
         val item = event.player.inventory.getItem(event.hand)
         if (item.type !in CONSUMED_ON_ENTITY || !item.isProtected()) return
         event.isCancelled = true
