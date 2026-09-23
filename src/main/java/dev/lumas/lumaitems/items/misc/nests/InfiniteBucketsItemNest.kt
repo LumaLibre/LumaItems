@@ -20,6 +20,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
+import org.bukkit.Tag
 import org.bukkit.attribute.Attribute
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -131,6 +132,14 @@ class InfiniteMilkBucketItem : CustomItemFunctions() {
         if (!item.isMatchingItem(KEY)) return
 
         event.replacement = item.clone()
+    }
+
+    // BreweryX / TBP cauldron interaction
+    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
+        val material = event.clickedBlock?.type ?: return
+        if (Tag.CAULDRONS.isTagged(material)) {
+            event.isCancelled = true
+        }
     }
 }
 
