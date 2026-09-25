@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import kotlin.math.floor
 import org.bukkit.inventory.PlayerInventory
+import org.bukkit.util.BoundingBox
 
 
 private val PROTECTION_HOOKS by lazy {
@@ -85,13 +86,39 @@ fun Player.isInAnySlot(identifier: NamespacedKey): Boolean {
 }
 
 
-fun Player.isBoundingBoxOnGround(amt: Double): Boolean {
+fun Player.isBoundingBoxOnGround(amt: Double = 0.0): Boolean {
     val bb = boundingBox
     val y = floor(bb.minY - amt).toInt()
     val xs = intArrayOf(floor(bb.minX).toInt(), floor(bb.maxX - 1e-9).toInt())
     val zs = intArrayOf(floor(bb.minZ).toInt(), floor(bb.maxZ - 1e-9).toInt())
     for (x in xs) for (z in zs) {
         if (world.getBlockAt(x, y, z).isSolid) return true
+    }
+    return false
+}
+
+fun Player.isBoundingBoxOnGroundExact(amt: Double = 0.0): Boolean {
+    val bb = boundingBox
+    val eps = 1e-9
+
+    val bounds = BoundingBox(
+        bb.minX, bb.minY - amt - eps, bb.minZ,
+        bb.maxX, bb.minY, bb.maxZ
+    )
+
+    val minX = floor(bounds.minX).toInt()
+    val maxX = floor(bounds.maxX - eps).toInt()
+    val minZ = floor(bounds.minZ).toInt()
+    val maxZ = floor(bounds.maxZ - eps).toInt()
+    val minY = (floor(bounds.minY).toInt() - 1).coerceAtLeast(world.minHeight)
+    val maxY = (floor(bounds.maxY).toInt()).coerceAtMost(world.maxHeight - 1)
+
+    for (x in minX..maxX) for (z in minZ..maxZ) for (y in minY..maxY) {
+        val block = world.getBlockAt(x, y, z)
+        if (block.isPassable) continue
+
+        val local = bounds.clone().shift(-x.toDouble(), -y.toDouble(), -z.toDouble())
+        if (block.collisionShape.overlaps(local)) return true
     }
     return false
 }

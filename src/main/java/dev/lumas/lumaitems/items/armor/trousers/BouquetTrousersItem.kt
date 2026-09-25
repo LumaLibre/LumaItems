@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.AbilityUtil
 import dev.lumas.lumaitems.util.Tier
+import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGroundExact
 import java.util.UUID
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -49,7 +50,7 @@ class BouquetTrousersItem : CustomItemFunctions() {
     }
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
-        if (player.isSneaking || player.isInWater || player.isFlying|| tracked.contains(player.uniqueId) || AbilityUtil.isOnGround(player, 0.99) ) {
+        if (player.isSneaking || player.isInWater || player.isFlying|| tracked.contains(player.uniqueId) || player.isBoundingBoxOnGroundExact(0.99)) {
             return
         }
         tracked.add(player.uniqueId)

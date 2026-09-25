@@ -5,6 +5,7 @@ import dev.lumas.lumaitems.model.item.AttributeContainer
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.Tier
 import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGround
+import dev.lumas.lumaitems.util.extensions.isBoundingBoxOnGroundExact
 import dev.lumas.lumaitems.util.extensions.isLocationOnGround
 import java.util.UUID
 import org.bukkit.Material
@@ -57,7 +58,7 @@ class WitchingStocksItem : CustomItemFunctions() {
     }
 
     override fun onPlayerCrouch(player: Player, event: PlayerToggleSneakEvent) {
-        if (player.isSneaking || player.isInWater || player.isFlying || TRACKED.contains(player.uniqueId) || player.isBoundingBoxOnGround(0.99)) {
+        if (player.isSneaking || player.isInWater || player.isFlying || TRACKED.contains(player.uniqueId) || player.isBoundingBoxOnGroundExact(0.99)) {
             return
         }
         TRACKED.add(player.uniqueId)
