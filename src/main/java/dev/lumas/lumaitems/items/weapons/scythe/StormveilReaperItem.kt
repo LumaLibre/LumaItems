@@ -80,7 +80,6 @@ class StormveilReaperItem : CustomItemFunctions() {
         const val DROP_STAGGER = 2L
         const val NO_MERGE_TICKS = 600L
 
-        /** Only a fraction of landings are heard: one plink per drop would be a rattle. */
         const val DRIP_SOUND_CHANCE = 0.25
         const val DRIP_SOUND_VOLUME = 0.08f
 
@@ -107,10 +106,10 @@ class StormveilReaperItem : CustomItemFunctions() {
         const val CAST_MAX_RADIUS = 0.28
         const val CAST_MIN_ARC_HEIGHT = 0.4
         const val CAST_MAX_ARC_HEIGHT = 2.0
+        const val MAX_WISPS = 12
 
         val RAIN = ParticleDisplay.of(Particle.RAIN)
 
-        /** Wisps in flight. The mark lands on arrival, so this guards a recast in the meantime. */
         val SEEDING: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
 
         val LOOT_RANDOM: ThreadLocal<java.util.Random> = ThreadLocal.withInitial { java.util.Random() }
@@ -208,15 +207,21 @@ class StormveilReaperItem : CustomItemFunctions() {
 
         origin.world.spawnParticle(Particle.CLOUD, origin, 6, 0.12, 0.08, 0.12, 0.01)
 
-        targets.forEach { target ->
+        targets.shuffled().forEachIndexed { index, target ->
             SEEDING.add(target.uniqueId)
 
-            castWisp(origin, target.eyeLocation.add(0.0, CLOUD_HEIGHT, 0.0), heldColor(player)) {
+            val land: () -> Unit = {
                 SEEDING.remove(target.uniqueId)
                 // Back onto the target's own region: loomOver writes its PDC.
                 target.sync {
                     if (target.isValid && !target.isDead) loomOver(target)
                 }
+            }
+
+            if (index < MAX_WISPS) {
+                castWisp(origin, target.eyeLocation.add(0.0, CLOUD_HEIGHT, 0.0), heldColor(player), land)
+            } else {
+                Executors.asyncDelayed(CAST_DURATION_TICKS.toLong()) { land() }
             }
         }
     }
@@ -491,9 +496,16 @@ class StormveilReaperItem : CustomItemFunctions() {
         private const val MERGE_DISTANCE_SQ = MERGE_DISTANCE * MERGE_DISTANCE
         private const val MERGE_HEIGHT = 7.0
         private const val STALE_MS = 250L
+        private const val CELL_SIZE = 1.0
+        private const val MAX_PUFFS = 32
+
+        private data class Puff(val location: Location, val count: Int, val groundY: Double?)
+
+        private class Drop(val position: Location, val groundY: Double)
 
         private val nodes = ConcurrentHashMap<UUID, Node>()
         private val soured = ConcurrentHashMap<UUID, Long>()
+        private val drops = ArrayList<Drop>()
         private val lock = Any()
         private var task: ScheduledTask? = null
         private var ticks = 0
@@ -539,7 +551,7 @@ class StormveilReaperItem : CustomItemFunctions() {
             synchronized(lock) {
                 if (task != null) return
                 task = Executors.asyncTimer(0, 1) { t ->
-                    if (nodes.isEmpty()) {
+                    if (nodes.isEmpty() && drops.isEmpty()) {
                         synchronized(lock) { task = null }
                         t.cancel()
                         return@asyncTimer
@@ -558,6 +570,8 @@ class StormveilReaperItem : CustomItemFunctions() {
                 .filter { it.stamp >= cutoff }
                 .groupBy { it.location.world }
                 .forEach { (_, worldNodes) -> drawWorld(worldNodes, raining, windy) }
+
+            fall()
         }
 
         private fun drawWorld(worldNodes: List<Node>, raining: Boolean, windy: Boolean) {
@@ -598,16 +612,37 @@ class StormveilReaperItem : CustomItemFunctions() {
                 members.any { (soured[worldNodes[it].id] ?: 0L) > now }
             }
 
+            val puffs = clusters.mapValues { LinkedHashMap<Long, Puff>() }
+
             clusters.forEach { (root, members) ->
                 val ceilingY = cloudY.getValue(root)
-                val smoke = smoking.getValue(root)
 
                 members.forEach { i ->
                     val node = worldNodes[i]
                     val ceiling = node.location.clone().apply { y = ceilingY }
 
-                    puff(ceiling, 20, smoke)
-                    if (raining && !smoke) fallDrop(ceiling, node.location.y)
+                    puffs.getValue(root).putIfAbsent(cellOf(ceiling), Puff(ceiling, 20, node.location.y))
+                }
+            }
+
+            bridges.forEach { (i, j) ->
+                val a = worldNodes[i].location
+                val b = worldNodes[j].location
+                val root = find(i)
+                val mid = Location(a.world, (a.x + b.x) / 2.0, cloudY.getValue(root), (a.z + b.z) / 2.0)
+
+                puffs.getValue(root).putIfAbsent(cellOf(mid), Puff(mid, 10, null))
+            }
+
+            clusters.forEach { (root, members) ->
+                val ceilingY = cloudY.getValue(root)
+                val smoke = smoking.getValue(root)
+                val cells = puffs.getValue(root).values
+                val shown = if (cells.size > MAX_PUFFS) cells.shuffled().take(MAX_PUFFS) else cells
+
+                shown.forEach { (location, count, groundY) ->
+                    puff(location, count, smoke)
+                    if (raining && !smoke && groundY != null) fallDrop(location, groundY)
                 }
 
                 // Once per cloud rather than per member, so a merged front is not N times as loud.
@@ -624,15 +659,13 @@ class StormveilReaperItem : CustomItemFunctions() {
                     }
                 }
             }
+        }
 
-            bridges.forEach { (i, j) ->
-                val a = worldNodes[i].location
-                val b = worldNodes[j].location
-                val root = find(i)
-                val mid = Location(a.world, (a.x + b.x) / 2.0, cloudY.getValue(root), (a.z + b.z) / 2.0)
+        private fun cellOf(loc: Location): Long {
+            val x = floor(loc.x / CELL_SIZE).toLong()
+            val z = floor(loc.z / CELL_SIZE).toLong()
 
-                puff(mid, 10, smoking.getValue(root))
-            }
+            return (x shl 32) or (z and 0xFFFFFFFFL)
         }
 
 
@@ -658,28 +691,32 @@ class StormveilReaperItem : CustomItemFunctions() {
             val dist = DROP_RADIUS * sqrt(Random.nextDouble())
             val pos = cloud.clone().add(cos(angle) * dist, 1.0, sin(angle) * dist)
 
-            Executors.asyncTimer(0, 1) { task ->
+            drops.add(Drop(pos, groundY))
+        }
+
+        private fun fall() {
+            drops.removeIf { drop ->
+                val pos = drop.position
                 pos.y -= FALL_SPEED
 
-                if (pos.y <= groundY) {
-                    task.cancel()
-
-                    if (Random.nextDouble() < DRIP_SOUND_CHANCE) {
-                        val landing = pos.clone()
-                        landing.sync {
-                            landing.world.playSound(
-                                landing,
-                                Sound.BLOCK_POINTED_DRIPSTONE_DRIP_WATER,
-                                DRIP_SOUND_VOLUME,
-                                Random.nextDouble(0.8, 1.3).toFloat()
-                            )
-                        }
-                    }
-
-                    return@asyncTimer
+                if (pos.y > drop.groundY) {
+                    RAIN.spawn(pos)
+                    return@removeIf false
                 }
 
-                RAIN.spawn(pos)
+                if (Random.nextDouble() < DRIP_SOUND_CHANCE) {
+                    val landing = pos.clone()
+                    landing.sync {
+                        landing.world.playSound(
+                            landing,
+                            Sound.BLOCK_POINTED_DRIPSTONE_DRIP_WATER,
+                            DRIP_SOUND_VOLUME,
+                            Random.nextDouble(0.8, 1.3).toFloat()
+                        )
+                    }
+                }
+
+                true
             }
         }
     }
