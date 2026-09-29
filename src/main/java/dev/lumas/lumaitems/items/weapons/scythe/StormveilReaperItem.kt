@@ -66,6 +66,7 @@ class StormveilReaperItem : CustomItemFunctions() {
         val KEY = Util.namespacedKey("stormveil-reaper")
 
         const val SEARCH_RADIUS = 6.0
+        const val MAX_TARGETS = 90
         const val LOOM_TICKS = 900
         const val DAMAGE_MULTIPLIER = 2.0
         const val COOLDOWN_TICKS = 23 * 20L
@@ -182,10 +183,13 @@ class StormveilReaperItem : CustomItemFunctions() {
             ?: player.getTargetBlockExact(15)?.location
             ?: player.location.add(player.location.direction.multiply(10))
 
-        val targets = loc.getNearbyLivingEntities(SEARCH_RADIUS).filter { target ->
-            target != player && !looming(target) && target.uniqueId !in SEEDING &&
-                player.canDamage(target) && target !is Player && target !is ArmorStand
-        }
+        val targets = loc.getNearbyLivingEntities(SEARCH_RADIUS)
+            .filter { target ->
+                target != player && !looming(target) && target.uniqueId !in SEEDING &&
+                    player.canDamage(target) && target !is Player && target !is ArmorStand
+            }
+            .sortedBy { it.location.distanceSquared(loc) }
+            .take(MAX_TARGETS)
         if (targets.isEmpty()) return
 
         player.addCooldown(this, COOLDOWN_TICKS)
