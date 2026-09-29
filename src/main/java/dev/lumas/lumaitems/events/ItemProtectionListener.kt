@@ -2,9 +2,12 @@ package dev.lumas.lumaitems.events
 
 import dev.lumas.core.annotation.Autowire
 import dev.lumas.core.annotation.Register
+import dev.lumas.lumaitems.items.misc.nests.InfiniteAirBucketItem
 import dev.lumas.lumaitems.util.extensions.isCollectible
 import dev.lumas.lumaitems.util.extensions.isLumaItem
+import dev.lumas.lumaitems.util.extensions.isMatchingItem
 import dev.lumas.lumaitems.util.extensions.isProtected
+import dev.lumas.lumaitems.util.extensions.namespacedKey
 import dev.lumas.lumaitems.util.extensions.setRemainingHealth
 import dev.lumas.lumaitems.util.extensions.willBreak
 import io.papermc.paper.event.entity.EntityCompostItemEvent
@@ -136,6 +139,20 @@ class ItemProtectionListener : Listener {
 
 
     // ---- Collectibles and Luma items ----
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    fun onInteract(event: PlayerInteractEvent) {
+        if (!event.action.isRightClick) return
+
+        val item = event.item
+        if (!item.isProtected()) return
+        if (item?.isMatchingItem(InfiniteAirBucketItem.KEY) == true) return
+
+        val material = event.clickedBlock?.type ?: return
+        if (material == Material.CAULDRON || !Tag.CAULDRONS.isTagged(material)) return
+        // Prevent BreweryX / TBP cauldron interaction
+        event.isCancelled = true
+    }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBlockDispenseItem(event: BlockDispenseEvent) {

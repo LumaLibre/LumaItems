@@ -133,14 +133,6 @@ class InfiniteMilkBucketItem : CustomItemFunctions() {
 
         event.replacement = item.clone()
     }
-
-    // BreweryX / TBP cauldron interaction
-    override fun onRightClick(player: Player, event: PlayerInteractEvent) {
-        val material = event.clickedBlock?.type ?: return
-        if (Tag.CAULDRONS.isTagged(material)) {
-            event.isCancelled = true
-        }
-    }
 }
 
 class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
@@ -195,7 +187,7 @@ class InfiniteTropicalFishBucketItem : CustomItemFunctions() {
 
 class InfiniteAirBucketItem : CustomItemFunctions() {
 
-    private companion object {
+    companion object {
         val KEY = "infinite-air-bucket".namespacedKey()
         const val REFILL_COOLDOWN_TICKS = 60L
         const val BUBBLE_POPS = 5
