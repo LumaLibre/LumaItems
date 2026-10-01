@@ -3,13 +3,12 @@ package dev.lumas.lumaitems.items.tools.spade
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.util.Tier
-import dev.lumas.lumaitems.util.extensions.itemInMainHand
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDropItemEvent
 
 class UndertowSpadeItem : CustomItemFunctions() {
 
@@ -32,10 +31,13 @@ class UndertowSpadeItem : CustomItemFunctions() {
         )
         .buildPair()
 
-    override fun onBreakBlock(player: Player, event: BlockBreakEvent) {
+    override fun onBlockDropItem(player: Player, event: BlockDropItemEvent) {
+        val items = event.items
+        if (items.isEmpty()) return
+
         val block = event.block
-        val drops = block.getDrops(player.itemInMainHand)
-        event.isDropItems = false
+        val drops = items.map { it.itemStack }
+        items.clear()
 
         val result = player.give(drops, false)
 
