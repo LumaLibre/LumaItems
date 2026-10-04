@@ -1,5 +1,7 @@
 package dev.lumas.lumaitems.items.weapons.spear
 
+import dev.lumas.lumaitems.annotations.FireAnyways
+import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.model.item.ItemFactory
 import dev.lumas.lumaitems.model.item.CustomItemFunctions
 import dev.lumas.lumaitems.util.extensions.QuickTasks
@@ -19,8 +21,12 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import java.lang.ref.WeakReference
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 
+@FireAnyways(Action.PLAYER_DAMAGED)
 class ParadoxSpearItem : CustomItemFunctions() {
 
     private companion object {
@@ -29,6 +35,8 @@ class ParadoxSpearItem : CustomItemFunctions() {
         private const val DAMAGE_REDUCTION_PER_HIT = 2.0
         private const val PLAYER_DAMAGE_MULTIPLIER = 0.5
         private const val MAX_STARS = 3
+
+        private val HANDLED = ConcurrentHashMap<UUID, WeakReference<EntityDamageEvent>>()
     }
 
     override fun createItem(): Pair<String, ItemStack> {
@@ -77,7 +85,12 @@ class ParadoxSpearItem : CustomItemFunctions() {
 
     override fun onPlayerDamaged(player: Player, event: EntityDamageEvent) {
         if (event.isCancelled) return
-        event.damage *= PLAYER_DAMAGE_MULTIPLIER
+        if (HANDLED.put(player.uniqueId, WeakReference(event))?.get() === event) return
+        if (player.inventory.contents.none { it?.persistentDataContainer?.has(KEY) == true }) return
+
+        if (player.isItemInSlot(KEY, EquipmentSlot.HAND) || player.isItemInSlot(KEY, EquipmentSlot.OFF_HAND)) {
+            event.damage *= PLAYER_DAMAGE_MULTIPLIER
+        }
 
         val value = QuickTasks.getFlag(this, player.uniqueId, Double::class.java) ?: BASE_DAMAGE_MULTIPLIER
         val newValue = (value - DAMAGE_REDUCTION_PER_HIT).coerceAtLeast(0.0)
