@@ -23,19 +23,17 @@ import dev.lumas.lumaitems.util.extensions.isRelic
 import dev.lumas.lumaitems.util.extensions.setRemainingHealth
 import dev.lumas.lumaitems.util.extensions.sync
 import dev.lumas.lumaitems.util.extensions.willBreak
-import kotlin.random.Random
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Enemy
 import org.bukkit.entity.EntityType
-import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
-import org.bukkit.event.entity.EntitySpawnEvent
+import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
@@ -44,6 +42,7 @@ import org.bukkit.event.inventory.PrepareSmithingEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.persistence.PersistentDataType
+import kotlin.random.Random
 
 // TODO: These listeners are a mess
 @Register(Autowire.LISTENER)
@@ -57,11 +56,22 @@ class GeneralListeners : Listener {
             EntityType.ELDER_GUARDIAN,
             EntityType.WARDEN
         )
+        private val VALID_SPAWN_REASONS = listOf(
+            CreatureSpawnEvent.SpawnReason.NATURAL,
+            CreatureSpawnEvent.SpawnReason.SPAWNER,
+            CreatureSpawnEvent.SpawnReason.TRIAL_SPAWNER,
+            CreatureSpawnEvent.SpawnReason.SPAWNER_EGG,
+            CreatureSpawnEvent.SpawnReason.LIGHTNING,
+            CreatureSpawnEvent.SpawnReason.JOCKEY,
+            CreatureSpawnEvent.SpawnReason.MOUNT,
+            CreatureSpawnEvent.SpawnReason.TRAP
+        )
     }
 
     @EventHandler
-    fun onEntitySpawn(event: EntitySpawnEvent) {
-        val livingEntity = event.entity as? LivingEntity ?: return
+    fun onEntitySpawn(event: CreatureSpawnEvent) {
+        val livingEntity = event.entity
+        if (event.spawnReason !in VALID_SPAWN_REASONS) return
         val isBoss = BOSSES.contains(livingEntity.type)
 
         if (Random.nextInt(101) > 8 || livingEntity !is Enemy) return // 8% chance to spawn a relic
