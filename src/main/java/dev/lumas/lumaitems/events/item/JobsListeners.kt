@@ -4,6 +4,7 @@ import com.gamingmesh.jobs.api.JobsExpGainEvent
 import com.gamingmesh.jobs.api.JobsPrePaymentEvent
 import dev.lumas.core.annotation.Autowire
 import dev.lumas.core.annotation.Register
+import dev.lumas.lumaitems.api.event.GrubbyRelicGiveEvent
 import dev.lumas.lumaitems.configuration.files.RelicsYml
 import dev.lumas.lumaitems.enums.Action
 import dev.lumas.lumaitems.items.astral.GrubbyRelicItem
@@ -51,7 +52,9 @@ class JobsListeners : ItemListener() {
         if (Random.nextInt(20_000) > 2 || event.job.name == HUNTER_JOB || Registry.CONFIGS.getOrThrow(RelicsYml::class).disableNaturalRelicWorlds.contains(player.world.name)) return
 
         val grubby = Registry.CUSTOM_ITEMS.getOrThrow(GrubbyRelicItem::class).createItem().second
-        Util.giveItem(player, grubby)
+        val giveEvent = GrubbyRelicGiveEvent(player, grubby)
+        if (!giveEvent.callEvent()) return
+        Util.giveItem(player, giveEvent.item)
     }
 
     private fun isInfiniteFish(entity: Entity?): Boolean {
